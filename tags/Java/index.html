@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>用Java实现类似linux下的wget工具 | 小沙文的博客</title>
+  <title>Tag: Java | 小沙文的博客</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -84,7 +84,7 @@
 </head>
 
 <!--
-<body class="post-template">
+<body class="home-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -223,179 +223,37 @@
 
         <!-- ============================ END Hero Image =========================== -->
       
-<section id="intro">
+
+
+<section id="services">
     <div class="container">
-        <div class="row col-md-offset-2">
-            <div class="col-md-8">
-    			<span class="post-meta">
-      <time datetime="2015-10-24T11:38:18.000Z" itemprop="datePublished">
-          2015-10-24
-      </time>
-    
-    
-    | 
-    <a href='/tags/Java/'>Java</a>
-    
-    
-</span>
-                <h1>用Java实现类似linux下的wget工具</h1>
-            </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="row boxes">
+                    
+                    
+                        
+                        
+                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
+                            
+                              <h4 class="title"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">用Java实现类似linux下的wget工具</a></h4>
+                            
+                            <p><time datetime="2015-10-24T11:38:18.000Z"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">2015-10-24</a></time></p>
+                        </div>
+                    
+                </div>
+            </div>    
         </div>
-        <div class="col-md-8 col-md-offset-2">
-      		<p>wget是linux下的一个命令行工具，熟悉linux的同学应该都知道，执行wget后可以从一个http服务器上下载一个文件，这次我们用Java实现的wget功能类似，只需要支持接收一个http的url参数就可以下载对应资源。关于wget的更多信息可以google它。</p>
-<p>   简单说明一下，我们需要做的就是将服务器运行之后，通过控制台去输入一行URL，然后服务器自动根据URL去获取互联网上的资源。功能类似下图。<br>   <img src="/img/1" alt=""></p>
-<blockquote>
-<p>上面这张图片代表的意思是通过控制台输入想要获取的url，然后我们的wget实现将对应url上的资源存放在指定的位置。</p>
-<p>获取<a href="https://www.google.co.jp/images/srpr/logo11w.png" target="_blank" rel="external">https://www.google.co.jp/images/srpr/logo11w.png</a> 这个HTTP_URL的logo11w.png图片，并将它保在/Users/pengshuang/Documents/workspace/succeez位置上。</p>
-</blockquote>
-<p>   下面附上java实现代码，主要过程我已经注释详细了,应该看懂没问题。</p>
-<pre><code><span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileOutputStream;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.io.InputStream;
-<span class="keyword">import</span> java.net.URL;
-<span class="keyword">import</span> java.util.Scanner;
+    </div>
+</section> 
 
-<span class="keyword">public</span> class Wget {
-    <span class="comment">/*
-     * get url of the file you wanted get the path to save your file
-     */</span>
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) {
-        <span class="comment">// 创建一个scanner，获取URL和用户指定存放路径</span>
-        Scanner sc = <span class="keyword">new</span> Scanner(System.in);
-        System.out.<span class="built_in">println</span>(<span class="string">"Please input the file's Http_URL:"</span>);
-        <span class="keyword">String</span> url = sc.nextLine();
-        System.out.<span class="built_in">println</span>(<span class="string">"please input the path to save the file:"</span>);
-        <span class="keyword">String</span> path = sc.nextLine();
-        <span class="comment">// 调用downloadFromUrl来从URL上下载指定文件</span>
-        <span class="keyword">String</span> res = downloadFromUrl(url, path);
-        sc.close();<span class="comment">// 关闭scanner</span>
-        System.out.<span class="built_in">println</span>(res);
-}
-
-<span class="comment">/*
- * download file from url returns success/failure message if succeed,returns
- * file's absolute path
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">String</span> downloadFromUrl(<span class="keyword">String</span> url, <span class="keyword">String</span> dir) {
-    <span class="keyword">try</span> {
-        <span class="comment">// 创建新的URL类型</span>
-        URL httpurl = <span class="keyword">new</span> URL(url);
-        <span class="comment">// 获取文件名</span>
-        <span class="keyword">String</span> fileName = getFileNameFromUrl(url);
-        <span class="comment">// 输出文件名</span>
-        System.out.<span class="built_in">println</span>(fileName);
-        <span class="comment">// 在文件名之前加上路径创建文件</span>
-        File f = <span class="keyword">new</span> File(dir + <span class="string">'/'</span> + fileName);
-        <span class="comment">// 将URL内容拷贝到文件</span>
-        copyURLToFile(httpurl, f);
-        <span class="keyword">String</span> absolutepath = f.getAbsolutePath();
-        <span class="comment">// 输出成功信息以及存储路径名</span>
-        <span class="keyword">return</span> <span class="string">"Successfully saved to "</span> + absolutepath;
-    } <span class="keyword">catch</span> (Exception e) {
-        e.printStackTrace();
-        <span class="comment">// 异常时输出错误信息</span>
-        <span class="keyword">return</span> <span class="string">"Error!"</span>;
-    }
-}
-
-<span class="comment">/*
- * get filename from url such as get a string "logo11w.html" from
- * https://www.google.co.jp/images/srpr/logo11w.png
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">String</span> getFileNameFromUrl(<span class="keyword">String</span> url) {
-    <span class="comment">// 初始化文件名</span>
-    <span class="keyword">String</span> name = <span class="string">""</span>;
-    <span class="comment">// 获取最后一个“/“前的字符数</span>
-    <span class="built_in">int</span> index = url.lastIndexOf(<span class="string">"/"</span>);
-    <span class="keyword">if</span> (index &gt; <span class="number">0</span>) {
-        <span class="comment">// 将最后一个”/“和之前的所有字符都剔除，剩余的字符串作为文件名</span>
-        name = url.substring(index + <span class="number">1</span>);
-        <span class="comment">// 将文件名首尾的空格字符删去，获取规范的文件名</span>
-        <span class="keyword">if</span> (name.<span class="built_in">trim</span>().length() &gt; <span class="number">0</span>) {
-            <span class="keyword">return</span> name;
-        }
-    }
-    <span class="keyword">return</span> name;
-}
-
-<span class="comment">/*
- * copy URL file's content to local file by get an InputStream from URL and
- * an OutputStream to local file using a buffer to transport bytes
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> copyURLToFile(URL source, File dest) <span class="keyword">throws</span> IOException {
-    <span class="comment">// 如果目标文件不存在</span>
-    <span class="keyword">if</span> (!dest.exists()) {
-        <span class="comment">// 创建父目录，然后创建新文件</span>
-        dest.getParentFile().mkdirs();
-        dest.createNewFile();
-    }
-    <span class="comment">// 关键点就在此，通过URL类的openStream函数获得一个输入流</span>
-    InputStream in = source.openStream();
-
-    <span class="keyword">try</span> {
-        <span class="comment">// 创建一个输出流</span>
-        FileOutputStream out = <span class="keyword">new</span> FileOutputStream(dest);
-        <span class="keyword">try</span> {
-            <span class="comment">/*
-             * 创建一个固定大小的buffer通过buffer将输入流内容写入输出流
-             */</span>
-            <span class="built_in">int</span> numread = <span class="number">0</span>;
-            <span class="built_in">int</span> buf_size = <span class="number">1024</span>;
-            <span class="built_in">byte</span>[] buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[buf_size];
-            <span class="keyword">while</span> ((numread = in.read(buffer, <span class="number">0</span>, buf_size)) != -<span class="number">1</span>)
-                <span class="comment">// 如果缓冲区没满，继续写</span>
-                out.write(buffer, <span class="number">0</span>, numread);
-        } <span class="keyword">finally</span> {
-            <span class="keyword">try</span> {
-                <span class="keyword">if</span> (out != <span class="keyword">null</span>)
-                    out.close();
-            } <span class="keyword">catch</span> (IOException oe) {
-                System.out.<span class="built_in">println</span>(<span class="string">"Output file is null"</span>);
-            }
-        }
-    } <span class="keyword">finally</span> {
-        <span class="keyword">try</span> {
-            <span class="keyword">if</span> (in != <span class="keyword">null</span>)
-                in.close();
-        } <span class="keyword">catch</span> (IOException ie) {
-            System.out.<span class="built_in">println</span>(<span class="string">"Input file is null"</span>);
-            }
-        }
-    }
-}
-</code></pre><p><br>实现这个wget可以有助于我们理解Java的输入输出，为以后的Java web 编程打基础。</p>
-
-            <div class="clearfix"></div>
-            <hr class="nogutter">
+<section id="statement">
+    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
+        <div class="row">
+            <p>通过写code和辛勤工作深刻理解how，通过阅读和思考逐渐体会到why。</p>
         </div>
-        <nav class="pagination" role="pagination">
-    
-    
-    <a class="pull-right" href="/2015/10/24/开篇/">
-        开篇 →
-    </a>
-    
-</nav>
-
-        <div class="duoshuo">
-<div class="ds-thread" data-thread-key="2015/10/24/用Java实现类似linux下的wget工具/" data-title="用Java实现类似linux下的wget工具" data-url="http://pengshuang.space/2015/10/24/用Java实现类似linux下的wget工具/"></div>
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"pengshuang"};
-(function() {
-	var ds = document.createElement('script');
-	ds.type = 'text/javascript';ds.async = true;
-	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-	ds.charset = 'UTF-8';
-	(document.getElementsByTagName('head')[0] 
-	 || document.getElementsByTagName('body')[0]).appendChild(ds);
-})();
-</script>
-</div>
     </div>
 </section>
-
-
       
 <!-- ============================ Footer =========================== -->
 
