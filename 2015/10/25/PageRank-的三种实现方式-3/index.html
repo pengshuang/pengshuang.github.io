@@ -332,14 +332,14 @@ public <span class="type">void</span> reduce(<span class="type">IntWritable</spa
     <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt; idlist = new <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt;();
     <span class="type">String</span> link = <span class="string">" "</span>;
     <span class="type">float</span> pr = <span class="number">0</span>;
-
+    //提取贡献值，并累加起来，用pr保存
     <span class="keyword">for</span>(<span class="type">Text</span> id : values) {
         <span class="type">String</span> id2 = id.toString();
-        //提取贡献值，并累加起来，用pr保存
         <span class="keyword">if</span>(id2.substring(<span class="number">0</span>, <span class="number">1</span>).equals(<span class="string">"@"</span>)){
             pr += <span class="type">Float</span>.parseFloat(id2.substring(<span class="number">1</span>));
-        }<span class="keyword">else</span> <span class="keyword">if</span> (id2.substring(<span class="number">0</span>,<span class="number">1</span>).equals(<span class="string">"&amp;"</span>)) {
+        }
         //把所有链接的节点存放于idlist中
+        <span class="keyword">else</span> <span class="keyword">if</span> (id2.substring(<span class="number">0</span>,<span class="number">1</span>).equals(<span class="string">"&amp;"</span>)) {
             idlist.add(nextid);
         }
     }
