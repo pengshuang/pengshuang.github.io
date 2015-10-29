@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives: 2015/10 | 小沙文的博客</title>
+  <title>Scala学习笔记(1) | 小沙文的博客</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -84,7 +84,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -237,103 +237,161 @@
 
         <!-- ============================ END Hero Image =========================== -->
       
-
-
-<section id="services">
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/29/Scala学习笔记-1/">Scala学习笔记(1)</a></h4>
-                            
-                            <p><time datetime="2015-10-29T09:08:33.000Z"><a href="/2015/10/29/Scala学习笔记-1/">2015-10-29</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/27/K-means算法java实现/">K-means算法java实现</a></h4>
-                            
-                            <p><time datetime="2015-10-27T06:09:30.000Z"><a href="/2015/10/27/K-means算法java实现/">2015-10-27</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/26/K-means算法之我见/">K-means算法之我见</a></h4>
-                            
-                            <p><time datetime="2015-10-26T14:26:21.000Z"><a href="/2015/10/26/K-means算法之我见/">2015-10-26</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/25/PageRank-的三种实现方式-3/">PageRank-的三种实现方式(3)</a></h4>
-                            
-                            <p><time datetime="2015-10-25T07:16:25.000Z"><a href="/2015/10/25/PageRank-的三种实现方式-3/">2015-10-25</a></time></p>
-                        </div>
-                    
-                        
-                            </div><div class="row boxes">
-                            
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/25/PageRank-的三种实现方式-2/">PageRank的三种实现方式(2)</a></h4>
-                            
-                            <p><time datetime="2015-10-25T06:03:20.000Z"><a href="/2015/10/25/PageRank-的三种实现方式-2/">2015-10-25</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/25/PageRank-的三种实现方式-1/">PageRank-的三种实现方式(1)</a></h4>
-                            
-                            <p><time datetime="2015-10-25T04:11:29.000Z"><a href="/2015/10/25/PageRank-的三种实现方式-1/">2015-10-25</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">用Java实现类似linux下的wget工具</a></h4>
-                            
-                            <p><time datetime="2015-10-24T11:38:18.000Z"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">2015-10-24</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/24/开篇/">开篇</a></h4>
-                            
-                            <p><time datetime="2015-10-24T01:58:03.000Z"><a href="/2015/10/24/开篇/">2015-10-24</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2015-10-29T09:08:33.000Z" itemprop="datePublished">
+          2015-10-29
+      </time>
+    
+    
+    | 
+    <a href='/tags/Scala/'>Scala</a>
+    
+    
+</span>
+                <h1>Scala学习笔记(1)</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<p>最近因为做测试要用到Spark，所以在学Scala，下面记录一下学习过程中的笔记。</p>
+<p>关于IDE的配置和Scala下就不在赘述了，相关的网上教程很多，写下来太花时间，主要写一些Scala的基础语法和高级特性。</p>
+<h2 id="值与变量">值与变量</h2><p>值(val):赋值后不可变<br>val 值名称:类型 = xxx</p>
+<p>变量(var):赋值后可以改变<br>var 变量名称:类型 = xxx</p>
+<p>一般不需要显式指定类型,因为可以从赋值中推断出类型</p>
+<h2 id="常用类型">常用类型</h2><h3 id="Byte">Byte</h3><h3 id="Char">Char</h3><h3 id="Short">Short</h3><h3 id="Int">Int</h3><h3 id="Long">Long</h3><h3 id="Float">Float</h3><h3 id="Double">Double</h3><h3 id="Boolean">Boolean</h3><h3 id="并⽆无基本类型与包装类型之分">并⽆无基本类型与包装类型之分</h3><h2 id="方法定义">方法定义</h2><p>def ⽅法名(参数名 : 参数类型) : 返回类型 = { </p>
+<p>//block内最后一行为返回值</p>
+<p>}</p>
+<p>当返回值为Unit时可以定义为: def ⽅方法名(参数名 : 参数类型) { }</p>
+<h2 id="方法注意">方法注意</h2><ol>
+<li><p>没有参数的⽅方法可以不带圆括号访问</p>
+</li>
+<li><p>Scala没有静态⽅方法,通过object来实现</p>
+</li>
+</ol>
+<h2 id="基础知识">基础知识</h2><ol>
+<li><p>条件表达式(if)</p>
+</li>
+<li><p>循环表达式(for,while,to,until,Range没有continue与break)</p>
+</li>
+<li><p>语句终⽌止(分⾏行写时可以不⽤用分号)</p>
+</li>
+<li><p>￼Lazy value</p>
+<p> 用到的时候才会去初始化</p>
+</li>
+<li><p>默认参数</p>
+</li>
+<li><p>带名参数（赋值时顺序可以跟定义时的顺序不一样）</p>
+</li>
+<li><p>变长参数(:_*)</p>
+<pre><code>   def sum(args: <span class="type">Int</span>*) = {
+    <span class="keyword">var</span> <span class="literal">result</span> = <span class="number">0</span>
+   <span class="keyword">for</span>( arg &lt;- args) <span class="literal">result</span> += arg
+    <span class="literal">result</span>
+}
+</code></pre><p>星号表示可接受变长参数列表。函数实际得到的参数是Seq类型的。</p>
+</li>
+</ol>
+<p>注意，在调用的时候需要：</p>
+<pre><code>val s = sum(<span class="number">1</span>, <span class="number">4</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">25</span>) <span class="comment">//true</span>
+val s = sum(<span class="number">1</span> to <span class="number">5</span>) <span class="comment">// false</span>
+val s = sum(<span class="number">1</span> to <span class="number">5</span>: _*
+</code></pre><p>如果sum函数被调用时传入的是单个参数，那么该参数必须是单个整数，而不是一个整数区间。解决这个问题的办法是告诉编译器你希望这个参数被当做参数序列处理。追加: _*，就像上面这样：</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">recursiveSum</span><span class="params">(args: Int*)</span>:</span> Int = {  
+  <span class="keyword">if</span>(args.length == <span class="number">0</span>) <span class="number">0</span>  
+ <span class="keyword">else</span> args.head + recursiveSum(args.tail: _*)  
+} 
+</code></pre><p>在这里，序列的head是它的首个元素，而tail是所有其他元素的序列，这又是一个Seq，我们用: _*来将它转换成参数序列。</p>
+<h2 id="异常处理">异常处理</h2><pre><code>￼<span class="keyword">try</span> { 
+  block(redis)
+} <span class="keyword">catch</span>{
+  <span class="keyword">case</span> e : Exception =&gt; System.err.println(e) 
+  <span class="comment">//should use log in production </span>
+  <span class="keyword">case</span> _ =&gt; <span class="comment">//should never happen</span>
+}<span class="keyword">finally</span>{
+   <span class="keyword">this</span>.close(pool,redis)
+}
+</code></pre><h2 id="定长数组">定长数组</h2><ol>
+<li><p>val array_name = new Array[T]（length）</p>
+</li>
+<li><p>val array_name = Array(“”,””)</p>
+</li>
+<li><p>通过( )访问,⽽不是[ ]</p>
+</li>
+</ol>
+<h2 id="变长数组">变长数组</h2><ol>
+<li><p>import scala.collection.mutable.ArrayBuffer</p>
+</li>
+<li><p>val buff = ArrayBuffer[T]（）</p>
+</li>
+<li><p>+=/++=/insert/remove/toArray/sum/max/reverse</p>
+</li>
+</ol>
+<h2 id="遍历数组">遍历数组</h2><ol>
+<li><p>for(i &lt;- 0 until array_name.length)</p>
+</li>
+<li><p>for(i &lt;- array_name)</p>
+</li>
+<li><p>事实上会更多的使⽤用map、filter等等来操作</p>
+</li>
+</ol>
+<h2 id="Map(可变与不可变)">Map(可变与不可变)</h2><ol>
+<li><p>不可变 val age = Map(“Jack” -&gt; 20,”Lucy” -&gt;”18” )</p>
+</li>
+<li><p>可变 val age = scala.collection.mutable.Map( … )</p>
+</li>
+<li><p>初始化 val m =scala.collection.mutable.Map[String,Int]（）</p>
+</li>
+</ol>
+<h2 id="Map操作">Map操作</h2><ol>
+<li><p>取值 map(key),更好的⽅方式map.getOrElse(key,default)</p>
+</li>
+<li><p>更新 map(key)=value / += / -=</p>
+</li>
+<li><p>迭代 for((k,v) &lt;- map){ },也可单独取key或者value for((k,_) &lt;- map) / for((-,v) &lt;- map) 也可使⽤用map.keySet 或者 map.values</p>
+</li>
+</ol>
+<h2 id="元组">元组</h2><ol>
+<li><p>( )⾥包含⼀系列的值</p>
+</li>
+<li><p>通过._ 取值,下标从1开始,例如 t._1</p>
+</li>
+<li><p>迭代 for(elem &lt;- t.productIterator)</p>
+</li>
+</ol>
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p>通过写code和辛勤工作深刻理解how，通过阅读和思考逐渐体会到why。</p>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2015/10/27/K-means算法java实现/">
+        K-means算法java实现 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="2015/10/29/Scala学习笔记-1/" data-title="Scala学习笔记(1)" data-url="http://pengshuang.space/2015/10/29/Scala学习笔记-1/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pengshuang"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
