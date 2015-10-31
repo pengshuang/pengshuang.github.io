@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives | 小沙文的博客</title>
+  <title>Python编写爬虫(1) | 小沙文的博客</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -84,7 +84,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -239,46 +239,119 @@
 
         <!-- ============================ END Hero Image =========================== -->
       
-
-
-<section id="services">
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">用Java实现类似linux下的wget工具</a></h4>
-                            
-                            <p><time datetime="2015-10-24T11:38:18.000Z"><a href="/2015/10/24/用Java实现类似linux下的wget工具/">2015-10-24</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2015/10/24/开篇/">开篇</a></h4>
-                            
-                            <p><time datetime="2015-10-24T01:58:03.000Z"><a href="/2015/10/24/开篇/">2015-10-24</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2015-10-31T08:46:12.000Z" itemprop="datePublished">
+          2015-10-31
+      </time>
+    
+    
+    | 
+    <a href='/tags/Python/'>Python</a>
+    
+    
+</span>
+                <h1>Python编写爬虫(1)</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<h2 id="正则表达式的应用举例">正则表达式的应用举例</h2><ol>
+<li><p>使用findall与search从大量文本中匹配感兴趣的内容</p>
+</li>
+<li><p>使用sub实现换页功能</p>
+</li>
+</ol>
+<h3 id="匹配多段内容">匹配多段内容</h3><ol>
+<li>灵活使用findall与search</li>
+</ol>
+<p><strong>注意</strong> ： findall是尽可能多的去找符合要求的，而search找到一个之后就不再找了</p>
+<ol>
+<li>先抓大再抓小</li>
+</ol>
+<h3 id="核心代码">核心代码</h3><pre><code>new_link = re.<span class="function"><span class="title">sub</span><span class="params">(‘pageNum=\d+’,’pageNum=%d’%i, old_url)</span></span>
+</code></pre><p>测试文件：</p>
+<pre><code><span class="tag">&lt;<span class="title">html</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">title</span>&gt;</span>小沙文爬虫测试<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"topic"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://jikexueyuan.com/welcome.html"</span>&gt;</span>欢迎参加<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
+      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">ul</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/1.html"</span>&gt;</span>这是第一条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/2.html"</span>&gt;</span>这是第二条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/3.html"</span>&gt;</span>这是第三条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+      <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
+</code></pre><p>测试代码:</p>
+<pre><code>#-*-coding:utf8-*-
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p>通过写code和辛勤工作深刻理解how，通过阅读和思考逐渐体会到why。</p>
+#导入re库文件
+import re
+
+old_url = <span class="string">'http://www.opencourse.com/course/?pageNum=2'</span>
+total_page = <span class="number">20</span>
+
+f = <span class="function"><span class="title">open</span><span class="params">(<span class="string">'text.html'</span>,<span class="string">'r'</span>)</span></span>
+<span class="tag">html</span> = f.<span class="function"><span class="title">read</span><span class="params">()</span></span>
+f.<span class="function"><span class="title">close</span><span class="params">()</span></span>
+
+#爬取标题
+title = re.<span class="function"><span class="title">search</span><span class="params">(<span class="string">'&lt;title&gt;(.*?)&lt;/title&gt;'</span>,html,re.S)</span></span>.<span class="function"><span class="title">group</span><span class="params">(<span class="number">1</span>)</span></span>
+print title
+
+#爬取链接
+links = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'href="(.*?)"'</span>,html,re.S)</span></span>
+<span class="keyword">for</span> each <span class="keyword">in</span> links:
+    print each
+
+#抓取部分文字,先大再小
+text_fied = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'&lt;ul&gt;(.*?)&lt;/ul&gt;'</span>,html,re.S)</span></span>[<span class="number">0</span>]
+the_text = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'"&gt;(.*?)&lt;/a&gt;'</span>,text_fied,re.S)</span></span>
+<span class="keyword">for</span> every_text <span class="keyword">in</span> the_text:
+    print every_text
+
+#sub实现翻页
+<span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> <span class="function"><span class="title">range</span><span class="params">(<span class="number">2</span>,total_page+<span class="number">1</span>)</span></span>:
+    new_link = re.<span class="function"><span class="title">sub</span><span class="params">(<span class="string">'pageNum=\d+'</span>,<span class="string">'pageNum=%d'</span>%i,old_url,re.S)</span></span>
+    print new_link    
+</code></pre>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2015/10/31/Python正则表达式/">
+        Python正则表达式 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="2015/10/31/Python编写爬虫(1)/" data-title="Python编写爬虫(1)" data-url="http://pengshuang.space/2015/10/31/Python编写爬虫(1)/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pengshuang"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
