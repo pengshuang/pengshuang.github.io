@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Python编写爬虫(1) | 小沙文的博客</title>
+  <title>HITS算法的Java实现 | 小沙文的博客</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -244,102 +244,215 @@
         <div class="row col-md-offset-2">
             <div class="col-md-8">
     			<span class="post-meta">
-      <time datetime="2015-10-31T08:46:12.000Z" itemprop="datePublished">
-          2015-10-31
+      <time datetime="2015-11-06T14:33:46.000Z" itemprop="datePublished">
+          2015-11-06
       </time>
     
     
     | 
-    <a href='/tags/Python/'>Python</a>
+    <a href='/tags/JAVA/'>JAVA</a>
     
     
 </span>
-                <h1>Python编写爬虫(1)</h1>
+                <h1>HITS算法的Java实现</h1>
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<h2 id="正则表达式的应用举例">正则表达式的应用举例</h2><ol>
-<li><p>使用findall与search从大量文本中匹配感兴趣的内容</p>
+      		<p>在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。</p>
+<h2 id="HITS算法的原理">HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
+<p>通过HITS算法名我们可以看出，它的工作原理是：通过链接发掘话题。HITS算法想要解决的问题是，在海量的网页中找到与用户查询主题相关的高质量Authority（权威）页面与Hub（目录）页面，尤其是 Authority 页面，因为这些页面代表了满足用户查询的高质量内容，搜索引擎就以此作为搜索结果返回给用户。</p>
+<p>通俗的来讲，对于“Authority”页面，是指与某个领域或者某个话题相关的高质量网页，比如搜索引擎领域，Google和百度首页即该领域的高质量网页，比如读书领域，当当和亚马逊首页即该领域的高质量网页。</p>
+<p>而对于Hub”页面，指的是包含了很多指向高质量“Authority”页面链接的网页，比如hao123首页可以认为是一个典型的高质量“Hub”网页。</p>
+<h2 id="HITS算法的思想:彼此之间相互增强关系">HITS算法的思想:彼此之间相互增强关系</h2><ol>
+<li><p>基本假设1：一个好的“Authority”页面会被很多好的“Hub”页面指向；</p>
 </li>
-<li><p>使用sub实现换页功能</p>
+<li><p>基本假设2：一个好的“Hub”页面会指向很多好的“Authority”页面；</p>
 </li>
 </ol>
-<h3 id="匹配多段内容">匹配多段内容</h3><ol>
-<li>灵活使用findall与search</li>
+<h2 id="HITS算法的基本步骤">HITS算法的基本步骤</h2><ol>
+<li><p>接受一个用户查询的请求。HITS 算法与用户输入的查询请求密切相关，它的查询结果是动态生成的，而 PageRank 算法则与用户的查询无关。</p>
+</li>
+<li><p>将查询提交给某个现有的搜索引擎（或者是自己构造的检索系统），并在返回的搜索结果中，提取排名靠前的网页，得到一组与用户查询高度相关的初始网页集合，这个集合被称作为 root set。</p>
+</li>
+<li><p>建立 base set，凡是与根集内网页有直接链接指向关系的网页都被扩充进来，形成如下集合</p>
+</li>
+<li><p>计算：</p>
+</li>
 </ol>
-<p><strong>注意</strong> ： findall是尽可能多的去找符合要求的，而search找到一个之后就不再找了</p>
-<ol>
-<li>先抓大再抓小</li>
-</ol>
-<h3 id="核心代码">核心代码</h3><pre><code>new_link = re.<span class="function"><span class="title">sub</span><span class="params">(‘pageNum=\d+’,’pageNum=%d’%i, old_url)</span></span>
-</code></pre><p>测试文件：</p>
-<pre><code><span class="tag">&lt;<span class="title">html</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">head</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">title</span>&gt;</span>小沙文爬虫测试<span class="tag">&lt;/<span class="title">title</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
-  <span class="tag">&lt;<span class="title">body</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"topic"</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://opencourse.com/welcome.html"</span>&gt;</span>欢迎参加<span class="tag">&lt;/<span class="title">a</span>&gt;</span>
-      <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"list"</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">ul</span>&gt;</span>
-          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/1.html"</span>&gt;</span>这是第一条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
-          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/2.html"</span>&gt;</span>这是第二条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
-          <span class="tag">&lt;<span class="title">li</span>&gt;</span><span class="tag">&lt;<span class="title">a</span> <span class="attribute">href</span>=<span class="value">"http://bbs.byr.cn/3.html"</span>&gt;</span>这是第三条<span class="tag">&lt;/<span class="title">a</span>&gt;</span><span class="tag">&lt;/<span class="title">li</span>&gt;</span>
-        <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
-      <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
-  <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">html</span>&gt;</span>
-</code></pre><p>测试代码:</p>
-<pre><code>#-*-coding:utf8-*-
+<p><img src="/img/11.jpg" alt=""></p>
+<h2 id="HITS算法的Java实现">HITS算法的Java实现</h2><p>算法实现类：</p>
+<pre><code>package org.tseg.search;
 
-#导入re库文件
-import re
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
-old_url = <span class="string">'http://www.opencourse.com/course/?pageNum=2'</span>
-total_page = <span class="number">20</span>
+<span class="comment">/**
+ * HITS链接分析算法工具类
+ */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> HITSTool {
+    <span class="comment">// 输入数据文件地址</span>
+    <span class="keyword">private</span> String filePath;
+    <span class="comment">// 网页个数</span>
+    <span class="keyword">private</span> <span class="keyword">int</span> pageNum;
+    <span class="comment">// 网页Authority权威值</span>
+    <span class="keyword">private</span> <span class="keyword">double</span>[] authority;
+    <span class="comment">// 网页hub中心值</span>
+    <span class="keyword">private</span> <span class="keyword">double</span>[] hub;
+    <span class="comment">// 链接矩阵关系</span>
+    <span class="keyword">private</span> <span class="keyword">int</span>[][] linkMatrix;
+    <span class="comment">// 网页种类</span>
+    <span class="keyword">private</span> ArrayList&lt;String&gt; pageClass;
 
-f = <span class="function"><span class="title">open</span><span class="params">(<span class="string">'text.html'</span>,<span class="string">'r'</span>)</span></span>
-<span class="tag">html</span> = f.<span class="function"><span class="title">read</span><span class="params">()</span></span>
-f.<span class="function"><span class="title">close</span><span class="params">()</span></span>
+    <span class="function"><span class="keyword">public</span> <span class="title">HITSTool</span><span class="params">(String filePath)</span> </span>{
+        <span class="keyword">this</span>.filePath = filePath;
+        readDataFile();
+    }
+    <span class="comment">/**
+     * 从文件中读取数据
+     */</span>
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFile</span><span class="params">()</span> </span>{
+        File file = <span class="keyword">new</span> File(filePath);
+        ArrayList&lt;String[]&gt; dataArray = <span class="keyword">new</span> ArrayList&lt;String[]&gt;();
 
-#爬取标题
-title = re.<span class="function"><span class="title">search</span><span class="params">(<span class="string">'&lt;title&gt;(.*?)&lt;/title&gt;'</span>,html,re.S)</span></span>.<span class="function"><span class="title">group</span><span class="params">(<span class="number">1</span>)</span></span>
-print title
+        <span class="keyword">try</span> {
+            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(file));
+            String str;
+            String[] tempArray;
+            <span class="keyword">while</span> ((str = in.readLine()) != null) {
+                tempArray = str.split(<span class="string">" "</span>);
+                dataArray.add(tempArray);
+            }
+            in.close();
+        } <span class="keyword">catch</span> (IOException e) {
+            e.getStackTrace();
+        }
+        pageClass = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="comment">// 统计网页类型种数</span>
+        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
+            <span class="keyword">for</span> (String s : <span class="built_in">array</span>) {
+                <span class="keyword">if</span> (!pageClass.contains(s)) {
+                    pageClass.add(s);
+                }
+            }
+        }
+        <span class="keyword">int</span> i = <span class="number">0</span>;
+        <span class="keyword">int</span> j = <span class="number">0</span>;
+        pageNum = pageClass.size();
+        linkMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[pageNum][pageNum];
+        authority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+        hub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
 
-#爬取链接
-links = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'href="(.*?)"'</span>,html,re.S)</span></span>
-<span class="keyword">for</span> each <span class="keyword">in</span> links:
-    print each
+        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+            <span class="comment">// 初始时默认权威值和中心值都为1</span>
+            authority[k] = <span class="number">1</span>;
+            hub[k] = <span class="number">1</span>;
+        }
 
-#抓取部分文字,先大再小
-text_fied = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'&lt;ul&gt;(.*?)&lt;/ul&gt;'</span>,html,re.S)</span></span>[<span class="number">0</span>]
-the_text = re.<span class="function"><span class="title">findall</span><span class="params">(<span class="string">'"&gt;(.*?)&lt;/a&gt;'</span>,text_fied,re.S)</span></span>
-<span class="keyword">for</span> every_text <span class="keyword">in</span> the_text:
-    print every_text
+        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
 
-#sub实现翻页
-<span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> <span class="function"><span class="title">range</span><span class="params">(<span class="number">2</span>,total_page+<span class="number">1</span>)</span></span>:
-    new_link = re.<span class="function"><span class="title">sub</span><span class="params">(<span class="string">'pageNum=\d+'</span>,<span class="string">'pageNum=%d'</span>%i,old_url,re.S)</span></span>
-    print new_link    
-</code></pre>
+            i = Integer.parseInt(<span class="built_in">array</span>[<span class="number">0</span>]);
+            j = Integer.parseInt(<span class="built_in">array</span>[<span class="number">1</span>]);
+
+            <span class="comment">// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接</span>
+            linkMatrix[i - <span class="number">1</span>][j - <span class="number">1</span>] = <span class="number">1</span>;
+        }
+    }
+    <span class="comment">/**
+     * 输出结果页面，也就是authority权威值最高的页面
+     */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printResultPage</span><span class="params">()</span> </span>{
+        <span class="comment">// 最大Hub和Authority值，用于后面的归一化计算</span>
+        <span class="keyword">double</span> maxHub = <span class="number">0</span>;
+        <span class="keyword">double</span> maxAuthority = <span class="number">0</span>;
+        <span class="keyword">int</span> maxAuthorityIndex = <span class="number">0</span>;
+        <span class="comment">// 误差值，用于收敛判断</span>
+        <span class="keyword">double</span> error = Integer.MAX_VALUE;
+        <span class="keyword">double</span>[] newHub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+        <span class="keyword">double</span>[] newAuthority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+
+        <span class="keyword">while</span> (error &gt; <span class="number">0.01</span> * pageNum) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                newHub[k] = <span class="number">0</span>;
+                newAuthority[k] = <span class="number">0</span>;
+            }
+
+            <span class="comment">// hub和authority值的更新计算</span>
+            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pageNum; i++) {
+                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; pageNum; j++) {
+                    <span class="keyword">if</span> (linkMatrix[i][j] == <span class="number">1</span>) {
+                        newHub[i] += authority[j];
+                        newAuthority[j] += hub[i];
+                    }
+                }
+            }
+            maxHub = <span class="number">0</span>;
+            maxAuthority = <span class="number">0</span>;
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                <span class="keyword">if</span> (newHub[k] &gt; maxHub) {
+                    maxHub = newHub[k];
+                }
+
+                <span class="keyword">if</span> (newAuthority[k] &gt; maxAuthority) {
+                    maxAuthority = newAuthority[k];
+                    maxAuthorityIndex = k;
+                }
+            }
+
+            error = <span class="number">0</span>;
+            <span class="comment">// 归一化处理</span>
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                newHub[k] /= maxHub;
+                newAuthority[k] /= maxAuthority;
+
+                error += Math.<span class="built_in">abs</span>(newHub[k] - hub[k]);
+                System.out.println(newAuthority[k] + <span class="string">":"</span> + newHub[k]);
+
+                hub[k] = newHub[k];
+                authority[k] = newAuthority[k];
+            }
+            System.out.println(<span class="string">"---------"</span>);
+        }
+        System.out.println(<span class="string">"****最终收敛的网页的权威值和中心值****"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+            System.out.println(<span class="string">"网页"</span> + pageClass.get(k) + <span class="string">":"</span> + authority[k] + <span class="string">":"</span> + hub[k]);
+        }
+        System.out.println(<span class="string">"权威值最高的网页为：网页"</span> + pageClass.get(maxAuthorityIndex));
+    }
+
+}
+</code></pre><p>主类：</p>
+<pre><code><span class="keyword">package</span> org.tseg.search;
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+
+        String Path = <span class="string">"Users/pengshuang/Desktop/pagerank/input/HITS.txt"</span>;
+        HITSTool ht = <span class="keyword">new</span> HITSTool(Path);
+        ht.printResultPage();
+    }
+
+}
+</code></pre><p>输入文件示例：</p>
+<p><img src="/img/10.png" alt=""></p>
+
             <div class="clearfix"></div>
             <hr class="nogutter">
         </div>
         <nav class="pagination" role="pagination">
     
-    <a class="pull-left" href="/2015/11/06/HITS算法的Java实现/" style="float: left;">
-        ← HITS算法的Java实现
-    </a>
     
-    
-    <a class="pull-right" href="/2015/10/31/Python正则表达式/">
-        Python正则表达式 →
+    <a class="pull-right" href="/2015/10/31/Python编写爬虫(1)/">
+        Python编写爬虫(1) →
     </a>
     
 </nav>
 
         <div class="duoshuo">
-<div class="ds-thread" data-thread-key="2015/10/31/Python编写爬虫(1)/" data-title="Python编写爬虫(1)" data-url="http://pengshuang.space/2015/10/31/Python编写爬虫(1)/"></div>
+<div class="ds-thread" data-thread-key="2015/11/06/HITS算法的Java实现/" data-title="HITS算法的Java实现" data-url="http://pengshuang.space/2015/11/06/HITS算法的Java实现/"></div>
 <script type="text/javascript">
 var duoshuoQuery = {short_name:"pengshuang"};
 (function() {
