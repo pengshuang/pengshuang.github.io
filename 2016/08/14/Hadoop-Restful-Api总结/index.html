@@ -224,7 +224,7 @@
       		<p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下<a href="http://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html" target="_blank" rel="external">ResourceManager的Restful API</a>（网上现在大部分的中文资料都是关于hadoop2.4.0的Yarn Web Service API），看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
 <p>注意:</p>
 <p>Restful API 返回的格式为JSON，然后这里tseg0是主机的名字，即namenode的名字</p>
-<p>###Cluster Information API<br>API使用方法：</p>
+<h3 id="Cluster_Information_API">Cluster Information API</h3><p>API使用方法：</p>
 <pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster"</span>
 </code></pre><p>通过访问这个API,可以访问集群，知道整个hadoop集群的总体状态。<br>主要作用可以知道hadoop的版本号，感觉对工作并无什么太大作用。比较重要的信息摘要如下：</p>
 <pre><code><span class="string">"clusterInfo"</span>: {
@@ -233,7 +233,7 @@
         <span class="string">"state"</span>: <span class="string">"STARTED"</span>,
         <span class="string">"haState"</span>: <span class="string">"ACTIVE"</span>,
       }
-</code></pre><p>###Cluster Metrics API<br>API使用方法：</p>
+</code></pre><h3 id="Cluster_Metrics_API">Cluster Metrics API</h3><p>API使用方法：</p>
 <pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/metrics"</span>
 </code></pre><p>通过访问这个API，可以监控集群的具体状态：</p>
 <ol>
@@ -281,7 +281,7 @@
        <span class="string">"rebootedNodes"</span>: <span class="number">0</span>,
        <span class="string">"activeNodes"</span>: <span class="number">62</span>
      }
-</code></pre><p>###Cluster Scheduler API<br>API使用方法：</p>
+</code></pre><h3 id="Cluster_Scheduler_API">Cluster Scheduler API</h3><p>PI使用方法：</p>
 <pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/scheduler"</span>
 </code></pre><p>通过访问这个api可以知道整个集群的调度过程具体信息。Hadoop的调度按队列（eg：webopa）来进行，不同部门的应用分成不同的队列。通过使用这个API可以知道每个部门队列的状态，比如：</p>
 <ol>
@@ -351,7 +351,7 @@
                 <span class="string">"numPendingApps"</span>: <span class="number">0</span>,
                 <span class="string">"numActiveApps"</span>: <span class="number">0</span>
               },....
-</code></pre><p>###Cluster Apps AppID API<br>API使用方法：</p>
+</code></pre><h3 id="Cluster_Apps_AppID_API">Cluster Apps AppID API</h3><p>API使用方法：</p>
 <pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/apps/application_1465889061871_478559"</span>
 </code></pre><p>可以指定去查看在集群上跑的某个应用的状态。<br>具体的有：</p>
 <ol>
@@ -437,7 +437,7 @@
          }
        ]
      }
-</code></pre><p>###Cluster Nodes API<br>API使用方法：</p>
+</code></pre><h3 id="Cluster_Nodes_API">Cluster Nodes API</h3><p>API使用方法：</p>
 <pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/nodes"</span>
 </code></pre><p>通过这个API我们可以知道不同node的状态，比如：</p>
 <ol>
