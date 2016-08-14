@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<!--[if lte IE 8 ]>
+<html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<!--
+***************  *      *     *
+      8          *    *       *
+      8          *  *         *
+      8          **           *
+      8          *  *         *
+      8          *    *       *
+      8          *      *     *
+      8          *        *   ***********    -----Theme By Kieran(http://go.kieran.top)
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+  <title>Hadoop Restful Api总结 | 小沙文的博客</title>
+  <!-- Meta data -->
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="小沙文的博客">
+    <meta name="author" content="Allen Peng">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+
+    <!-- Favicon, (keep icon in root folder) -->
+    <link rel="Shortcut Icon" href="/img/favicon.ico" type="image/ico">
+
+    <link rel="alternate" href="/" title="小沙文的博客" type="application/atom+xml">
+    <link rel="stylesheet" href="/css/all.css" media="screen" type="text/css">
+	
+    <link rel="stylesheet" href="/highlightjs/vs.css" type="text/css">
+    
+    
+
+    <!-- Custom stylesheet, (add custom styles here, always load last) -->
+    <!-- Load our stylesheet for IE8 -->
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="/css/ie8.css" />
+    <![endif]-->
+
+    <!-- Google Webfonts (Monserrat 400/700, Open Sans 400/600) -->
+    <link href='//fonts.useso.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='//fonts.useso.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
+
+    <!-- Load our fonts individually if IE8+, to avoid faux bold & italic rendering -->
+    <!--[if IE]>
+    <link href='http://fonts.useso.com/css?family=Montserrat:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Montserrat:700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.useso.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+    <![endif]-->
+
+    <!-- jQuery | Load our jQuery, with an alternative source fallback to a local version if request is unavailable -->
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <!-- Load these in the <head> for quicker IE8+ load times -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+  
+  <style>.col-md-8.col-md-offset-2.opening-statement img{display:none;}</style>
+</head>
+
+<!--
+<body class="post-template">
+-->
+<body id="index" class="lightnav animsition">
+
+      <!-- ============================ Off-canvas navigation =========================== -->
+
+    <div class="sb-slidebar sb-right sb-style-overlay sb-momentum-scrolling">
+        <div class="sb-close" aria-label="Close Menu" aria-hidden="true">
+            <img src="/img/close.png" alt="Close"/>
+        </div>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu">
+            <li><a href="/" class="animsition-link" title="Home">Home</a></li>
+            <li><a href="/archives" class="animsition-link" title="archive">archives</a></li>
+            <!-- Dropdown Menu -->
+			 
+            <li>
+                <a class="sb-toggle-submenu">Works<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                        <li><a href="/tags/Java/" target="_BLANK" class="animsition-link">Java</a></li>
+                    
+                        <li><a href="/tags/Python/" target="_BLANK" class="animsition-link">Python</a></li>
+                    
+                        <li><a href="/tags/Hadoop/" target="_BLANK" class="animsition-link">Hadoop</a></li>
+                    
+                        <li><a href="/tags/Spark/" target="_BLANK" class="animsition-link">Spark</a></li>
+                    
+                        <li><a href="/tags/leetcode/" target="_BLANK" class="animsition-link">leetcode</a></li>
+                    
+                        <li><a href="/tags/算法/" target="_BLANK" class="animsition-link">算法</a></li>
+                    
+                        <li><a href="/tags/翻译/" target="_BLANK" class="animsition-link">翻译</a></li>
+                    
+                        <li><a href="/tags/读书笔记/" target="_BLANK" class="animsition-link">读书笔记</a></li>
+                    
+                </ul>
+            </li>
+            
+            
+            
+            <li>
+                <a class="sb-toggle-submenu">Links<span class="sb-caret"></span></a>
+                <ul class="sb-submenu">
+                    
+                    <li><a href="http://lingyu.wang/" class="animsition-link">天镶的博客</a></li>
+                    
+                    <li><a href="http://www.ruanyifeng.com/" class="animsition-link">阮一峰的个人网站</a></li>
+                    
+                    <li><a href="http://coolshell.cn/" class="animsition-link">酷壳</a></li>
+                    
+                </ul>
+            </li>
+            
+        </ul>
+        <!-- Lists in Slidebars -->
+        <ul class="sb-menu secondary">
+            <li><a href="/about.html" class="animsition-link" title="about">About</a></li>
+            <li><a href="/atom.xml" class="animsition-link" title="rss">RSS</a></li>
+        </ul>
+    </div>
+    
+    <!-- ============================ END Off-canvas navigation =========================== -->
+
+    <!-- ============================ #sb-site Main Page Wrapper =========================== -->
+
+    <div id="sb-site">
+        <!-- #sb-site - All page content should be contained within this id, except the off-canvas navigation itself -->
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+        <div id="navigation" class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <!-- Nav logo -->
+                    <div class="logo">
+                        <a href="/" title="Logo" class="animsition-link">
+                        
+                        </a>
+                    </div>
+                    <!-- // Nav logo -->
+                    <!-- Info-bar -->
+                    <nav>
+                        <ul class="nav">
+                            <li><a href="/" class="animsition-link">小沙文的博客</a></li>
+                            <li class="nolink"><span>Always </span>Creative.</li>
+                            
+                            <li><a href="https://github.com/pengshuang" title="Github" target="_blank"><i class="icon-github"></i></a></li>
+                            
+                            
+                            
+                            
+                            <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a></li>
+                            
+                            
+                            <li><a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a></li>
+                            
+                            <li class="nolink"><span>Welcome!</span></li>
+                        </ul>
+                    </nav>
+                    <!--// Info-bar -->
+                </div>
+                <!-- // .container -->
+                <div class="learnmore sb-toggle-right">More</div>
+                <button type="button" class="navbar-toggle menu-icon sb-toggle-right" title="More">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar before"></span>
+                <span class="icon-bar main"></span>
+                <span class="icon-bar after"></span>
+                </button>
+            </div>
+            <!-- // .navbar-inner -->
+        </div>
+
+        <!-- ============================ Header & Logo bar =========================== -->
+
+
+      
+<section id="intro">
+    <div class="container">
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2016-08-14T15:17:29.000Z" itemprop="datePublished">
+          2016-08-14
+      </time>
+    
+    
+    | 
+    <a href='/tags/Hadoop/'>Hadoop</a>
+    
+    
+</span>
+                <h1>Hadoop Restful Api总结</h1>
+            </div>
+        </div>
+        <div class="col-md-8 col-md-offset-2">
+      		<h1 id="Hadoop_Restful_api_总结">Hadoop Restful api 总结</h1><p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下Hadoop Yarn的Restful API，看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
+<p>注意:</p>
+<p>Restful API 返回的格式为JSON，然后这里tseg0是主机的名字，即namenode的名字</p>
+<p>###Cluster Information API<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster"</span>
+</code></pre><p>通过访问这个API,可以访问集群，知道整个hadoop集群的总体状态。<br>主要作用可以知道hadoop的版本号，感觉对工作并无什么太大作用。比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"clusterInfo"</span>: {
+        <span class="string">"id"</span>: <span class="number">1465889061871</span>,
+        <span class="string">"startedOn"</span>: <span class="number">1465889061871</span>,
+        <span class="string">"state"</span>: <span class="string">"STARTED"</span>,
+        <span class="string">"haState"</span>: <span class="string">"ACTIVE"</span>,
+      }
+</code></pre><p>###Cluster Metrics API<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/metrics"</span>
+</code></pre><p>通过访问这个API，可以监控集群的具体状态：</p>
+<ol>
+<li>集群上一共提交了多少应用。</li>
+<li>集群上一共完成了多少应用。</li>
+<li>集群上正在跑的应用有多少个。</li>
+<li>多少个应用被killed掉了。</li>
+<li>多少个应用失败了。</li>
+<li>集群可供使用的内存有多少。</li>
+<li>集群已经使用的内存有多少。</li>
+<li>集群总共的内存大小数。</li>
+<li>集群总共拥有的节点个数。</li>
+<li>集群挂掉的节点个数。</li>
+<li>集群健在的节点个数。</li>
+<li>集群可以使用的VirtualCores个数。</li>
+<li>集群总共的VirtualCores个数。</li>
+<li>集群已经分配了的VirtualCores个数。</li>
+<li>集群已经分配了的container个数。</li>
+<li>集群上还剩下的container个数</li>
+<li>集群上正在pending状态的container个数。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"clusterMetrics"</span>: {
+       <span class="string">"appsSubmitted"</span>: <span class="number">476969</span>,
+       <span class="string">"appsCompleted"</span>: <span class="number">476306</span>,
+       <span class="string">"appsPending"</span>: <span class="number">0</span>,
+       <span class="string">"appsRunning"</span>: <span class="number">18</span>,
+       <span class="string">"appsFailed"</span>: <span class="number">41</span>,
+       <span class="string">"appsKilled"</span>: <span class="number">604</span>,
+       <span class="string">"reservedMB"</span>: <span class="number">0</span>,
+       <span class="string">"availableMB"</span>: <span class="number">3682720</span>,
+       <span class="string">"allocatedMB"</span>: <span class="number">842752</span>,
+       <span class="string">"reservedVirtualCores"</span>: <span class="number">0</span>,
+       <span class="string">"availableVirtualCores"</span>: <span class="number">1565</span>,
+       <span class="string">"allocatedVirtualCores"</span>: <span class="number">177</span>,
+       <span class="string">"containersAllocated"</span>: <span class="number">130</span>,
+       <span class="string">"containersReserved"</span>: <span class="number">0</span>,
+       <span class="string">"containersPending"</span>: <span class="number">759</span>,
+       <span class="string">"totalMB"</span>: <span class="number">4525472</span>,
+       <span class="string">"totalVirtualCores"</span>: <span class="number">1742</span>,
+       <span class="string">"totalNodes"</span>: <span class="number">104</span>,
+       <span class="string">"lostNodes"</span>: <span class="number">42</span>,
+       <span class="string">"unhealthyNodes"</span>: <span class="number">0</span>,
+       <span class="string">"decommissionedNodes"</span>: <span class="number">0</span>,
+       <span class="string">"rebootedNodes"</span>: <span class="number">0</span>,
+       <span class="string">"activeNodes"</span>: <span class="number">62</span>
+     }
+</code></pre><p>###Cluster Scheduler API<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/scheduler"</span>
+</code></pre><p>通过访问这个api可以知道整个集群的调度过程具体信息。Hadoop的调度按队列（eg：webopa）来进行，不同部门的应用分成不同的队列。通过使用这个API可以知道每个部门队列的状态，比如：</p>
+<ol>
+<li>可以知道每个队列至多/至少可以拥有的资源数（包括内存和vCores数）</li>
+<li>可以知道每个队列最多可以运行的应用个数。</li>
+<li>可以知道每个队列使用的资源个数（memory和vcores）</li>
+<li>知道每个队列的调度策略。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"scheduler"</span>: {
+        <span class="string">"schedulerInfo"</span>: {
+          <span class="string">"type"</span>: <span class="string">"fairScheduler"</span>,
+          <span class="string">"rootQueue"</span>: {
+            <span class="string">"maxApps"</span>: <span class="number">2147483647</span>,
+            <span class="string">"minResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">0</span>,
+              <span class="string">"vCores"</span>: <span class="number">0</span>
+            },
+            <span class="string">"maxResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"usedResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">891904</span>,
+              <span class="string">"vCores"</span>: <span class="number">210</span>
+            },
+            <span class="string">"steadyFairResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"fairResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"clusterResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"queueName"</span>: <span class="string">"root"</span>,
+            <span class="string">"schedulingPolicy"</span>: <span class="string">"fair"</span>,
+            <span class="string">"childQueues"</span>: [
+              {
+                <span class="string">"type"</span>: <span class="string">"fairSchedulerLeafQueueInfo"</span>,
+                <span class="string">"maxApps"</span>: <span class="number">200</span>,
+                <span class="string">"minResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">110592</span>,
+                  <span class="string">"vCores"</span>: <span class="number">64</span>
+                },
+                <span class="string">"maxResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">768552</span>,
+                  <span class="string">"vCores"</span>: <span class="number">384</span>
+                },
+                <span class="string">"usedResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">0</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"steadyFairResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">110592</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"fairResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">0</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"queueName"</span>: <span class="string">"root.default"</span>,
+                <span class="string">"schedulingPolicy"</span>: <span class="string">"fair"</span>,
+                <span class="string">"numPendingApps"</span>: <span class="number">0</span>,
+                <span class="string">"numActiveApps"</span>: <span class="number">0</span>
+              },....
+</code></pre><p>###Cluster Apps AppID API<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/apps/application_1465889061871_478559"</span>
+</code></pre><p>可以指定去查看在集群上跑的某个应用的状态。<br>具体的有：</p>
+<ol>
+<li>启动应用的user。</li>
+<li>应用名称。</li>
+<li>应用类型。</li>
+<li>应用的状态。</li>
+<li>应用所属队列。</li>
+<li>应用最终运行状态。</li>
+<li>应用开始/停止时间</li>
+<li>应用的进度。</li>
+<li>应用耗时多久。 </li>
+<li>分配给这个应用所在container的资源（memory和Vcores）。</li>
+<li><p>负责运行这个应用的container的个数。<br>比较重要的信息摘要如下：</p>
+<p> “app”: {</p>
+<pre><code><span class="string">"id"</span>: <span class="string">"application_1465889061871_478559"</span>,
+<span class="string">"user"</span>: <span class="string">"webopa"</span>,
+<span class="string">"name"</span>: <span class="string">"\"rpt_web_nextpage_channel_hourly\""</span>,
+<span class="string">"queue"</span>: <span class="string">"root.webopa"</span>,
+<span class="string">"state"</span>: <span class="string">"FINISHED"</span>,
+<span class="string">"finalStatus"</span>: <span class="string">"SUCCEEDED"</span>,
+<span class="string">"progress"</span>: <span class="number">100.0</span>,
+<span class="string">"trackingUI"</span>: <span class="string">"History"</span>,
+<span class="string">"trackingUrl"</span>: <span class="string">"http://tseg0:8089/proxy/application_1465889061871_478559/jobhistory/job/job_1465889061871_478559"</span>,
+<span class="string">"diagnostics"</span>: <span class="string">""</span>,
+<span class="string">"clusterId"</span>: <span class="number">1465889061871</span>,
+<span class="string">"applicationType"</span>: <span class="string">"MAPREDUCE"</span>,
+<span class="string">"startedTime"</span>: <span class="number">1469585351258</span>,
+<span class="string">"finishedTime"</span>: <span class="number">1469585406607</span>,
+<span class="string">"elapsedTime"</span>: <span class="number">55349</span>,
+<span class="string">"amContainerLogs"</span>: <span class="string">"http://datanode048.tseg0:8042/node/containerlogs/container_1465889061871_478559_01_000001/webopa"</span>,
+<span class="string">"amHostHttpAddress"</span>: <span class="string">"datanode048. tseg0:8042"</span>,
+<span class="string">"allocatedMB"</span>: -<span class="number">1</span>,
+<span class="string">"allocatedVCores"</span>: -<span class="number">1</span>,
+<span class="string">"runningContainers"</span>: -<span class="number">1</span>,
+}
+</code></pre></li>
+</ol>
+<p>###Cluster Appstatistic<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/appstatistics/"</span>
+</code></pre><p>通过这个api可以统计出不同类型（mapreduce或spark）、不同状态（running或finished）的应用个数。<br>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"appStatInfo"</span>: {
+       <span class="string">"statItem"</span>: [
+         {
+           <span class="string">"state"</span>: <span class="string">"FAILED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"ACCEPTED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">2</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"FINISHED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">9971</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"SUBMITTED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"RUNNING"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">8</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"KILLED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">29</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"NEW"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"NEW_SAVING"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         }
+       ]
+     }
+</code></pre><p>###Cluster Nodes API<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/nodes"</span>
+</code></pre><p>通过这个API我们可以知道不同node的状态，比如：</p>
+<ol>
+<li>nodeHostname 和 nodeHttpAddress。</li>
+<li>该node的状态。（healthy或者其他)</li>
+<li>该node已经使用和还可以使用的memory/vCores数。</li>
+<li>该node上container的个数。</li>
+<li>上一次健康状态的更新时间（unix时间戳）。</li>
+</ol>
+<p>注：因为有时候node节点数特别多，想具体查询某个node可以通过指定nodeid来查询。</p>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"nodes"</span>: {
+        <span class="string">"node"</span>: [
+        {
+        <span class="string">"rack"</span>: <span class="string">"/default-rack"</span>,
+        <span class="string">"state"</span>: <span class="string">"RUNNING"</span>,
+        <span class="string">"id"</span>: <span class="string">"datanode018. tseg0:50523"</span>,
+        <span class="string">"nodeHostName"</span>: <span class="string">"datanode018. tseg0"</span>,
+        <span class="string">"nodeHTTPAddress"</span>: <span class="string">"datanode018. tseg0:8042"</span>,
+        <span class="string">"lastHealthUpdate"</span>: <span class="number">1469609570494</span>,
+        <span class="string">"version"</span>: <span class="string">"2.5.0-cdh5.2.0"</span>,
+        <span class="string">"healthReport"</span>: <span class="string">""</span>,
+        <span class="string">"numContainers"</span>: <span class="number">1</span>,
+        <span class="string">"usedMemoryMB"</span>: <span class="number">15360</span>,
+        <span class="string">"availMemoryMB"</span>: <span class="number">7168</span>,
+        <span class="string">"usedVirtualCores"</span>: <span class="number">2</span>,
+        <span class="string">"availableVirtualCores"</span>: <span class="number">22</span>
+        },...
+        ]
+      }
+</code></pre>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
+        </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2016/08/12/K-means简介/">
+        K-means算法简介 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="2016/08/14/Hadoop-Restful-Api总结/" data-title="Hadoop Restful Api总结" data-url="http://pengshuang.space/2016/08/14/Hadoop-Restful-Api总结/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pengshuang"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
+    </div>
+</section>
+
+
+      
+<!-- ============================ Footer =========================== -->
+
+<footer>
+    <div class="container">
+            <div class="copy">
+                <p>
+                    &copy; 2014<script>new Date().getFullYear()>2010&&document.write("-"+new Date().getFullYear());</script>, Content By Allen Peng. All Rights Reserved.
+                </p>
+                <p>Theme By <a href="//go.kieran.top" style="color: #767D84">Kieran</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    
+                    <li><a href="https://github.com/pengshuang" title="Github" target="_blank"><i class="icon-github"></i></a>&nbsp;</li>
+                    
+                    
+                    
+                    
+                    <li><a href="https://google.com/" title="Google-Plus" target="_blank"><i class="icon-google-plus"></i></a>&nbsp;</li>
+                    
+                    
+                    <li><a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" title="Sina-Weibo" target="_blank"><i class="icon-sina-weibo"></i></a>&nbsp;</li>
+                    
+                </ul>
+            </div>
+            <div class="clearfix"> </div>
+        </div>
+</footer>
+
+<!-- ============================ END Footer =========================== -->
+      <!-- Load our scripts -->
+        
+<!-- Resizable 'on-demand' full-height hero -->
+<script type="text/javascript">
+    
+    var resizeHero = function () {
+        var hero = $(".cover,.heightblock"),
+            window1 = $(window);
+        hero.css({
+            "height": window1.height()
+        });
+    };
+    
+    resizeHero();
+    
+    $(window).resize(function () {
+        resizeHero();
+    });
+</script>
+<script src="/js/plugins.min.js"></script><!-- Bootstrap core and concatenated plugins always load here -->
+<script src="/js/jquery.flexslider-min.js"></script><!-- Flexslider plugin -->
+<script src="/js/scripts.js"></script><!-- Theme scripts -->
+
+<!-- Initiate flexslider plugin -->
+<script type="text/javascript">
+    $(document).ready(function($) {
+      $('.flexslider').flexslider({
+        animation: "fade",
+        prevText: "",
+        nextText: "",
+        directionNav: true
+      });
+    });
+</script>
+
+</body>
+</html>
