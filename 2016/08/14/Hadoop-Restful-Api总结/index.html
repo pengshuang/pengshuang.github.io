@@ -221,7 +221,7 @@
             </div>
         </div>
         <div class="col-md-8 col-md-offset-2">
-      		<h1 id="Hadoop_Restful_api_总结">Hadoop Restful api 总结</h1><p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下<a href="http://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html" target="_blank" rel="external">ResourceManager的Restful API</a>（网上现在大部分的中文资料都是关于hadoop2.4.0的Yarn Web Service API），看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
+      		<h1 id="Hadoop_Restful_API_总结">Hadoop Restful API 总结</h1><p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下<a href="http://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html" target="_blank" rel="external">ResourceManager的Restful API</a>（网上现在大部分的中文资料都是关于hadoop2.4.0的Yarn Web Service API），看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
 <p>注意:</p>
 <p>Restful API 返回的格式为JSON，然后这里tseg0是主机的名字，即namenode的名字</p>
 <p>###Cluster Information API<br>API使用方法：</p>
