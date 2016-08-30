@@ -17,7 +17,7 @@
 <!--<![endif]-->
 
 <head>
-  <title>Archives: 2016 | 小沙文的博客</title>
+  <title>Python中的heapq模块学习 | 小沙文的博客</title>
   <!-- Meta data -->
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -84,7 +84,7 @@
 </head>
 
 <!--
-<body class="home-template">
+<body class="post-template">
 -->
 <body id="index" class="lightnav animsition">
 
@@ -201,96 +201,187 @@
         <!-- ============================ Header & Logo bar =========================== -->
 
 
-      <!-- ============================ Hero Image =========================== -->
-
-<section id="hero" class="scrollme">
-    <div class="container-fluid element-img" style="background: url(/img/1.jpg) no-repeat center center fixed;background-size: cover">
-        <div class="row">
-            <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 vertical-align cover boost text-center">
-                <div class="center-me animateme" data-when="exit" data-from="0" data-to="0.6" data-opacity="0" data-translatey="100">
-                    <div>
-                        
-                        <h2></h2>
-                        <p></p>
-                        
-                        <h2></h2>
-                        <p></p>
-                        
-
-                    </div>
-                </div>
-            </div>
-            <!-- // .col-md-12 -->
-        </div>
-        <div class="herofade beige-dk"></div>
-    </div>
-</section>
-
-<!-- Height spacing helper -->
-<div class="heightblock"></div>
-<!-- // End height spacing helper -->
-
-<!-- ============================ END Hero Image =========================== -->
-
-
-
-
-<section id="services">
+      
+<section id="intro">
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="row boxes">
-                    
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2016/08/30/Python中的heapq模块学习/">Python中的heapq模块学习</a></h4>
-                            
-                            <p><time datetime="2016-08-30T01:05:52.000Z"><a href="/2016/08/30/Python中的heapq模块学习/">2016-08-30</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/">flask中向前端传递或者接收Json文件的方法</a></h4>
-                            
-                            <p><time datetime="2016-08-19T02:48:40.000Z"><a href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/">2016-08-19</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2016/08/14/Hadoop-Restful-Api总结/">Hadoop Restful API总结</a></h4>
-                            
-                            <p><time datetime="2016-08-14T15:17:29.000Z"><a href="/2016/08/14/Hadoop-Restful-Api总结/">2016-08-14</a></time></p>
-                        </div>
-                    
-                        
-                        
-                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 wow fadeInUp" data-wow-delay="0.3s">
-                            
-                              <h4 class="title"><a href="/2016/08/12/K-means简介/">K-means算法简介</a></h4>
-                            
-                            <p><time datetime="2016-08-12T14:26:21.000Z"><a href="/2016/08/12/K-means简介/">2016-08-12</a></time></p>
-                        </div>
-                    
-                </div>
-            </div>    
+        <div class="row col-md-offset-2">
+            <div class="col-md-8">
+    			<span class="post-meta">
+      <time datetime="2016-08-30T01:05:52.000Z" itemprop="datePublished">
+          2016-08-30
+      </time>
+    
+    
+    | 
+    <a href='/tags/Python/'>Python</a>,
+    
+    <a href='/tags/leetcode/'>leetcode</a>
+    
+    
+</span>
+                <h1>Python中的heapq模块学习</h1>
+            </div>
         </div>
-    </div>
-</section> 
+        <div class="col-md-8 col-md-offset-2">
+      		<p>今天在leetcode上刷题的时候，偶然看到一个人的解法用到了python里面的heap模块，特此学习记录一下。</p>
+<pre><code><span class="comment"># coding: utf-8</span>
+<span class="keyword">from</span> heapq <span class="keyword">import</span> *
 
-<section id="statement">
-    <div class="container text-center wow fadeInUp" data-wow-delay="0.5s">
-        <div class="row">
-            <p>通过写code和辛勤工作深刻理解how，通过阅读和思考逐渐体会到why。</p>
+<span class="string">'''
+heappush(heap, item): 将item压入堆数组heap中。
+必须先进行此步操作,后面的heappop才有效。
+
+heappop(heap): 从堆数组heap中取出最小的值,并返回。
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">heapsort</span><span class="params">(iterable)</span>:</span>
+    h = []
+    <span class="keyword">for</span> value <span class="keyword">in</span> iterable:
+        heappush(h, value)
+    <span class="keyword">return</span> [heappop(h) <span class="keyword">for</span> i <span class="keyword">in</span> range(len(h))]
+
+
+<span class="comment"># 输出: [1, 2, 3, 3, 7]</span>
+<span class="keyword">print</span> heapsort([<span class="number">1</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">3</span>, <span class="number">2</span>])
+
+
+<span class="string">'''
+heappushpop(heap, item)
+增加item的同时删除最小值,并且返回该堆的最小值
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">example</span><span class="params">(iterable)</span>:</span>
+    h = []
+    <span class="keyword">for</span> value <span class="keyword">in</span> iterable:
+        heappush(h, value)
+    a = heappop(h)
+    <span class="comment"># 增加4的同时删除最小值,并且返回该最小值</span>
+    b = heappushpop(h, <span class="number">4</span>)
+    <span class="keyword">print</span> a
+    <span class="keyword">print</span> b
+    <span class="keyword">print</span> h
+
+<span class="comment"># 输出: 1</span>
+<span class="comment"># 输出: 2</span>
+<span class="comment"># 输出: [4, 5, 9]</span>
+example([<span class="number">1</span>, <span class="number">2</span>, <span class="number">9</span>, <span class="number">5</span>])
+
+<span class="string">'''
+heapify(x)
+x必须是list，此函数将list变成堆，实时操作。从而能够在任何情况下使用堆的函数。
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">example2</span><span class="params">(iterable)</span>:</span>
+    h = []
+    <span class="keyword">for</span> value <span class="keyword">in</span> iterable:
+        heappush(h, value)
+    heapify(h)
+    <span class="keyword">print</span> h
+
+<span class="comment"># 输出: [1, 6, 3]</span>
+example2([<span class="number">3</span>, <span class="number">6</span>, <span class="number">1</span>])
+
+<span class="string">'''
+heapreplace(heap, item)
+先进行删除,后压入栈
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">example3</span><span class="params">()</span>:</span>
+    a = []
+    heappush(a, <span class="number">3</span>)
+    <span class="comment"># 输出: [3]</span>
+    <span class="keyword">print</span> a
+    <span class="comment"># 先执行删除（heappop(a)-&gt;3),再执行加入（heappush(a,4))</span>
+    heapreplace(a, <span class="number">4</span>)
+    <span class="comment"># 输出: [4]</span>
+    <span class="keyword">print</span> a
+
+<span class="string">'''
+归并排序
+merge(*iterables)
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">example4</span><span class="params">()</span>:</span>
+    a = [<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>]
+    b = [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>]
+    c = merge(a, b)
+    <span class="comment"># 输出: [1, 2, 3, 4, 5, 6]</span>
+    <span class="keyword">print</span> list(c)
+
+<span class="string">'''
+nlargest(n, iterable[, key]), nsmallest(n, iterable[, key])
+获取列表中最大、最小的几个值。
+'''</span>
+<span class="function"><span class="keyword">def</span> <span class="title">example5</span><span class="params">()</span>:</span>
+    a = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">2</span>]
+    <span class="comment"># 输出: [4, 3]</span>
+    <span class="keyword">print</span> nlargest(<span class="number">2</span>, a)
+    <span class="comment"># 输出: [1, 2]</span>
+    <span class="keyword">print</span> nsmallest(<span class="number">2</span>, a)
+</code></pre><h2 id="leetcode上面的题目：">leetcode上面的题目：</h2><p>Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.</p>
+<p>Note that it is the kth smallest element in the sorted order, not the kth distinct element.</p>
+<p><strong>Example:</strong></p>
+<pre><code>matrix = [
+   [ <span class="number">1</span>,  <span class="number">5</span>,  <span class="number">9</span>],
+   [<span class="number">10</span>, <span class="number">11</span>, <span class="number">13</span>],
+   [<span class="number">12</span>, <span class="number">13</span>, <span class="number">15</span>]
+],
+k = <span class="number">8</span>,
+
+<span class="keyword">return</span> <span class="number">13.</span>
+</code></pre><p>我之前不用heap的解法（耗时200ms)…当时对heap模块不了解</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">Solution</span><span class="params">(object)</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">kthSmallest</span><span class="params">(self, matrix, k)</span>:</span>
+        <span class="string">"""
+        :type matrix: List[List[int]]
+        :type k: int
+        :rtype: int
+        """</span>
+        arr = []
+        <span class="keyword">for</span> item <span class="keyword">in</span> matrix:
+            <span class="keyword">for</span> son <span class="keyword">in</span> item:
+                arr.append(son)
+        arr = sorted(arr)
+        <span class="keyword">return</span> arr[k-<span class="number">1</span>]
+</code></pre><p>后来看了discussion里面的做法，恍然大悟…(这个方法耗时180ms）</p>
+<pre><code>class <span class="type">Solution2</span>(<span class="keyword">object</span>):
+    def kthSmallest(self, matrix, k):
+        <span class="literal">result</span>, heap = <span class="type">None</span>, []
+        heapq.heappush(heap, (matrix[<span class="number">0</span>][<span class="number">0</span>], <span class="number">0</span>, <span class="number">0</span>))
+        <span class="keyword">while</span> k &gt; <span class="number">0</span>:
+            <span class="literal">result</span>, i, j = heapq.heappop(heap)
+            <span class="keyword">if</span> i == <span class="number">0</span> <span class="keyword">and</span> j + <span class="number">1</span> &lt; len(matrix):
+                heapq.heappush(heap, (matrix[i][j+<span class="number">1</span>], i, j+<span class="number">1</span>))
+            <span class="keyword">if</span> i + <span class="number">1</span> &lt; len(matrix):
+                heapq.heappush(heap, (matrix[i+<span class="number">1</span>][j], i+<span class="number">1</span>, j))
+            k -= <span class="number">1</span>
+        <span class="keyword">return</span> <span class="literal">result</span>
+</code></pre>
+            <div class="clearfix"></div>
+            <hr class="nogutter">
         </div>
+        <nav class="pagination" role="pagination">
+    
+    
+    <a class="pull-right" href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/">
+        flask中向前端传递或者接收Json文件的方法 →
+    </a>
+    
+</nav>
+
+        <div class="duoshuo">
+<div class="ds-thread" data-thread-key="2016/08/30/Python中的heapq模块学习/" data-title="Python中的heapq模块学习" data-url="http://pengshuang.space/2016/08/30/Python中的heapq模块学习/"></div>
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pengshuang"};
+(function() {
+	var ds = document.createElement('script');
+	ds.type = 'text/javascript';ds.async = true;
+	ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+	ds.charset = 'UTF-8';
+	(document.getElementsByTagName('head')[0] 
+	 || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+</div>
     </div>
 </section>
+
+
       
 <!-- ============================ Footer =========================== -->
 
