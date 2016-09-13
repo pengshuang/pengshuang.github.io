@@ -1,0 +1,878 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hive,数据库," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
+      Taxes&quot;],round(salary * (1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Hive编程指南》学习笔记(1)">
+<meta property="og:url" content="http://pengshuang.space/2016/09/13/Hive编程指南笔记1/index.html">
+<meta property="og:site_name" content="小沙文的博客">
+<meta property="og:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
+      Taxes&quot;],round(salary * (1">
+<meta property="og:updated_time" content="2016-09-13T14:39:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Hive编程指南》学习笔记(1)">
+<meta name="twitter:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
+      Taxes&quot;],round(salary * (1">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://pengshuang.space/2016/09/13/Hive编程指南笔记1/"/>
+
+  <title> 《Hive编程指南》学习笔记(1) | 小沙文的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小沙文的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Hive编程指南》学习笔记(1)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-13T22:30:48+08:00" content="2016-09-13">
+              2016-09-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/13/Hive编程指南笔记1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/13/Hive编程指南笔记1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-_使用正则表达式来指定列">1. 使用正则表达式来指定列</h3><pre><code>hive&gt; <span class="keyword">SELECT</span> symbol, <span class="string">'price.*'</span> <span class="keyword">FROM</span> stocks;
+</code></pre><p>上面的查询从表stocks中选择symbol列和所有以price作为前缀的列</p>
+<h3 id="2-_使用列值进行计算">2. 使用列值进行计算</h3><pre><code>hive&gt; SELECT upper(<span class="property">name</span>), salary, deductions[<span class="string">"Federal 
+      Taxes"</span>],<span class="command">round</span>(salary * (<span class="number">1</span> - deductions[<span class="string">"Federal Taxes"</span>])) 
+      FROM employees;
+</code></pre><p>我们可以查询得到转换为大写的雇员姓名，雇员对应的薪水，需要缴纳的联邦税收比例以及扣除税收后再进行取整所得的税后薪资。</p>
+<h3 id="3-_HIVE相关函数(常用的）">3. HIVE相关函数(常用的）</h3><ul>
+<li>数学函数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>样式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>floor(DOUBLE d)</td>
+<td>d是DOUBLE类型的，返回&lt;=d的最大BIGINT型值</td>
+</tr>
+<tr>
+<td>ceil(DOUBLE d),ceiling(DOUBLE d)</td>
+<td>d是DOUBLE类型的，返回&gt;=d的最小BIGINT型值</td>
+</tr>
+<tr>
+<td>exp(DOUBLE d)</td>
+<td>返回e的d幂次方，返回的是个DOUBLE型值</td>
+</tr>
+<tr>
+<td>ln(DOUBLE d)</td>
+<td>以自然数为底d的对数，返回DOUBLE型值</td>
+</tr>
+<tr>
+<td>pow(DOUBLE d,DOUBLE p)</td>
+<td>计算d的p次幂</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>聚合函数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>样式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>count(*)</td>
+<td>计算总行数</td>
+</tr>
+<tr>
+<td>count(expr)</td>
+<td>计算提供的expr表达式的值非NULL的行数</td>
+</tr>
+<tr>
+<td>count(DISTINCT expr)</td>
+<td>计算提供的expr表达式的值非NULL的行数</td>
+</tr>
+<tr>
+<td>sum(col)</td>
+<td>计算指定列值的和</td>
+</tr>
+<tr>
+<td>sum(DISTINCT col)</td>
+<td>计算排重后值的和</td>
+</tr>
+<tr>
+<td>avg(col)</td>
+<td>计算指定列的值的平均值</td>
+</tr>
+<tr>
+<td>avg(DISTINCT col)</td>
+<td>计算排重后值的平均值</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>表生成函数</li>
+</ul>
+<p>功能与聚会函数相反，其可以将单列扩展成多列或者多行</p>
+<table>
+<thead>
+<tr>
+<th>样式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>explode(ARRAY array)</td>
+<td>返回0到多行结果，每行都对应输入的array数组中的一个元素</td>
+</tr>
+<tr>
+<td>explode(MAP map)</td>
+<td>返回0到多行结果，每行对应每个map键-值对，其中一个字段是map的键，另一个字段对应map的值</td>
+</tr>
+<tr>
+<td>explode（ARRAY<type> a)</type></td>
+<td>对于a中的每个元素，explode()都会生成一行记录包含这个元素</td>
+</tr>
+<tr>
+<td>inline(ARRAY<struct[,struct]>)</struct[,struct]></td>
+<td>将结构体数组提取出来并插入到表中</td>
+</tr>
+<tr>
+<td>json_tuple(STRING jsonStr,p1,p2, … ,pn)</td>
+<td>对输入的JSON字符串进行处理,一次调用获得多个键值</td>
+</tr>
+<tr>
+<td>parse_url_tuple(url,partname1,partname2, … ,partnameN)</td>
+<td>从URL中解析出Nge部分信息</td>
+</tr>
+<tr>
+<td>stack(INT n,col1, … ,colM)</td>
+<td>把M列转换成N行，每行有M/N个字段，n需要为常数</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>其他函数</li>
+</ul>
+<p>可有参考《Hive编程指南》一书</p>
+<h3 id="4-_CASE…WHEN…THEN_句式">4. CASE…WHEN…THEN 句式</h3><p>CASE…WHEN…THEN语句和if语句类似，用于处理单个列的查询结果。</p>
+<pre><code>hive&gt;<span class="keyword">SELECT</span> name, salary,
+     <span class="keyword">CASE</span> 
+         <span class="keyword">WHEN</span> salary &lt; <span class="number">50000.0</span> <span class="keyword">THEN</span> <span class="comment">'low'</span>
+         <span class="keyword">WHEN</span> salary &gt;= <span class="number">50000.0</span> <span class="keyword">AND</span> salary &lt; <span class="number">70000.0</span> <span class="keyword">THEN</span> <span class="comment">'middle'</span>
+         <span class="keyword">WHEN</span> salary &gt;= <span class="number">70000.0</span> <span class="keyword">AND</span> salary &lt; <span class="number">100000.0</span> <span class="keyword">THEN</span> <span class="comment">'high'</span>
+         <span class="keyword">ELSE</span> <span class="comment">'very high'</span>
+     <span class="keyword">END</span> <span class="keyword">AS</span> bracket <span class="keyword">FROM</span> employees;
+</code></pre><p>输出结果：</p>
+<pre><code>John    <span class="number">100000.0</span>    very high
+Todd    <span class="number">70000.0</span>        high
+Bill    <span class="number">60000.0</span>      middle
+</code></pre><h3 id="5-_什么情况下可以避免MapReduce">5. 什么情况下可以避免MapReduce</h3><pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employees;</span>
+</code></pre><p>此外，如果属性hive.exec.mode.local.auto = true的值为true的话,Hive还会尝试使用本地模式执行其他的操作：</p>
+<pre><code><span class="operator"><span class="keyword">set</span> hive.exec.<span class="keyword">mode</span>.<span class="keyword">local</span>.<span class="keyword">auto</span> = <span class="literal">true</span></span>
+</code></pre><p>建议将其设置为True</p>
+<h3 id="6-_WHERE_查询语句优化">6. WHERE 查询语句优化</h3><pre><code><span class="atom">hive</span>&gt;  <span class="name">SELECT</span> <span class="atom">name</span>, <span class="atom">salary</span>, <span class="atom">deductions</span>[<span class="string">"Federal Taxes"</span>],
+       <span class="atom">salary</span> * (<span class="number">1</span>-<span class="atom">deductions</span>[<span class="string">"Fedral Taxes"</span>])
+       <span class="name">FROM</span> <span class="atom">employees</span>
+       <span class="name">WHERE</span> <span class="atom">round</span>(<span class="atom">salary</span> * (<span class="number">1</span>-<span class="atom">deductions</span>[<span class="string">"Federal Taxes"</span>])) &gt; <span class="number">70000</span>;
+</code></pre><p>上面这个查询语句有些啰嗦，“1-deductions[“Fedral Taxes”]”重复出现了2次，下面对其进行优化，注意：WHERE语句中不能出现别名。</p>
+<p>改进：</p>
+<pre><code>hive&gt; <span class="keyword">SELECT</span> e.* <span class="keyword">FROM</span> 
+      (<span class="keyword">SELECT</span> name, salary, deductions[<span class="string">"Federal Taxes"</span>] <span class="keyword">as</span> ded, 
+      salary * (<span class="number">1</span>-deductions[<span class="string">"Fedral Taxes"</span>]) <span class="keyword">as</span> salary_minus_fed_taxes 
+      <span class="keyword">FROM</span> employees) e
+      <span class="keyword">WHERE</span> round(e.salary_minus_fed_taxes) &gt; <span class="number">70000</span>;
+</code></pre><h3 id="7-_JOIN_优化">7. JOIN 优化</h3><p>Hive假定查询中最后一个表是最大的那个表，在对每行记录进行连接操作时，它会尝试将其他表缓存起来，然后扫描最后那个表进行计算。因此，用户需要保证连续查询中的表的大小从左到右是依次增加的。</p>
+<p>Hive中提供了一个“标记”机制来显式地告诉查询优化器哪张表是大表，使用方法如下：</p>
+<pre><code><span class="operator"><span class="keyword">SELECT</span> <span class="comment">/*+STREAMTABLE(s)*/</span>s.ymd,s.symbol,s.price_close,<span class="keyword">d</span>.dividend 
+<span class="keyword">FROM</span> stocks s <span class="keyword">JOIN</span> dividends <span class="keyword">d</span> 
+<span class="keyword">ON</span> s.ymd = <span class="keyword">d</span>.ymd <span class="keyword">AND</span> s.symbol = <span class="keyword">d</span>.symbol <span class="keyword">WHERE</span> s.symbol = <span class="string">'AAPL'</span>;</span>
+</code></pre><p>Hive 会尝试将表stocks作为驱动表，即使其在查询中不是位于最后面的。</p>
+<ol>
+<li><p>随机抽样</p>
+<p> 我们可以使用rand()函数进行抽样，这个函数会返回一个随机值，前两个查询都返回了两个不相等的值，而第三个查询语句无返回结果。</p>
+<pre><code>hive&gt; <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> numbers TABLESAMPLE(BUCKET <span class="number">3</span> <span class="keyword">OUT</span> <span class="keyword">OF</span> <span class="number">10</span> <span class="keyword">ON</span> rand()) s;
+</code></pre></li>
+<li><p>数据块抽样</p>
+<p> Hive提供了另外一种按照抽样百分比进行抽样的方式，这种事基于行数的，按照输入路径下的数据块百分比进行的抽样。</p>
+<p> 注意：这种抽样方式最小的抽样单元是一个HDFS数据块。因此，如果表的数据大小小于普通的块大小64MB的话，那么将返回所有行。</p>
+<pre><code>hive&gt; <span class="function">SELECT * FROM numbersflat <span class="title">TABLESAMPLE</span><span class="params">(<span class="number">0.1</span> PERCENT)</span> s</span>;
+</code></pre></li>
+</ol>
+<h3 id="8-_UNION_ALL">8. UNION ALL</h3><p>UNION ALL 可以将2个或者多个表进行合并，每一个union子查询都必须具有相同的列，而且对应的每个字段的字段类型必须是一致的。例如：</p>
+<pre><code><span class="operator"><span class="keyword">SELECT</span> <span class="keyword">log</span>.ymd, <span class="keyword">log</span>.<span class="keyword">level</span>, <span class="keyword">log</span>.message
+    <span class="keyword">FROM</span> (
+        <span class="keyword">SELECT</span> l1.ymd, l1.<span class="keyword">level</span>, l1.message, <span class="string">'Log1'</span> <span class="keyword">AS</span> <span class="keyword">source</span>
+    <span class="keyword">FROM</span> log1 l1
+<span class="keyword">UNION</span> ALL
+    <span class="keyword">SELECT</span> l2.ymd, l2.<span class="keyword">level</span>, l2.message, <span class="string">'Log2'</span> <span class="keyword">AS</span>
+<span class="keyword">source</span>
+    <span class="keyword">FROM</span> log1 l2
+) <span class="keyword">log</span>
+<span class="keyword">SORT</span> <span class="keyword">BY</span> <span class="keyword">log</span>.ymd <span class="keyword">ASC</span></span>
+</code></pre><p>这里是对同一个源表的数据进行合并，这其实相当于是一个SELECT加上一个WHERE，这个技术可以将一个长的复杂的WHERE语句分割成2个或者多个UNION子查询。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Hive/" rel="tag">#Hive</a>
+          
+            <a href="/tags/数据库/" rel="tag">#数据库</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/01/同步与异步的区别/" rel="next" title="同步与异步的区别(总结)">
+                <i class="fa fa-chevron-left"></i> 同步与异步的区别(总结)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/09/13/Hive编程指南笔记1/"
+     data-title="《Hive编程指南》学习笔记(1)"
+     data-content=""
+     data-url="http://pengshuang.space/2016/09/13/Hive编程指南笔记1/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/13/Hive编程指南笔记1/"
+           data-title="《Hive编程指南》学习笔记(1)" data-url="http://pengshuang.space/2016/09/13/Hive编程指南笔记1/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="PengShuang" />
+          <p class="site-author-name" itemprop="name">PengShuang</p>
+          <p class="site-description motion-element" itemprop="description">在路上，慢慢走！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/pengshuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lingyu.wang/" title="天镶的博客" target="_blank">天镶的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_使用正则表达式来指定列"><span class="nav-number">1.</span> <span class="nav-text">1. 使用正则表达式来指定列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_使用列值进行计算"><span class="nav-number">2.</span> <span class="nav-text">2. 使用列值进行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_HIVE相关函数(常用的）"><span class="nav-number">3.</span> <span class="nav-text">3. HIVE相关函数(常用的）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_CASE…WHEN…THEN_句式"><span class="nav-number">4.</span> <span class="nav-text">4. CASE…WHEN…THEN 句式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_什么情况下可以避免MapReduce"><span class="nav-number">5.</span> <span class="nav-text">5. 什么情况下可以避免MapReduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_WHERE_查询语句优化"><span class="nav-number">6.</span> <span class="nav-text">6. WHERE 查询语句优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-_JOIN_优化"><span class="nav-number">7.</span> <span class="nav-text">7. JOIN 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-_UNION_ALL"><span class="nav-number">8.</span> <span class="nav-text">8. UNION ALL</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PengShuang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"pengshuang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
