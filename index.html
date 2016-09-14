@@ -258,6 +258,135 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/14/OSI7层通信模型/" itemprop="url">
+                  OSI7层通信模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-14T22:32:15+08:00" content="2016-09-14">
+              2016-09-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/14/OSI7层通信模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/14/OSI7层通信模型/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>理解TCP/IP的7层模型，可以从每一层的功能入手，每个分层上的协议规定了该分层中数据首部的格式已经首部与处理数据的顺序。下面以一个实际应用：主机A向主机B发送邮件来解释7层通信模型。</p>
+<h3 id="1-_应用层">1. 应用层</h3><p>应用层为应用程序提供服务并规定应用程序中通信相关的细节。包括文件传输、电子邮件、远程登录等协议。两个要通信的主机之间通过它们各自的应用层进行通信，最终实现主机A向主机B发送邮件，以及邮件的存储。</p>
+<h3 id="2-_表示层">2. 表示层</h3><p>将数据从主机特有的格式转换为网络标准传输格式，数据被转换为“网络通用的标准数据格式”后再发送出去。接收端主机收到数据以后将这些网络标准格式的数据恢复为“该计算机特定的数据格式”，然后再进行相应处理。 这样使得异构的机型之间能保持数据一致性。表示层是进行“统一的网络数据格式”与“某一台计算机或一款软件特有的数据格式”之间相互转换的分层。</p>
+<h3 id="3-_会话层">3. 会话层</h3><p>决定采用哪种连接方法是会话层的主要责任。会话层也想应用层或表示层那样，在其收到的数据前端附加首部或标签信息后再转发给下一层。而这些首部或标签中记录着数据传送顺序的信息。</p>
+<h3 id="4-_传输层">4. 传输层</h3><p>会话层负责决定建立连接和断开连接的时机，而传输层进行实际的建立和断开处理。会话层只对何时建立连接、何时发送数据等问题进行管理，并不具有实际传输数据的功能。真正负责在网络上传输具体数据的是会话层以下的各层。</p>
+<p>进行建立连接或断开连接处理，在两个主机之间创建逻辑上的通信连接即是传输层的主要作用。此外，传输层为确保所传输的数据到达目标地址，会在通信两端的计算机之间进行确认，如果数据没有到达，则要负责进行重传。未来确保可靠性，在这一层也会为所要传输的数据附加首部以识别这一分层的数据。实际将传输给对端的处理是由网络层来完成的。</p>
+<h3 id="5-_网络层">5. 网络层</h3><p>从主机A到主机B的数据通信处理。网络层的作用是在网络与网络相互连接的环境中，将数据从发生端主机发送到接收端主机。网络层负责将数据发送至最终目标地址，数据链路层负责实现每一个区间内的通信。</p>
+<h3 id="6-_数据链路层">6. 数据链路层</h3><p>通信传输实际上是通过物理的传输介质实现的。数据链路层的作用是在这些通过传输介质相互连接的设备之间进行数据处理。网络层与数据链路层都是基于目标地址将数据发送给接收端的，但是网络层负责将整个数据发送给最终目标地址，而数据链路层则只负责发送一个分段内的数据。</p>
+<h3 id="7-_物理层">7. 物理层</h3><p>将数据的0、1转换为电压和脉冲光传输给物理的传输介质，而相互直连的设备之间使用地址实现传输。这种地址被称为MAC地址，也可称为物理地址。</p>
+<h3 id="8-_接收端的处理">8. 接收端的处理</h3><p>接收端从物理层开始接收到的数据逐层发送给上一分层进行处理，从而使用户最终接收到发送端发送过来的信息。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/13/Hive编程指南笔记1/" itemprop="url">
                   《Hive编程指南》学习笔记(1)
                 </a>
@@ -2388,295 +2517,6 @@ import java.util.ArrayList;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-3/" itemprop="url">
-                  PageRank-的三种实现方式(3)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-25T15:16:25+08:00" content="2015-10-25">
-              2015-10-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
-                    <span itemprop="name">Hadoop</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/PageRank-的三种实现方式-3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-3/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这篇文章我们来介绍一下用并行的思想来实现PageRank，分别用Hadoop和Spark来实现。</p>
-<p>之前我们介绍了Google的PageRank算法模型，实现了对全互联网网页的打分。也实现一个Java版单机的PageRank算法，但是，我们需要注意的是，对于互联网上海量数据的处理，在单机下是不可能实现的，所以如何将PageRank并行计算，将是本文的重点。</p>
-<p>我们的测试用例为：</p>
-<p><img src="/img/test1.png" alt=""></p>
-<p>第1列为测试集中的所有网页序号，第二列表示每个网页的初始权重，之后的每列代表链接关系。</p>
-<p>首先，我们来介绍一下Hadoop的MapReduce计算框架实现方法，和以前一样，讲解我会穿插在代码注释中。</p>
-<p>首先是Map类：</p>
-<pre><code><span class="keyword">package</span> org.tseg.pagerank;
-
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.util.StringTokenizer;
-
-<span class="keyword">import</span> org.apache.hadoop.io.IntWritable;
-<span class="keyword">import</span> org.apache.hadoop.io.Text;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;
-
-<span class="keyword">public</span> class MyMapper extends Mapper&lt;<span class="keyword">Object</span>, Text, IntWritable, Text&gt; {
-
-<span class="comment">//IntWritable 即是Hadoop里面的int，其他类似</span>
-<span class="keyword">private</span> IntWritable id;
-<span class="keyword">private</span> <span class="keyword">String</span> pr;
-<span class="keyword">private</span> <span class="built_in">int</span> count;
-<span class="keyword">private</span> <span class="built_in">float</span> average_pr;
-
-<span class="keyword">public</span> <span class="keyword">void</span> <span class="built_in">map</span>(<span class="keyword">Object</span> <span class="variable">key</span>, Text value, Context context) <span class="keyword">throws</span> IOException, InterruptedException {
-
-    <span class="comment">//StringTokenizer方法自动以空格为间隔，返回值为Enumeration&lt;Object&gt;类型的一个容器，容器中的每个元素为之前由空格分开后的元素组成</span>
-    StringTokenizer <span class="built_in">str</span> = <span class="keyword">new</span> StringTokenizer(value.toString());
-    <span class="comment">//遍历整个容器，第一步取id为测试网页的序号</span>
-    <span class="keyword">if</span>(<span class="built_in">str</span>.hasMoreTokens()) {
-        id = <span class="keyword">new</span> IntWritable(Integer.parseInt(<span class="built_in">str</span>.nextToken()));
-    }<span class="keyword">else</span>{
-        <span class="keyword">return</span>;
-    }
-    <span class="comment">//pr代表测试网页的初始权值</span>
-    pr = <span class="built_in">str</span>.nextToken();
-    <span class="comment">//count代表每个网页链接其他网页的个数</span>
-    count = <span class="built_in">str</span>.countTokens();
-    <span class="comment">//average_pr 为平均贡献值</span>
-    average_pr = Float.parseFloat(pr) / count ;
-    <span class="keyword">while</span>(<span class="built_in">str</span>.hasMoreTokens()) {
-        <span class="keyword">String</span> nextId = <span class="built_in">str</span>.nextToken();
-        IntWritable next_id = <span class="keyword">new</span> IntWritable(Integer.parseInt(nextId));
-        <span class="comment">//Map函数输出给Reduce函数的类型有2种，第一种为（链接网页序号，“@”+对链接网页的平均贡献值）</span>
-        Text t = <span class="keyword">new</span> Text(<span class="string">"@"</span>+average_pr);
-        context.write(next_id, t);
-        <span class="comment">//第二种为（网页序号，"&amp;"+它所链接的网页）</span>
-        Text tt = <span class="keyword">new</span> Text(<span class="string">"&amp;"</span>+nextId);
-        context.write(id,tt);
-        }
-
-    }
-
-}
-</code></pre><p>然后是我们的Reduce类，Reduce类简单一些，</p>
-<pre><code>package org.tseg.pagerank;
-
-<span class="keyword">import</span> java.io.<span class="type">IOException</span>;
-<span class="keyword">import</span> java.util.<span class="type">ArrayList</span>;
-
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">FloatWritable</span>;
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">IntWritable</span>;
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">Text</span>;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.<span class="type">Reducer</span>;
-
-public class <span class="type">MyReducer</span> extends <span class="type">Reducer</span>&lt;<span class="type">IntWritable</span>, <span class="type">Text</span>, <span class="type">IntWritable</span>, <span class="type">Text</span>&gt; {
-
-public <span class="type">void</span> reduce(<span class="type">IntWritable</span> key, <span class="type">Iterable</span>&lt;<span class="type">Text</span>&gt; values, <span class="type">Context</span> context) throws <span class="type">IOException</span>, <span class="type">InterruptedException</span> {
-
-    <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt; idlist = new <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt;();
-    <span class="type">String</span> link = <span class="string">" "</span>;
-    <span class="type">float</span> pr = <span class="number">0</span>;
-    //提取贡献值，并累加起来，用pr保存
-    <span class="keyword">for</span>(<span class="type">Text</span> id : values) {
-        <span class="type">String</span> id2 = id.toString();
-        <span class="keyword">if</span>(id2.substring(<span class="number">0</span>, <span class="number">1</span>).equals(<span class="string">"@"</span>)){
-            pr += <span class="type">Float</span>.parseFloat(id2.substring(<span class="number">1</span>));
-        }
-        //把所有链接的节点存放于idlist中
-        <span class="keyword">else</span> <span class="keyword">if</span> (id2.substring(<span class="number">0</span>,<span class="number">1</span>).equals(<span class="string">"&amp;"</span>)) {
-            idlist.add(nextid);
-        }
-    }
-
-    pr = pr * <span class="number">0</span>.<span class="number">85</span>f + <span class="number">0</span>.<span class="number">15</span>f;
-    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i&lt; idlist.size();i++){
-        link += idlist.get(i) + <span class="string">" "</span>;
-    }
-
-    <span class="type">String</span> <span class="literal">result</span> = <span class="type">String</span>.valueOf(pr);
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="string">"Reduce  result= "</span> + <span class="literal">result</span>);
-    context.write(key, new <span class="type">Text</span>(<span class="literal">result</span>));
-    }
-}
-</code></pre><p>最后是我们的PageRank主函数，</p>
-<pre><code>package org.tseg.pagerank;
-
-<span class="keyword">import</span> java.io.IOException;
-
-<span class="keyword">import</span> org.apache.hadoop.conf.Configuration;
-<span class="keyword">import</span> org.apache.hadoop.fs.Path;
-<span class="keyword">import</span> org.apache.hadoop.io.IntWritable;
-<span class="keyword">import</span> org.apache.hadoop.io.Text;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">rank</span> </span>{
-    <span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="type">String</span>[] args) <span class="keyword">throws</span> <span class="type">IOException</span>,
-    <span class="type">InterruptedException</span>, <span class="type">ClassNotFoundException</span> {
-
-    <span class="type">Configuration</span> conf = new <span class="type">Configuration</span>();
-    <span class="type">String</span> pathIn = <span class="string">"/Users/pengshuang/Desktop/pagerank/input"</span>;<span class="comment">//输入路径  </span>
-    <span class="type">String</span> pathOut =<span class="string">"/Users/pengshuang/Desktop/pagerank/1"</span>;<span class="comment">//输出路径  </span>
-    <span class="comment">//迭代10次</span>
-        <span class="type">Job</span> job = <span class="type">Job</span>.getInstance(conf, <span class="string">"rank"</span>);
-        job.setJarByClass(rank.<span class="keyword">class</span>);
-        job.setMapperClass(<span class="type">MyMapper</span>.<span class="keyword">class</span>);
-        job.setReducerClass(<span class="type">MyReducer</span>.<span class="keyword">class</span>);
-        job.setOutputKeyClass(<span class="type">IntWritable</span>.<span class="keyword">class</span>);
-        job.setOutputValueClass(<span class="type">Text</span>.<span class="keyword">class</span>);
-        <span class="type">FileInputFormat</span>.addInputPath(job, new <span class="type">Path</span>(pathIn));
-        <span class="type">FileOutputFormat</span>.setOutputPath(job, new <span class="type">Path</span>(pathOut));
-        job.waitForCompletion(<span class="literal">true</span>);
-    }
-}
-</code></pre><p>得到结果如下：</p>
-<p><img src="/img/test2.png" alt=""></p>
-<p>接下来我们介绍用spark来实现PageRank，这次我们改变一下我们的测试文件，如图</p>
-<p><img src="/img/test3.png" alt=""></p>
-<p>这是推特上用户之间的关注关系，我们用PageRank算法实现用户影响力分析。</p>
-<p>代码如下：</p>
-<pre><code><span class="comment">/**
- * Created by pengshuang on 15/10/21.
- */</span>
-package spark
-
-import org.apache.spark.{SparkConf, SparkContext}
-
-
-object SparkPageRank {
-
-  <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span> </span>{
-
-      <span class="comment">//设置测试环境为本地测试</span>
-    val sparkConf = <span class="keyword">new</span> SparkConf().setAppName(<span class="string">"PageRank"</span>).setMaster(<span class="string">"local"</span>)
-    val iters = <span class="keyword">if</span> (args.length &gt; <span class="number">1</span>) args(<span class="number">1</span>).toInt <span class="keyword">else</span> <span class="number">10</span>
-    val ctx = <span class="keyword">new</span> SparkContext(sparkConf)
-    <span class="comment">//读取测试文件</span>
-    val lines = ctx.textFile(<span class="string">"file:///Users/pengshuang/Desktop/pagerank/input/twitter_combined.txt"</span>, <span class="number">1</span>)
-    <span class="comment">//每行用空格隔开</span>
-    val links = lines.<span class="built_in">map</span> { s =&gt;
-      val parts = s.split(<span class="string">"\\s+"</span>)
-      (parts(<span class="number">0</span>), parts(<span class="number">1</span>))
-    }.distinct().groupByKey().cache()
-    var ranks = links.mapValues(v =&gt; <span class="number">1.0</span>)
-
-<span class="keyword">for</span> (i &lt;- <span class="number">1</span> to iters) {
-  val contribs = links.join(ranks).values.flatMap { <span class="keyword">case</span> (urls, rank) =&gt;
-    val size = urls.size
-    urls.<span class="built_in">map</span>(url =&gt; (url, rank / size))
-  }
-  ranks = contribs.reduceByKey(_ + _).mapValues(<span class="number">0.15</span> + <span class="number">0.85</span> * _)
-}
-ranks.<span class="built_in">map</span>(x =&gt; (x._2,x._1)).sortByKey(<span class="literal">false</span>).<span class="built_in">map</span>(x =&gt; (x._2,x._1)).saveAsTextFile(<span class="string">"file:///Users/pengshuang/Desktop/pagerank/output"</span>)
-ctx.stop()
-    }
-}
-</code></pre><p>结果如下：</p>
-<p><img src="/img/test4.png" alt=""></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2722,7 +2562,7 @@ ctx.stop()
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2739,7 +2579,7 @@ ctx.stop()
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
