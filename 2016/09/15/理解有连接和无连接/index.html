@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="线程,进程," />
+  <meta name="keywords" content="计算机网络," />
 
 
 
@@ -84,22 +84,28 @@
 
 
 
-<meta name="description" content="进程与线程的区别，应该是互联网公司招聘系统工程师经常会问的一个问题，我查阅了一些相关资料，总结如下：
-进程是什么？程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。
-在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实">
+<meta name="description" content="1. 面向有连接型与面向无连接型通过网络发送数据，大致可以分为面向有连接与面向无连接类型
+(1) 面向无连接型包括以太网、IP、UDP等协议。
+(2) 面向有连接型包括ATM、帧中继、TCP。
+面向有连接型面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据
+面向无连接型面向无连接">
 <meta property="og:type" content="article">
-<meta property="og:title" content="进程和线程的区别(总结)">
-<meta property="og:url" content="http://pengshuang.space/2016/08/31/进程和线程的区别/index.html">
+<meta property="og:title" content="理解计算机网络中的传输方式">
+<meta property="og:url" content="http://pengshuang.space/2016/09/15/理解有连接和无连接/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="进程与线程的区别，应该是互联网公司招聘系统工程师经常会问的一个问题，我查阅了一些相关资料，总结如下：
-进程是什么？程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。
-在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实">
-<meta property="og:updated_time" content="2016-09-14T00:31:09.000Z">
+<meta property="og:description" content="1. 面向有连接型与面向无连接型通过网络发送数据，大致可以分为面向有连接与面向无连接类型
+(1) 面向无连接型包括以太网、IP、UDP等协议。
+(2) 面向有连接型包括ATM、帧中继、TCP。
+面向有连接型面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据
+面向无连接型面向无连接">
+<meta property="og:updated_time" content="2016-09-15T13:57:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="进程和线程的区别(总结)">
-<meta name="twitter:description" content="进程与线程的区别，应该是互联网公司招聘系统工程师经常会问的一个问题，我查阅了一些相关资料，总结如下：
-进程是什么？程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。
-在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实">
+<meta name="twitter:title" content="理解计算机网络中的传输方式">
+<meta name="twitter:description" content="1. 面向有连接型与面向无连接型通过网络发送数据，大致可以分为面向有连接与面向无连接类型
+(1) 面向无连接型包括以太网、IP、UDP等协议。
+(2) 面向有连接型包括ATM、帧中继、TCP。
+面向有连接型面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据
+面向无连接型面向无连接">
 
 
 
@@ -120,9 +126,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/08/31/进程和线程的区别/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/09/15/理解有连接和无连接/"/>
 
-  <title> 进程和线程的区别(总结) | 小沙文的博客 </title>
+  <title> 理解计算机网络中的传输方式 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -262,7 +268,7 @@
             
             
               
-                进程和线程的区别(总结)
+                理解计算机网络中的传输方式
               
             
           </h1>
@@ -274,8 +280,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-31T21:29:42+08:00" content="2016-08-31">
-              2016-08-31
+            <time itemprop="dateCreated" datetime="2016-09-15T09:05:01+08:00" content="2016-09-15">
+              2016-09-15
             </time>
           </span>
 
@@ -304,8 +310,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/31/进程和线程的区别/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/31/进程和线程的区别/" itemprop="commentsCount"></span>
+                <a href="/2016/09/15/理解有连接和无连接/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/理解有连接和无连接/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -328,40 +334,19 @@
       
 
       
-        <p>进程与线程的区别，应该是互联网公司招聘系统工程师经常会问的一个问题，我查阅了一些相关资料，总结如下：</p>
-<h3 id="进程是什么？">进程是什么？</h3><p>程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。</p>
-<p>在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实现并发地执行。这是这样的设计，大大提高了CPU的利用率。进程的出现让每个用户感觉到自己独享CPU，因此，进程就是为了在CPU上实现多道编程而提出的。</p>
-<h3 id="有了进程为什么还要线程？">有了进程为什么还要线程？</h3><p>进程有很多优点，它提供了多道编程，让我们感觉我们每个人都拥有自己的CPU和其他资源，可以提高计算机的利用率。很多人就不理解了，既然进程这么优秀，为什么还要线程呢？其实，仔细观察就会发现进程还是有很多缺陷的，主要体现在两点上：</p>
-<p>进程只能在一个时间干一件事，如果想同时干两件事或多件事，进程就无能为力了。<br>进程在执行的过程中如果阻塞，例如等待输入，整个进程就会挂起，即使进程中有些工作不依赖于输入的数据，也将无法执行。<br>如果这两个缺点理解比较困难的话，举个现实的例子也许你就清楚了：如果把我们上课的过程看成一个进程的话，那么我们要做的是耳朵听老师讲课，手上还要记笔记，脑子还要思考问题，这样才能高效的完成听课的任务。而如果只提供进程这个机制的话，上面这三件事将不能同时执行，同一时间只能做一件事，听的时候就不能记笔记，也不能用脑子思考，这是其一；如果老师在黑板上写演算过程，我们开始记笔记，而老师突然有一步推不下去了，阻塞住了，他在那边思考着，而我们呢，也不能干其他事，即使你想趁此时思考一下刚才没听懂的一个问题都不行，这是其二。</p>
-<p>现在你应该明白了进程的缺陷了，而解决的办法很简单，我们完全可以让听、写、思三个独立的过程，并行起来，这样很明显可以提高听课的效率。而实际的操作系统中，也同样引入了这种类似的机制——线程。</p>
-<h3 id="线程的优点">线程的优点</h3><p>因为要并发，我们发明了进程，又进一步发明了线程。只不过进程和线程的并发层次不同：进程属于在处理器这一层上提供的抽象；线程则属于在进程这个层次上再提供了一层并发的抽象。如果我们进入计算机体系结构里，就会发现，流水线提供的也是一种并发，不过是指令级的并发。这样，流水线、线程、进程就从低到高在三个层次上提供我们所迫切需要的并发！</p>
-<p>除了提高进程的并发度，线程还有个好处，就是可以有效地利用多处理器和多核计算机。现在的处理器有个趋势就是朝着多核方向发展，在没有线程之前，多核并不能让一个进程的执行速度提高，原因还是上面所有的两点限制。但如果讲一个进程分解为若干个线程，则可以让不同的线程运行在不同的核上，从而提高了进程的执行速度。</p>
-<p>例如：我们经常使用微软的Word进行文字排版，实际上就打开了多个线程。这些线程一个负责显示，一个接受键盘的输入，一个进行存盘等等。这些线程一起运行，让我们感觉到我们输入和屏幕显示同时发生，而不是输入一些字符，过一段时间才能看到显示出来。在我们不经意间，还进行了自动存盘操作。这就是线程给我们带来的方便之处。</p>
-<h3 id="进程与线程的区别">进程与线程的区别</h3><ol>
-<li><p>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。</p>
-</li>
-<li><p>线程是进程的一个实体, 是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。</p>
-</li>
-<li><p>一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。</p>
-</li>
-</ol>
-<p>进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序 健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。</p>
-<h3 id="进程与线程在操作系统设计中的体现">进程与线程在操作系统设计中的体现</h3><p>操作系统的设计，因此可以归结为三点：</p>
-<ol>
-<li><p>以多进程形式，允许多个任务同时运行；</p>
-</li>
-<li><p>以多线程形式，允许单个任务分成不同的部分运行；</p>
-</li>
-<li><p>提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</p>
-</li>
-</ol>
-<p>参考资料：</p>
-<ol>
-<li><p><a href="http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html" target="_blank" rel="external">进程与线程的一个简单解释</a></p>
-</li>
-<li><p><a href="http://blog.csdn.net/zengjibing/article/details/3923357" target="_blank" rel="external">进程和线程的区别</a></p>
-</li>
-</ol>
+        <h3 id="1-_面向有连接型与面向无连接型">1. 面向有连接型与面向无连接型</h3><p>通过网络发送数据，大致可以分为面向有连接与面向无连接类型</p>
+<p>(1) 面向无连接型包括以太网、IP、UDP等协议。</p>
+<p>(2) 面向有连接型包括ATM、帧中继、TCP。</p>
+<h4 id="面向有连接型">面向有连接型</h4><p>面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据</p>
+<h4 id="面向无连接型">面向无连接型</h4><p>面向无连接型则不要求建立和断开连接。发送端可于任何时候自由发送数据。反之，接收端也永远不知道自己会在何时从哪里接收到数据。</p>
+<h3 id="2-_电路交换与分组交换">2. 电路交换与分组交换</h3><h4 id="电路交换">电路交换</h4><p>计算机之间在发送数据时，需要通过交换机与目标主机建立通信电路。我们将连接电路称为建立连接。建立好连接以后，用户就可以一直使用这条电路，直到该连接被断开为止。</p>
+<h4 id="分组交换">分组交换</h4><p>在分组交换中，由分组交换机（路由器）连接通信线路。分组交换的大致处理过程是：发送端计算机将数据分组发送给路由器，路由器收到这些分组数据以后，缓存到自己的缓冲区，然后再转发给目标计算机。因此，分组交换也有另一个名称：蓄积交换。</p>
+<p>在分组交换中，计算机与路由器之间以及路由器与路由器之间通常只有一条通信线路。因此，这条线路其实是一条共享线路。</p>
+<h3 id="3-_根据接收端数量分类">3. 根据接收端数量分类</h3><p>网络通信中，也可以根据目标地址的个数以及后续的行为对通信进行分类。如广播、多播等。</p>
+<h4 id="单播（Unicast）">单播（Unicast）</h4><p>1对1通信</p>
+<h4 id="广播（Broadcast）">广播（Broadcast）</h4><p>广播指将消息从1台主机发送给与之相连的所有其他主机。典型的例子是电视播放。</p>
+<h4 id="多播（Multicast）">多播（Multicast）</h4><p>多播与广播类似，也是将消息发送给多个接收主机。不同之处在于多播要限定某一组作为接收端。多播通信最典型的例子是电视会议。</p>
+<h4 id="任播_（Anycast）">任播 （Anycast）</h4><p>任播是指在特定的多台主机中选出一台作为接收端的一种通信方式。任播通信从目标主机群中选择一台最符合网络条件的主机作为目标主机发送消息。通常被选中的那台特定主机将返回一个单播信号，随后发送端主机会只跟这台主机进行通信。</p>
 
       
     </div>
@@ -384,9 +369,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/线程/" rel="tag">#线程</a>
-          
-            <a href="/tags/进程/" rel="tag">#进程</a>
+            <a href="/tags/计算机网络/" rel="tag">#计算机网络</a>
           
         </div>
       
@@ -395,17 +378,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/30/Python中的heapq模块学习/" rel="next" title="Python中的heapq模块学习">
-                <i class="fa fa-chevron-left"></i> Python中的heapq模块学习
+              <a href="/2016/09/14/OSI7层通信模型/" rel="next" title="OSI7层通信模型">
+                <i class="fa fa-chevron-left"></i> OSI7层通信模型
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/01/同步与异步的区别/" rel="prev" title="同步与异步的区别(总结)">
-                同步与异步的区别(总结) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -420,10 +399,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/08/31/进程和线程的区别/"
-     data-title="进程和线程的区别(总结)"
+        <div class="ds-share flat" data-thread-key="2016/09/15/理解有连接和无连接/"
+     data-title="理解计算机网络中的传输方式"
      data-content=""
-     data-url="http://pengshuang.space/2016/08/31/进程和线程的区别/">
+     data-url="http://pengshuang.space/2016/09/15/理解有连接和无连接/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -450,8 +429,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/31/进程和线程的区别/"
-           data-title="进程和线程的区别(总结)" data-url="http://pengshuang.space/2016/08/31/进程和线程的区别/">
+      <div class="ds-thread" data-thread-key="2016/09/15/理解有连接和无连接/"
+           data-title="理解计算机网络中的传输方式" data-url="http://pengshuang.space/2016/09/15/理解有连接和无连接/">
       </div>
     
   </div>
@@ -576,7 +555,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进程是什么？"><span class="nav-number">1.</span> <span class="nav-text">进程是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有了进程为什么还要线程？"><span class="nav-number">2.</span> <span class="nav-text">有了进程为什么还要线程？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程的优点"><span class="nav-number">3.</span> <span class="nav-text">线程的优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程与线程的区别"><span class="nav-number">4.</span> <span class="nav-text">进程与线程的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进程与线程在操作系统设计中的体现"><span class="nav-number">5.</span> <span class="nav-text">进程与线程在操作系统设计中的体现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_面向有连接型与面向无连接型"><span class="nav-number">1.</span> <span class="nav-text">1. 面向有连接型与面向无连接型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#面向有连接型"><span class="nav-number">1.1.</span> <span class="nav-text">面向有连接型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#面向无连接型"><span class="nav-number">1.2.</span> <span class="nav-text">面向无连接型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_电路交换与分组交换"><span class="nav-number">2.</span> <span class="nav-text">2. 电路交换与分组交换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#电路交换"><span class="nav-number">2.1.</span> <span class="nav-text">电路交换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组交换"><span class="nav-number">2.2.</span> <span class="nav-text">分组交换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_根据接收端数量分类"><span class="nav-number">3.</span> <span class="nav-text">3. 根据接收端数量分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单播（Unicast）"><span class="nav-number">3.1.</span> <span class="nav-text">单播（Unicast）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#广播（Broadcast）"><span class="nav-number">3.2.</span> <span class="nav-text">广播（Broadcast）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多播（Multicast）"><span class="nav-number">3.3.</span> <span class="nav-text">多播（Multicast）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任播_（Anycast）"><span class="nav-number">3.4.</span> <span class="nav-text">任播 （Anycast）</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

@@ -258,6 +258,138 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/15/理解有连接和无连接/" itemprop="url">
+                  理解计算机网络中的传输方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-15T09:05:01+08:00" content="2016-09-15">
+              2016-09-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/15/理解有连接和无连接/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/理解有连接和无连接/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-_面向有连接型与面向无连接型">1. 面向有连接型与面向无连接型</h3><p>通过网络发送数据，大致可以分为面向有连接与面向无连接类型</p>
+<p>(1) 面向无连接型包括以太网、IP、UDP等协议。</p>
+<p>(2) 面向有连接型包括ATM、帧中继、TCP。</p>
+<h4 id="面向有连接型">面向有连接型</h4><p>面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据</p>
+<h4 id="面向无连接型">面向无连接型</h4><p>面向无连接型则不要求建立和断开连接。发送端可于任何时候自由发送数据。反之，接收端也永远不知道自己会在何时从哪里接收到数据。</p>
+<h3 id="2-_电路交换与分组交换">2. 电路交换与分组交换</h3><h4 id="电路交换">电路交换</h4><p>计算机之间在发送数据时，需要通过交换机与目标主机建立通信电路。我们将连接电路称为建立连接。建立好连接以后，用户就可以一直使用这条电路，直到该连接被断开为止。</p>
+<h4 id="分组交换">分组交换</h4><p>在分组交换中，由分组交换机（路由器）连接通信线路。分组交换的大致处理过程是：发送端计算机将数据分组发送给路由器，路由器收到这些分组数据以后，缓存到自己的缓冲区，然后再转发给目标计算机。因此，分组交换也有另一个名称：蓄积交换。</p>
+<p>在分组交换中，计算机与路由器之间以及路由器与路由器之间通常只有一条通信线路。因此，这条线路其实是一条共享线路。</p>
+<h3 id="3-_根据接收端数量分类">3. 根据接收端数量分类</h3><p>网络通信中，也可以根据目标地址的个数以及后续的行为对通信进行分类。如广播、多播等。</p>
+<h4 id="单播（Unicast）">单播（Unicast）</h4><p>1对1通信</p>
+<h4 id="广播（Broadcast）">广播（Broadcast）</h4><p>广播指将消息从1台主机发送给与之相连的所有其他主机。典型的例子是电视播放。</p>
+<h4 id="多播（Multicast）">多播（Multicast）</h4><p>多播与广播类似，也是将消息发送给多个接收主机。不同之处在于多播要限定某一组作为接收端。多播通信最典型的例子是电视会议。</p>
+<h4 id="任播_（Anycast）">任播 （Anycast）</h4><p>任播是指在特定的多台主机中选出一台作为接收端的一种通信方式。任播通信从目标主机群中选择一台最符合网络条件的主机作为目标主机发送消息。通常被选中的那台特定主机将返回一个单播信号，随后发送端主机会只跟这台主机进行通信。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/14/OSI7层通信模型/" itemprop="url">
                   OSI7层通信模型
                 </a>
@@ -2241,282 +2373,6 @@ import java.util.ArrayList;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/27/K-means算法java实现/" itemprop="url">
-                  K-means算法java实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-27T14:09:30+08:00" content="2015-10-27">
-              2015-10-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
-                    <span itemprop="name">数据挖掘</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/27/K-means算法java实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/27/K-means算法java实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天用Java实现了一下K-means算法，把它应用在一个小例子中，效果还不错。下面附上代码和注释。</p>
-<p>测试用例：</p>
-<p><img src="/img/kmeans/1.png" alt=""></p>
-<p>第一列是属性名称，其他列代表相应属性值。</p>
-<p>代码如下：</p>
-<pre><code><span class="keyword">package</span> org.tseg.kmeans;
-
-<span class="keyword">import</span> java.io.<span class="keyword">BufferedReader</span>;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.io.InputStreamReader;
-<span class="keyword">import</span> java.util.ArrayList;
-<span class="keyword">import</span> java.util.List;
-<span class="keyword">import</span> java.util.Vector;
-
-<span class="keyword">public</span> class MyKmeans {
-
-<span class="keyword">static</span> Vector&lt;Point&gt; exprValues = <span class="keyword">new</span> Vector&lt;Point&gt;();
-<span class="keyword">static</span> List&lt;Vector&lt;Point&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;Vector&lt;Point&gt;&gt;(); <span class="comment">// 每次迭代保存结果，一个vector代表一个簇</span>
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Integer K = <span class="number">2</span>; <span class="comment">// 选K=2，也就是估算有两个簇。</span>
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Double converge = <span class="number">0.001</span>; <span class="comment">// 当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001</span>
-
-<span class="comment">// 读取数据</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> readF1() <span class="keyword">throws</span> IOException {
-    <span class="comment">// 读取我们的测试文件</span>
-    <span class="keyword">String</span> filePath = <span class="string">"src/simple_k-means.txt"</span>;
-    <span class="keyword">BufferedReader</span> br = <span class="keyword">new</span> <span class="keyword">BufferedReader</span>(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(filePath)));
-    <span class="comment">// 按行来读取文件，每行之间按空格隔开</span>
-    <span class="keyword">for</span> (<span class="keyword">String</span> <span class="built_in">line</span> = br.readLine(); <span class="built_in">line</span> != <span class="keyword">null</span>; <span class="built_in">line</span> = br.readLine()) {
-        <span class="keyword">if</span> (<span class="built_in">line</span>.length() == <span class="number">0</span> || <span class="string">""</span>.equals(<span class="built_in">line</span>))
-            <span class="keyword">continue</span>;
-        <span class="keyword">String</span>[] <span class="built_in">str</span> = <span class="built_in">line</span>.<span class="built_in">split</span>(<span class="string">" "</span>);
-        Point p0 = <span class="keyword">new</span> Point();
-        <span class="comment">// 存放相应的X，Y坐标</span>
-        p0.setname(<span class="keyword">String</span>.valueOf(<span class="built_in">str</span>[<span class="number">0</span>]));
-        p0.setX(Double.valueOf(<span class="built_in">str</span>[<span class="number">1</span>]));
-        p0.setY(Double.valueOf(<span class="built_in">str</span>[<span class="number">2</span>]));
-        <span class="comment">//</span>
-        exprValues.<span class="built_in">add</span>(p0);
-    }
-    br.close();
-}
-
-<span class="comment">// 采用欧氏距离</span>
-<span class="keyword">public</span> <span class="keyword">static</span> Double DistanceMeasure(Point p1, Point p2) {
-
-    Double tmp = StrictMath.<span class="built_in">pow</span>(p2.getX() - p1.getX(), <span class="number">2</span>) + StrictMath.<span class="built_in">pow</span>(p2.getY() - p1.getY(), <span class="number">2</span>);
-    <span class="keyword">return</span> Math.<span class="built_in">sqrt</span>(tmp);
-}
-
-<span class="comment">// 计算新的簇心</span>
-<span class="keyword">public</span> <span class="keyword">static</span> Double CalCentroid() {
-    System.out.<span class="built_in">println</span>(<span class="string">"------------------------------------------------"</span>);
-    Double movedist = Double.MAX_VALUE;
-    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; list.<span class="built_in">size</span>(); i++) {
-        Vector&lt;Point&gt; subli = list.<span class="built_in">get</span>(i);
-        Point po = <span class="keyword">new</span> Point();
-        Double sumX = <span class="number">0.0</span>;
-        Double sumY = <span class="number">0.0</span>;
-        Double Clusterlen = Double.valueOf(subli.<span class="built_in">size</span>());
-        <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; Clusterlen; j++) {
-            Point nextp = subli.<span class="built_in">get</span>(j);
-            sumX = sumX + nextp.getX();
-            sumY = sumY + nextp.getY();
-        }
-        po.setX(sumX / Clusterlen);
-        po.setY(sumY / Clusterlen);
-        <span class="comment">// 新的点与旧点之间的距离</span>
-        Double <span class="built_in">dist</span> = DistanceMeasure(subli.<span class="built_in">get</span>(<span class="number">0</span>), po);
-        <span class="comment">// 在多个簇心移动的过程中，返回移动距离最小的值</span>
-        <span class="keyword">if</span> (<span class="built_in">dist</span> &lt; movedist)
-            movedist = <span class="built_in">dist</span>;
-        list.<span class="built_in">get</span>(i).<span class="built_in">clear</span>();
-        list.<span class="built_in">get</span>(i).<span class="built_in">add</span>(po);
-        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + i + <span class="string">"的簇心为："</span> + po.getX() + <span class="string">","</span> + po.getY());
-    }
-    <span class="keyword">return</span> movedist;
-}
-<span class="comment">// 本次的簇心</span>
-<span class="comment">// 下一次移动的簇心</span>
-
-<span class="keyword">private</span> <span class="keyword">static</span> Double move = Double.MAX_VALUE;<span class="comment">// 移动距离</span>
-<span class="comment">// 不断地迭代，直到收敛</span>
-
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> RecursionKluster() {
-    <span class="keyword">for</span> (<span class="built_in">int</span> times = <span class="number">2</span>; move &gt; converge; times++) {
-        System.out.<span class="built_in">println</span>(<span class="string">"第"</span> + times + <span class="string">"次迭代"</span>);
-        <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
-        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">1</span>; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
-            Point p = <span class="keyword">new</span> Point();
-            p = exprValues.<span class="built_in">get</span>(i);
-            <span class="built_in">int</span> index = -<span class="number">1</span>;
-
-            <span class="keyword">double</span> neardist = Double.MAX_VALUE;
-            <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-                Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
-                <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
-                <span class="keyword">if</span> (currentdist &lt; neardist) {
-                    neardist = currentdist;
-                    index = k;
-                }
-            }
-            System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
-            list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
-        }
-        <span class="comment">// 重新计算簇心,并返回移动的距离，最小的那个距离</span>
-
-        move = CalCentroid();
-        System.out.<span class="built_in">println</span>(<span class="string">"各个簇心移动中最小的距离为，move="</span> + move);
-    }
-}
-
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> Kluster() {
-
-    <span class="comment">// K为簇的个数</span>
-    <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-        Vector&lt;Point&gt; vect = <span class="keyword">new</span> Vector&lt;Point&gt;();
-        Point p = <span class="keyword">new</span> Point();
-        <span class="comment">// p依次取得每个簇</span>
-        p = exprValues.<span class="built_in">get</span>(k);
-        vect.<span class="built_in">add</span>(p);
-        list.<span class="built_in">add</span>(vect);
-    }
-    System.out.<span class="built_in">println</span>(<span class="string">"第1次迭代"</span>);
-    <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
-    <span class="keyword">for</span> (<span class="built_in">int</span> i = K; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
-        Point p = <span class="keyword">new</span> Point();
-        p = exprValues.<span class="built_in">get</span>(i);
-        <span class="built_in">int</span> index = -<span class="number">1</span>;
-
-        <span class="keyword">double</span> neardist = Double.MAX_VALUE;
-        <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-            Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
-            <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
-            <span class="keyword">if</span> (currentdist &lt; neardist) {
-                neardist = currentdist;
-                index = k;
-            }
-        }
-        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
-        list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
-    }
-}
-
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) <span class="keyword">throws</span> IOException {
-
-    <span class="comment">// 读取数据</span>
-    readF1();
-    <span class="comment">// 第一次迭代</span>
-    Kluster();
-    <span class="comment">// 第一次迭代后计算簇心</span>
-    CalCentroid();
-    <span class="comment">// 不断迭代，直到收敛</span>
-    RecursionKluster();
-    }
-}
-</code></pre><p>根据我上一篇文章《K-means算法之我见》再结合这个代码应该很好理解。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2562,7 +2418,7 @@ import java.util.ArrayList;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-count">16</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
