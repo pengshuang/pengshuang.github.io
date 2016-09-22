@@ -1,0 +1,741 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MapReduce," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="编程模型MapReduce  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 Map 函数处理一个基于 key/value pair 的数据集合，输出中间的基于 key/value pair 的数据集合；然后再创建一个 Reduce 函数来用来合并所有的具有相同中间key值的中间values值。现实世界中有很多满足上述处理模型的例子。
+MapReduce 编程模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谷歌三篇论文学习(一): MapReduce">
+<meta property="og:url" content="http://pengshuang.space/2016/09/21/谷歌三篇论文学习-MapReduce/index.html">
+<meta property="og:site_name" content="小沙文的博客">
+<meta property="og:description" content="编程模型MapReduce  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 Map 函数处理一个基于 key/value pair 的数据集合，输出中间的基于 key/value pair 的数据集合；然后再创建一个 Reduce 函数来用来合并所有的具有相同中间key值的中间values值。现实世界中有很多满足上述处理模型的例子。
+MapReduce 编程模">
+<meta property="og:updated_time" content="2016-09-22T02:58:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="谷歌三篇论文学习(一): MapReduce">
+<meta name="twitter:description" content="编程模型MapReduce  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 Map 函数处理一个基于 key/value pair 的数据集合，输出中间的基于 key/value pair 的数据集合；然后再创建一个 Reduce 函数来用来合并所有的具有相同中间key值的中间values值。现实世界中有很多满足上述处理模型的例子。
+MapReduce 编程模">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://pengshuang.space/2016/09/21/谷歌三篇论文学习-MapReduce/"/>
+
+  <title> 谷歌三篇论文学习(一): MapReduce | 小沙文的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小沙文的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                谷歌三篇论文学习(一): MapReduce
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-21T15:05:34+08:00" content="2016-09-21">
+              2016-09-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/论文/" itemprop="url" rel="index">
+                    <span itemprop="name">论文</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/21/谷歌三篇论文学习-MapReduce/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="编程模型">编程模型</h3><p><strong>MapReduce</strong>  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 <strong>Map</strong> 函数处理一个基于 <strong>key/value pair</strong> 的数据集合，输出中间的基于 <strong>key/value pair</strong> 的数据集合；然后再创建一个 <strong>Reduce</strong> 函数来用来合并所有的具有相同中间<strong>key</strong>值的中间<strong>values</strong>值。现实世界中有很多满足上述处理模型的例子。</p>
+<p><strong>MapReduce</strong> 编程模型的原理是:利用一个输入 <strong>key/value pair</strong> 集合来产生一个输出的 <strong>key/value pair</strong> 集合。 <strong>MapReduce</strong>  库的用户用两个函数表达这个计算: <strong>Map</strong> 和 <strong>Reduce</strong>。</p>
+<p>用户自定义的 <strong>Map</strong> 函数接受一个输入的 <strong>key/value pair</strong> 值,然后产生一个中间 <strong>key/value pair</strong> 值的集合。 <strong>MapReduce</strong> 库把所有具有相同中间 key 值的中间 <strong>value</strong> 值集合在一起后传递给 <strong>Reduce</strong> 函数。</p>
+<p>用户自定义的 <strong>Reduce</strong> 函数接受一个中间 <strong>key</strong> 的值和相关的一个 <strong>value</strong> 值的集合。 <strong>Reduce</strong> 函数合并这些 <strong>value</strong> 值，形成一个较小的 <strong>value</strong> 值的集合。一般的，每次 <strong>Reduce</strong> 函数调用只产生 0 或 1 个输出 <strong>value</strong> 值。通 常我们通过一个迭代器把中间 <strong>value</strong> 值提供给 <strong>Reduce</strong> 函数，这样我们就可以处理无法全部放入内存中的大量的 <strong>value</strong> 值的集合。</p>
+<pre><code>map(<span class="type">String</span> key, <span class="type">String</span> value):
+    // key: document name
+    // value: document contents 
+    <span class="keyword">for</span> each word w <span class="keyword">in</span> value:
+        <span class="type">EmitIntermediate</span>(w, <span class="number">1</span>);
+
+reduce(<span class="type">String</span> key, <span class="type">Iterator</span> values): 
+    // key: a word
+    // values: a list <span class="keyword">of</span> counts 
+    <span class="type">int</span> <span class="literal">result</span> = <span class="number">0</span>;
+    <span class="keyword">for</span> each v <span class="keyword">in</span> values:
+        <span class="literal">result</span> += <span class="type">ParseInt</span>(v); 
+    <span class="type">Emit</span>(<span class="type">AsString</span>(<span class="literal">result</span>));
+</code></pre><p><strong>Map</strong> 函数输出文档中的每个词、以及这个词的出现次数（在这个简单的例子里就是1）。<strong>Reduce</strong> 函数把Map函数产生的每一个特定的词的计数累加起来。</p>
+<h3 id="MapReduce编程模型应用">MapReduce编程模型应用</h3><p>分布式的Grep：Map函数输出匹配模式的一行，Reduce函数是一个恒等函数，即把中间数据复制到输出。</p>
+<p>计算URL访问频率：Map函数处理日志中web页面请求的记录，然后输出(URL,1)。Reduce 函数把相同的value值都累加起来，产生(URL，记录总数)结果。</p>
+<p>倒转网络链接图：Map函数在源页面(source)中搜索所有的链接目标(target)并输出为(target, source)。Reduce 函数把给定链接目标(target)的链接组合成一个列表，输出(target, list(source))。</p>
+<p>其他的一些应用场景有，每个主机的检索词向量，倒排索引以及分布式排序。</p>
+<h3 id="MapReduce实现">MapReduce实现</h3><p>上图展示了<strong>MapReduce</strong> 实现中操作的全部流程。当用户调用 <strong>MapReduce</strong> 函数时，将发生下面的一 系列动作(下面的序号和图中的序号一一对应):</p>
+<ol>
+<li><p>用户程序首先调用的 <strong>MapReduce</strong> 库将输入文件分成 M 个数据片度,每个数据片段的大小一般从 16MB 到 64MB(可以通过可选的参数来控制每个数据片段的大小)。然后用户程序在集群中创建大量的程序副本。</p>
+</li>
+<li><p>这些程序副本中的有一个特殊的程序——<strong>master</strong>。副本中其它的程序都是 <strong>worker</strong> 程序，由 <strong>master</strong> 分配 任务。有 M 个 <strong>Map</strong> 任务和 R 个 <strong>Reduce</strong> 任务将被分配，<strong>master</strong> 将一个 <strong>Map</strong> 任务或 <strong>Reduce</strong> 任务分配给一个空闲的 <strong>worker</strong>。</p>
+</li>
+<li><p>被分配了 <strong>Map</strong> 任务的 <strong>worker</strong> 程序读取相关的输入数据片段，从输入的数据片段中解析出 <strong>key/value pair</strong>，然后把 <strong>key/value pair</strong> 传递给用户自定义的 <strong>Map</strong> 函数，由 <strong>Map</strong> 函数生成并输出的中间 <strong>key/value pair</strong>，并缓存在内存中。</p>
+</li>
+<li><p>缓存中的 <strong>key/value pair</strong> 通过分区函数分成 R 个区域,之后周期性的写入到本地磁盘上。缓存的 <strong>key/value pair</strong> 在本地磁盘上的存储位置将被回传给 <strong>master</strong>，由 <strong>master</strong> 负责把这些存储位置再传送给 <strong>Reduce worker</strong>。</p>
+</li>
+<li><p>当 <strong>Reduce worker</strong> 程序接收到 <strong>master</strong> 程序发来的数据存储位置信息后，使用 RPC 从 <strong>Map worker</strong> 所在主机的磁盘上读取这些缓存数据。当 <strong>Reduce worker</strong> 读取了所有的中间数据后，通过对 <strong>key</strong> 进行排序后使得具有相同 <strong>key</strong> 值的数据聚合在一起。由于许多不同的 <strong>key</strong> 值会映射到相同的 <strong>Reduce</strong> 任务上，因此必须进行排序。如果中间数据太大无法在内存中完成排序,那么就要在外部进行排序。</p>
+</li>
+<li><p><strong>Reduce worker</strong> 程序遍历排序后的中间数据,对于每一个唯一的中间 <strong>key</strong> 值，<strong>Reduce worker</strong> 程序将这 个 <strong>key</strong> 值和它相关的中间 <strong>value</strong> 值的集合传递给用户自定义的 <strong>Reduce</strong> 函数。<strong>Reduce</strong> 函数的输出被追加到所属分区的输出文件。</p>
+</li>
+<li><p>当所有的 <strong>Map</strong> 和 <strong>Reduce</strong> 任务都完成之后，<strong>master</strong> 唤醒用户程序。在这个时候,在用户程序里的对 <strong>MapReduce</strong> 调用才返回。</p>
+</li>
+</ol>
+<p>在成功完成任务之后，<strong>Mapreduce</strong> 的输出存放在R个输出文件中（对应每个 <strong>Reduce</strong> 任务产生一个输出文件，文件名由用户指定）。一般情况下，用户不需要将这R个输出文件合并成一个文件——他们经常把这些文件作为另外一个 <strong>Mapreduce</strong> 的输入， 或者在另外一个可以处理多个分割文件的分布式应用中使用。</p>
+<h3 id="Master的数据结构">Master的数据结构</h3><p><strong>Master</strong> 持有一些数据结构，它存储每一个Map和Reduce任务（空闲、工作中或完成），以及Worker机器（非空闲任务的机器）的标识。</p>
+<p><strong>Master</strong> 就像一个数据管道，中间文件存储区域的位置信息通过这个管道从Map传递到Reduce。因此，对于每个已经完成的Map任务，<strong>Master</strong> 存储了Map任务产生的R个中间文件存储区域的大小和位置。当Map任务完成时，<strong>Master</strong>接收到位置和大小的更新信息，这些信息被逐步递增的推送给那些正在工作的Reduce任务。</p>
+<h3 id="容错机制">容错机制</h3><p><strong>Master</strong> 周期性的 ping 每个 <strong>worker</strong>。如果在一个约定的时间范围内没有收到 <strong>worker</strong> 返回的消息，<strong>Master</strong> 将把这个任务标记为失效。所有由这个失效的 <strong>worker</strong> 完成的 <strong>Map</strong> 任务被重设为初始的空闲状态，之后这些任务就可以被安排给其他的 <strong>worker</strong>。 同样的，<strong>worker</strong> 失效时正在运行的 <strong>Map</strong> 或 <strong>Reduce</strong> 任务也将被重新置为空闲状态，等待重新调度。</p>
+<p>当 <strong>worker</strong> 故障时，由于已经完成的 <strong>Map</strong> 任务的输出存储在这台机器上，<strong>Map</strong> 任务的输出已不接访问了，因此需要重新执行。而已经完成的 Reduce 任务的输出存储在全局文件系统上， 因此不需要再次执行。</p>
+<p>当一个 <strong>Map</strong> 任务首先被 <strong>worker A</strong> 执行，之后由于 <strong>worker A</strong> 失效了又被调度到 <strong>worker B</strong> 执行，这个“重新执行”的动作会被通知给所有执行 <strong>Reduce</strong> 任务的 <strong>worker</strong>。任何还没有从 <strong>worker A</strong> 读取数据的 <strong>Reduce</strong> 任务 将从 <strong>worker B</strong> 读取数据。</p>
+<p><strong>MapReduce</strong> 可以处理大规模 <strong>worker</strong> 失效的情况。比如，在一个 <strong>MapReduce</strong> 操作执行期间，在正在运行的集群上进行网络维护引起80台机器在几分钟内不可访问了，<strong>MapReduce master</strong> 只需要简单的再次执行那些不可访问的 <strong>worker</strong> 完成的工作，之后继续执行未完成的任务，直到最终完成这个 <strong>MapReduce</strong>  操作。</p>
+<h3 id="失效方面的处理机制">失效方面的处理机制</h3><p>当用户提供的 <strong>Map</strong> 和 <strong>Reduce</strong> 操作是输入确定性函数(即相同的输入产生相同的输出)时，我们的分布式实现在任何情况下的输出都和所有程序没有出现任何错误、顺序的执行产生的输出是一样的。</p>
+<p>我们依赖对 <strong>Map</strong> 和 <strong>Reduce</strong> 任务的输出是原子提交的来完成这个特性。每个工作中的任务把它的输出写到私有的临时文件中。每个 <strong>Reduce</strong> 任务生成一个这样的文件，而每个 <strong>Map</strong> 任务则生成 R 个这样的文件(一个 <strong>Reduce</strong> 任务对应一个文件)。当一个 <strong>Map</strong> 任务完成的时，<strong>worker</strong> 发送一个包含 R 个临时文件名的完成消息给 <strong>master</strong>。如果 <strong>master</strong> 从一个已经完成的 <strong>Map</strong> 任务再次接收到到一个完成消息，<strong>master</strong> 将忽略这个消息；否则，<strong>Master</strong> 将这 R 个文件的名字记录在数据结构里。</p>
+<p>当 <strong>Reduce</strong> 任务完成时，<strong>Reduce worker</strong> 进程以原子的方式把临时文件重命名为最终的输出文件。如果同 一个 <strong>Reduce</strong> 任务在多台机器上执行,针对同一个最终的输出文件将有多个重命名操作执行。我们依赖底层文 件系统提供的重命名操作的原子性来保证最终的文件系统状态仅仅包含一个 <strong>Reduce</strong> 任务产生的数据。</p>
+<h3 id="分区函数">分区函数</h3><p><strong>MapReduce</strong> 的使用者通常会指定 <strong>Reduce</strong> 任务和 <strong>Reduce</strong> 任务输出文件的数量(R)。我们在中间 key 上使用分区函数来对数据进行分区，之后再输入到后续任务执行进程。一个缺省的分区函数是使用 <strong>hash</strong> 方法(比如，hash(key) mod R)进行分区。hash方法能产生非常平衡的分区。然而，有的时候，其它的一些分区函数对 <strong>key</strong> 值进行的分区将非常有用。比如，输出的 <strong>key</strong> 值是 <strong>URLs</strong>，我们希望每个主机的所有条目保持在同一个输出文件中。为了支持类似的情况，<strong>MapReduce</strong> 库的用户需要􏰁供专门的分区函数。例如，使用“hash(Hostname(urlkey)) mod R”作为分区函数就可以把所有来自同一个主机的 <strong>URLs</strong> 保存在同一个输出文件中。</p>
+<h3 id="顺序保证">顺序保证</h3><p>我们确保在给定的分区中，中间 <strong>key/value pair</strong> 数据的处理顺序是按照 <strong>key</strong> 值增量顺序处理的。这样的顺序保证对每个分区生成一个有序的输出文件，这对于需要对输出文件按 <strong>key</strong> 值随机存取的应用非常有意义，对在排序输出的数据集也很有帮助。</p>
+<h3 id="Combiner_函数">Combiner 函数</h3><p>在某些情况下，<strong>Map</strong> 函数产生的中间 <strong>key</strong> 值的重复数据会占很大的比重，并且，用户自定义的 <strong>Reduce</strong> 函数满足结合律和交换律。之前举例过的词频统计中，每个 <strong> Map </strong> 任务将产生成千上万个这样的任务<the, 1="">。所有的这些记录将通过网络被发送到一个单独的 <strong>Reduce</strong> 任务，然后这个 <strong>Reduce</strong> 任务把所有这些记录累加起来产生一个数字。我们允许用户指定一个可选的 <strong>combiner</strong> 函数，<strong>combiner</strong> 函数首先在本地将这些记录进行一次合并，然后将合并的结果再通过网络发送出去。</the,></p>
+<p><strong>Combiner</strong> 函数在每台执行 <strong>Map</strong> 任务的机器上都会被执行一次。 一般情况下，<strong>Combiner</strong> 和 <strong>Reduce</strong> 函数是一样的。<strong>Combiner</strong> 函数和 <strong>Reduce</strong>函数之间唯一的区别是 <strong>MapReduce</strong> 库怎样控制函数的输出。<strong>Reduce</strong> 函数的输出被保存在最终的输出文件里，而 <strong>Combiner</strong> 函数的输出被写到中间文件里，然后被发送给 <strong>Reduce</strong> 任务。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MapReduce/" rel="tag">#MapReduce</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/20/IP协议/" rel="next" title="IP协议学习(一):IP基础知识">
+                <i class="fa fa-chevron-left"></i> IP协议学习(一):IP基础知识
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/09/21/谷歌三篇论文学习-MapReduce/"
+     data-title="谷歌三篇论文学习(一): MapReduce"
+     data-content=""
+     data-url="http://pengshuang.space/2016/09/21/谷歌三篇论文学习-MapReduce/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/21/谷歌三篇论文学习-MapReduce/"
+           data-title="谷歌三篇论文学习(一): MapReduce" data-url="http://pengshuang.space/2016/09/21/谷歌三篇论文学习-MapReduce/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="PengShuang" />
+          <p class="site-author-name" itemprop="name">PengShuang</p>
+          <p class="site-description motion-element" itemprop="description">在路上，慢慢走！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/pengshuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lingyu.wang/" title="天镶的博客" target="_blank">天镶的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#编程模型"><span class="nav-number">1.</span> <span class="nav-text">编程模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce编程模型应用"><span class="nav-number">2.</span> <span class="nav-text">MapReduce编程模型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce实现"><span class="nav-number">3.</span> <span class="nav-text">MapReduce实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Master的数据结构"><span class="nav-number">4.</span> <span class="nav-text">Master的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容错机制"><span class="nav-number">5.</span> <span class="nav-text">容错机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#失效方面的处理机制"><span class="nav-number">6.</span> <span class="nav-text">失效方面的处理机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区函数"><span class="nav-number">7.</span> <span class="nav-text">分区函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#顺序保证"><span class="nav-number">8.</span> <span class="nav-text">顺序保证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Combiner_函数"><span class="nav-number">9.</span> <span class="nav-text">Combiner 函数</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PengShuang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"pengshuang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
