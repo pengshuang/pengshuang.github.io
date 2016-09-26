@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hive,数据库," />
+  <meta name="keywords" content="计算机网络," />
 
 
 
@@ -84,31 +84,22 @@
 
 
 
-<meta name="description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
+<meta name="description" content="1. 路由控制表路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。
+2. 默认路由如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-<meta property="og:url" content="http://pengshuang.space/2016/09/16/HiveQL-视图/index.html">
+<meta property="og:title" content="IP协议学习(三):路由控制和IPv4数据包">
+<meta property="og:url" content="http://pengshuang.space/2016/09/26/TCP学习-三/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
-<meta property="og:updated_time" content="2016-09-17T13:03:55.000Z">
+<meta property="og:description" content="1. 路由控制表路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。
+2. 默认路由如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路">
+<meta property="og:image" content="http://pengshuang.space/img/juhe.png">
+<meta property="og:image" content="http://pengshuang.space/img/ipv4.png">
+<meta property="og:image" content="http://pengshuang.space/img/tos.png">
+<meta property="og:updated_time" content="2016-09-26T12:31:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-<meta name="twitter:description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
+<meta name="twitter:title" content="IP协议学习(三):路由控制和IPv4数据包">
+<meta name="twitter:description" content="1. 路由控制表路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。
+2. 默认路由如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路">
 
 
 
@@ -129,9 +120,9 @@ FROM (
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/09/16/HiveQL-视图/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/09/26/TCP学习-三/"/>
 
-  <title> 《Hive编程指南》学习笔记：HiveQL:视图与索引 | 小沙文的博客 </title>
+  <title> IP协议学习(三):路由控制和IPv4数据包 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +262,7 @@ FROM (
             
             
               
-                《Hive编程指南》学习笔记：HiveQL:视图与索引
+                IP协议学习(三):路由控制和IPv4数据包
               
             
           </h1>
@@ -283,8 +274,8 @@ FROM (
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-16T21:56:00+08:00" content="2016-09-16">
-              2016-09-16
+            <time itemprop="dateCreated" datetime="2016-09-26T18:47:11+08:00" content="2016-09-26">
+              2016-09-26
             </time>
           </span>
 
@@ -313,8 +304,8 @@ FROM (
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/16/HiveQL-视图/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/16/HiveQL-视图/" itemprop="commentsCount"></span>
+                <a href="/2016/09/26/TCP学习-三/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/TCP学习-三/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -337,64 +328,51 @@ FROM (
       
 
       
-        <p>视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。</p>
-<h3 id="1-_使用视图来降低查询的复杂度">1. 使用视图来降低查询的复杂度</h3><p>例如，一个具有嵌套子查询的查询：</p>
-<pre><code>FROM (
-    <span class="operator"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-        <span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname = <span class="string">'John'</span>
-    ) a <span class="keyword">SELECT</span> a.lastname <span class="keyword">WHERE</span> a.<span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><p>将上面这个嵌套子查询变成一个视图：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> shorter_join <span class="keyword">AS</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-<span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname=<span class="string">'john'</span>;</span>
-</code></pre><p>现在就可以像操作表一样操作这个视图了：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> lastname <span class="keyword">FROM</span> shorter_join <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><h3 id="2-_使用视图来限制基于条件过滤的数据">2. 使用视图来限制基于条件过滤的数据</h3><p>视图有一个常见的使用场景就是基于一个或多个列的值来限制输出结果，</p>
-<h4 id="(1)_通过视图来限制输入出结果：">(1) 通过视图来限制输入出结果：</h4><pre><code>hive&gt; CREATE TABLE userinfo (
-      firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>, ssn <span class="built_in">string</span>, password <span class="built_in">string</span>);
-hive&gt; CREATE VIEW safer_user_info <span class="keyword">AS</span>
-      <span class="keyword">SElECT</span> firstname, lastname <span class="keyword">FROM</span> userinfo;
-</code></pre><h4 id="(2)_通过使用视图来只暴露部分结果：">(2) 通过使用视图来只暴露部分结果：</h4><pre><code>hive&gt; CREATE TABLE employee (firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>,
-      ssn <span class="built_in">string</span>, password <span class="built_in">string</span>, department <span class="built_in">string</span>);
- hive&gt; CREATE VIEW techops_employee <span class="keyword">AS</span> 
-       <span class="keyword">SELECT</span> firstname, lastname,ssn <span class="keyword">FROM</span> userinfo <span class="keyword">WHERE</span> department=<span class="string">"techops"</span>;
-</code></pre><h3 id="3-_创建索引">3. 创建索引</h3><p>下面以为一个分区表创建索引为例：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> employee (
-    <span class="keyword">name</span>    <span class="keyword">STRING</span>,
-    salary    <span class="built_in">FLOAT</span>,
-    subordinates    <span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;,
-    deductions    <span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;,
-    address    <span class="keyword">STRUCT</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">INT</span>&gt;
-    )
-    PARTITIONED <span class="keyword">BY</span> (country <span class="keyword">STRING</span>, state <span class="keyword">STRING</span>);</span>
-</code></pre><p>下面对分区字段country建立索引：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> TBALE employess (country)
-<span class="keyword">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-<span class="keyword">WITH</span> <span class="keyword">DEFERRED</span> <span class="keyword">REBUILD</span>
-IDXPROPERTIES (<span class="string">'creator = '</span>me<span class="string">', '</span>created_at<span class="string">' = '</span>some_time<span class="string">')
-IN TABLE employee_index_table
-PARTITIONED BY (country_name)
-COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span class="keyword">and</span> <span class="keyword">name</span>.<span class="string">';</span></span>
-</code></pre><p>如果在这里我省略掉PARTITIONED BY语句的话，那么索引将会包含原始表的所有分区。</p>
-<p>AS … 语句指定了索引处理器，也就是一个实现了索引接口的Java类。</p>
-<p>如果要求索引处理器在一张新表中保留索引数据，会使用到 IN_TABLE… 子句。</p>
-<h4 id="Bitmap_索引">Bitmap 索引</h4><p>如果想使用Bitmap索引，那么将</p>
-<pre><code><span class="title">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-</code></pre><p>替换为：</p>
-<pre><code><span class="title">AS</span> <span class="string">'BITMAP'</span>
-</code></pre><p>即可。</p>
-<h3 id="4-_重建索引">4. 重建索引</h3><p>如果用户指定了 <strong>DEFERRED REBUILD</strong>， 那么新索引将呈现空白状态。在任何时候，都可以进行第一次索引创建或者使用ALTER INDEX对索引进行重建。</p>
-<pre><code><span class="operator"><span class="keyword">ALTER</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> <span class="keyword">TABLE</span> employees
-<span class="keyword">PARTITION</span> (country = <span class="string">'US'</span>)
-<span class="keyword">REBUILD</span></span>
-</code></pre><p>如果省略掉PARTITION，那么将会对所有分区进行重建索引。</p>
-<h3 id="5-_显示索引">5. 显示索引</h3><pre><code><span class="operator"><span class="keyword">SHOW</span> (FORMATTED) <span class="keyword">INDEX</span> <span class="keyword">on</span> employees;</span>
-</code></pre><p>关键字FORMATTED是可选的。增加这个关键字可以使输出中包含有列名称。用户还可以替换INDEX为INDEXES，这样输出中就可以列举多个索引信息了。</p>
-<h3 id="6-_删除索引">6. 删除索引</h3><p>如果有索引表的话，删除一个索引将会删除这个索引表：</p>
-<pre><code><span class="operator"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> employees_index <span class="keyword">ON</span> <span class="keyword">TABLE</span> employees;</span>
-</code></pre><p>Hive不允许用户直接使用 <strong>DROP TABLE</strong> 语句之前删除索引表。如果被索引的表被删除了，那么其对应的索引和索引表也会被删除。如果原始表的某个分区被删除了，那么这个分区对应的分区索引也同时会被删除掉。</p>
+        <h3 id="1-_路由控制表">1. 路由控制表</h3><p>路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。</p>
+<h3 id="2-_默认路由">2. 默认路由</h3><p>如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路由是不错的选择。默认路由是指路由表中任何一个地址都能与之匹配的记录。</p>
+<h3 id="3-_主机路由">3. 主机路由</h3><p>“IP地址/32” 也被称为主机路由。例如，192.168.153.15/32 就是一种主机路由。它的意思是整个IP地址的所有位都将参与路由。进行主机路由，意味着要基于主机上网卡上配置的IP地址本身，而不是基于该地址的网络地址部分进行路由。</p>
+<h3 id="4-_环回地址">4. 环回地址</h3><p>环回地址是同一台计算机上的程序之间进行网络通信时所使用的一个默认地址。计算机使用一个特殊的IP地址127.0.0.1作为环回地址。与该地址具有相同意义的一个叫做localhost的主机名。使用这个IP或主机名时，数据包不会流向网络。</p>
+<h3 id="5-_路由控制表的聚合">5. 路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行分层配置。对内即使有多个子网掩码，对外呈现出的也是同一个网络地址。这样可以更好的构建网络，通过路由信息的聚合可以有效地减少路由表的条目。下图展示一个简单的路由聚合的例子。</p>
+<p><img src="/img/juhe.png" alt=""></p>
+<h3 id="6-_IPv4首部">6. IPv4首部</h3><p>IP首部包含着用于IP协议进行发包控制时所有的必要信息。下图展示了一个IP数据包格式(IPv4)。</p>
+<p><img src="/img/ipv4.png" alt=""></p>
+<p>下面对IP首部各部分一一进行介绍。</p>
+<h4 id="（1）版本">（1）版本</h4><p>没什么实际意义。。。忽略</p>
+<h4 id="（2）首部长度">（2）首部长度</h4><p>由4比特构成，表明IP首部的大小，单位为4字节(32比特)，对应没有可选项的IP包，首部长度则设置为5，即没有可选项时，IP首部的长度为20字节(4*5=20)。</p>
+<h4 id="（3）区分服务（TOS）">（3）区分服务（TOS）</h4><p>由8比特构成，用来表明服务质量。用0、1、2这三位来表示0~7的优先度。从0到7表示优先度从低到高。每一位具体含义如下所示。</p>
+<p><img src="/img/tos.png" alt=""></p>
+<h4 id="（4）总长度（Total_Length）">（4）总长度（Total Length）</h4><p>表示IP首部与数据部分合起来的总字节数。该字段长16比特。因此IP包的最大长度为65535。</p>
+<h4 id="（5）标识_（ID：Identification）">（5）标识 （ID：Identification）</h4><p>由16比特构成，用于分片重组。同一个分片的标识值相同，不同分片的标识值不同。通常，没发送一个IP包，它的值也逐渐递增。此外，即使ID相同，如果目标地址、源地址或协议不同的话，也会被认为是不同的分片。</p>
+<h4 id="（6）标志（Flags）">（6）标志（Flags）</h4><p>由3比特构成，表示包被分片的相关信息。每一位的具体含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>未使用</td>
+</tr>
+<tr>
+<td>1</td>
+<td>指示是否进行分片。0-可以分片；1-不能分片</td>
+</tr>
+<tr>
+<td>2</td>
+<td>包被分片的情况下，表示是否为最后一个包。0-最后一个分片的包；1-分片中段的包</td>
+</tr>
+</tbody>
+</table>
+<h4 id="（7）片偏移（FO:_Fragment_Offset)">（7）片偏移（FO: Fragment Offset)</h4><p>由13比特构成，用来标识被分片的每一个分段相对于原始数据的位置。第一个分片对应的值为0.由于FO域占13位，因此最多可以表示8192个相对位置。单位为8字节，因此最大可以表示原始数据为65536字节。</p>
+<h4 id="（8）生存时间_(TTL)">（8）生存时间 (TTL)</h4><p>由8比特构成，在实际中表示可以中转多少个路由器。每经过一个路由器，TTL会减少1，直到变成0则丢弃该包。</p>
+<h4 id="（9）协议（Protocol）">（9）协议（Protocol）</h4><p>由8比特构成，表示IP首部的下一个首部隶属于哪个协议。</p>
+<h4 id="（10）首部校验和">（10）首部校验和</h4><p>由16比特（2个字节构成），也叫IP首部校验和。该字段只校验数据报的首部，不校验数据部分。它主要用来确保IP数据报不被破坏。校验和的计算过程，首先要将校验和的所有位置设置为0，然后以16比特为单位划分IP首部，并用1补数计算所有16位字的和。最后将所得到这个和1的补数赋给首部校验和字段。</p>
+<h4 id="（11）源地址">（11）源地址</h4><p>由32位比特（4个字节）构成，表示发送端IP地址。</p>
+<h4 id="（12）目标地址">（12）目标地址</h4><p>由32位比特（4个字节）构成，表示接收端IP地址。 </p>
+<h4 id="（13）数据">（13）数据</h4><p>存入数据。将IP上层协议的首部也作为数据进行处理。</p>
 
       
     </div>
@@ -417,9 +395,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
       
         <div class="post-tags">
           
-            <a href="/tags/Hive/" rel="tag">#Hive</a>
-          
-            <a href="/tags/数据库/" rel="tag">#数据库</a>
+            <a href="/tags/计算机网络/" rel="tag">#计算机网络</a>
           
         </div>
       
@@ -428,17 +404,13 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/15/TCP-IP基础知识/" rel="next" title="TCP/IP协议分层模型">
-                <i class="fa fa-chevron-left"></i> TCP/IP协议分层模型
+              <a href="/2016/09/25/IP地址基础知识/" rel="next" title="IP协议学习(二):IP地址基础知识">
+                <i class="fa fa-chevron-left"></i> IP协议学习(二):IP地址基础知识
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/20/hive模式设计/" rel="prev" title="《Hive编程指南》学习笔记：Hive模式设计">
-                《Hive编程指南》学习笔记：Hive模式设计 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -453,10 +425,10 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/09/16/HiveQL-视图/"
-     data-title="《Hive编程指南》学习笔记：HiveQL:视图与索引"
+        <div class="ds-share flat" data-thread-key="2016/09/26/TCP学习-三/"
+     data-title="IP协议学习(三):路由控制和IPv4数据包"
      data-content=""
-     data-url="http://pengshuang.space/2016/09/16/HiveQL-视图/">
+     data-url="http://pengshuang.space/2016/09/26/TCP学习-三/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -483,8 +455,8 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/16/HiveQL-视图/"
-           data-title="《Hive编程指南》学习笔记：HiveQL:视图与索引" data-url="http://pengshuang.space/2016/09/16/HiveQL-视图/">
+      <div class="ds-thread" data-thread-key="2016/09/26/TCP学习-三/"
+           data-title="IP协议学习(三):路由控制和IPv4数据包" data-url="http://pengshuang.space/2016/09/26/TCP学习-三/">
       </div>
     
   </div>
@@ -609,7 +581,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_使用视图来降低查询的复杂度"><span class="nav-number">1.</span> <span class="nav-text">1. 使用视图来降低查询的复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_使用视图来限制基于条件过滤的数据"><span class="nav-number">2.</span> <span class="nav-text">2. 使用视图来限制基于条件过滤的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#(1)_通过视图来限制输入出结果："><span class="nav-number">2.1.</span> <span class="nav-text">(1) 通过视图来限制输入出结果：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#(2)_通过使用视图来只暴露部分结果："><span class="nav-number">2.2.</span> <span class="nav-text">(2) 通过使用视图来只暴露部分结果：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_创建索引"><span class="nav-number">3.</span> <span class="nav-text">3. 创建索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Bitmap_索引"><span class="nav-number">3.1.</span> <span class="nav-text">Bitmap 索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_重建索引"><span class="nav-number">4.</span> <span class="nav-text">4. 重建索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_显示索引"><span class="nav-number">5.</span> <span class="nav-text">5. 显示索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_删除索引"><span class="nav-number">6.</span> <span class="nav-text">6. 删除索引</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_路由控制表"><span class="nav-number">1.</span> <span class="nav-text">1. 路由控制表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_默认路由"><span class="nav-number">2.</span> <span class="nav-text">2. 默认路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_主机路由"><span class="nav-number">3.</span> <span class="nav-text">3. 主机路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_环回地址"><span class="nav-number">4.</span> <span class="nav-text">4. 环回地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_路由控制表的聚合"><span class="nav-number">5.</span> <span class="nav-text">5. 路由控制表的聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_IPv4首部"><span class="nav-number">6.</span> <span class="nav-text">6. IPv4首部</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）版本"><span class="nav-number">6.1.</span> <span class="nav-text">（1）版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）首部长度"><span class="nav-number">6.2.</span> <span class="nav-text">（2）首部长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）区分服务（TOS）"><span class="nav-number">6.3.</span> <span class="nav-text">（3）区分服务（TOS）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（4）总长度（Total_Length）"><span class="nav-number">6.4.</span> <span class="nav-text">（4）总长度（Total Length）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（5）标识_（ID：Identification）"><span class="nav-number">6.5.</span> <span class="nav-text">（5）标识 （ID：Identification）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（6）标志（Flags）"><span class="nav-number">6.6.</span> <span class="nav-text">（6）标志（Flags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（7）片偏移（FO:_Fragment_Offset)"><span class="nav-number">6.7.</span> <span class="nav-text">（7）片偏移（FO: Fragment Offset)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（8）生存时间_(TTL)"><span class="nav-number">6.8.</span> <span class="nav-text">（8）生存时间 (TTL)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（9）协议（Protocol）"><span class="nav-number">6.9.</span> <span class="nav-text">（9）协议（Protocol）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（10）首部校验和"><span class="nav-number">6.10.</span> <span class="nav-text">（10）首部校验和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（11）源地址"><span class="nav-number">6.11.</span> <span class="nav-text">（11）源地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（12）目标地址"><span class="nav-number">6.12.</span> <span class="nav-text">（12）目标地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（13）数据"><span class="nav-number">6.13.</span> <span class="nav-text">（13）数据</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
