@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://pengshuang.space/2016/10/09/Spark-RDD%E5%AD%A6%E4%B9%A0-aggregate%E5%87%BD%E6%95%B0/</loc>
+    <lastmod>2016-10-09T03:24:27.000Z</lastmod>
+    <data>
+        <display>
+        <title>Spark RDD学习: aggregate函数</title>
+        <pubTime>2016-10-09T03:24:07.000Z</pubTime>
+        
+        <tag>RDD</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spark" url="http://pengshuang.space/categories/Spark/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://pengshuang.space/2016/10/08/GraphX%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2016-10-08T07:56:02.000Z</lastmod>
     <data>

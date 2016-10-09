@@ -258,6 +258,151 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/15/TCP-IP基础知识/" itemprop="url">
+                  TCP/IP协议分层模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-15T22:01:00+08:00" content="2016-09-15">
+              2016-09-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/15/TCP-IP基础知识/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/TCP-IP基础知识/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-_物理层（硬件）">1. 物理层（硬件）</h3><p>TCP/IP的最底层是负责数据传输的硬件。</p>
+<h3 id="2-_数据链路层（网络接口层）">2. 数据链路层（网络接口层）</h3><p>数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。</p>
+<h3 id="3-_网络层（互联网层）">3. 网络层（互联网层）</h3><p>网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得实现通过网络层转发分组数据包的功能。</p>
+<h4 id="IP">IP</h4><p>IP是跨越网络传送数据包，使整个互联网都能收到数据的协议。IP协议使数据能够发送到地球的另一端，这期间使用IP地址作为主机的标识。虽然IP也是分组交换的一种协议，但是它不具有重发机制。即使分组数据包未能到达对端主机也不会重发。因此，属于非可靠性传输。</p>
+<h4 id="ICMP">ICMP</h4><p>IP数据包在发送途中一旦发送异常导致无法到达对端目标地址时，需要给发送端发送一个发送异常的通知。ICMP就是被用来诊断网络的健康状况。</p>
+<h4 id="ARP">ARP</h4><p>从分组数据包的IP地址中解析出物理地址（MAC地址）的一种协议。</p>
+<h3 id="4-_传输层">4. 传输层</h3><p>传输层主要的功能就是能够让应用程序之间实现通信。计算机内部，通常同一时间运行着多个程序。为此，必须分清是哪些程序与哪些程序在进行通信。识别这些应用程序的事端口号。</p>
+<h4 id="TCP">TCP</h4><p>TCP是一种面向有连接的传输层协议。它可以保证两端通信主机之间的通信可达。TCP能够正确处理在传输过程中丢包、传输顺序乱掉等异常情况。此外，TCP还能够有效利用带宽，缓解网络拥堵。</p>
+<h4 id="UDP">UDP</h4><p>UDP有别于TCP，它是一种面向无连接的传输层协议。UDP不会关注对端是否真的收到了传送过去的数据。UDP常用于分组数据较少或多播、广播通信以及视频通信等多媒体领域。</p>
+<h3 id="5-_应用层（会话层以上的分层）">5. 应用层（会话层以上的分层）</h3><p>TCP/IP的分层中，将OSI参考模型中的会话层、表示层和应用层的功能都集中到了应用程序中实现。</p>
+<p>HTTP协议属于应用层的协议，HTML和电子邮件属于表示层协议。</p>
+<h3 id="6-_TCP/IP分层模型及通信示例">6. TCP/IP分层模型及通信示例</h3><p>以甲向乙发送电子邮件为例，来讲解TCP/IP的通信过程。</p>
+<h4 id="应用程序处理">应用程序处理</h4><p>启动应用新建邮件，填写好内容并点击发送之后，应用程序会进行编码处理，这些编码相当于OSI的表示层的功能。编码转化后，实际邮件不一定会马上被发送出去，因为有些邮件的软件有一次同时发送多个邮件的功能。像这种何时建立通信连接何时发送数据的管理功能，其实属于OSI参考模型中会话层的功能。</p>
+<p>应用在发送电子邮件的那一刻建立TCP连接，从而利用这个TCP连接发送数据。它的过程首先是将应用的数据发送给下一层的TCP，再做实际的转发处理。</p>
+<h4 id="TCP模块的处理">TCP模块的处理</h4><p>TCP根据应用的指示，负责建立连接、发送数据以及断开连接。TCP提供将应用层发来的数据顺利发送至对端的可靠传输。为了实现TCP的这一功能，需要在应用层数据的前端附加一个TCP首部。TCP首部中包括源端口号和目标端口号。（用以识别发送主机跟接收主机上的应用）、序号（用以发送的包中哪部分是数据）以及校验和（用以判断数据是否被损坏）。随后将附加了TCP首部的包再发送给IP。</p>
+<h4 id="IP模块的处理">IP模块的处理</h4><p>IP将TCP传过来的TCP首部和TCP数据合起来当做自己的数据，并在TCP首部的前端加上自己的IP首部。因此，IP数据包中的IP首部后面紧跟着TCP首部，然后才是应用的数据首部和数据本身。IP首部中包含接收端IP地址以及发送端IP地址。紧随IP首部的还有用来判断其后面数据是TCP还是UDP的信息。</p>
+<h4 id="网络接口（以太网驱动）的处理">网络接口（以太网驱动）的处理</h4><p>从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附上以太网首部并进行发送处理。以太网首部中包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包将通过物理层传输给接收端。</p>
+<h4 id="经过数据链路的包">经过数据链路的包</h4><p>每个包首部中至少都会包含两个信息：一个是发送端和接收端地址，另一个是上一层的协议类型。经过每个协议分层时，都必须有识别包发送端和接收端的信息。以太网会用MAC地址，IP会用IP地址，而TCP/UDP会用端口号作为识别两端主机的地址。分层中包的结构如下所示：</p>
+<p><img src="/img/tcp.png" alt=""></p>
+<p>此外每个分层的包首部中还包含一个识别位，它是用来标识上一层协议的种类信息。例如以太网的包首部中的以太网类型，IP中的协议类型以及TCP/UDP中两个端口的端口号都起着识别协议类型的作用。</p>
+<h4 id="数据包接收处理">数据包接收处理</h4><p>包的接收流程是发送流程的逆序过程。</p>
+<h4 id="网络接口（以太网驱动）的处理-1">网络接口（以太网驱动）的处理</h4><p>主机收到以太网包以后，首先从以太网的包首部找到MAC地址判断是否为发给自己的包。如果不是则丢弃。而如果接收到了恰好是发送给自己的包，就查找以太网包首部中的类型域从而确定以太网协议所传送过来的数据类型（IP或其他诸如ARP的协议）。如果以太网首部的类型域包含了一个无法识别的协议类型，则丢弃数据。</p>
+<h4 id="IP模块的处理-1">IP模块的处理</h4><p>IP模块收到IP包首部以及后面的数据部分后，如果判断得出包首部中的IP地址与自己的IP地址匹配，则可接收数据并从中查找上一层的协议。如果上一层是TCP就将IP包首部之后的传给TCP处理；UDP类似。对于有路由器的情况，接收端地址往往不是自己的地址，此时需要借助路由控制表，在调查应该送达的主机或路由器以后再转发数据。</p>
+<h4 id="TCP模块的处理-1">TCP模块的处理</h4><p>在TCP模块中，首先会计算一下校验和，判断数据是否被破坏。然后检查是否在按序号接收数据。最后检查端口号，确定具体的应用程序。数据接收完毕之后，接收端返回一个“确认回执”给发送端。</p>
+<p>数据被完整地接收以后，会传给由端口号识别的应用程序。</p>
+<h4 id="应用程序的处理">应用程序的处理</h4><p>接收端应用程序会直接接收发送端发送的数据，如果确认是发送给自己的，则邮件会被保存到本机的硬盘上。如果保存能正常进行，那么会返回给一个“处理正常”的回执给发送端。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/15/理解有连接和无连接/" itemprop="url">
                   理解计算机网络中的传输方式
                 </a>
@@ -2074,305 +2219,6 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/11/06/HITS算法的Java实现/" itemprop="url">
-                  HITS算法的Java实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-11-06T22:33:46+08:00" content="2015-11-06">
-              2015-11-06
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
-                    <span itemprop="name">数据挖掘</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/11/06/HITS算法的Java实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/06/HITS算法的Java实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。</p>
-<h2 id="HITS算法的原理">HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
-<p>通过HITS算法名我们可以看出，它的工作原理是：通过链接发掘话题。HITS算法想要解决的问题是，在海量的网页中找到与用户查询主题相关的高质量Authority（权威）页面与Hub（目录）页面，尤其是 Authority 页面，因为这些页面代表了满足用户查询的高质量内容，搜索引擎就以此作为搜索结果返回给用户。</p>
-<p>通俗的来讲，对于“Authority”页面，是指与某个领域或者某个话题相关的高质量网页，比如搜索引擎领域，Google和百度首页即该领域的高质量网页，比如读书领域，当当和亚马逊首页即该领域的高质量网页。</p>
-<p>而对于Hub”页面，指的是包含了很多指向高质量“Authority”页面链接的网页，比如hao123首页可以认为是一个典型的高质量“Hub”网页。</p>
-<h2 id="HITS算法的思想:彼此之间相互增强关系">HITS算法的思想:彼此之间相互增强关系</h2><ol>
-<li><p>基本假设1：一个好的“Authority”页面会被很多好的“Hub”页面指向；</p>
-</li>
-<li><p>基本假设2：一个好的“Hub”页面会指向很多好的“Authority”页面；</p>
-</li>
-</ol>
-<h2 id="HITS算法的基本步骤">HITS算法的基本步骤</h2><ol>
-<li><p>接受一个用户查询的请求。HITS 算法与用户输入的查询请求密切相关，它的查询结果是动态生成的，而 PageRank 算法则与用户的查询无关。</p>
-</li>
-<li><p>将查询提交给某个现有的搜索引擎（或者是自己构造的检索系统），并在返回的搜索结果中，提取排名靠前的网页，得到一组与用户查询高度相关的初始网页集合，这个集合被称作为 root set。</p>
-</li>
-<li><p>建立 base set，凡是与根集内网页有直接链接指向关系的网页都被扩充进来，形成如下集合</p>
-</li>
-<li><p>计算：</p>
-</li>
-</ol>
-<p><img src="/img/11.jpg" alt=""></p>
-<h2 id="HITS算法的Java实现">HITS算法的Java实现</h2><p>算法实现类：</p>
-<pre><code>package org.tseg.search;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
-<span class="comment">/**
- * HITS链接分析算法工具类
- */</span>
-<span class="keyword">public</span> <span class="keyword">class</span> HITSTool {
-    <span class="comment">// 输入数据文件地址</span>
-    <span class="keyword">private</span> String filePath;
-    <span class="comment">// 网页个数</span>
-    <span class="keyword">private</span> <span class="keyword">int</span> pageNum;
-    <span class="comment">// 网页Authority权威值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] authority;
-    <span class="comment">// 网页hub中心值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] hub;
-    <span class="comment">// 链接矩阵关系</span>
-    <span class="keyword">private</span> <span class="keyword">int</span>[][] linkMatrix;
-    <span class="comment">// 网页种类</span>
-    <span class="keyword">private</span> ArrayList&lt;String&gt; pageClass;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">HITSTool</span><span class="params">(String filePath)</span> </span>{
-        <span class="keyword">this</span>.filePath = filePath;
-        readDataFile();
-    }
-    <span class="comment">/**
-     * 从文件中读取数据
-     */</span>
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFile</span><span class="params">()</span> </span>{
-        File file = <span class="keyword">new</span> File(filePath);
-        ArrayList&lt;String[]&gt; dataArray = <span class="keyword">new</span> ArrayList&lt;String[]&gt;();
-
-        <span class="keyword">try</span> {
-            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(file));
-            String str;
-            String[] tempArray;
-            <span class="keyword">while</span> ((str = in.readLine()) != null) {
-                tempArray = str.split(<span class="string">" "</span>);
-                dataArray.add(tempArray);
-            }
-            in.close();
-        } <span class="keyword">catch</span> (IOException e) {
-            e.getStackTrace();
-        }
-        pageClass = <span class="keyword">new</span> ArrayList&lt;&gt;();
-        <span class="comment">// 统计网页类型种数</span>
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
-            <span class="keyword">for</span> (String s : <span class="built_in">array</span>) {
-                <span class="keyword">if</span> (!pageClass.contains(s)) {
-                    pageClass.add(s);
-                }
-            }
-        }
-        <span class="keyword">int</span> i = <span class="number">0</span>;
-        <span class="keyword">int</span> j = <span class="number">0</span>;
-        pageNum = pageClass.size();
-        linkMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[pageNum][pageNum];
-        authority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        hub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            <span class="comment">// 初始时默认权威值和中心值都为1</span>
-            authority[k] = <span class="number">1</span>;
-            hub[k] = <span class="number">1</span>;
-        }
-
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
-
-            i = Integer.parseInt(<span class="built_in">array</span>[<span class="number">0</span>]);
-            j = Integer.parseInt(<span class="built_in">array</span>[<span class="number">1</span>]);
-
-            <span class="comment">// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接</span>
-            linkMatrix[i - <span class="number">1</span>][j - <span class="number">1</span>] = <span class="number">1</span>;
-        }
-    }
-    <span class="comment">/**
-     * 输出结果页面，也就是authority权威值最高的页面
-     */</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printResultPage</span><span class="params">()</span> </span>{
-        <span class="comment">// 最大Hub和Authority值，用于后面的归一化计算</span>
-        <span class="keyword">double</span> maxHub = <span class="number">0</span>;
-        <span class="keyword">double</span> maxAuthority = <span class="number">0</span>;
-        <span class="keyword">int</span> maxAuthorityIndex = <span class="number">0</span>;
-        <span class="comment">// 误差值，用于收敛判断</span>
-        <span class="keyword">double</span> error = Integer.MAX_VALUE;
-        <span class="keyword">double</span>[] newHub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        <span class="keyword">double</span>[] newAuthority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-
-        <span class="keyword">while</span> (error &gt; <span class="number">0.01</span> * pageNum) {
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                newHub[k] = <span class="number">0</span>;
-                newAuthority[k] = <span class="number">0</span>;
-            }
-
-            <span class="comment">// hub和authority值的更新计算</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pageNum; i++) {
-                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; pageNum; j++) {
-                    <span class="keyword">if</span> (linkMatrix[i][j] == <span class="number">1</span>) {
-                        newHub[i] += authority[j];
-                        newAuthority[j] += hub[i];
-                    }
-                }
-            }
-            maxHub = <span class="number">0</span>;
-            maxAuthority = <span class="number">0</span>;
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                <span class="keyword">if</span> (newHub[k] &gt; maxHub) {
-                    maxHub = newHub[k];
-                }
-
-                <span class="keyword">if</span> (newAuthority[k] &gt; maxAuthority) {
-                    maxAuthority = newAuthority[k];
-                    maxAuthorityIndex = k;
-                }
-            }
-
-            error = <span class="number">0</span>;
-            <span class="comment">// 归一化处理</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                newHub[k] /= maxHub;
-                newAuthority[k] /= maxAuthority;
-
-                error += Math.<span class="built_in">abs</span>(newHub[k] - hub[k]);
-                System.out.println(newAuthority[k] + <span class="string">":"</span> + newHub[k]);
-
-                hub[k] = newHub[k];
-                authority[k] = newAuthority[k];
-            }
-            System.out.println(<span class="string">"---------"</span>);
-        }
-        System.out.println(<span class="string">"****最终收敛的网页的权威值和中心值****"</span>);
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            System.out.println(<span class="string">"网页"</span> + pageClass.get(k) + <span class="string">":"</span> + authority[k] + <span class="string">":"</span> + hub[k]);
-        }
-        System.out.println(<span class="string">"权威值最高的网页为：网页"</span> + pageClass.get(maxAuthorityIndex));
-    }
-
-}
-</code></pre><p>主类：</p>
-<pre><code><span class="keyword">package</span> org.tseg.search;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-
-        String Path = <span class="string">"Users/pengshuang/Desktop/pagerank/input/HITS.txt"</span>;
-        HITSTool ht = <span class="keyword">new</span> HITSTool(Path);
-        ht.printResultPage();
-    }
-
-}
-</code></pre><p>输入文件示例：</p>
-<p><img src="/img/10.png" alt=""></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2418,7 +2264,7 @@ import java.util.ArrayList;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2435,7 +2281,7 @@ import java.util.ArrayList;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
