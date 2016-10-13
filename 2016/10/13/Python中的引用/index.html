@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Python," />
 
 
 
@@ -84,16 +84,19 @@
 
 
 
-<meta name="description" content="一直都想写个博客，记录一下平时生活学习过程中的点点滴滴，包括一些在学习过程遇到的问题，学习某个技术的一点感悟以及一些零零碎碎的读书笔记，希望自己能坚持下去。">
+<meta name="description" content="Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。
+事实上，当人们复制列表或字典时，就">
 <meta property="og:type" content="article">
-<meta property="og:title" content="开篇">
-<meta property="og:url" content="http://pengshuang.space/2015/10/24/开篇/index.html">
+<meta property="og:title" content="Python中的引用">
+<meta property="og:url" content="http://pengshuang.space/2016/10/13/Python中的引用/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="一直都想写个博客，记录一下平时生活学习过程中的点点滴滴，包括一些在学习过程遇到的问题，学习某个技术的一点感悟以及一些零零碎碎的读书笔记，希望自己能坚持下去。">
-<meta property="og:updated_time" content="2016-09-14T00:33:29.000Z">
+<meta property="og:description" content="Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。
+事实上，当人们复制列表或字典时，就">
+<meta property="og:updated_time" content="2016-10-13T02:16:42.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="开篇">
-<meta name="twitter:description" content="一直都想写个博客，记录一下平时生活学习过程中的点点滴滴，包括一些在学习过程遇到的问题，学习某个技术的一点感悟以及一些零零碎碎的读书笔记，希望自己能坚持下去。">
+<meta name="twitter:title" content="Python中的引用">
+<meta name="twitter:description" content="Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。
+事实上，当人们复制列表或字典时，就">
 
 
 
@@ -114,9 +117,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2015/10/24/开篇/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/13/Python中的引用/"/>
 
-  <title> 开篇 | 小沙文的博客 </title>
+  <title> Python中的引用 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +259,7 @@
             
             
               
-                开篇
+                Python中的引用
               
             
           </h1>
@@ -268,19 +271,38 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-24T09:58:03+08:00" content="2015-10-24">
-              2015-10-24
+            <time itemprop="dateCreated" datetime="2016-10-13T09:53:50+08:00" content="2016-10-13">
+              2016-10-13
             </time>
           </span>
 
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/编程语言/" itemprop="url" rel="index">
+                    <span itemprop="name">编程语言</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
           
 
           
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/10/24/开篇/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/24/开篇/" itemprop="commentsCount"></span>
+                <a href="/2016/10/13/Python中的引用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/13/Python中的引用/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -303,8 +325,69 @@
       
 
       
-        <p>一直都想写个博客，记录一下平时生活学习过程中的点点滴滴，包括一些在学习过程遇到的问题，学习某个技术的一点感悟以及一些零零碎碎的读书笔记，希望自己能坚持下去。</p>
+        <p>Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。</p>
+<p>事实上，当人们复制列表或字典时，就复制了对象列表的引用同，如果改变引用的值，则修改了原始的参数。</p>
+<p>为了简化内存管理，Python通过引用计数机制实现自动垃圾回收功能，Python中的每个对象都有一个引用计数，用来计数该对象在不同场所分别被引用了多少次。每当引用一次Python对象，相应的引用计数就增1，每当消毁一次Python对象，则相应的引用就减1，只有当引用计数为零时，才真正从内存中删除Python对象。</p>
+<h3 id="列表引用">列表引用</h3><p>示例一:</p>
+<pre><code>&gt;&gt;&gt; a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; b.append(<span class="number">4</span>)
+&gt;&gt;&gt; print b
+<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+&gt;&gt;&gt; print a
+<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+</code></pre><p>这里把a的值赋给了b，相当于把a的引用给了b，这样改变b的值也就改变了a的值。</p>
+<p>示例二:</p>
+<pre><code>&gt;&gt;&gt; a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+&gt;&gt;&gt; b = a + []
+&gt;&gt;&gt; b.append(<span class="number">4</span>)
+&gt;&gt;&gt; print b
+<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+&gt;&gt;&gt; print a
+<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span>
+</code></pre><p>这里把 <strong>a+[ ]</strong> 的值赋给了b， <strong>a+[ ]</strong> 相当于一个新的变量，而不是a的引用传递，所以改变b的值不会同时也改变a。</p>
+<p>示例三:</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">add_list</span><span class="params">(p)</span>:</span>
+     p = p + [<span class="number">1</span>]
+p1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+add_list(p1)
+<span class="keyword">print</span> p1
+<span class="comment"># output: [1, 2, 3]</span>
 
+<span class="function"><span class="keyword">def</span> <span class="title">add_list</span><span class="params">(p)</span>:</span>
+    p += [<span class="number">1</span>]
+p2 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+proc2(p2)
+<span class="keyword">print</span> p2
+<span class="comment"># output: [1, 2, 3, 1]</span>
+</code></pre><p>这主要是由于“=”操作符会新建一个新的变量保存赋值结果，然后再把引用名指向“=”左边，即修改了原来的p引用，使p成为指向新赋值变量的引用。而+=不会，直接修改了原来p引用的内容，事实上+=和=在python内部使用了不同的实现函数。</p>
+<h3 id="字典引用">字典引用</h3><p>示例一:</p>
+<pre><code><span class="prompt">&gt;&gt;</span>&gt; a = {<span class="string">"a"</span><span class="symbol">:</span><span class="number">1</span>,<span class="string">"b"</span><span class="symbol">:</span><span class="number">2</span>}
+<span class="prompt">&gt;&gt;</span>&gt; b = a
+<span class="prompt">&gt;&gt;</span>&gt; b[<span class="string">"c"</span>] = <span class="number">3</span>
+<span class="prompt">&gt;&gt;</span>&gt; b
+<span class="symbol">output:</span> {<span class="string">'a'</span><span class="symbol">:</span> <span class="number">1</span>, <span class="string">'c'</span><span class="symbol">:</span> <span class="number">3</span>, <span class="string">'b'</span><span class="symbol">:</span> <span class="number">2</span>}
+<span class="prompt">&gt;&gt;</span>&gt; a
+<span class="symbol">output:</span> {<span class="string">'a'</span><span class="symbol">:</span> <span class="number">1</span>, <span class="string">'c'</span><span class="symbol">:</span> <span class="number">3</span>, <span class="string">'b'</span><span class="symbol">:</span> <span class="number">2</span>}
+</code></pre><p>同列表引用一样，传递字典的时候其实传递的也是引用。</p>
+<p>示例二:</p>
+<pre><code>a = []
+b = {<span class="string">'num'</span>:<span class="number">0</span>, <span class="string">'sqrt'</span>:<span class="number">0</span>}
+resurse = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+<span class="keyword">for</span> i <span class="keyword">in</span> resurse:
+  b[<span class="string">'num'</span>] = i
+  b[<span class="string">'sqrt'</span>] = i * i
+  a.append(b)
+print a
+output: [{<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}]
+</code></pre><p>我们可能会觉得有点奇怪，因为我们想要的值可能是这个:</p>
+<pre><code>output: [{<span class="string">'num'</span>: <span class="number">1</span>, <span class="string">'sqrt'</span>: <span class="number">1</span>}, {<span class="string">'num'</span>: <span class="number">2</span>, <span class="string">'sqrt'</span>: <span class="number">4</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}]
+</code></pre><p>这是由于a中的元素就是b的引用，那怎么办呢？可以这样来修改:</p>
+<pre><code><span class="tag">a</span> = []
+resurse = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+<span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> resurse:
+    <span class="tag">a</span>.<span class="function"><span class="title">append</span><span class="params">({<span class="string">"num"</span>: i, <span class="string">"sqrt"</span>: i * i})</span></span>
+</code></pre>
       
     </div>
 
@@ -324,18 +407,24 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2016/10/09/Spark-RDD学习-aggregate函数/" rel="next" title="Spark RDD学习: aggregate函数">
+                <i class="fa fa-chevron-left"></i> Spark RDD学习: aggregate函数
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/10/24/用Java实现类似linux下的wget工具/" rel="prev" title="用Java实现类似linux下的wget工具">
-                用Java实现类似linux下的wget工具 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -350,10 +439,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/10/24/开篇/"
-     data-title="开篇"
+        <div class="ds-share flat" data-thread-key="2016/10/13/Python中的引用/"
+     data-title="Python中的引用"
      data-content=""
-     data-url="http://pengshuang.space/2015/10/24/开篇/">
+     data-url="http://pengshuang.space/2016/10/13/Python中的引用/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -380,8 +469,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/10/24/开篇/"
-           data-title="开篇" data-url="http://pengshuang.space/2015/10/24/开篇/">
+      <div class="ds-thread" data-thread-key="2016/10/13/Python中的引用/"
+           data-title="Python中的引用" data-url="http://pengshuang.space/2016/10/13/Python中的引用/">
       </div>
     
   </div>
@@ -506,7 +595,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#列表引用"><span class="nav-number">1.</span> <span class="nav-text">列表引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字典引用"><span class="nav-number">2.</span> <span class="nav-text">字典引用</span></a></li></ol></div>
             
           </div>
         </section>
