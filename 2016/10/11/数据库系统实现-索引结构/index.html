@@ -94,7 +94,8 @@
 <meta property="og:description" content="数据库系统中最常用的索引结构为：B-树 和 散列表索引。最近在看《数据库系统实现》这本书，特此学习总结一下。
 1. 索引结构基础数据库存储结构由文件构成，一个数据文件可以用来存储一个关系。一个数据文件可能拥有一个或多个索引文件，每个索引文件建立查找键和数据记录之间的关联，查找键的指针指向与查找键具有相同属性值的记录。
 索引的个数视情况而定，可以稠密也可以稀疏。即数据文件中每个记录在索引文件中都设有">
-<meta property="og:updated_time" content="2016-10-11T14:53:15.000Z">
+<meta property="og:image" content="http://pengshuang.space/img/index.png">
+<meta property="og:updated_time" content="2016-10-13T03:10:12.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库系统实现:索引结构">
 <meta name="twitter:description" content="数据库系统中最常用的索引结构为：B-树 和 散列表索引。最近在看《数据库系统实现》这本书，特此学习总结一下。
@@ -326,8 +327,22 @@
           
 
           
+          &nbsp; | &nbsp;
+          <span id="/2016/10/11/数据库系统实现-索引结构/"class="leancloud_visitors" data-flag-title="数据库系统实现:索引结构">
+          &nbsp;阅读次数
+          </span>
+          
 
           
+          
+             <span id="/2016/10/11/数据库系统实现-索引结构/" class="leancloud_visitors" data-flag-title="数据库系统实现:索引结构">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
           
 
           
@@ -345,7 +360,8 @@
         <p>数据库系统中最常用的索引结构为：B-树 和 散列表索引。最近在看《数据库系统实现》这本书，特此学习总结一下。</p>
 <h3 id="1-_索引结构基础">1. 索引结构基础</h3><p>数据库存储结构由文件构成，一个数据文件可以用来存储一个关系。一个数据文件可能拥有一个或多个索引文件，每个索引文件建立查找键和数据记录之间的关联，查找键的指针指向与查找键具有相同属性值的记录。</p>
 <p>索引的个数视情况而定，可以稠密也可以稀疏。即数据文件中每个记录在索引文件中都设有一个索引项；索引也可以是稀疏的，即数据文件中只有部分记录在索引文件中表示出来，通常为每个数据块在索引文件中设一个索引项。索引还可以是“主索引”或者“辅助索引”。主索引能确定记录在数据文件中的位置，而辅助索引不能。通常，我们会在关系的主键上建立主索引，而在其他的属性上建立辅助索引。</p>
-<h4 id="1-1_顺序文件">1.1 顺序文件</h4><p><strong>顺序文件</strong>是对关系中的元组按主键进行排序而生成的文件。关系中的元组按照这个此项分布在多个数据块中。</p>
+<h4 id="1-1_顺序文件">1.1 顺序文件</h4><p><strong>顺序文件</strong>是对关系中的元组按主键进行排序而生成的文件。关系中的元组按照这个次序分布在多个数据块中。如图3-2所示，它的右半部分显示了一个顺序文件，这里假定主键是整数，并且每个存储块中只可存放两条记录。这里我们以尽量紧凑的方式将数据记录存入数据块中，但是在一般情况下，我们会为每个数据块预留一些空间，以容纳之后可能插入关系中的新元组。还有一种方法是将新插入的元组存储在溢出块中。</p>
+<p><img src="/img/index.png" alt=""></p>
 
       
     </div>
@@ -708,7 +724,197 @@
   
 
   
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DKbLgBme7UkAx9JX6sM3D4Hj-gzGzoHsz", "GXjJ9Ox3pUGI9PJhm6CNfJGN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
 
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+
+<!-- custom analytics part create by xiamo -->
+<script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+<script>AV.initialize("DKbLgBme7UkAx9JX6sM3D4Hj-gzGzoHsz", "GXjJ9Ox3pUGI9PJhm6CNfJGN");</script>
+<script>
+function showTime(Counter) {
+	var query = new AV.Query(Counter);
+	$(".leancloud_visitors").each(function() {
+		var url = $(this).attr("id").trim();
+		query.equalTo("url", url);
+		query.find({
+			success: function(results) {
+				if (results.length == 0) {
+					var content = '0 ' + $(document.getElementById(url)).text();
+					$(document.getElementById(url)).text(content);
+					return;
+				}
+				for (var i = 0; i < results.length; i++) {
+					var object = results[i];
+					var content = object.get('time') + ' ' + $(document.getElementById(url)).text();
+					$(document.getElementById(url)).text(content);
+				}
+			},
+			error: function(object, error) {
+				console.log("Error: " + error.code + " " + error.message);
+			}
+		});
+
+	});
+}
+
+function addCount(Counter) {
+	var Counter = AV.Object.extend("Counter");
+	url = $(".leancloud_visitors").attr('id').trim();
+	title = $(".leancloud_visitors").attr('data-flag-title').trim();
+	var query = new AV.Query(Counter);
+	query.equalTo("url", url);
+	query.find({
+		success: function(results) {
+			if (results.length > 0) {
+				var counter = results[0];
+				counter.fetchWhenSave(true);
+				counter.increment("time");
+				counter.save(null, {
+					success: function(counter) {
+						var content =  counter.get('time') + ' ' + $(document.getElementById(url)).text();
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(counter, error) {
+						console.log('Failed to save Visitor num, with error message: ' + error.message);
+					}
+				});
+			} else {
+				var newcounter = new Counter();
+				newcounter.set("title", title);
+				newcounter.set("url", url);
+				newcounter.set("time", 1);
+				newcounter.save(null, {
+					success: function(newcounter) {
+					    console.log("newcounter.get('time')="+newcounter.get('time'));
+						var content = newcounter.get('time') + ' ' + $(document.getElementById(url)).text();
+						$(document.getElementById(url)).text(content);
+					},
+					error: function(newcounter, error) {
+						console.log('Failed to create');
+					}
+				});
+			}
+		},
+		error: function(error) {
+			console.log('Error:' + error.code + " " + error.message);
+		}
+	});
+}
+$(function() {
+	var Counter = AV.Object.extend("Counter");
+	if ($('.leancloud_visitors').length == 1) {
+		addCount(Counter);
+	} else if ($('.post-title-link').length > 1) {
+		showTime(Counter);
+	}
+}); 
+</script>
 
 
 </body>
