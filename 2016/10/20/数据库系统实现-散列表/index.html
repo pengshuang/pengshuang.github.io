@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="RDD," />
+  <meta name="keywords" content="散列表," />
 
 
 
@@ -84,28 +84,20 @@
 
 
 
-<meta name="description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
+<meta name="description" content="有许多涉及散列表的数据结构可用作索引。假定一个散列函数 h， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为h(K)的桶表中来存储它。
+辅助散列表有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark RDD学习: aggregate函数">
-<meta property="og:url" content="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/index.html">
+<meta property="og:title" content="数据库系统实现: 散列表">
+<meta property="og:url" content="http://pengshuang.space/2016/10/20/数据库系统实现-散列表/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
-<meta property="og:updated_time" content="2016-10-09T03:24:27.000Z">
+<meta property="og:description" content="有许多涉及散列表的数据结构可用作索引。假定一个散列函数 h， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为h(K)的桶表中来存储它。
+辅助散列表有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要">
+<meta property="og:image" content="http://pengshuang.space/img/hash1.png">
+<meta property="og:updated_time" content="2016-10-20T12:48:36.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark RDD学习: aggregate函数">
-<meta name="twitter:description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
+<meta name="twitter:title" content="数据库系统实现: 散列表">
+<meta name="twitter:description" content="有许多涉及散列表的数据结构可用作索引。假定一个散列函数 h， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为h(K)的桶表中来存储它。
+辅助散列表有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要">
 
 
 
@@ -126,9 +118,9 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/20/数据库系统实现-散列表/"/>
 
-  <title> Spark RDD学习: aggregate函数 | 小沙文的博客 </title>
+  <title> 数据库系统实现: 散列表 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -268,7 +260,7 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
             
             
               
-                Spark RDD学习: aggregate函数
+                数据库系统实现: 散列表
               
             
           </h1>
@@ -280,8 +272,8 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-09T11:24:07+08:00" content="2016-10-09">
-              2016-10-09
+            <time itemprop="dateCreated" datetime="2016-10-20T16:03:50+08:00" content="2016-10-20">
+              2016-10-20
             </time>
           </span>
 
@@ -294,8 +286,8 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -310,8 +302,8 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/09/Spark-RDD学习-aggregate函数/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="commentsCount"></span>
+                <a href="/2016/10/20/数据库系统实现-散列表/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/20/数据库系统实现-散列表/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -321,7 +313,7 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
 
           
           
-             <span id="/2016/10/09/Spark-RDD学习-aggregate函数/" class="leancloud_visitors" data-flag-title="Spark RDD学习: aggregate函数">
+             <span id="/2016/10/20/数据库系统实现-散列表/" class="leancloud_visitors" data-flag-title="数据库系统实现: 散列表">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -343,45 +335,46 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
       
 
       
-        <p>最近在做项目的时候遇到了<strong>Spark RDD</strong>里面的一个<strong>aggregate</strong>函数，觉得它的用法挺有意思的，在此记录一下。</p>
-<p>Spark 文档中对 <strong>aggregate</strong>的函数定义如下：</p>
-<pre><code><span class="function"><span class="keyword">def</span> <span class="title">aggregate</span>[<span class="title">U</span>]<span class="params">(zeroValue: U)</span><span class="params">(seqOp: <span class="params">(U, T)</span> =&gt; U, combOp: <span class="params">(U, U)</span> 
-=&gt; U)</span><span class="params">(implicit arg0: ClassTag[U])</span>:</span> U
-</code></pre><p>注释：</p>
-<pre><code><span class="type">Aggregate</span> the elements <span class="keyword">of</span> each partition, <span class="keyword">and</span> then the results <span class="keyword">for</span> 
-all the partitions, <span class="keyword">using</span> given combine functions <span class="keyword">and</span> a neutral 
-<span class="string">"zero value"</span>. 
-<span class="type">This</span> function can <span class="keyword">return</span> a different <span class="literal">result</span> <span class="keyword">type</span>, U, 
-than the <span class="keyword">type</span> <span class="keyword">of</span> this <span class="type">RDD</span>, T. 
-<span class="type">Thus</span>, we need one operation <span class="keyword">for</span> merging a T into an U 
-<span class="keyword">and</span> one operation <span class="keyword">for</span> merging two U's, <span class="keyword">as</span> <span class="keyword">in</span> 
-<span class="type">Scala</span>.<span class="type">TraversableOnce</span>. <span class="type">Both</span> <span class="keyword">of</span> these functions are allowed to 
-modify <span class="keyword">and</span> <span class="keyword">return</span> their first argument instead <span class="keyword">of</span> creating a new U 
-to avoid memory allocation. 
-</code></pre><p><strong>aggregate</strong>函数首先对每个分区里面的元素进行聚合，然后用combine函数将每个分区的结果和初始值（zeroValue）进行combine操作。这个操作返回的类型不需要和RDD中元素类型一致，所以在使用 <strong>aggregate()</strong>时，需要提供我们期待的返回类型的初始值，然后通过一个函数把RDD中的元素累加起来􏵧􏲢放入累加器􏵌。考虑到每个节点是在本地进行累加的，最终还需要提供第二个函数来将累加器两两合并。</p>
-<p>其中<strong>seqOp</strong>操作会聚合各分区中的元素，然后<strong>combOp</strong>操作会把所有分区的聚合结果再次聚合，两个操作的初始值都是<strong>zeroValue</strong>. <strong>seqOp</strong>的操作是遍历分区中的所有元素(T)，第一个T跟<strong>zeroValue</strong>做操作，结果再作为与第二个T做操作的<strong>zeroValue</strong>，直到遍历完整个分区。<strong>combOp</strong>操作是把各分区聚合的结果，再聚合。<strong>aggregate</strong>函数返回一个跟<strong>RDD</strong>不同类型的值。因此，需要一个操作<strong>seqOp</strong>来把分区中的元素T合并成一个U，另外一个操作<strong>combOp</strong>把所有U聚合。</p>
-<p>下面举一个利用aggreated求平均数的例子:</p>
-<pre><code>val rdd = <span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)
-val input = sc.parallelize(rdd)
-val <span class="literal">result</span> = input.aggregate((<span class="number">0</span>,<span class="number">0</span>))(
-(acc,value) =&gt; (acc._1 + value, acc._2 + <span class="number">1</span>),
-(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)
-)
-<span class="literal">result</span>: (<span class="type">Int</span>, <span class="type">Int</span>) = (<span class="number">10</span>, <span class="number">4</span>)
-val avg = <span class="literal">result</span>._1 / <span class="literal">result</span>._2
-avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="number">5</span>
-</code></pre><p>程序的详细过程大概如下：</p>
+        <p>有许多涉及散列表的数据结构可用作索引。假定一个<em>散列函数 h</em>， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为<em>h(K)</em>的桶表中来存储它。</p>
+<h3 id="辅助散列表">辅助散列表</h3><p>有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要的方面与主存中的散列表存在区别。首先，<strong>桶数组由存储块组成而不是由指向链表头的指针组成</strong>。通过散列函数 <em>h</em> 散列到某个桶中的记录被放到该桶的存储块中，如果桶中有太多的记录，那么可以给该桶加溢出块的链以存放更多的记录。</p>
+<p>我们将假定，只要给一个 <em>i</em>，桶 <em>i</em> 的第一个存储块的位置就可以被找到。例如，主存中可以有一个指向存储块的指针数组，数组项以桶号为序号。另一种可能是把每个桶第一个存储块存放在磁盘上某固定的、连续的位置，这样我们就可以根据整数i计算出桶 <em>i</em> 的位置。</p>
+<h3 id="散列表的插入">散列表的插入</h3><p>当一个查找键为K的新纪录需要被插入时，我们计算<em>h(K)</em>。如果桶号为<em>h(K)</em>的桶还有空间，我们就把该记录放到此桶的存储块中或在其存储块没有空间时存储到块链上的某个溢出块中。如果桶的所有存储块都没有空间，我们就增加一个新的溢出块到该桶的链上，并把新记录存入该块。</p>
+<h3 id="散列表的删除">散列表的删除</h3><p>删除查找键值为K的记录与插入操作的方式相同。我们找到桶号为<em>h(K)</em>的桶且从中搜索查找键为K的记录，继而将找到的记录删除。如果我们可以将记录在块中移动，那么删除记录后，我们可选择合并同一链上的存储块。</p>
+<h3 id="散列表索引的效率">散列表索引的效率</h3><p>理想的情况是有足够的桶，绝大多数桶都只由单个块组成。如果这样，那么一般的查询只需一次磁盘I/O，且文件的插入和删除也只需两次磁盘I/O。这样的结果比直接用稀疏索引、稠密索引或<strong>B - 树</strong>好的多（尽管散列表不能像<strong>B - 树</strong>那样支持范围查询）</p>
+<p>但是如果文件不断增长，那么最终就会出现一般的桶的链表中都有许多块的情况。如果这样，我们就需要在块的长链表中查找，每个块至少需要一次磁盘I/O。因此，我们就必须设法减少每个桶的块数。所要进而就要引入<strong>动态散列表</strong>，他们允许B改变，使B近似于记录总数除以块中能容纳的记录数所得到的商。即每个桶大约有一个存储块。</p>
+<h3 id="可扩展散列表">可扩展散列表</h3><p>可扩展散列表是动态散列表的一种，相比静态散列表，它主要增加了：</p>
 <ol>
-<li>首先定义一个初始值 (0, 0)，即我们期待的返回类型的初始值。</li>
-<li><p><strong>(acc,value) =&gt; (acc._1 + value, acc._2 + 1)</strong>， <strong>value</strong>是函数定义里面的<strong>T</strong>，这里是List里面的元素。所以<strong>acc._1 + value, acc._2 + 1</strong>的过程如下：</p>
-<pre><code><span class="number">1.</span>  <span class="number">0</span>+<span class="number">1</span>,  <span class="number">0</span>+<span class="number">1</span>
-<span class="number">2.</span>  <span class="number">1</span>+<span class="number">2</span>,  <span class="number">1</span>+<span class="number">1</span>
-<span class="number">3.</span>  <span class="number">3</span>+<span class="number">3</span>,  <span class="number">2</span>+<span class="number">1</span>
-<span class="number">4.</span>  <span class="number">6</span>+<span class="number">4</span>,  <span class="number">3</span>+<span class="number">1</span>
-</code></pre></li>
-<li><p>结果为 (10,4)。在实际Spark执行中是分布式计算，可能会把List分成多个分区，假如3个，p1(1,2), p2(3), p3(4)，经过计算各分区的的结果 (3,2), (3,1), (4,1)，这样，执行 <strong>(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)</strong> 就是 <strong>(3+3+4,2+1+1)</strong> 即 <strong>(10,4)</strong>，然后再计算平均值。 </p>
-</li>
+<li>为桶引入了一个间接层，即用一个指向块的指针数组来表示桶，而不是用数据块本身组成的数组来表示桶。</li>
+<li>指针数组能增长，它的长度总是2的幂，因而数组没增长一次，桶的数目就翻倍。</li>
+<li>不过，并非每个桶都有一个数据块；如果某些桶中的所有记录可以放到一个块中，那么这些桶可能共享一个块。</li>
+<li>散列函数<em>h</em>为每个键计算一个K位二进制序列，该K足够大，比如32。但是，桶的数目总是使用从序列第一位或最后一位算起的若干位，此位数小于K，比如说是第 <em>i</em> 位。也就是说，当 <em>i</em> 是使用的位数时，桶数组将有2的i次方个项。</li>
 </ol>
+<p>下图为一个小的可扩展散列表，</p>
+<p><img src="/img/hash1.png" alt=""> </p>
+<p>为简单起见，我们假设 K = 4，即散列函数 h 只产生4位二进制序列。当前使用的只有其中一位。正如桶上标记的，i = 1。因此桶数组只有2个项，一个对应 0，一个对应 1。</p>
+<p>桶数组中的项指向两个块。第一块存放当前所有查找键被散列成以 0 开头的二进制序列的记录；第二个块存放所有查找键被散列成以 1 开头的二进制序列的记录。其中每个存储块的”小方块”中都出现了数字 1 ， 这个数字表明由散列函数得到的位序列中有多少位用于确定记录在该块中的成员资格。随着散列表的增长，不同块中需要考虑的位数可能不同。也就是说，桶数组的大小由我们正在使用的最大二进制位数来决定，但有些块可能使用较少的位数。</p>
+<h3 id="可扩展散列表的插入">可扩展散列表的插入</h3><p>可扩展散列表的插入开始时类似静态散列表的插入。为了插入键值为K的记录，我们计算出 <em>h(k)</em>，取出这一二进制位序列的前 <em>i</em> 位，并找到桶数组中序号为 <em>i</em> 的项。注意，因为 <em>i</em> 作为数据结构的一部分保存，我们能确定 <em>i</em>。</p>
+<p>我们根据同数组中该项的指针找到某个存储块 B。如果B 中还有存放新记录的空间，我们就把心记录存入，而插入也就完成了。如果B 中没有空间，那么视数字 <em>j</em> 的不同有两种可能，数组 <em>j</em>表明散列值中有多少位用于确定存储块B的成员资格， <em>j</em>的值即那个在每个存储块的小方块中可以找到的那个值。</p>
+<p>插入的步骤如下：</p>
+<p>如果 j &lt; i，那么不必对桶数组做什么变化。我们：</p>
+<p>a) 将块B分裂成两个存储块。</p>
+<p>b) 根据记录散列值的第( j+1) 位，将B中记录分配到这两个存储块中，该位为 0 的记录保留在B中，而该位为 1 的记录则放入到新块中。</p>
+<p>c) 把( j+1) 存入这两个存储块的小方块中，以表明用于确定成员资格的二进制位数字。</p>
+<p>d) 调整桶数组中的指针，使原来指向块 B的项指向块B 或新块， 这由项的第( j+1)位决定。</p>
+<p>如果  j = i，那么我们必须先将 i 加 1。我们使桶数组长度翻一倍，因此数组中现有2的( i+1)次方个项。假定 w 是以前的桶数组中作为某项序号的 i 位二进制位序列。在新桶数组中，序号为w0 和 w1的项都指向原 w 项指向的块。也就是，这2个新项共享一个存储块，而存储块本身没有变化。该块的存储资格仍然按原先的位数确定。最后，仍然按第一种情况来分裂B。</p>
+<h3 id="线性散列表">线性散列表</h3><p>可扩展散列表最大的好处在于当查找一个记录时，我们总是只需要查找一个数据块。我们还需要查找到一个桶数组的项，但如果桶数组小到可以存放在主存中，那么访问桶数组就不需要进行磁盘 I/O。然而，可扩展散列表也有一些缺点：</p>
+<ol>
+<li>当桶数组需要翻倍时，要做大量的工作。这些工作会阻碍对数据文件的访问，或是使某些插入看来花费很长的时间。</li>
+<li>当桶数翻倍后，它在主存中可能就装不下了，或者把其他的一些我们需要保存在主存的数据挤出去。其结果是，一个运行良好的系统可能突然之间每个操作所需磁盘I/O开始大增。</li>
+<li>如果每块的记录数很少，那么很有可能某一块的分裂比在逻辑上讲需要分裂的时间提前许多。例如，如果像我们使用的例子，块中可以存放2个记录，即使记录的总数远小于2的20次方，也有可能出现三个记录的前20位二进制位序列一样。在这种情况下，我们不得不使用 i = 20 和 100万个桶数组项，尽管存有记录的块数远小于100万。</li>
+</ol>
+<p>有一种线性散列的策略，桶的增长较为缓慢。它的特点主要有：</p>
+<ul>
+<li>桶数 n 的选择总是使存储块的平均记录数保持与存储块所能容纳的记录总数成一个固定的比例，如 80%。</li>
+<li>由于存储块并不总是可以分裂，所以允许有溢出块，尽管每个桶的平均溢出块数远下于1。</li>
+<li>用来作桶数组项序号的二进制位数是[log2n]，其中 n 是当前的桶数。这些位总是从散列函数得到的位序列的右(低位)端开始取。</li>
+<li>假定散列函数值的 i 位正在用来给桶数组项编号，且有一个键值为 K 的记录想要插入到编号为a1a2….ai的桶中；即a1a2…ai是h(K)的后 i 位。那么，把 a1a2…ai 当作二进制整数，设它为m。如果 m &lt; n，那么编号为 m 的桶存在并把记录存入该桶中。如果 n &lt;= m &lt; 2^i，那么 m 桶还不存在，因此我们把记录存入桶 m - 2^i-1，也就是当把我们a1(它肯定是1)改为0时对应的桶。</li>
+</ul>
 
       
     </div>
@@ -404,7 +397,7 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
       
         <div class="post-tags">
           
-            <a href="/tags/RDD/" rel="tag">#RDD</a>
+            <a href="/tags/散列表/" rel="tag">#散列表</a>
           
         </div>
       
@@ -413,17 +406,13 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/08/GraphX学习/" rel="next" title="GraphX学习:基础知识">
-                <i class="fa fa-chevron-left"></i> GraphX学习:基础知识
+              <a href="/2016/10/14/数据系统实现-B-树详解/" rel="next" title="数据系统实现: B - 树详解">
+                <i class="fa fa-chevron-left"></i> 数据系统实现: B - 树详解
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/11/数据库系统实现-索引结构/" rel="prev" title="数据库系统实现:索引结构">
-                数据库系统实现:索引结构 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -438,10 +427,10 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/"
-     data-title="Spark RDD学习: aggregate函数"
+        <div class="ds-share flat" data-thread-key="2016/10/20/数据库系统实现-散列表/"
+     data-title="数据库系统实现: 散列表"
      data-content=""
-     data-url="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/">
+     data-url="http://pengshuang.space/2016/10/20/数据库系统实现-散列表/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -468,8 +457,8 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/"
-           data-title="Spark RDD学习: aggregate函数" data-url="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/">
+      <div class="ds-thread" data-thread-key="2016/10/20/数据库系统实现-散列表/"
+           data-title="数据库系统实现: 散列表" data-url="http://pengshuang.space/2016/10/20/数据库系统实现-散列表/">
       </div>
     
   </div>
@@ -602,7 +591,7 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#辅助散列表"><span class="nav-number">1.</span> <span class="nav-text">辅助散列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列表的插入"><span class="nav-number">2.</span> <span class="nav-text">散列表的插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列表的删除"><span class="nav-number">3.</span> <span class="nav-text">散列表的删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#散列表索引的效率"><span class="nav-number">4.</span> <span class="nav-text">散列表索引的效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可扩展散列表"><span class="nav-number">5.</span> <span class="nav-text">可扩展散列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可扩展散列表的插入"><span class="nav-number">6.</span> <span class="nav-text">可扩展散列表的插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性散列表"><span class="nav-number">7.</span> <span class="nav-text">线性散列表</span></a></li></ol></div>
             
           </div>
         </section>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="RDD," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,28 +84,15 @@
 
 
 
-<meta name="description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Spark RDD学习: aggregate函数">
-<meta property="og:url" content="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/index.html">
+<meta name="description" content="在路上，慢慢走！">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小沙文的博客">
+<meta property="og:url" content="http://pengshuang.space/tags/散列表/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
-<meta property="og:updated_time" content="2016-10-09T03:24:27.000Z">
+<meta property="og:description" content="在路上，慢慢走！">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark RDD学习: aggregate函数">
-<meta name="twitter:description" content="最近在做项目的时候遇到了Spark RDD里面的一个aggregate函数，觉得它的用法挺有意思的，在此记录一下。
-Spark 文档中对 aggregate的函数定义如下：
-def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U) 
-=&amp;gt; U)(implicit arg0: ClassTag[U]): U
-注释：">
+<meta name="twitter:title" content="小沙文的博客">
+<meta name="twitter:description" content="在路上，慢慢走！">
 
 
 
@@ -126,9 +113,9 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/"/>
+  <link rel="canonical" href="http://pengshuang.space/tags/散列表/"/>
 
-  <title> Spark RDD学习: aggregate函数 | 小沙文的博客 </title>
+  <title> 标签: 散列表 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -149,7 +136,7 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -247,218 +234,46 @@ def aggregate[U](zeroValue: U)(seqOp: (U, T) =&amp;gt; U, combOp: (U, U)
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                Spark RDD学习: aggregate函数
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-09T11:24:07+08:00" content="2016-10-09">
-              2016-10-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/09/Spark-RDD学习-aggregate函数/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/09/Spark-RDD学习-aggregate函数/" class="leancloud_visitors" data-flag-title="Spark RDD学习: aggregate函数">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        <p>最近在做项目的时候遇到了<strong>Spark RDD</strong>里面的一个<strong>aggregate</strong>函数，觉得它的用法挺有意思的，在此记录一下。</p>
-<p>Spark 文档中对 <strong>aggregate</strong>的函数定义如下：</p>
-<pre><code><span class="function"><span class="keyword">def</span> <span class="title">aggregate</span>[<span class="title">U</span>]<span class="params">(zeroValue: U)</span><span class="params">(seqOp: <span class="params">(U, T)</span> =&gt; U, combOp: <span class="params">(U, U)</span> 
-=&gt; U)</span><span class="params">(implicit arg0: ClassTag[U])</span>:</span> U
-</code></pre><p>注释：</p>
-<pre><code><span class="type">Aggregate</span> the elements <span class="keyword">of</span> each partition, <span class="keyword">and</span> then the results <span class="keyword">for</span> 
-all the partitions, <span class="keyword">using</span> given combine functions <span class="keyword">and</span> a neutral 
-<span class="string">"zero value"</span>. 
-<span class="type">This</span> function can <span class="keyword">return</span> a different <span class="literal">result</span> <span class="keyword">type</span>, U, 
-than the <span class="keyword">type</span> <span class="keyword">of</span> this <span class="type">RDD</span>, T. 
-<span class="type">Thus</span>, we need one operation <span class="keyword">for</span> merging a T into an U 
-<span class="keyword">and</span> one operation <span class="keyword">for</span> merging two U's, <span class="keyword">as</span> <span class="keyword">in</span> 
-<span class="type">Scala</span>.<span class="type">TraversableOnce</span>. <span class="type">Both</span> <span class="keyword">of</span> these functions are allowed to 
-modify <span class="keyword">and</span> <span class="keyword">return</span> their first argument instead <span class="keyword">of</span> creating a new U 
-to avoid memory allocation. 
-</code></pre><p><strong>aggregate</strong>函数首先对每个分区里面的元素进行聚合，然后用combine函数将每个分区的结果和初始值（zeroValue）进行combine操作。这个操作返回的类型不需要和RDD中元素类型一致，所以在使用 <strong>aggregate()</strong>时，需要提供我们期待的返回类型的初始值，然后通过一个函数把RDD中的元素累加起来􏵧􏲢放入累加器􏵌。考虑到每个节点是在本地进行累加的，最终还需要提供第二个函数来将累加器两两合并。</p>
-<p>其中<strong>seqOp</strong>操作会聚合各分区中的元素，然后<strong>combOp</strong>操作会把所有分区的聚合结果再次聚合，两个操作的初始值都是<strong>zeroValue</strong>. <strong>seqOp</strong>的操作是遍历分区中的所有元素(T)，第一个T跟<strong>zeroValue</strong>做操作，结果再作为与第二个T做操作的<strong>zeroValue</strong>，直到遍历完整个分区。<strong>combOp</strong>操作是把各分区聚合的结果，再聚合。<strong>aggregate</strong>函数返回一个跟<strong>RDD</strong>不同类型的值。因此，需要一个操作<strong>seqOp</strong>来把分区中的元素T合并成一个U，另外一个操作<strong>combOp</strong>把所有U聚合。</p>
-<p>下面举一个利用aggreated求平均数的例子:</p>
-<pre><code>val rdd = <span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)
-val input = sc.parallelize(rdd)
-val <span class="literal">result</span> = input.aggregate((<span class="number">0</span>,<span class="number">0</span>))(
-(acc,value) =&gt; (acc._1 + value, acc._2 + <span class="number">1</span>),
-(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)
-)
-<span class="literal">result</span>: (<span class="type">Int</span>, <span class="type">Int</span>) = (<span class="number">10</span>, <span class="number">4</span>)
-val avg = <span class="literal">result</span>._1 / <span class="literal">result</span>._2
-avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="number">5</span>
-</code></pre><p>程序的详细过程大概如下：</p>
-<ol>
-<li>首先定义一个初始值 (0, 0)，即我们期待的返回类型的初始值。</li>
-<li><p><strong>(acc,value) =&gt; (acc._1 + value, acc._2 + 1)</strong>， <strong>value</strong>是函数定义里面的<strong>T</strong>，这里是List里面的元素。所以<strong>acc._1 + value, acc._2 + 1</strong>的过程如下：</p>
-<pre><code><span class="number">1.</span>  <span class="number">0</span>+<span class="number">1</span>,  <span class="number">0</span>+<span class="number">1</span>
-<span class="number">2.</span>  <span class="number">1</span>+<span class="number">2</span>,  <span class="number">1</span>+<span class="number">1</span>
-<span class="number">3.</span>  <span class="number">3</span>+<span class="number">3</span>,  <span class="number">2</span>+<span class="number">1</span>
-<span class="number">4.</span>  <span class="number">6</span>+<span class="number">4</span>,  <span class="number">3</span>+<span class="number">1</span>
-</code></pre></li>
-<li><p>结果为 (10,4)。在实际Spark执行中是分布式计算，可能会把List分成多个分区，假如3个，p1(1,2), p2(3), p3(4)，经过计算各分区的的结果 (3,2), (3,1), (4,1)，这样，执行 <strong>(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)</strong> 就是 <strong>(3+3+4,2+1+1)</strong> 即 <strong>(10,4)</strong>，然后再计算平均值。 </p>
-</li>
-</ol>
-
-      
+  <div id="posts" class="posts-collapse">
+    <div class="collection-title">
+      <h2 >
+        散列表
+        <small>标签</small>
+      </h2>
     </div>
 
-    <div>
+    
       
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
         
-
-      
-    </div>
-
-    <div>
-      
+            <a class="post-title-link" href="/2016/10/20/数据库系统实现-散列表/" itemprop="url">
+              
+                <span itemprop="name">数据库系统实现: 散列表</span>
+              
+            </a>
         
+      </h1>
 
-      
-    </div>
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2016-10-20T16:03:50+08:00"
+              content="2016-10-20" >
+          10-20
+        </time>
+      </div>
 
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/RDD/" rel="tag">#RDD</a>
-          
-        </div>
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/10/08/GraphX学习/" rel="next" title="GraphX学习:基础知识">
-                <i class="fa fa-chevron-left"></i> GraphX学习:基础知识
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/11/数据库系统实现-索引结构/" rel="prev" title="数据库系统实现:索引结构">
-                数据库系统实现:索引结构 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
+    </header>
   </article>
 
 
-
-    <div class="post-spread">
-      
-        <div class="ds-share flat" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/"
-     data-title="Spark RDD学习: aggregate函数"
-     data-content=""
-     data-url="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
+    
   </div>
-</div>
-      
-    </div>
-  </div>
+
+  
 
 
           </div>
@@ -466,14 +281,6 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
 
 
           
-  <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/"
-           data-title="Spark RDD学习: aggregate函数" data-url="http://pengshuang.space/2016/10/09/Spark-RDD学习-aggregate函数/">
-      </div>
-    
-  </div>
-
 
         </div>
         
@@ -493,17 +300,8 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -595,17 +393,6 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <p class="post-toc-empty">此文章未包含目录</p>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -702,10 +489,6 @@ avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
-
 
   
 
