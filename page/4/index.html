@@ -258,6 +258,259 @@
             
               
                 
+                <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-2/" itemprop="url">
+                  PageRank的三种实现方式(2)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-25T14:03:20+08:00" content="2015-10-25">
+              2015-10-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/25/PageRank-的三种实现方式-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-2/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/25/PageRank-的三种实现方式-2/" class="leancloud_visitors" data-flag-title="PageRank的三种实现方式(2)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>上一篇文章我介绍了PageRank的数学知识，大家应该对PageRank有一个初步的认识，下面，为了让我们更好的理解PageRank，我们来用Java实现一下。</p>
+<p>首先我们假设一个PageRank的应用场景:</p>
+<p><img src="/img/8.jpg" alt=""></p>
+<ol>
+<li>A网页有链接指向B,C,D</li>
+<li>B网页有链接指向A,D </li>
+<li>C网页有链接指向A</li>
+<li>D网页有链接指向B,C</li>
+</ol>
+<p>我们来计算一下A，B，C，D这四个点的PageRank值。<br>和以前一样，我会把讲解写在代码的注释里面。代码如下：</p>
+<pre><code>    <span class="keyword">public</span> <span class="keyword">class</span> PageRank {
+    <span class="comment">/*
+     * 用来表示网页之间的关系，A[0][1]=1 表示A有链接B
+     * 把网页之间的关系构造成一个二元矩阵
+     */</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[][] linkMatrix(){
+        <span class="keyword">int</span> []A =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
+        A[<span class="number">0</span>]=<span class="number">0</span>;A[<span class="number">1</span>]=<span class="number">1</span>;A[<span class="number">2</span>]=<span class="number">1</span>;A[<span class="number">3</span>]=<span class="number">1</span>;
+        <span class="keyword">int</span> []B =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
+        B[<span class="number">0</span>]=<span class="number">1</span>;B[<span class="number">1</span>]=<span class="number">0</span>;B[<span class="number">2</span>]=<span class="number">0</span>;B[<span class="number">3</span>]=<span class="number">1</span>;
+        <span class="keyword">int</span> []C =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
+        C[<span class="number">0</span>]=<span class="number">1</span>;C[<span class="number">1</span>]=<span class="number">0</span>;C[<span class="number">2</span>]=<span class="number">0</span>;C[<span class="number">3</span>]=<span class="number">0</span>;
+        <span class="keyword">int</span> []D =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
+        D[<span class="number">0</span>]=<span class="number">0</span>;D[<span class="number">1</span>]=<span class="number">0</span>;D[<span class="number">2</span>]=<span class="number">1</span>;D[<span class="number">3</span>]=<span class="number">0</span>;
+        <span class="keyword">int</span> [][] linkMatrix=<span class="keyword">new</span> <span class="keyword">int</span>[][]{A,B,C,D};
+        <span class="keyword">return</span> linkMatrix;
+    }
+
+<span class="comment">/*
+ * S矩阵sMatrix[i][j]表示i点对j点的贡献值，例如sMatrix[1][0]=1/3,表示B点对A点的贡献值是1/3.
+ */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span>[][]generateSMatrix(<span class="keyword">int</span>[][]linkMatrix){
+    <span class="keyword">double</span>[][] sMatrix=<span class="keyword">new</span> <span class="keyword">double</span>[linkMatrix.length][linkMatrix[<span class="number">0</span>].length];
+    <span class="keyword">int</span> [] linkSum=<span class="keyword">new</span> <span class="keyword">int</span>[linkMatrix.length];
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;linkMatrix.length;i++){
+         <span class="keyword">int</span> sum=<span class="number">0</span>;
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;linkMatrix[i].length;j++){
+            sum+=linkMatrix[i][j];
+         }
+         linkSum[i]=sum;
+     }
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
+             sMatrix[j][i]=linkMatrix[i][j]/((<span class="keyword">double</span>)linkSum[i]);
+         }
+    } 
+    <span class="keyword">return</span> sMatrix;
+}
+<span class="comment">/*
+ * alpha 代表阻塞系数，一般0.85,此方法可以得到每个节点PageRank值的分量
+ * 例如，gMatrix[0][0]，gMatrix[0][1],gMatrix[0][2],gMatrix[0][3] 这四个的和 就是网页A（编号0）的PageRank值
+ */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> [][]generateGMatrix(<span class="keyword">double</span> alpha,<span class="keyword">double</span>[][]sMatrix){
+    <span class="keyword">double</span> [][]gMatrix=<span class="keyword">new</span> <span class="keyword">double</span>[sMatrix.length][sMatrix.length];
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
+             gMatrix[i][j]=sMatrix[i][j]*alpha+(<span class="number">1</span>-alpha)/sMatrix.length;
+         }
+    } 
+    <span class="keyword">return</span> gMatrix;
+}
+
+<span class="comment">/*
+ * 将上一步得到的PageRank分量累加起来，即得到这一轮迭代后每个网页的PageRank值
+ * 与初试设定的PageRank值（每个节点都是1）进行比较，它们之间的差值不大于quanlity时，迭代才收敛
+ */</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span>[] generatePageRank(<span class="keyword">double</span> quanlity,<span class="keyword">double</span>[]qVecotor,<span class="keyword">double</span>[][]gMatrix){
+    <span class="keyword">double</span>[] nextQVecotor=<span class="keyword">new</span> <span class="keyword">double</span>[qVecotor.length];
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;gMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;gMatrix[i].length;j++){
+             nextQVecotor[i]+=gMatrix[i][j]*qVecotor[j];
+         }
+    } 
+    boolean pass=<span class="literal">true</span>;
+    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nextQVecotor.length;i++){
+        <span class="keyword">if</span>(Math.<span class="built_in">abs</span>(nextQVecotor[i]-qVecotor[i])&gt;quanlity){
+            pass=<span class="literal">false</span>;
+        }
+    }
+    <span class="keyword">if</span>(pass){
+        <span class="keyword">return</span> nextQVecotor;
+    }<span class="keyword">else</span>{
+        <span class="keyword">return</span> generatePageRank(quanlity,nextQVecotor,gMatrix);
+    }
+}
+
+<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+     <span class="keyword">int</span>[][] linkMatrix=linkMatrix();
+     System.out.println(<span class="string">"连接矩阵"</span>);
+     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;linkMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;linkMatrix[i].length;j++){
+             System.out.print(linkMatrix[i][j]+<span class="string">"   "</span>);
+         }
+         System.out.println();
+     }
+     System.out.println(<span class="string">"节点贡献矩阵"</span>);
+     <span class="keyword">double</span>[][]sMatrix=generateSMatrix(linkMatrix);
+     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
+             System.out.print(sMatrix[i][j]+<span class="string">"   "</span>);
+         }
+         System.out.println();
+     }
+     System.out.println(<span class="string">"PageRank分量矩阵"</span>);
+     <span class="keyword">double</span> [][]gMatrix=generateGMatrix(<span class="number">0.8</span>,sMatrix);
+     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;gMatrix.length;i++){
+         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;gMatrix[i].length;j++){
+             System.out.print(gMatrix[i][j]+<span class="string">"   "</span>);
+         }
+         System.out.println();
+     }
+     <span class="comment">//用来判断迭代收敛的系数</span>
+     <span class="keyword">double</span> quantity=<span class="number">0.00000001</span>;
+     <span class="comment">//初试的时候设定每个网页的权重（即PageRank值）都是1</span>
+     <span class="keyword">double</span>[] qVecotor=<span class="keyword">new</span> <span class="keyword">double</span>[]{<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>};
+     <span class="keyword">double</span> [] finallyQVecotor=generatePageRank(quantity,qVecotor,gMatrix);
+     System.out.println(<span class="string">"PageRank矩阵"</span>);
+     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;finallyQVecotor.length;i++){
+         System.out.print(finallyQVecotor[i]+<span class="string">"  "</span>);
+         }
+    }
+}
+</code></pre><p>结果如下：</p>
+<p><img src="/img/9.png" alt=""></p>
+<p>下一篇文章介绍如何用Hadoop里面的MapReduce以及Spark来实现PageRank并行化。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-1/" itemprop="url">
                   PageRank-的三种实现方式(1)
                 </a>
@@ -794,7 +1047,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -802,7 +1055,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

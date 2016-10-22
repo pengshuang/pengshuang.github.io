@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="算法," />
 
 
 
@@ -84,15 +84,31 @@
 
 
 
-<meta name="description" content="在路上，慢慢走！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小沙文的博客">
-<meta property="og:url" content="http://pengshuang.space/categories/Python/index.html">
+<meta name="description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
+接口和时间复杂度分析插入 o(logn)
+1. add(self, key, value)
+
+删除 o(logn)
+2. remove(self, k">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hash Heap详解">
+<meta property="og:url" content="http://pengshuang.space/2016/10/22/Hash-Heap详解/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在路上，慢慢走！">
+<meta property="og:description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
+接口和时间复杂度分析插入 o(logn)
+1. add(self, key, value)
+
+删除 o(logn)
+2. remove(self, k">
+<meta property="og:updated_time" content="2016-10-22T04:34:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小沙文的博客">
-<meta name="twitter:description" content="在路上，慢慢走！">
+<meta name="twitter:title" content="Hash Heap详解">
+<meta name="twitter:description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
+接口和时间复杂度分析插入 o(logn)
+1. add(self, key, value)
+
+删除 o(logn)
+2. remove(self, k">
 
 
 
@@ -113,9 +129,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/categories/Python/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/22/Hash-Heap详解/"/>
 
-  <title> 分类: Python | 小沙文的博客 </title>
+  <title> Hash Heap详解 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -136,7 +152,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,47 +250,240 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        Python
-        <small>分类</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Hash Heap详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-22T10:08:22+08:00" content="2016-10-22">
+              2016-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/22/Hash-Heap详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/Hash-Heap详解/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/22/Hash-Heap详解/" class="leancloud_visitors" data-flag-title="Hash Heap详解">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <h3 id="性质和性质">性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
+<h3 id="接口和时间复杂度分析">接口和时间复杂度分析</h3><pre><code>插入 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
+<span class="number">1</span>. <span class="function"><span class="title">add</span><span class="params">(self, key, value)</span></span>
 
-      <h1 class="post-title">
+删除 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
+<span class="number">2</span>. <span class="function"><span class="title">remove</span><span class="params">(self, key)</span></span>
+
+查找 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
+<span class="number">3</span>. <span class="function"><span class="title">hasKey</span><span class="params">(self, key)</span></span>
+
+取最大值 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
+<span class="number">4</span>. <span class="function"><span class="title">max</span><span class="params">(self)</span></span>
+</code></pre><h3 id="代码实现">代码实现</h3><pre><code><span class="class"><span class="keyword">class</span> <span class="title">HashHeap</span>:</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>
+        self.heap = [<span class="number">0</span>]
+        self.hash = {}
+
+<span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, key, value)</span>:</span>
+    self.heap.append((key, value))
+    self.hash[key] = self.heap[<span class="number">0</span>] + <span class="number">1</span>
+    self.heap[<span class="number">0</span>] += <span class="number">1</span>
+    self._siftup(self.heap[<span class="number">0</span>])
+
+<span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, key)</span>:</span>
+    index = self.hash[key]
+    self._swap(index, self.heap[<span class="number">0</span>])
+    <span class="keyword">del</span> self.hash[self.heap[self.heap[<span class="number">0</span>]][<span class="number">0</span>]]
+    self.heap.pop()
+    self.heap[<span class="number">0</span>] -= <span class="number">1</span>
+    <span class="keyword">if</span> index &lt;= self.heap[<span class="number">0</span>]:
+        index = self._siftup(index)
+        self._siftdown(index)
+
+<span class="function"><span class="keyword">def</span> <span class="title">hasKey</span><span class="params">(self, key)</span>:</span>
+    <span class="keyword">return</span> key <span class="keyword">in</span> self.hash
+
+<span class="function"><span class="keyword">def</span> <span class="title">max</span><span class="params">(self)</span>:</span>
+    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> self.heap[<span class="number">0</span>] == <span class="number">0</span> <span class="keyword">else</span> self.heap[<span class="number">1</span>][<span class="number">1</span>]
+
+<span class="function"><span class="keyword">def</span> <span class="title">_swap</span><span class="params">(self, a, b)</span>:</span>
+    self.heap[a], self.heap[b] = self.heap[b], self.heap[a]
+    self.hash[self.heap[a][<span class="number">0</span>]] = a
+    self.hash[self.heap[b][<span class="number">0</span>]] = b
+
+<span class="function"><span class="keyword">def</span> <span class="title">_siftup</span><span class="params">(self, index)</span>:</span>
+    <span class="keyword">while</span> index != <span class="number">1</span>:
+        <span class="keyword">if</span> self.heap[index][<span class="number">1</span>] &lt;= self.heap[index / <span class="number">2</span>][<span class="number">1</span>]:
+            <span class="keyword">break</span>
+        self._swap(index, index / <span class="number">2</span>)
+        index /= <span class="number">2</span>
+    <span class="keyword">return</span> index
+
+<span class="function"><span class="keyword">def</span> <span class="title">_siftdown</span><span class="params">(self, index)</span>:</span>
+    size = self.heap[<span class="number">0</span>]
+    <span class="keyword">while</span> index &lt; size:
+        t = index
+        <span class="keyword">if</span> index * <span class="number">2</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span>][<span class="number">1</span>]:
+            t = index * <span class="number">2</span>
+        <span class="keyword">if</span> index * <span class="number">2</span> + <span class="number">1</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span> + <span class="number">1</span>][<span class="number">1</span>]:
+            t = index * <span class="number">2</span> + <span class="number">1</span>
+        <span class="keyword">if</span> t == index:
+            <span class="keyword">break</span>
+        self._swap(index, t)
+        index = t
+    <span class="keyword">return</span> index
+</code></pre>
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="url">
-              
-                <span itemprop="name">Flask中向前端传递或者接收Json文件的方法</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-08-19T10:48:40+08:00"
-              content="2016-08-19" >
-          08-19
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/算法/" rel="tag">#算法</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/22/数据库系统实现-位图索引/" rel="next" title="数据库系统实现: 位图索引">
+                <i class="fa fa-chevron-left"></i> 数据库系统实现: 位图索引
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/10/22/Hash-Heap详解/"
+     data-title="Hash Heap详解"
+     data-content=""
+     data-url="http://pengshuang.space/2016/10/22/Hash-Heap详解/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
 
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
 
 
           </div>
@@ -282,6 +491,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/22/Hash-Heap详解/"
+           data-title="Hash Heap详解" data-url="http://pengshuang.space/2016/10/22/Hash-Heap详解/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -301,8 +518,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -394,6 +620,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#性质和性质"><span class="nav-number">1.</span> <span class="nav-text">性质和性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口和时间复杂度分析"><span class="nav-number">2.</span> <span class="nav-text">接口和时间复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">3.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -490,6 +727,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
