@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Java," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,21 +84,23 @@
 
 
 
-<meta name="description" content="在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。
-HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1">
+<meta name="description" content="什么是位图索引？我们先设想文件的记录有一个永久的编号：1，2，…，n。此外，文件存在某种数据结构，它对于任意的一个 i 可使我们容易地找到第 i 个记录。字段 F 的位图索引是有个长度为n的位向量的集合。每一个位向量对应于字段F中可能出现的一个值。如果第 i 个记录的字段F的值为 v，那么对应于值 v 的位向量在位置 i 上的取值为1；否则该向量的位置 i 上的取值为0。
+下面举个例子，
+假设一个">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HITS算法的Java实现">
-<meta property="og:url" content="http://pengshuang.space/2015/11/06/HITS算法的Java实现/index.html">
+<meta property="og:title" content="数据库系统实现: 位图索引">
+<meta property="og:url" content="http://pengshuang.space/2016/10/22/数据库系统实现-位图索引/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。
-HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1">
-<meta property="og:image" content="http://pengshuang.space/img/11.jpg">
-<meta property="og:image" content="http://pengshuang.space/img/10.png">
-<meta property="og:updated_time" content="2016-09-14T00:34:43.000Z">
+<meta property="og:description" content="什么是位图索引？我们先设想文件的记录有一个永久的编号：1，2，…，n。此外，文件存在某种数据结构，它对于任意的一个 i 可使我们容易地找到第 i 个记录。字段 F 的位图索引是有个长度为n的位向量的集合。每一个位向量对应于字段F中可能出现的一个值。如果第 i 个记录的字段F的值为 v，那么对应于值 v 的位向量在位置 i 上的取值为1；否则该向量的位置 i 上的取值为0。
+下面举个例子，
+假设一个">
+<meta property="og:image" content="http://pengshuang.space/img/3.41.png">
+<meta property="og:updated_time" content="2016-10-21T14:53:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HITS算法的Java实现">
-<meta name="twitter:description" content="在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。
-HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1">
+<meta name="twitter:title" content="数据库系统实现: 位图索引">
+<meta name="twitter:description" content="什么是位图索引？我们先设想文件的记录有一个永久的编号：1，2，…，n。此外，文件存在某种数据结构，它对于任意的一个 i 可使我们容易地找到第 i 个记录。字段 F 的位图索引是有个长度为n的位向量的集合。每一个位向量对应于字段F中可能出现的一个值。如果第 i 个记录的字段F的值为 v，那么对应于值 v 的位向量在位置 i 上的取值为1；否则该向量的位置 i 上的取值为0。
+下面举个例子，
+假设一个">
 
 
 
@@ -119,9 +121,9 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2015/11/06/HITS算法的Java实现/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/22/数据库系统实现-位图索引/"/>
 
-  <title> HITS算法的Java实现 | 小沙文的博客 </title>
+  <title> 数据库系统实现: 位图索引 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -261,7 +263,7 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
             
             
               
-                HITS算法的Java实现
+                数据库系统实现: 位图索引
               
             
           </h1>
@@ -273,8 +275,8 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-11-06T22:33:46+08:00" content="2015-11-06">
-              2015-11-06
+            <time itemprop="dateCreated" datetime="2016-10-22T08:12:57+08:00" content="2016-10-22">
+              2016-10-22
             </time>
           </span>
 
@@ -287,8 +289,8 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
-                    <span itemprop="name">数据挖掘</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -303,8 +305,8 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/11/06/HITS算法的Java实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/06/HITS算法的Java实现/" itemprop="commentsCount"></span>
+                <a href="/2016/10/22/数据库系统实现-位图索引/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/数据库系统实现-位图索引/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -314,7 +316,7 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
 
           
           
-             <span id="/2015/11/06/HITS算法的Java实现/" class="leancloud_visitors" data-flag-title="HITS算法的Java实现">
+             <span id="/2016/10/22/数据库系统实现-位图索引/" class="leancloud_visitors" data-flag-title="数据库系统实现: 位图索引">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -336,186 +338,127 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
       
 
       
-        <p>在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。</p>
-<h2 id="HITS算法的原理">HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
-<p>通过HITS算法名我们可以看出，它的工作原理是：通过链接发掘话题。HITS算法想要解决的问题是，在海量的网页中找到与用户查询主题相关的高质量Authority（权威）页面与Hub（目录）页面，尤其是 Authority 页面，因为这些页面代表了满足用户查询的高质量内容，搜索引擎就以此作为搜索结果返回给用户。</p>
-<p>通俗的来讲，对于“Authority”页面，是指与某个领域或者某个话题相关的高质量网页，比如搜索引擎领域，Google和百度首页即该领域的高质量网页，比如读书领域，当当和亚马逊首页即该领域的高质量网页。</p>
-<p>而对于Hub”页面，指的是包含了很多指向高质量“Authority”页面链接的网页，比如hao123首页可以认为是一个典型的高质量“Hub”网页。</p>
-<h2 id="HITS算法的思想:彼此之间相互增强关系">HITS算法的思想:彼此之间相互增强关系</h2><ol>
-<li><p>基本假设1：一个好的“Authority”页面会被很多好的“Hub”页面指向；</p>
-</li>
-<li><p>基本假设2：一个好的“Hub”页面会指向很多好的“Authority”页面；</p>
-</li>
+        <h3 id="什么是位图索引？">什么是位图索引？</h3><p>我们先设想文件的记录有一个永久的编号：1，2，…，n。此外，文件存在某种数据结构，它对于任意的一个 i 可使我们容易地找到第 i 个记录。字段 F 的<em>位图索引</em>是有个长度为n的位向量的集合。每一个位向量对应于字段F中可能出现的一个值。如果第 i 个记录的字段F的值为 v，那么对应于值 v 的位向量在位置 i 上的取值为1；否则该向量的位置 i 上的取值为0。</p>
+<p>下面举个例子，</p>
+<p>假设一个文件中的记录由两个字段 F 和 G 组成，分别为整数型和字符串型。目前文件中有 6 个记录，编号为 1 到 6，它们的值以此如下：(30, foo), (30, bar), (40, baz), (50, foo), (40, bar), (30, baz)。</p>
+<p>第一个字段 F 的位图索引有 3 个位向量，每个长度为 6。第一个对应于30，是110001，因为第一、第二和第六个记录都是 F = 30；另外两个分别对应于 40 和 50，是 001010 和 000100。</p>
+<p>字段 G 的位图索引也有 3 个位向量，因为那儿有 3 个不同的字符串出现。3 个向量是:</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>向量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>foo</td>
+<td>100100</td>
+</tr>
+<tr>
+<td>bar</td>
+<td>010010</td>
+</tr>
+<tr>
+<td>baz</td>
+<td>001001</td>
+</tr>
+</tbody>
+</table>
+<p>在每种情形下，1 表示在那个记录中出现了相应的字符串。</p>
+<h3 id="位图索引的动机">位图索引的动机</h3><p>初看，位图索引需要太多的空间，尤其是当字段有许多不同值时，因为位的总数是记录和取值数的乘积。例如，如果字段是键，且记录数为 n，那么该字段的所有位向量需要使用 n^2 个二进制位。不过，压缩能够使位的数量接近于n，而与不同字段值的数量无关。</p>
+<p>位图索引的补偿优势是它们允许我们在许多情形下高效地回答部分匹配查询。在某种意义上来说，它具备类似桶的优势。</p>
+<p>位图索引能够帮助回答范围查询。它用一些短的位向量详细地显示了位向量的逐位与/或如何能够被用来找到查询的答案，它只查找我们所要的记录而不会查找任何其他记录。</p>
+<p>下面来看，</p>
+<p><img src="/img/3.41.png" alt=""></p>
+<p>对第一个分量年龄，它有 7 个不同值，因此年龄的位图索引由下面 7 个向量组成：</p>
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>-</th>
+<th>-</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25: 100000001000</td>
+<td>30: 000000010000</td>
+<td>45: 010000000100</td>
+</tr>
+<tr>
+<td>50: 001110000010</td>
+<td>60: 000000000001</td>
+<td>70: 000001000000</td>
+</tr>
+<tr>
+<td>85: 000000100000</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>对于薪水分量，它有10个不同值，因而薪水的位图索引有下面10个分量：</p>
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>-</th>
+<th>-</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60: 110000000000</td>
+<td>75: 001000000000</td>
+<td>100: 000100000000</td>
+</tr>
+<tr>
+<td>110: 000001000000</td>
+<td>120: 000010000000</td>
+<td>140: 000000100000</td>
+</tr>
+<tr>
+<td>260: 000000010001</td>
+<td>275: 000000000010</td>
+<td>350: 000000000100</td>
+</tr>
+<tr>
+<td>400: 000000001000</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>假定我们要找出年龄范围在 45 ~ 55且薪水范围在100 ~ 200的所有首饰购买者。我们先找出在这个范围内的年龄值向量。 我们先找出在这个范围内的年龄值向量，如果将它们按位取或，我们就得到一个新向量：当且仅当第 i 个记录的年龄在给定范围内时它的位置 i 上取值为 1，且该向量为 01110000110。</p>
+<p>下一步，我们找出范围在 100K 到 200K 之间的薪水值向量：它们有 4 个，分别对应于薪水100、110、120和140，它们的按位或结果是000111100000。</p>
+<p>最后一步是取我们通过“或”运算得到的两个位向量的按位与，即：</p>
+<pre><code><span class="number">011110000110</span> AND <span class="number">000111100000</span> = <span class="number">000110000000</span>
+</code></pre><p>于是我们找到只有第4和第5个记录(50, 100)和(50，120)是在所要求的范围内。</p>
+<h3 id="压缩位图">压缩位图</h3><p>假定我们在一个有 n 个记录的文件的字段F上建有位图索引，且在文件中出现的字段 F 的不同值的数目为 m。那么该索引的所有位向量的二进制位数就是 mn。如果说块的大小为 4096 个字节，那么在一个块中我们可存放32768位，因此所需块数是 mn/32768。这个数比存放文件本身所需的块数要小，但是随着 m 的变大，位图索引所需空间也就越多。</p>
+<p>但是如果 m 很大，那么位向量中的 1 将会很少。精确地说，任何一位出现 1 的概率为 1/m。如果 1 很少，那么我们就有机会编码位向量以便它们平均所占用的位比 n 少得多。一个常用的方法叫做<strong>分段长度编码</strong>，段是由 i 个 0 后跟一个 1 所组的序列，通过对整数 i 适当的二进制编码来表示一个段。我们把每个段的代码拼接在一起，则这个位序列就是整个位向量的编码。</p>
+<p>我们的编码方法是，首先确定 i 的二进制表示是多少位，这个数字 j 近似地等于 log2i，被表示成“一元”: j - 1 个 1 和 一个 0。然后，我们在它后面加上 i 的二进制表示。</p>
+<p>下面来举例：</p>
+<pre><code>例<span class="number">1.</span> 如果 i = <span class="number">13</span>， 那么 j = <span class="number">4</span>。即我们需要 <span class="number">4</span> 位二进制来表示 i。因此，i 的编
+码开始部分为 <span class="number">1110</span>。我们把 i 的二进制数 <span class="number">1101</span> 加上，这样，<span class="number">13</span>的编码就是<span class="number">11101101</span>。
+</code></pre><p>i = 1的编码是 01，而 i = 0的编码是00。在这两种情况下，j = 1，因此我们以一个 0 开始且 0 后面为表示 i 的一位二进制数。</p>
+<p>相似的我们也可以完成解码。</p>
+<pre><code>例<span class="number">2.</span> 让我们来对序列 <span class="number">11101101001011</span> 进行解码。从头开始，
+我们在第四位上找到第一<span class="number">0</span>，因而 j = <span class="number">4</span>，下面四位为 <span class="number">1101</span>，
+因而我们确定第一个整数是<span class="number">13.</span>现在我们剩下<span class="number">001011</span>要解码。
+
+由于第一位是<span class="number">0</span>，我们知道下一位表示整数本身，该整数为<span class="number">0</span>。
+因此我们已经解码的序列为 <span class="number">13</span>、<span class="number">0</span>，而且我们必须解码剩下的序列 <span class="number">1011</span>。
+
+我们在第二个位置上找到第一个 <span class="number">0</span>，于是我们下结论：最末两位表示最后的整数<span class="number">3</span>。
+我们整个分段长度序列是这样：<span class="number">13</span>，<span class="number">0</span>，<span class="number">3</span>。
+从这些数字，我们能够重新构造实际的位向量：<span class="number">0000000000000110001</span>。
+</code></pre><h3 id="位图索引的管理">位图索引的管理</h3><h4 id="查找位向量">查找位向量</h4><p>把位向量看成记录，它们的键时对应于该位向量的字段值（虽然值本身不在“记录”中出现）。然后任何辅助索引技术都可以使我们有效地按值找到它们的位向量。</p>
+<p>我们也需要在某处存储位向量。最好是把它们看作可变长记录，因为随着数据文件中记录的增加，它们一般会增长。</p>
+<h4 id="查找记录">查找记录</h4><p>一旦我们确定了我们所需要的文件中的记录 k，那第 k 个记录看作索引键值为 k。然后我们可在数据文件上创建辅助索引，它的索引键时记录号。</p>
+<h4 id="数据文件修改的处理">数据文件修改的处理</h4><p>在位图索引中，要反映数据文件的修改有两方面问题：</p>
+<ol>
+<li>一旦分配后，记录数必须保持一定。</li>
+<li>数据文件的改变需要位图索引也做相应改变。</li>
 </ol>
-<h2 id="HITS算法的基本步骤">HITS算法的基本步骤</h2><ol>
-<li><p>接受一个用户查询的请求。HITS 算法与用户输入的查询请求密切相关，它的查询结果是动态生成的，而 PageRank 算法则与用户的查询无关。</p>
-</li>
-<li><p>将查询提交给某个现有的搜索引擎（或者是自己构造的检索系统），并在返回的搜索结果中，提取排名靠前的网页，得到一组与用户查询高度相关的初始网页集合，这个集合被称作为 root set。</p>
-</li>
-<li><p>建立 base set，凡是与根集内网页有直接链接指向关系的网页都被扩充进来，形成如下集合</p>
-</li>
-<li><p>计算：</p>
-</li>
-</ol>
-<p><img src="/img/11.jpg" alt=""></p>
-<h2 id="HITS算法的Java实现">HITS算法的Java实现</h2><p>算法实现类：</p>
-<pre><code>package org.tseg.search;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-
-<span class="comment">/**
- * HITS链接分析算法工具类
- */</span>
-<span class="keyword">public</span> <span class="keyword">class</span> HITSTool {
-    <span class="comment">// 输入数据文件地址</span>
-    <span class="keyword">private</span> String filePath;
-    <span class="comment">// 网页个数</span>
-    <span class="keyword">private</span> <span class="keyword">int</span> pageNum;
-    <span class="comment">// 网页Authority权威值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] authority;
-    <span class="comment">// 网页hub中心值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] hub;
-    <span class="comment">// 链接矩阵关系</span>
-    <span class="keyword">private</span> <span class="keyword">int</span>[][] linkMatrix;
-    <span class="comment">// 网页种类</span>
-    <span class="keyword">private</span> ArrayList&lt;String&gt; pageClass;
-
-    <span class="function"><span class="keyword">public</span> <span class="title">HITSTool</span><span class="params">(String filePath)</span> </span>{
-        <span class="keyword">this</span>.filePath = filePath;
-        readDataFile();
-    }
-    <span class="comment">/**
-     * 从文件中读取数据
-     */</span>
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFile</span><span class="params">()</span> </span>{
-        File file = <span class="keyword">new</span> File(filePath);
-        ArrayList&lt;String[]&gt; dataArray = <span class="keyword">new</span> ArrayList&lt;String[]&gt;();
-
-        <span class="keyword">try</span> {
-            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(file));
-            String str;
-            String[] tempArray;
-            <span class="keyword">while</span> ((str = in.readLine()) != null) {
-                tempArray = str.split(<span class="string">" "</span>);
-                dataArray.add(tempArray);
-            }
-            in.close();
-        } <span class="keyword">catch</span> (IOException e) {
-            e.getStackTrace();
-        }
-        pageClass = <span class="keyword">new</span> ArrayList&lt;&gt;();
-        <span class="comment">// 统计网页类型种数</span>
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
-            <span class="keyword">for</span> (String s : <span class="built_in">array</span>) {
-                <span class="keyword">if</span> (!pageClass.contains(s)) {
-                    pageClass.add(s);
-                }
-            }
-        }
-        <span class="keyword">int</span> i = <span class="number">0</span>;
-        <span class="keyword">int</span> j = <span class="number">0</span>;
-        pageNum = pageClass.size();
-        linkMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[pageNum][pageNum];
-        authority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        hub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            <span class="comment">// 初始时默认权威值和中心值都为1</span>
-            authority[k] = <span class="number">1</span>;
-            hub[k] = <span class="number">1</span>;
-        }
-
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
-
-            i = Integer.parseInt(<span class="built_in">array</span>[<span class="number">0</span>]);
-            j = Integer.parseInt(<span class="built_in">array</span>[<span class="number">1</span>]);
-
-            <span class="comment">// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接</span>
-            linkMatrix[i - <span class="number">1</span>][j - <span class="number">1</span>] = <span class="number">1</span>;
-        }
-    }
-    <span class="comment">/**
-     * 输出结果页面，也就是authority权威值最高的页面
-     */</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printResultPage</span><span class="params">()</span> </span>{
-        <span class="comment">// 最大Hub和Authority值，用于后面的归一化计算</span>
-        <span class="keyword">double</span> maxHub = <span class="number">0</span>;
-        <span class="keyword">double</span> maxAuthority = <span class="number">0</span>;
-        <span class="keyword">int</span> maxAuthorityIndex = <span class="number">0</span>;
-        <span class="comment">// 误差值，用于收敛判断</span>
-        <span class="keyword">double</span> error = Integer.MAX_VALUE;
-        <span class="keyword">double</span>[] newHub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        <span class="keyword">double</span>[] newAuthority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-
-        <span class="keyword">while</span> (error &gt; <span class="number">0.01</span> * pageNum) {
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                newHub[k] = <span class="number">0</span>;
-                newAuthority[k] = <span class="number">0</span>;
-            }
-
-            <span class="comment">// hub和authority值的更新计算</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pageNum; i++) {
-                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; pageNum; j++) {
-                    <span class="keyword">if</span> (linkMatrix[i][j] == <span class="number">1</span>) {
-                        newHub[i] += authority[j];
-                        newAuthority[j] += hub[i];
-                    }
-                }
-            }
-            maxHub = <span class="number">0</span>;
-            maxAuthority = <span class="number">0</span>;
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                <span class="keyword">if</span> (newHub[k] &gt; maxHub) {
-                    maxHub = newHub[k];
-                }
-
-                <span class="keyword">if</span> (newAuthority[k] &gt; maxAuthority) {
-                    maxAuthority = newAuthority[k];
-                    maxAuthorityIndex = k;
-                }
-            }
-
-            error = <span class="number">0</span>;
-            <span class="comment">// 归一化处理</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                newHub[k] /= maxHub;
-                newAuthority[k] /= maxAuthority;
-
-                error += Math.<span class="built_in">abs</span>(newHub[k] - hub[k]);
-                System.out.println(newAuthority[k] + <span class="string">":"</span> + newHub[k]);
-
-                hub[k] = newHub[k];
-                authority[k] = newAuthority[k];
-            }
-            System.out.println(<span class="string">"---------"</span>);
-        }
-        System.out.println(<span class="string">"****最终收敛的网页的权威值和中心值****"</span>);
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            System.out.println(<span class="string">"网页"</span> + pageClass.get(k) + <span class="string">":"</span> + authority[k] + <span class="string">":"</span> + hub[k]);
-        }
-        System.out.println(<span class="string">"权威值最高的网页为：网页"</span> + pageClass.get(maxAuthorityIndex));
-    }
-
-}
-</code></pre><p>主类：</p>
-<pre><code><span class="keyword">package</span> org.tseg.search;
-
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{
-
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-
-        String Path = <span class="string">"Users/pengshuang/Desktop/pagerank/input/HITS.txt"</span>;
-        HITSTool ht = <span class="keyword">new</span> HITSTool(Path);
-        ht.printResultPage();
-    }
-
-}
-</code></pre><p>输入文件示例：</p>
-<p><img src="/img/10.png" alt=""></p>
 
       
     </div>
@@ -536,28 +479,18 @@ import java.util.ArrayList;
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Java/" rel="tag">#Java</a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/10/27/K-means算法java实现/" rel="next" title="K-means算法java实现">
-                <i class="fa fa-chevron-left"></i> K-means算法java实现
+              <a href="/2016/10/21/数据库系统实现-多维数据的树结构/" rel="next" title="数据库系统实现: 多维数据的树结构">
+                <i class="fa fa-chevron-left"></i> 数据库系统实现: 多维数据的树结构
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/08/12/K-means简介/" rel="prev" title="K-means算法简介">
-                K-means算法简介 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -572,10 +505,10 @@ import java.util.ArrayList;
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2015/11/06/HITS算法的Java实现/"
-     data-title="HITS算法的Java实现"
+        <div class="ds-share flat" data-thread-key="2016/10/22/数据库系统实现-位图索引/"
+     data-title="数据库系统实现: 位图索引"
      data-content=""
-     data-url="http://pengshuang.space/2015/11/06/HITS算法的Java实现/">
+     data-url="http://pengshuang.space/2016/10/22/数据库系统实现-位图索引/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -602,8 +535,8 @@ import java.util.ArrayList;
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/11/06/HITS算法的Java实现/"
-           data-title="HITS算法的Java实现" data-url="http://pengshuang.space/2015/11/06/HITS算法的Java实现/">
+      <div class="ds-thread" data-thread-key="2016/10/22/数据库系统实现-位图索引/"
+           data-title="数据库系统实现: 位图索引" data-url="http://pengshuang.space/2016/10/22/数据库系统实现-位图索引/">
       </div>
     
   </div>
@@ -736,7 +669,7 @@ import java.util.ArrayList;
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的原理"><span class="nav-number">1.</span> <span class="nav-text">HITS算法的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的思想:彼此之间相互增强关系"><span class="nav-number">2.</span> <span class="nav-text">HITS算法的思想:彼此之间相互增强关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的基本步骤"><span class="nav-number">3.</span> <span class="nav-text">HITS算法的基本步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的Java实现"><span class="nav-number">4.</span> <span class="nav-text">HITS算法的Java实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是位图索引？"><span class="nav-number">1.</span> <span class="nav-text">什么是位图索引？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位图索引的动机"><span class="nav-number">2.</span> <span class="nav-text">位图索引的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#压缩位图"><span class="nav-number">3.</span> <span class="nav-text">压缩位图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位图索引的管理"><span class="nav-number">4.</span> <span class="nav-text">位图索引的管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#查找位向量"><span class="nav-number">4.1.</span> <span class="nav-text">查找位向量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找记录"><span class="nav-number">4.2.</span> <span class="nav-text">查找记录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据文件修改的处理"><span class="nav-number">4.3.</span> <span class="nav-text">数据文件修改的处理</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
