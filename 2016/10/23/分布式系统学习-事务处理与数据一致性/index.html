@@ -1,0 +1,899 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+事务具有四">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式系统学习: 事务处理与数据一致性">
+<meta property="og:url" content="http://pengshuang.space/2016/10/23/分布式系统学习-事务处理与数据一致性/index.html">
+<meta property="og:site_name" content="小沙文的博客">
+<meta property="og:description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+事务具有四">
+<meta property="og:updated_time" content="2016-10-23T13:10:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式系统学习: 事务处理与数据一致性">
+<meta name="twitter:description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+事务具有四">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://pengshuang.space/2016/10/23/分布式系统学习-事务处理与数据一致性/"/>
+
+  <title> 分布式系统学习: 事务处理与数据一致性 | 小沙文的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小沙文的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                分布式系统学习: 事务处理与数据一致性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-23T19:21:47+08:00" content="2016-10-23">
+              2016-10-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式系统</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/23/分布式系统学习-事务处理与数据一致性/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/23/分布式系统学习-事务处理与数据一致性/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/23/分布式系统学习-事务处理与数据一致性/" class="leancloud_visitors" data-flag-title="分布式系统学习: 事务处理与数据一致性">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="ACID">ACID</h3><p>事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。</p>
+<p>事务具有四个特征，分别是原子性、一致性，隔离性和持久性。</p>
+<h4 id="原子性">原子性</h4><p>事务的原子性是指事务必须是一个原子的操作序列单元。事务中包含的各项操作在一次执行过程中，只允许出现以下两种状态之一。</p>
+<ul>
+<li>全部执行成功</li>
+<li>全部不执行</li>
+</ul>
+<p>任何一项操作失败都将导致整个事务失败，同时其他已经被执行的操作都将被撤销并回滚，只有所有的操作全部成功，整个事务才算是成功完成。</p>
+<h4 id="一致性">一致性</h4><p>事务的一致性是指事务的执行不能破坏数据库数据的完整性和一致性，一个事务在执行之前和执行之后，数据库都必须处于一致性状态。即，事务执行的结果必须是使数据库从一个一致性状态转变到另一个一致性状态。而如果数据库系统在运行过程中发生故障，有些事务尚未完成就被迫中断，这些未完成事务对数据库所做的修改有一半已经写入物理数据库，这时数据库就处于一种不正确的状态，或者是不一致的状态。</p>
+<h4 id="隔离性">隔离性</h4><p>事务的隔离性是指在并发环境中、并发的事务是相互隔离的，一个事务的执行不能被其他事务干扰。也就是说，不同的事务并发操纵相同的数据时，每个事务都有各自完整的数据空间。即一个事务内部的操作及使用的数据对其他并发事务是隔离的，并发执行的各个事务之间不能相互干扰。</p>
+<p>在标准 SQL 规范中，定义了4个事务隔离级别，不同的隔离级别对事务的处理不同，如未授权读取、授权读取、可重复读取和串行化。</p>
+<p><strong>未授权读取</strong></p>
+<p>未授权读取也被称为读未提交，该隔离级别允许脏读取，其隔离级别最低。比如，事务 A 和 事务 B 同时进行，事务 A 在整个执行阶段，会将某数据项的值从 1 开始，做一些列加法操作直到变成 10 之后进行事务提交，此时，事务 B 能够看到这个数据项在事务 A 操作过程中的所有中间值（如 1 变成 2、2 变成 3等），而对这一系列的中间值的读取就是未授权读取。</p>
+<p><strong>授权读取</strong></p>
+<p>授权读取也叫读已提交，它和未授权读取很像，唯一的区别就是授权读取只允许获取已经被提交的数据。以上面那个为例，事务 A 和 事务 B 同时进行，事务 A 进行与上述同样的操作，此时，事务 B 无法看到这个数据项在事务 A 操作过程中的所有中间值，只看到最终的 10。另外，如果说有一个事务 C，和事务 A 进行非常类似的操作，只是事务 C 是将数据项从 10 加到 20，此时事务 B 也同样可以读取到 20，即授权读取允许不可重复读取。</p>
+<p><strong>可重复读取</strong></p>
+<p>可重复读取，就是保证在事务处理过程中，多次读取同一个数据时，其值都和事务开始时刻是一致的，因此该事务级别禁止了不可重复读取和脏读取，但是有可能出现幻影数据，就是指同样的事务操作，在前后两个时间段内执行对同一个数据项的读取，可能出现不一致的结果。以上面为例，事务 B 第一次事务操作的过程中，始终对数据项读取到 1，但是在下一次事务操作中，即使事务 B 采用同样的查询方式，就可能会读取到10 或 20。</p>
+<p><strong>串行化</strong></p>
+<p>串行化是最严格的事务隔离级别。它要求所有事务都被串行执行，即事务只能一个接一个地进行处理，不能并发执行。</p>
+<p>事务隔离级别越高，就越能保证数据的完整性和一致性，但同时对并发性能的影响也越大。通常，对绝大多数的应用程序来说，可以优先考虑将数据库系统的隔离级别设置为授权读取，这能够在避免脏读取的同时保证较好的并发性能。</p>
+<h4 id="持久性">持久性</h4><p>事务的持久性也被称为永久性，是指一个事务一旦提交，它对数据库中对应数据的状态的变更就应该是永久性的。换句话说，一旦某个事务成功结束，那么它对数据库所做的更新就必须被永久保存下来</p>
+<h3 id="分布式事务">分布式事务</h3><p>在单机数据库中，我们很容易就能够实现一套满足 ACID 特性的事务处理系统，但在分布式数据库中，时间分散在各台不同的机器上，如何对这些数据进行分布式的事务处理具有非常大的挑战。</p>
+<p>我们可以设想一个最典型的分布式事务场景：一个跨银行的转账操作涉及调用两个异地的银行服务，其中一个是本地银行提供的取款服务，另一个则是目标银行提供的存款服务，这两个服务本身是无状态并且是互相独立的，共同构成一个完整的分布式事务。如果从本地银行取款成功，但是因为某种原因存款服务失败了，那么就必须回滚到取款前的状态，否则用户可能会发现自己的钱不翼而飞了。</p>
+<h3 id="CAP_和_BASE_理论">CAP 和 BASE 理论</h3><h4 id="CAP_定理">CAP 定理</h4><p>CAP 理论告诉我们，一个人分布式系统不可能同时满足一致性 (C：Consistency)、可用性(A：Availability)和分区容错性(P：Partition tolerance)这三个基本需求，最多同时满足其中的两项。</p>
+<p><strong>一致性</strong></p>
+<p>在分布式环境中，一致性是指数据在多个副本之间是否能够保持一致的特性。在一致性的需求下，当一个系统在数据一致的状态下更新操作后，应该保证系统的数据仍然处于一致的状态。</p>
+<p><strong>可用性</strong></p>
+<p>可用性是指系统提供的服务必须一直处于可用的状态，对于用户的每个操作请求总是能够在有限的时间内返回结果。这里我们重点看下“有限的时间内”和“返回结果”。</p>
+<p>“有限的时间内”是指，对于用户的一个操作请求，系统必须能够在指定的时间内返回对应的处理结果，如果超过了这个时间范围，那么系统就被认为是不可用的。</p>
+<p><strong>分区容错性</strong></p>
+<p>分区容错性约束了一个分布式系统需要具有如下特性：分布式系统在遇到任何网络分区故障的时候，仍然需要能够保证对外提供满足一致性和可用性的服务，除非是整个网络环境都发生了故障。</p>
+<p>网络分区是指在分布式系统中，不同的结点分布在不同的子网络中，由于一些特殊的原因导致这些子网络之间出现网络不连通的状况，但各个子网络的内部网络是正常的，从而导致整个系统的网络环境被切分成了若干个孤立的区域。</p>
+<h4 id="CAP_定理应用">CAP 定理应用</h4><table>
+<thead>
+<tr>
+<th>放弃CAP定理</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>放弃P</td>
+<td>如果希望能够避免系统出现分区容错性问题，一种较为简单的做法是将所有的数据（或者仅仅是那些与事务相关的数据）都放在一个分布式结点上。这样的做法虽然无法100%保证系统不会出错，但至少不会碰到由于网络分区带来的负面影响。但这样也放弃了系统的可扩展性</td>
+</tr>
+<tr>
+<td>放弃A</td>
+<td>相对于放弃“分区容错性”来说，放弃可用性则正好相反，其做法是一旦系统遇到网络分区或其他故障时，那么受到影响的服务需要等待一定的时间，因此在等待期间系统无法对外提供正常的服务，即不可用</td>
+</tr>
+<tr>
+<td>放弃C</td>
+<td>这里是放弃数据的强一致性。这样的系统无法保证数据实时的一致性，但是能够承诺的是，数据最终会达到一个一致的状态。</td>
+</tr>
+</tbody>
+</table>
+<p>需要明确说明的是，对于一个分布式系统而言，分区容错性是一个最基本的要求。</p>
+<h4 id="BASE_理论">BASE 理论</h4><p>BASE 是 Basically Available（基本可用）、Soft state（软状态）和 Eventually consistent（最终一致性）三个短语的简写。</p>
+<p>BASE 是对 CAP 中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于 CAP 定理逐步演化而来的，其核心思想是即使无法做到强一致性，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性。</p>
+<p><strong>基本可用</strong></p>
+<p>基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性，如</p>
+<ul>
+<li>响应时间上的损失</li>
+</ul>
+<p>正常情况下，一个在线搜索引擎在0.5秒之内返回查询结果，但由于出现故障，查询结果变为2秒</p>
+<ul>
+<li>功能上的损失</li>
+</ul>
+<p>正常情况下，在一个电子商务网站上进行购物，消费者几乎能够顺利的完成每一笔订单，但是在高峰的时候，由于购物行为激增，部分消费者可能会被引导到一个降级页面。</p>
+<p><strong>弱状态</strong></p>
+<p>弱状态也称为软状态，和硬状态相对，是指允许系统中的数据存在的中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<p><strong>最终一致性</strong></p>
+<p>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性。</p>
+<p>在实际的工程实践中，最终一致性存在以下五类主要变种：</p>
+<ul>
+<li>因果一致性</li>
+</ul>
+<p>因果一致性是指，如果进程 A 在更新完某个数据项后通知了进程 B，那么进程 B 之后对该数据项的访问都应该能够获取到进程 A 更新后的最新值，即不能发生丢失更新情况。但与进程 A 无因果关系的进程 C 的数据访问则没有这样的限制。</p>
+<ul>
+<li>读已之所写</li>
+</ul>
+<p>读已之所写是指，进程 A 更新一个数据项之后，它自己总是能够访问到更新过的最新值，而不会看到旧值。也就是说，对于单个数据获取者来说，其读取到的数据，一定不会比自己上次写入的值旧。</p>
+<ul>
+<li>会话一致性</li>
+</ul>
+<p>会话一致性将对系统数据的访问过程框定在了一个会话当中：系统能保证在同一个有效的会话中实现“读已之所写”的一致性，即，执行更新操作之后，客户端能够在同一个会话中始终读取到该数据项的最新值。</p>
+<ul>
+<li>单调读一致性</li>
+</ul>
+<p>单调读一致性是指如果一个进程从系统中读取出一个数据项的某个值后，那么系统对该进程后续的任何数据访问都不应该返回更旧的值。</p>
+<ul>
+<li>单调写一致性</li>
+</ul>
+<p>单调写一致性是指，一个系统需要能够保证来自同一个进程的写操作被顺序地执行。</p>
+<h3 id="总结">总结</h3><p>事实上，最终一致性并不是只有那些大型分布式系统才涉及的特性，许多现代的关系型数据库都采用了最终一致性模型。在现代关系型数据库中，大多数都会采用同步和异步方式来实现主备数据复制技术。在同步方式中，数据的复制通常是更新事务的一部分，因此在事务完成后，主备数据库的数据就会达到一致。而在异步方式中，备库的更新往往会存在延时，这取决于事务日志在主备数据库之间传输的时间长短，如果时间过长，那么显然，会出现数据不一致的情况，所以，这里就会用到最终一致性模型。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/22/数据库系统实现-索引结构小结/" rel="next" title="数据库系统实现: 索引结构小结">
+                <i class="fa fa-chevron-left"></i> 数据库系统实现: 索引结构小结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/10/23/分布式系统学习-事务处理与数据一致性/"
+     data-title="分布式系统学习: 事务处理与数据一致性"
+     data-content=""
+     data-url="http://pengshuang.space/2016/10/23/分布式系统学习-事务处理与数据一致性/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/23/分布式系统学习-事务处理与数据一致性/"
+           data-title="分布式系统学习: 事务处理与数据一致性" data-url="http://pengshuang.space/2016/10/23/分布式系统学习-事务处理与数据一致性/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="PengShuang" />
+          <p class="site-author-name" itemprop="name">PengShuang</p>
+          <p class="site-description motion-element" itemprop="description">在路上，慢慢走！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">36</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/pengshuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lingyu.wang/" title="天镶的博客" target="_blank">天镶的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coolshell.cn/" title="酷壳" target="_blank">酷壳</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dongwm.com" title="小明明的博客" target="_blank">小明明的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ACID"><span class="nav-number">1.</span> <span class="nav-text">ACID</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一致性"><span class="nav-number">1.2.</span> <span class="nav-text">一致性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#隔离性"><span class="nav-number">1.3.</span> <span class="nav-text">隔离性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#持久性"><span class="nav-number">1.4.</span> <span class="nav-text">持久性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式事务"><span class="nav-number">2.</span> <span class="nav-text">分布式事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CAP_和_BASE_理论"><span class="nav-number">3.</span> <span class="nav-text">CAP 和 BASE 理论</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CAP_定理"><span class="nav-number">3.1.</span> <span class="nav-text">CAP 定理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CAP_定理应用"><span class="nav-number">3.2.</span> <span class="nav-text">CAP 定理应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BASE_理论"><span class="nav-number">3.3.</span> <span class="nav-text">BASE 理论</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PengShuang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"pengshuang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DKbLgBme7UkAx9JX6sM3D4Hj-gzGzoHsz", "GXjJ9Ox3pUGI9PJhm6CNfJGN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
