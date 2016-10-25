@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="计算机网络," />
+  <meta name="keywords" content="shell," />
 
 
 
@@ -84,25 +84,31 @@
 
 
 
-<meta name="description" content="在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。
-1. IP地址的定义IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。
-IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，">
+<meta name="description" content="find 命令$ find &amp;lt;指定目录&amp;gt; &amp;lt;指定条件&amp;gt; &amp;lt;指定动作&amp;gt;
+
+- &amp;lt;指定目录&amp;gt;: 所要搜索的目录及其所有子目录
+- &amp;lt;指定条件&amp;gt;: 所要搜索的文件的特征 (eg: -name -type)
+- &amp;lt;指定动作&amp;gt;: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+locate 命令locate 其实相当于">
 <meta property="og:type" content="article">
-<meta property="og:title" content="IP协议学习(二):IP地址基础知识">
-<meta property="og:url" content="http://pengshuang.space/2016/09/25/IP地址基础知识/index.html">
+<meta property="og:title" content="Linux常用命令: find 和 ping">
+<meta property="og:url" content="http://pengshuang.space/2016/10/25/Linux常用命令-find-和-ping/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。
-1. IP地址的定义IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。
-IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，">
-<meta property="og:image" content="http://pengshuang.space/img/IPnet.png">
-<meta property="og:image" content="http://pengshuang.space/img/IPaddress.png">
-<meta property="og:image" content="http://pengshuang.space/img/mask.png">
-<meta property="og:updated_time" content="2016-09-25T14:41:53.000Z">
+<meta property="og:description" content="find 命令$ find &amp;lt;指定目录&amp;gt; &amp;lt;指定条件&amp;gt; &amp;lt;指定动作&amp;gt;
+
+- &amp;lt;指定目录&amp;gt;: 所要搜索的目录及其所有子目录
+- &amp;lt;指定条件&amp;gt;: 所要搜索的文件的特征 (eg: -name -type)
+- &amp;lt;指定动作&amp;gt;: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+locate 命令locate 其实相当于">
+<meta property="og:updated_time" content="2016-10-25T12:22:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="IP协议学习(二):IP地址基础知识">
-<meta name="twitter:description" content="在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。
-1. IP地址的定义IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。
-IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，">
+<meta name="twitter:title" content="Linux常用命令: find 和 ping">
+<meta name="twitter:description" content="find 命令$ find &amp;lt;指定目录&amp;gt; &amp;lt;指定条件&amp;gt; &amp;lt;指定动作&amp;gt;
+
+- &amp;lt;指定目录&amp;gt;: 所要搜索的目录及其所有子目录
+- &amp;lt;指定条件&amp;gt;: 所要搜索的文件的特征 (eg: -name -type)
+- &amp;lt;指定动作&amp;gt;: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+locate 命令locate 其实相当于">
 
 
 
@@ -123,9 +129,9 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/09/25/IP地址基础知识/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/25/Linux常用命令-find-和-ping/"/>
 
-  <title> IP协议学习(二):IP地址基础知识 | 小沙文的博客 </title>
+  <title> Linux常用命令: find 和 ping | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -265,7 +271,7 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
             
             
               
-                IP协议学习(二):IP地址基础知识
+                Linux常用命令: find 和 ping
               
             
           </h1>
@@ -277,8 +283,8 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-25T21:15:14+08:00" content="2016-09-25">
-              2016-09-25
+            <time itemprop="dateCreated" datetime="2016-10-25T19:52:43+08:00" content="2016-10-25">
+              2016-10-25
             </time>
           </span>
 
@@ -291,8 +297,8 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -307,8 +313,8 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/25/IP地址基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/25/IP地址基础知识/" itemprop="commentsCount"></span>
+                <a href="/2016/10/25/Linux常用命令-find-和-ping/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -318,7 +324,7 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
 
           
           
-             <span id="/2016/09/25/IP地址基础知识/" class="leancloud_visitors" data-flag-title="IP协议学习(二):IP地址基础知识">
+             <span id="/2016/10/25/Linux常用命令-find-和-ping/" class="leancloud_visitors" data-flag-title="Linux常用命令: find 和 ping">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -340,30 +346,47 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
       
 
       
-        <p>在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。</p>
-<h3 id="1-_IP地址的定义">1. IP地址的定义</h3><p>IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。</p>
-<p>IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，网络标识在数据链路的每个段配置不同的值。网络标识必须保证相互连接的每个段的地址不相重复。而相同段内相连的主机必须有相同的网络地址。IP地址的 “主机标识” 则不允许在同一个网段内重复出现。</p>
-<p>通过下图也可以看出，IP包被转发到途中某个路由器时，正是利用目标IP地址的网络标识进行路由。因为即使不看主机标识，只要一见到网络标识就能判断出是否为该网段内的主机。网络标识和主机标识通常通过子网掩码（网络前缀）区分。</p>
-<p><img src="/img/IPnet.png" alt=""></p>
-<h3 id="2-_IP地址的分类">2. IP地址的分类</h3><p><img src="/img/IPaddress.png" alt=""></p>
-<p>IP地址分为四个级别，分为A类，B类，C类，D类。它根据IP地址中从第1位到第4位的比特列对网络标识和主机标识进行区分。</p>
-<h4 id="A类地址">A类地址</h4><p>A类IP地址是首位以 “0” 开头的地址。从第1位到第8位是它的网络标识。用十进制表示的话，0.0.0.0 ~ 127.0.0.0 是A类的网络地址。A类地址的后24位相当于主机标识。因此，一个网段内可容纳的主机地址上限为16，777，214个。</p>
-<h4 id="B类地址">B类地址</h4><p>B类IP地址是前两位为 “10” 的地址。从第1位到第16位是它的网络标识。用十进制表示的话，128.0.0.1 ~ 191.255.0.0是B类的网络地址。B类网络地址的后16位相当于主机标识。因此，一个网段内可容纳的主机上限为65，534个。</p>
-<h4 id="C类地址">C类地址</h4><p>C类IP地址是前三位为 “110” 的地址。从第1位到第24位是它的网络标识。用十进制表示的话，192.168.0.0 ~ 239.255.255.0 是C类的网络地址。C类地址的后8位相当于主机标识。因此，一个网段内可容纳的主机地址上限为254个。</p>
-<h4 id="D类地址">D类地址</h4><p>D类IP地址是前四位为 “1110” 地址。从第1位到第32位是它的网络标识。用十进制表示的话，224.0.0.0 ~ 239.255.255.255 是D类的网络地址。D类地址没有主机标识，常被用于多播。</p>
-<p><strong>注意</strong></p>
-<p>主机地址全部为0只有在表示对应的网络地址或IP地址不可获知的情况下才使用。而全部为1的主机地址通常作为广播地址。</p>
-<h3 id="3-_广播地址">3. 广播地址</h3><p>广播地址用于在同一个链路中相互连接的主机之间发生数据。IP地址中的主机地址部分全部设置为1，就成了广播地址。</p>
-<p>广播地址分为本地广播和直接广播两种。在本网络内的广播为本地广播，这个广播地址的IP包会被路由器屏蔽；在不同网络之间的广播叫做之间广播。</p>
-<h3 id="4-_IP多播">4. IP多播</h3><h4 id="同时发送提供效率">同时发送提供效率</h4><p>多播用于将包发送给特点组内的所有主机。由于其之间使用IP协议，因此也不存在可靠传输。</p>
-<h4 id="IP多播与地址">IP多播与地址</h4><p>多播使用D类地址。因此，如果从首位开始到第4位是“1110”，就可以认为是多播地址。而剩下的28位可以成为多播的组编号。</p>
-<h3 id="5-_子网掩码">5. 子网掩码</h3><p><img src="/img/mask.png" alt=""></p>
-<p>引入了子网以后，一个IP地址就有了两种识别码。一是IP地址本身，另一个是表示网络内部的子网掩码。子网掩码用二进制的方式表示的话，也是一个32位的数字。它对应IP地址网络标识部分的位全部为“1”，对应IP地址主机标识的部分则全部为“0”。由此，一个IP地址可以不再受限于自己的类别，而是可以用这样的子网掩码自由的定位自己的网络标识长度。当然，子网掩码必须是IP地址的首位开始连续的“1”。表示方法如下：</p>
-<p>IP地址：    172.20.100.52/26</p>
-<p>子网掩码：    255.255.255.192</p>
-<p>网络地址：  172.20.100.0</p>
-<p>广播地址：    172.20.100.63</p>
-<p><strong>子网掩码可以灵活的指定网络标识的长度</strong></p>
+        <h3 id="find_命令">find 命令</h3><pre><code>$ find <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span> <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span> <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>
+
+- <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span>: 所要搜索的目录及其所有子目录
+- <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span>: 所要搜索的文件的特征 (eg: -name -type)
+- <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+</code></pre><h3 id="locate_命令">locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
+<p>为了避免这种情况，可以在使用locate之前，先使用<strong>updatedb</strong>命令，手动更新数据库。</p>
+<pre><code>$ locate /etc/<span class="keyword">sh</span>
+搜索etc目录下所有以<span class="keyword">sh</span>开头的文件。
+
+$ locate ~/<span class="literal">m</span>
+搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件。
+
+$ locate -i ~/<span class="literal">m</span>
+搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件，同时忽略大小写。
+</code></pre><h3 id="whereis_命令">whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
+<h3 id="ping_多个_ip">ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
+<p>Linux 自带的 ping 命令本身不可以 ping 多个 ip，但可以用 shell 来实现同时 ping 多个 ip。</p>
+<ol>
+<li><p>建一个空的输出文件 </p>
+<pre><code>touch /output<span class="class">.txt</span> 
+</code></pre></li>
+<li><p>新建一个脚本。</p>
+<pre><code><span class="keyword">vim</span> ping.<span class="keyword">sh</span>
+</code></pre></li>
+<li><p>脚本内容</p>
+<pre><code><span class="shebang">#!/bin/bash</span>
+A = <span class="string">'cat /ip.txt'</span>
+<span class="keyword">for</span> B <span class="keyword">in</span> <span class="variable">$A</span> 
+<span class="keyword">do</span>
+ping -c <span class="number">3</span> <span class="variable">$B</span> &gt;&gt;/output
+<span class="keyword">done</span>
+wq
+</code></pre></li>
+<li><p>执行脚本</p>
+<pre><code>./ <span class="built_in">ping</span>.sh
+</code></pre></li>
+<li><p>查看结果</p>
+<pre><code><span class="tag">cat</span> <span class="tag">output</span><span class="class">.txt</span>
+</code></pre></li>
+</ol>
 
       
     </div>
@@ -386,7 +409,7 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
       
         <div class="post-tags">
           
-            <a href="/tags/计算机网络/" rel="tag">#计算机网络</a>
+            <a href="/tags/shell/" rel="tag">#shell</a>
           
         </div>
       
@@ -395,17 +418,13 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/21/谷歌三篇论文学习-MapReduce/" rel="next" title="谷歌三篇论文学习(一): MapReduce">
-                <i class="fa fa-chevron-left"></i> 谷歌三篇论文学习(一): MapReduce
+              <a href="/2016/10/25/分布式系统学习-Paxos算法/" rel="next" title="分布式系统学习: Paxos算法">
+                <i class="fa fa-chevron-left"></i> 分布式系统学习: Paxos算法
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/26/TCP学习-三/" rel="prev" title="IP协议学习(三):路由控制和IPv4数据包">
-                IP协议学习(三):路由控制和IPv4数据包 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -420,10 +439,10 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/09/25/IP地址基础知识/"
-     data-title="IP协议学习(二):IP地址基础知识"
+        <div class="ds-share flat" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/"
+     data-title="Linux常用命令: find 和 ping"
      data-content=""
-     data-url="http://pengshuang.space/2016/09/25/IP地址基础知识/">
+     data-url="http://pengshuang.space/2016/10/25/Linux常用命令-find-和-ping/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -450,8 +469,8 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/25/IP地址基础知识/"
-           data-title="IP协议学习(二):IP地址基础知识" data-url="http://pengshuang.space/2016/09/25/IP地址基础知识/">
+      <div class="ds-thread" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/"
+           data-title="Linux常用命令: find 和 ping" data-url="http://pengshuang.space/2016/10/25/Linux常用命令-find-和-ping/">
       </div>
     
   </div>
@@ -584,7 +603,7 @@ IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_IP地址的定义"><span class="nav-number">1.</span> <span class="nav-text">1. IP地址的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_IP地址的分类"><span class="nav-number">2.</span> <span class="nav-text">2. IP地址的分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A类地址"><span class="nav-number">2.1.</span> <span class="nav-text">A类地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B类地址"><span class="nav-number">2.2.</span> <span class="nav-text">B类地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C类地址"><span class="nav-number">2.3.</span> <span class="nav-text">C类地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#D类地址"><span class="nav-number">2.4.</span> <span class="nav-text">D类地址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_广播地址"><span class="nav-number">3.</span> <span class="nav-text">3. 广播地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_IP多播"><span class="nav-number">4.</span> <span class="nav-text">4. IP多播</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同时发送提供效率"><span class="nav-number">4.1.</span> <span class="nav-text">同时发送提供效率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP多播与地址"><span class="nav-number">4.2.</span> <span class="nav-text">IP多播与地址</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_子网掩码"><span class="nav-number">5.</span> <span class="nav-text">5. 子网掩码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#find_命令"><span class="nav-number">1.</span> <span class="nav-text">find 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locate_命令"><span class="nav-number">2.</span> <span class="nav-text">locate 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whereis_命令"><span class="nav-number">3.</span> <span class="nav-text">whereis 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ping_多个_ip"><span class="nav-number">4.</span> <span class="nav-text">ping 多个 ip</span></a></li></ol></div>
             
           </div>
         </section>
