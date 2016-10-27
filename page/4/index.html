@@ -258,6 +258,150 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/01/同步与异步的区别/" itemprop="url">
+                  同步与异步的区别(总结)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-01T10:06:54+08:00" content="2016-09-01">
+              2016-09-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/01/同步与异步的区别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/01/同步与异步的区别/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/01/同步与异步的区别/" class="leancloud_visitors" data-flag-title="同步与异步的区别(总结)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>同步与异步是面试中经常会被问到的问题，特此总结一下：</p>
+<h3 id="同步和异步的区别">同步和异步的区别</h3><p>简单而言，同步是指：发送方发出数据后，等接收方发回响应以后才发下一个数据包的通讯方式。异步是指：发送方发出数据后，不等接收方发回响应，接着发送下个数据包的通讯方式。 </p>
+<p>举个例子：普通B/S模式（同步）Ajax技术（异步）</p>
+<p>同步：提交请求-&gt;等待服务器处理-&gt;处理完毕返回（这个期间客户端浏览器不能干任何事）</p>
+<p>异步: 请求通过事件触发-&gt;服务器处理（这是浏览器仍然可以作其他事情）-&gt;处理完毕</p>
+<p>线程同步是多个线程同时访问同一资源，等待资源访问结束，浪费时间，效率低    线程异步：访问资源时在空闲等待时同时访问其他资源，实现多线程机制</p>
+<p>异步处理就是,你现在问我问题,我可以不回答你,等我用时间了再处理你这个问题.同步不就反之了，同步信息被立即处理 – 直到信息处理完成才返回消息句柄;异步信息收到后将在后台处理一段时间, 而早在信息处理结束前就返回消息句柄</p>
+<h3 id="同步、异步、阻塞和非阻塞的概念">同步、异步、阻塞和非阻塞的概念</h3><p>在进行网络编程时，我们常常见到同步、异步、阻塞和非阻塞四种调用方式。这些方式彼此概念并不好理解。下面是我对这些术语的理解。</p>
+<h3 id="同步">同步</h3><p>所谓同步，就是在发出一个功能调用时，在没有得到结果之前，该调用就不返回。按照这个定义，其实绝大多数函数都是同步调用（例如sin, isdigit等）。但是一般而言，我们在说同步、异步的时候，特指那些需要其他部件协作或者需要一定时间完成的任务。最常见的例子就是 SendMessage。该函数发送一个消息给某个窗口，在对方处理完消息之前，这个函数不返回。当对方处理完毕以后，该函数才把消息处理函数所返回的 LRESULT值返回给调用者。</p>
+<h3 id="异步">异步</h3><p>异步的概念和同步相对。当一个异步过程调用发出后，调用者不能立刻得到结果。实际处理这个调用的部件在完成后，通过状态、通知和回调来通知调用者。以CAsycSocket类为例（注意，CSocket从CAsyncSocket派生，但是起功能已经由异步转化为同步），当一个客户端通过调用 Connect函数发出一个连接请求后，调用者线程立刻可以朝下运行。当连接真正建立起来以后，socket底层会发送一个消息通知该对象。这里提到执行部件和调用者通过三种途径返回结果：状态、通知和回调。可以使用哪一种依赖于执行部件的实现，除非执行部件提供多种选择，否则不受调用者控制。如果执行部件用状态来通知，那么调用者就需要每隔一定时间检查一次，效率就很低（有些初学多线程编程的人，总喜欢用一个循环去检查某个变量的值，这其实是一种很严重的错误）。如果是使用通知的方式，效率则很高，因为执行部件几乎不需要做额外的操作。至于回调函数，其实和通知没太多区别。</p>
+<h3 id="阻塞">阻塞</h3><p>阻塞调用是指调用结果返回之前，当前线程会被挂起。函数只有在得到结果之后才会返回。有人也许会把阻塞调用和同步调用等同起来，实际上他是不同的。对于同步调用来说，很多时候当前线程还是激活的，只是从逻辑上当前函数没有返回而已。例如，我们在CSocket中调用Receive函数，如果缓冲区中没有数据，这个函数就会一直等待，直到有数据才返回。而此时，当前线程还会继续处理各种各样的消息。如果主窗口和调用函数在同一个线程中，除非你在特殊的界面操作函数中调用，其实主界面还是应该可以刷新。socket接收数据的另外一个函数recv则是一个阻塞调用的例子。当socket工作在阻塞模式的时候，如果没有数据的情况下调用该函数，则当前线程就会被挂起，直到有数据为止。</p>
+<h3 id="非阻塞">非阻塞</h3><p>非阻塞和阻塞的概念相对应，指在不能立刻得到结果之前，该函数不会阻塞当前线程，而会立刻返回。</p>
+<h3 id="对象的阻塞模式和阻塞函数调用">对象的阻塞模式和阻塞函数调用</h3><p>对象是否处于阻塞模式和函数是不是阻塞调用有很强的相关性，但是并不是一一对应的。阻塞对象上可以有非阻塞的调用方式，我们可以通过一定的API去轮询状态，在适当的时候调用阻塞函数，就可以避免阻塞。而对于非阻塞对象，调用特殊的函数也可以进入阻塞调用。函数select就是这样的一个例子。</p>
+<h4 id="参考资料：">参考资料：</h4><ol>
+<li><a href="http://blog.csdn.net/ohfish/article/details/2948740" target="_blank" rel="external">理解同步与异步</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/31/进程和线程的区别/" itemprop="url">
                   进程和线程的区别(总结)
                 </a>
@@ -2566,157 +2710,6 @@ ctx.stop()
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-1/" itemprop="url">
-                  PageRank-的三种实现方式(1)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-25T12:11:29+08:00" content="2015-10-25">
-              2015-10-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/PageRank-的三种实现方式-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-1/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2015/10/25/PageRank-的三种实现方式-1/" class="leancloud_visitors" data-flag-title="PageRank-的三种实现方式(1)">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>PageRank算法是Google的核心搜索算法，是Google发家致富的根本，最近正好在做《复杂网络》的课程报告，所以在看网页排名算法之类的资料，这里记录一下学校的笔记</p>
-<p>PageRank算法的应用还是相当广泛的，对社交网络的好多分析算法都在PageRank的基础上加以改进以适应不同的网络模型，比如说微博用户影响力分析，SNS系统排名等等。关于这之类的社交网络分析方法，有空的话我会在博客上写一些，今天主要讲PageRank的三种实现方式，分别使用Java，Hadoop和Spark。</p>
-<p>1996年初，谷歌公司的创始人，当时还是美国斯坦福大学研究生的佩奇和布林开始了对网页排序问题的研究。这两位小伙子之所以研究网页排序问题， 一来是导师的建议 (佩奇后来称该建议为 “我有生以来得到过的最好建议”)， 二来则是因为他们对这一问题背后的数学产生了兴趣。</p>
-<p>网页排序问题的背后有什么样的数学呢？ 这得从佩奇和布林看待这一问题的思路说起。</p>
-<p>在佩奇和布林看来， 网页的排序是不能靠每个网页自己来标榜的， 无论把关键词重复多少次， 垃圾网页依然是垃圾网页。 那么， 究竟什么才是网页排序的可靠依据呢？ 出生于书香门第的佩奇和布林 (两人的父亲都是大学教授) 想到了学术界评判学术论文重要性的通用方法， 那就是看论文的引用次数。 在互联网上， 与论文的引用相类似的是显然是网页的链接。 因此， 佩奇和布林萌生了一个网页排序的思路， 那就是通过研究网页间的相互链接来确定排序。 具体地说， 一个网页被其它网页链接得越多， 它的排序就应该越靠前。 不仅如此， 佩奇和布林还进一步提出， 一个网页越是被排序靠前的网页所链接， 它的排序就也应该越靠前。 这一条的意义也是不言而喻的， 就好比一篇论文被诺贝尔奖得主所引用， 显然要比被普通研究者所引用更说明其价值。 依照这个思路， 网页排序问题就跟整个互联网的链接结构产生了关系， 正是这一关系使它成为了一个不折不扣的数学问题。这样一来我们就得到了PageRank算法的核心思想：</p>
-<ol>
-<li>被重要的网页链接的越多，此网页就越重要。</li>
-<li>此网页对外的链接越少越重要 。</li>
-</ol>
-<p>对网页进行排序时，这2点要合在一起考虑，这就会很让人疑惑，有点像先有鸡还是先有蛋的问题，因为按照这种思路，想要知道一个网页X的排序， 不仅要知道有多少网页链接了它， 而且还得知道那些网页各自的排序——因为来自排序靠前网页的链接更有分量。但作为互联网大家庭的一员，X本身对其它网页的排序也是有贡献的，而且基于来自排序靠前网页的链接更有分量的原则，这种贡献与X本身的排序也有关。这样一来，我们就陷入了一个死循环：要想知道X的排序，就得知道与它链接的其它网页的排序，而要想知道那些网页的排序，却又首先得知道X的排序。</p>
-<p>在这里不得不佩服谷歌两位创始人的智慧，他们巧妙的解决了这个问题，即分析一个虚拟用户在互联网上的漫游过程。他们假定：虚拟用户一旦访问了一个网页后，下一步将有相同的几率访问被该网页所链接的任何一个其它网页。 换句话说，如果网页X有Y个对外链接，则虚拟用户在访问了X之后， 下一步点击那些链接当中的任何一个的几率均为1/Y。初看起来，这一假设并不合理，因为任何用户都有偏好，怎么可能以相同的几率访问一个网页的所有链接呢？ 但如果我们考虑到佩奇和布林的虚拟用户实际上是对互联网上全体用户的一种平均意义上的代表，这条假设就不象初看起来那么不合理了。 那么网页的排序由什么来决定呢？是由该用户在漫游了很长时间——理论上为无穷长时间——后访问各网页的几率分布来决定，访问几率越大的网页排序就越靠前。</p>
-<p>下面来看一下PageRank算法的数学实现。</p>
-<p>假设一个由4个页面组成的小团体：A，B，C和D。如果所有页面都链向A，那么A的PR（PageRank）值将是B，C及D的Pagerank总和。<br><img src="/img/2.png" alt=""></p>
-<p>继续假设B也有链接到C，并且D也有链接到包括A的3个页面。一个页面不能投票2次。所以B给每个页面半票。以同样的逻辑，D投出的票只有三分之一算到了A的PageRank上。</p>
-<p><img src="/img/3.png" alt=""></p>
-<p>换句话说，根据链出总数平分一个页面的PR值。</p>
-<p><img src="/img/4.png" alt=""></p>
-<p>最后，所有这些被换算为一个百分比再乘上一个系数d。由于“没有向外链接的页面”传递出去的PageRank会是0，所以，Google通过数学系统给了每个页面一个最小值<img src="/img/6.png" alt=""></p>
-<p><img src="/img/5.png" alt=""></p>
-<p>在实际中，有时候会遇到一些没有任何链出的网页，这时候上网者会随机到另外的网页开始浏览。为了处理那些“没有向外链接的页面”（这些页面就像“黑洞”会吞噬掉用户继续向下浏览的概率）带来的问题，这里引入了一个系数d=0.85（这里的d被称为阻尼系数，其意义是，在任意时刻，用户到达某页面后并继续向后浏览的概率），该数值是根据上网者使用浏览器书签的平均频率估算而得。1-d=0.15（就是用户停止点击，随机跳到新URL的概率）的算法被用到了所有页面上。所以这个等式为：</p>
-<p><img src="/img/7.png" alt=""></p>
-<p>P1，P2…P(N)是被研究的页面，M(Pi)是链入Pi的集合，L(Pj)是Pj链出页面的数量，而N是所有页面的数量。</p>
-<p>PageRank的数学知识介绍到这，下一篇文章，我讲介绍如何用Java实现PageRank算法（非并行）。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2762,7 +2755,7 @@ ctx.stop()
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-count">43</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2770,7 +2763,7 @@ ctx.stop()
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

@@ -258,6 +258,157 @@
             
               
                 
+                <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-1/" itemprop="url">
+                  PageRank-的三种实现方式(1)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-25T12:11:29+08:00" content="2015-10-25">
+              2015-10-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/25/PageRank-的三种实现方式-1/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-1/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/25/PageRank-的三种实现方式-1/" class="leancloud_visitors" data-flag-title="PageRank-的三种实现方式(1)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>PageRank算法是Google的核心搜索算法，是Google发家致富的根本，最近正好在做《复杂网络》的课程报告，所以在看网页排名算法之类的资料，这里记录一下学校的笔记</p>
+<p>PageRank算法的应用还是相当广泛的，对社交网络的好多分析算法都在PageRank的基础上加以改进以适应不同的网络模型，比如说微博用户影响力分析，SNS系统排名等等。关于这之类的社交网络分析方法，有空的话我会在博客上写一些，今天主要讲PageRank的三种实现方式，分别使用Java，Hadoop和Spark。</p>
+<p>1996年初，谷歌公司的创始人，当时还是美国斯坦福大学研究生的佩奇和布林开始了对网页排序问题的研究。这两位小伙子之所以研究网页排序问题， 一来是导师的建议 (佩奇后来称该建议为 “我有生以来得到过的最好建议”)， 二来则是因为他们对这一问题背后的数学产生了兴趣。</p>
+<p>网页排序问题的背后有什么样的数学呢？ 这得从佩奇和布林看待这一问题的思路说起。</p>
+<p>在佩奇和布林看来， 网页的排序是不能靠每个网页自己来标榜的， 无论把关键词重复多少次， 垃圾网页依然是垃圾网页。 那么， 究竟什么才是网页排序的可靠依据呢？ 出生于书香门第的佩奇和布林 (两人的父亲都是大学教授) 想到了学术界评判学术论文重要性的通用方法， 那就是看论文的引用次数。 在互联网上， 与论文的引用相类似的是显然是网页的链接。 因此， 佩奇和布林萌生了一个网页排序的思路， 那就是通过研究网页间的相互链接来确定排序。 具体地说， 一个网页被其它网页链接得越多， 它的排序就应该越靠前。 不仅如此， 佩奇和布林还进一步提出， 一个网页越是被排序靠前的网页所链接， 它的排序就也应该越靠前。 这一条的意义也是不言而喻的， 就好比一篇论文被诺贝尔奖得主所引用， 显然要比被普通研究者所引用更说明其价值。 依照这个思路， 网页排序问题就跟整个互联网的链接结构产生了关系， 正是这一关系使它成为了一个不折不扣的数学问题。这样一来我们就得到了PageRank算法的核心思想：</p>
+<ol>
+<li>被重要的网页链接的越多，此网页就越重要。</li>
+<li>此网页对外的链接越少越重要 。</li>
+</ol>
+<p>对网页进行排序时，这2点要合在一起考虑，这就会很让人疑惑，有点像先有鸡还是先有蛋的问题，因为按照这种思路，想要知道一个网页X的排序， 不仅要知道有多少网页链接了它， 而且还得知道那些网页各自的排序——因为来自排序靠前网页的链接更有分量。但作为互联网大家庭的一员，X本身对其它网页的排序也是有贡献的，而且基于来自排序靠前网页的链接更有分量的原则，这种贡献与X本身的排序也有关。这样一来，我们就陷入了一个死循环：要想知道X的排序，就得知道与它链接的其它网页的排序，而要想知道那些网页的排序，却又首先得知道X的排序。</p>
+<p>在这里不得不佩服谷歌两位创始人的智慧，他们巧妙的解决了这个问题，即分析一个虚拟用户在互联网上的漫游过程。他们假定：虚拟用户一旦访问了一个网页后，下一步将有相同的几率访问被该网页所链接的任何一个其它网页。 换句话说，如果网页X有Y个对外链接，则虚拟用户在访问了X之后， 下一步点击那些链接当中的任何一个的几率均为1/Y。初看起来，这一假设并不合理，因为任何用户都有偏好，怎么可能以相同的几率访问一个网页的所有链接呢？ 但如果我们考虑到佩奇和布林的虚拟用户实际上是对互联网上全体用户的一种平均意义上的代表，这条假设就不象初看起来那么不合理了。 那么网页的排序由什么来决定呢？是由该用户在漫游了很长时间——理论上为无穷长时间——后访问各网页的几率分布来决定，访问几率越大的网页排序就越靠前。</p>
+<p>下面来看一下PageRank算法的数学实现。</p>
+<p>假设一个由4个页面组成的小团体：A，B，C和D。如果所有页面都链向A，那么A的PR（PageRank）值将是B，C及D的Pagerank总和。<br><img src="/img/2.png" alt=""></p>
+<p>继续假设B也有链接到C，并且D也有链接到包括A的3个页面。一个页面不能投票2次。所以B给每个页面半票。以同样的逻辑，D投出的票只有三分之一算到了A的PageRank上。</p>
+<p><img src="/img/3.png" alt=""></p>
+<p>换句话说，根据链出总数平分一个页面的PR值。</p>
+<p><img src="/img/4.png" alt=""></p>
+<p>最后，所有这些被换算为一个百分比再乘上一个系数d。由于“没有向外链接的页面”传递出去的PageRank会是0，所以，Google通过数学系统给了每个页面一个最小值<img src="/img/6.png" alt=""></p>
+<p><img src="/img/5.png" alt=""></p>
+<p>在实际中，有时候会遇到一些没有任何链出的网页，这时候上网者会随机到另外的网页开始浏览。为了处理那些“没有向外链接的页面”（这些页面就像“黑洞”会吞噬掉用户继续向下浏览的概率）带来的问题，这里引入了一个系数d=0.85（这里的d被称为阻尼系数，其意义是，在任意时刻，用户到达某页面后并继续向后浏览的概率），该数值是根据上网者使用浏览器书签的平均频率估算而得。1-d=0.15（就是用户停止点击，随机跳到新URL的概率）的算法被用到了所有页面上。所以这个等式为：</p>
+<p><img src="/img/7.png" alt=""></p>
+<p>P1，P2…P(N)是被研究的页面，M(Pi)是链入Pi的集合，L(Pj)是Pj链出页面的数量，而N是所有页面的数量。</p>
+<p>PageRank的数学知识介绍到这，下一篇文章，我讲介绍如何用Java实现PageRank算法（非并行）。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/24/用Java实现类似linux下的wget工具/" itemprop="url">
                   用Java实现类似linux下的wget工具
                 </a>
@@ -643,7 +794,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">42</span>
+              <span class="site-state-item-count">43</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -651,7 +802,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
