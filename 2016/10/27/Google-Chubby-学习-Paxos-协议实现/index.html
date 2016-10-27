@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Flask,Web开发," />
+  <meta name="keywords" content="Chubby," />
 
 
 
@@ -84,25 +84,34 @@
 
 
 
-<meta name="description" content="最近在学习Python的flask微框架，用到最多的就是和前端针对REST API进行交互，那么自然而然传递Json就成为了家常便饭，特意总结了一下和前端交互几种方法。
-1. 利用flask的request.form.get()方法这一中方法主要利用flask的request.form.get方法，获得前端发送给后台的json文件
-Python 端代码：
-@app.route(&apos;/sendjson">
+<meta name="description" content="Chubby 中 Paxos 协议实现Chubby 服务端的基本架构大致分为三层：
+
+最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。
+日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。
+存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。
+
+Paxos 算法的作用在于保证集群内各个副">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Flask中向前端传递或者接收Json文件的方法">
-<meta property="og:url" content="http://pengshuang.space/2016/08/19/flask中向前端传递或者接收Json文件的方法/index.html">
+<meta property="og:title" content="Google Chubby 学习: Paxos 协议实现">
+<meta property="og:url" content="http://pengshuang.space/2016/10/27/Google-Chubby-学习-Paxos-协议实现/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="最近在学习Python的flask微框架，用到最多的就是和前端针对REST API进行交互，那么自然而然传递Json就成为了家常便饭，特意总结了一下和前端交互几种方法。
-1. 利用flask的request.form.get()方法这一中方法主要利用flask的request.form.get方法，获得前端发送给后台的json文件
-Python 端代码：
-@app.route(&apos;/sendjson">
-<meta property="og:updated_time" content="2016-09-14T00:32:09.000Z">
+<meta property="og:description" content="Chubby 中 Paxos 协议实现Chubby 服务端的基本架构大致分为三层：
+
+最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。
+日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。
+存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。
+
+Paxos 算法的作用在于保证集群内各个副">
+<meta property="og:updated_time" content="2016-10-27T07:24:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Flask中向前端传递或者接收Json文件的方法">
-<meta name="twitter:description" content="最近在学习Python的flask微框架，用到最多的就是和前端针对REST API进行交互，那么自然而然传递Json就成为了家常便饭，特意总结了一下和前端交互几种方法。
-1. 利用flask的request.form.get()方法这一中方法主要利用flask的request.form.get方法，获得前端发送给后台的json文件
-Python 端代码：
-@app.route(&apos;/sendjson">
+<meta name="twitter:title" content="Google Chubby 学习: Paxos 协议实现">
+<meta name="twitter:description" content="Chubby 中 Paxos 协议实现Chubby 服务端的基本架构大致分为三层：
+
+最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。
+日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。
+存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。
+
+Paxos 算法的作用在于保证集群内各个副">
 
 
 
@@ -123,9 +132,9 @@ Python 端代码：
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/08/19/flask中向前端传递或者接收Json文件的方法/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/27/Google-Chubby-学习-Paxos-协议实现/"/>
 
-  <title> Flask中向前端传递或者接收Json文件的方法 | 小沙文的博客 </title>
+  <title> Google Chubby 学习: Paxos 协议实现 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -265,7 +274,7 @@ Python 端代码：
             
             
               
-                Flask中向前端传递或者接收Json文件的方法
+                Google Chubby 学习: Paxos 协议实现
               
             
           </h1>
@@ -277,38 +286,19 @@ Python 端代码：
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-19T10:48:40+08:00" content="2016-08-19">
-              2016-08-19
+            <time itemprop="dateCreated" datetime="2016-10-27T14:12:31+08:00" content="2016-10-27">
+              2016-10-27
             </time>
           </span>
 
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
           
 
           
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="commentsCount"></span>
+                <a href="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/27/Google-Chubby-学习-Paxos-协议实现/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -318,7 +308,7 @@ Python 端代码：
 
           
           
-             <span id="/2016/08/19/flask中向前端传递或者接收Json文件的方法/" class="leancloud_visitors" data-flag-title="Flask中向前端传递或者接收Json文件的方法">
+             <span id="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/" class="leancloud_visitors" data-flag-title="Google Chubby 学习: Paxos 协议实现">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -340,79 +330,31 @@ Python 端代码：
       
 
       
-        <p>最近在学习Python的flask微框架，用到最多的就是和前端针对REST API进行交互，那么自然而然传递Json就成为了家常便饭，特意总结了一下和前端交互几种方法。</p>
-<h3 id="1-_利用flask的request-form-get()方法">1. 利用flask的<strong>request.form.get()</strong>方法</h3><p>这一中方法主要利用flask的<strong>request.form.get</strong>方法，获得前端发送给后台的json文件</p>
-<p>Python 端代码：</p>
-<pre><code><span class="decorator">@app.route('/sendjson', methods=['POST'])</span>
-<span class="function"><span class="keyword">def</span> <span class="title">sendjson</span><span class="params">()</span>:</span>
+        <h3 id="Chubby_中_Paxos_协议实现">Chubby 中 Paxos 协议实现</h3><p>Chubby 服务端的基本架构大致分为三层：</p>
+<ul>
+<li>最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。</li>
+<li>日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。</li>
+<li>存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。</li>
+</ul>
+<p>Paxos 算法的作用在于保证集群内各个副本节点的日志能够保证一致。Chubby 事务日志中的每一个 Value 对应 Paxos 算法中的一个 Instance，由于 Chubby 需要对外提供不间断的服务，因此事务日志会无限增长，于是整个 Chubby 运行过程中，会存在多个 Paxos Instance。同时，Chubby 会为每一个 Paxos Instance 都按序分配一个全局唯一的 Instance 编号，并将其顺序写入到事务日志中去。</p>
+<p>在多 Paxos Instance 的模式下，为了提升算法执行的性能，就必须选举一个副本节点作为 Paxos 算法的主节点，以避免因为每一个 Paxos Instance 都提出提案而陷入多个 Paxos Round 并存的情况。同时，Paxos 会保证在 Master 重启或出现故障而进行切换的时候，允许出现短暂的多个 Master 共存却不影响副本之间的一致性。</p>
+<p>在 Paxos 中，每一个 Paxos Instance 都需要进行一轮或多轮 “ Prepare -&gt; Promise -&gt; Propose -&gt; Accept “ 这样完整的二阶段请求过程来完成对一个提案值的选定，而多个 Instance 之间是完全独立的，每个 Instance 可以自己决定每一个 Round 的序号，仅仅只需要保证在 Instance 内部不会出现序号重复即可。为了在保证正确性的前提下尽可能地提高算法运行性能，可以让多个 Instance 共用一套序号分配机制，并将 “Prepare -&gt; Promise” 合并为一个阶段，具体做法如下。</p>
+<ul>
+<li>当某个副本节点通过选举成为 Master 后，就会使用新分配的编号 N 来广播一个 Prepare 消息，该 Prepare 消息会被所有未达成一致的 Instance 和目前还未开始的 Instance 共用。</li>
+<li>当 Acceptor 接收到 Prepare 消息后，必须对多个 Instance 同时做出回应，这通常可以通过将反馈信息封装在一个数据包中来实现。假设最多允许 K 个 Instance 同时进行提案值的选定，那么：<ul>
+<li>当前至多存在 K 个 未达成一致的 Instance，将这些未决的 Instance 各自最后接受的提案值封装进一个数据包，并作为 Promise 消息返回。</li>
+<li>同时，判断 N 是否大于当前 Acceptor 的 highestPromiseNum 值，如果大于该值的话，那么就标记这些未决 Instance 和所有未来的 Instance 的 highestPromisedNum 指为 N — 这样，这些未决 Instance 和所有未来 Instance 都不能再接受任何编号小于 N 的提案。</li>
+</ul>
+</li>
+<li>然后 Master 就可以对所有未决 Instance 和所有未来 Instance 分别执行 “Propose -&gt; Accept” 阶段的处理。如果当前 Master 能够一直稳定运行的话，那么在接下来的算法运行过程中，就不再需要进行 “Prepare -&gt; Promise” 的处理了。但是，一旦 Master 发现 Acceptor 返回了一个 Reject 消息，说明集群中存在另一个 Master，并且试图使用更大的提案编号发送了 Prepare 消息。碰到这种情况，当前 Master 就需要重新分配新的提案编号并再次进行 “Prepare -&gt; Promise” 阶段的逻辑处理。</li>
+</ul>
+<p>利用上述改进的 Paxos 算法，在 Master 稳定运行的情况下，只需要使用同一个编号来依次执行每一个 Instance 的 “Promise -&gt; Accept” 阶段逻辑处理。在每个 Instance 的运行过程中，一旦接收到多数派的 Accept 反馈后，就可以将对应的提案值写入本地事务日志并广播 COMMIT 消息给集群中的其他副本节点，其他副本节点在接收到这个 COMMIT 消息之后也会将提案值写入到事务日志中去。如果某个副本节点因为宕机或者网络原因没有接收到 COMMIT 消息，可以主动向集群中的其他副本节点进行查询。因此，我们可以看到，在 Chubby 的 Paxos 算法实现中，只要维持集群中存在多数派的机器能够正常运行，即使其他机器在任意时刻发生宕机，也能保证已经提交的提案的安全性。</p>
+<h3 id="Hypertable">Hypertable</h3><p>Hypertable 以 Google 的 Bigtable 相关论文为基础指导，采用与 HBase 非常相似的分布式模型，其目的是构建一个针对分布式海量数据的高并发数据库。</p>
+<p>Hypertable 的核心组件包括 Hyperspace、RangeServer、Master 和 DFS Broker 四部分。其中 Hyperspace 是 Hypertable 中最重要的组件之一，其提供了对分布式锁服务的支持以及对元数据的管理，是保证 Hypertable 数据一致性的核心。Hyperspace 类似于 Chubby，它存储一些元数据信息，同时提供分布式锁服务，另外还负责提供高效、可靠的主机选举服务。</p>
+<p>RangeServer 是实际对外提供服务的组件单元，负责数据的读取和写入。在 Hypertable的设计中，对每一张表都按照主键进行切分，形成多个 Range，每个 Range 由一个 RangeServer 负责管理。在 Hypertable 中，通常会部署多个 RangeServer，每个 RangeServer 都负责管理部分数据，由 Master 来负责进行 RangeServer 的集群管理。</p>
+<p>Master 是元数据管理中心，管理包括创建表、删除表或是其他表空间变更在内的所有元数据操作，同时负责检测 RangeServer 的工作状态，一旦某一个 RangeServer 宕机或是重启，能够自动进行 Range 的重新分配，从而实现对 RangeServer 集群的管理和负责均衡。</p>
+<p>DFS Broker 则是底层分布式文件系统的抽象层，用于衔接上层 Hypertable 和底层文件存储。所有对文件系统的读写操作，都是通过 DFS Broker 来完成的。目前已经可以接入 Hypertable 中的分布式文件系统包括 HDFS、MapR，Ceph 和 KFS。针对任何其他的新文件系统，只需实现一个对应的 DFS Broker，就可以将其快速接入到整个 Hypertable 系统中。</p>
 
-<span class="comment"># 接受前端发来的数据</span>
-data = json.loads(request.form.get(<span class="string">'data'</span>))
-
-<span class="comment"># lesson: "Operation System"</span>
-<span class="comment"># score: 100</span>
-lesson = data[<span class="string">"lesson"</span>]
-score = data[<span class="string">"score"</span>]
-
-<span class="comment"># 自己在本地组装成Json格式,用到了flask的jsonify方法</span>
-info = dict()
-info[<span class="string">'name'</span>] = <span class="string">"pengshuang"</span>
-info[<span class="string">'lesson'</span>] = lesson
-info[<span class="string">'score'</span>] = score
-<span class="keyword">return</span> jsonify(info)
-</code></pre><p>JS代码：</p>
-<pre><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-    $(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
-    <span class="keyword">var</span> data = {
-         data: <span class="built_in">JSON</span>.stringify({<span class="string">"lesson"</span>: <span class="string">"Operation System"</span>, <span class="string">"score"</span>: <span class="number">100</span>})
-   }
-      $.ajax({
-        url:<span class="string">"/sendjson"</span>,
-        type: <span class="string">'POST'</span>,
-        data: data,
-        success: <span class="function"><span class="keyword">function</span> (<span class="params">msg</span>) </span>{
-            alert(msg.name)
-        }
-    })
-  });
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre><h3 id="2-_利用flask的request-get_data()方法">2. 利用flask的<strong>request.get_data()</strong>方法</h3><p>Python端代码：</p>
-<pre><code><span class="decorator">@app.route('/sendjson2',methods=['POST'])</span>
-<span class="function"><span class="keyword">def</span> <span class="title">sendjson2</span><span class="params">()</span>:</span>
-
-<span class="comment"># 接收前端发来的数据,转化为Json格式,我个人理解就是Python里面的字典格式</span>
-data = json.loads(request.get_data())
-
-<span class="comment"># 然后在本地对数据进行处理,再返回给前端</span>
-name = data[<span class="string">"name"</span>]
-age = data[<span class="string">"age"</span>]
-location = data[<span class="string">"location"</span>]
-data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
-
-<span class="comment"># Output: {u'age': 23, u'name': u'Peng Shuang', u'location': u'China'}</span>
-<span class="comment"># print data</span>
-<span class="keyword">return</span> jsonify(data)
-</code></pre><p> 相比第一种方法JS的代码，这一种更常见也更容易理解一些，在前端组织好Json，再传递给后台</p>
-<p> JS代码：</p>
-<pre><code> <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-    $(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
-        <span class="keyword">var</span> student = <span class="keyword">new</span> <span class="built_in">Object</span>();
-        student.name = <span class="string">"Peng Shuang"</span>;
-        student.age = <span class="number">23</span>;
-        student.location = <span class="string">"China"</span>;
-        <span class="keyword">var</span> data = <span class="built_in">JSON</span>.stringify(student)
-
-    $.ajax({
-        url: <span class="string">"/sendjson2"</span>,
-        type: <span class="string">"POST"</span>,
-        data: data,
-        success: <span class="function"><span class="keyword">function</span> (<span class="params">msg</span>) </span>{
-            alert(msg.time)
-        }
-    })
-    })
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre>
       
     </div>
 
@@ -434,9 +376,7 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
       
         <div class="post-tags">
           
-            <a href="/tags/Flask/" rel="tag">#Flask</a>
-          
-            <a href="/tags/Web开发/" rel="tag">#Web开发</a>
+            <a href="/tags/Chubby/" rel="tag">#Chubby</a>
           
         </div>
       
@@ -445,17 +385,13 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/14/Hadoop-Restful-Api总结/" rel="next" title="Hadoop Restful API总结">
-                <i class="fa fa-chevron-left"></i> Hadoop Restful API总结
+              <a href="/2016/10/26/Google-Chubby-学习-基本概念/" rel="next" title="Google Chubby 学习: 基本概念">
+                <i class="fa fa-chevron-left"></i> Google Chubby 学习: 基本概念
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/08/30/Python中的heapq模块学习/" rel="prev" title="Python中的heapq模块学习">
-                Python中的heapq模块学习 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -470,10 +406,10 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/08/19/flask中向前端传递或者接收Json文件的方法/"
-     data-title="Flask中向前端传递或者接收Json文件的方法"
+        <div class="ds-share flat" data-thread-key="2016/10/27/Google-Chubby-学习-Paxos-协议实现/"
+     data-title="Google Chubby 学习: Paxos 协议实现"
      data-content=""
-     data-url="http://pengshuang.space/2016/08/19/flask中向前端传递或者接收Json文件的方法/">
+     data-url="http://pengshuang.space/2016/10/27/Google-Chubby-学习-Paxos-协议实现/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -500,8 +436,8 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/19/flask中向前端传递或者接收Json文件的方法/"
-           data-title="Flask中向前端传递或者接收Json文件的方法" data-url="http://pengshuang.space/2016/08/19/flask中向前端传递或者接收Json文件的方法/">
+      <div class="ds-thread" data-thread-key="2016/10/27/Google-Chubby-学习-Paxos-协议实现/"
+           data-title="Google Chubby 学习: Paxos 协议实现" data-url="http://pengshuang.space/2016/10/27/Google-Chubby-学习-Paxos-协议实现/">
       </div>
     
   </div>
@@ -634,7 +570,7 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_利用flask的request-form-get()方法"><span class="nav-number">1.</span> <span class="nav-text">1. 利用flask的request.form.get()方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_利用flask的request-get_data()方法"><span class="nav-number">2.</span> <span class="nav-text">2. 利用flask的request.get_data()方法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chubby_中_Paxos_协议实现"><span class="nav-number">1.</span> <span class="nav-text">Chubby 中 Paxos 协议实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hypertable"><span class="nav-number">2.</span> <span class="nav-text">Hypertable</span></a></li></ol></div>
             
           </div>
         </section>
