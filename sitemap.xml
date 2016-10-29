@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pengshuang.space/2016/10/29/HBase-%E5%AD%A6%E4%B9%A0-%E6%89%AB%E6%8F%8F/</loc>
+    
+    <lastmod>2016-10-29T10:38:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://pengshuang.space/2016/10/28/HBase-%E5%AD%A6%E4%B9%A0-Delete-%E5%92%8C-%E8%A1%8C%E9%94%81/</loc>
+    
+    <lastmod>2016-10-28T09:26:23.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://pengshuang.space/2016/10/27/HBase-%E5%AD%A6%E4%B9%A0-Put-%E5%92%8C-Get%E2%80%9C/</loc>
     
     <lastmod>2016-10-27T14:23:00.000Z</lastmod>
