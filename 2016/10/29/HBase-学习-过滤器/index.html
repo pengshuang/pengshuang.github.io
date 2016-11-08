@@ -84,15 +84,19 @@
 
 
 
-<meta name="description" content="在路上，慢慢走！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小沙文的博客">
-<meta property="og:url" content="http://pengshuang.space/tags/RDD/index.html">
+<meta name="description" content="HBase 过滤器提供了非常强大的特性来帮助用户提高其处理表中数据的效率。用户不仅可以使用 HBase 中预定义好的过滤器，而且可以实现自定义的过滤器。
+过滤器简介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase 学习: 过滤器">
+<meta property="og:url" content="http://pengshuang.space/2016/10/29/HBase-学习-过滤器/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在路上，慢慢走！">
+<meta property="og:description" content="HBase 过滤器提供了非常强大的特性来帮助用户提高其处理表中数据的效率。用户不仅可以使用 HBase 中预定义好的过滤器，而且可以实现自定义的过滤器。
+过滤器简介">
+<meta property="og:updated_time" content="2016-10-29T14:22:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小沙文的博客">
-<meta name="twitter:description" content="在路上，慢慢走！">
+<meta name="twitter:title" content="HBase 学习: 过滤器">
+<meta name="twitter:description" content="HBase 过滤器提供了非常强大的特性来帮助用户提高其处理表中数据的效率。用户不仅可以使用 HBase 中预定义好的过滤器，而且可以实现自定义的过滤器。
+过滤器简介">
 
 
 
@@ -113,9 +117,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/tags/RDD/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/10/29/HBase-学习-过滤器/"/>
 
-  <title> 标签: RDD | 小沙文的博客 </title>
+  <title> HBase 学习: 过滤器 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -136,7 +140,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,46 +238,174 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        RDD
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                HBase 学习: 过滤器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-29T21:20:42+08:00" content="2016-10-29">
+              2016-10-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/29/HBase-学习-过滤器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/29/HBase-学习-过滤器/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/29/HBase-学习-过滤器/" class="leancloud_visitors" data-flag-title="HBase 学习: 过滤器">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <p>HBase 过滤器提供了非常强大的特性来帮助用户提高其处理表中数据的效率。用户不仅可以使用 HBase 中预定义好的过滤器，而且可以实现自定义的过滤器。</p>
+<h3 id="过滤器简介">过滤器简介</h3>
+      
+    </div>
 
-      <h1 class="post-title">
+    <div>
+      
         
-            <a class="post-title-link" href="/2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="url">
-              
-                <span itemprop="name">Spark RDD学习: aggregate函数</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-10-09T11:24:07+08:00"
-              content="2016-10-09" >
-          10-09
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/29/HBase-学习-扫描/" rel="next" title="HBase 学习: 扫描">
+                <i class="fa fa-chevron-left"></i> HBase 学习: 扫描
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/08/HBase学习-比较过滤器/" rel="prev" title="HBase学习: 比较过滤器">
+                HBase学习: 比较过滤器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/10/29/HBase-学习-过滤器/"
+     data-title="HBase 学习: 过滤器"
+     data-content=""
+     data-url="http://pengshuang.space/2016/10/29/HBase-学习-过滤器/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
 
 
           </div>
@@ -281,6 +413,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/29/HBase-学习-过滤器/"
+           data-title="HBase 学习: 过滤器" data-url="http://pengshuang.space/2016/10/29/HBase-学习-过滤器/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -300,8 +440,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -393,6 +542,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#过滤器简介"><span class="nav-number">1.</span> <span class="nav-text">过滤器简介</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -489,6 +649,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 

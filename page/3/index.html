@@ -258,6 +258,369 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="url">
+                  Spark RDD学习: aggregate函数
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-09T11:24:07+08:00" content="2016-10-09">
+              2016-10-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/09/Spark-RDD学习-aggregate函数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/09/Spark-RDD学习-aggregate函数/" class="leancloud_visitors" data-flag-title="Spark RDD学习: aggregate函数">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在做项目的时候遇到了<strong>Spark RDD</strong>里面的一个<strong>aggregate</strong>函数，觉得它的用法挺有意思的，在此记录一下。</p>
+<p>Spark 文档中对 <strong>aggregate</strong>的函数定义如下：</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">aggregate</span>[<span class="title">U</span>]<span class="params">(zeroValue: U)</span><span class="params">(seqOp: <span class="params">(U, T)</span> =&gt; U, combOp: <span class="params">(U, U)</span> 
+=&gt; U)</span><span class="params">(implicit arg0: ClassTag[U])</span>:</span> U
+</code></pre><p>注释：</p>
+<pre><code><span class="type">Aggregate</span> the elements <span class="keyword">of</span> each partition, <span class="keyword">and</span> then the results <span class="keyword">for</span> 
+all the partitions, <span class="keyword">using</span> given combine functions <span class="keyword">and</span> a neutral 
+<span class="string">"zero value"</span>. 
+<span class="type">This</span> function can <span class="keyword">return</span> a different <span class="literal">result</span> <span class="keyword">type</span>, U, 
+than the <span class="keyword">type</span> <span class="keyword">of</span> this <span class="type">RDD</span>, T. 
+<span class="type">Thus</span>, we need one operation <span class="keyword">for</span> merging a T into an U 
+<span class="keyword">and</span> one operation <span class="keyword">for</span> merging two U's, <span class="keyword">as</span> <span class="keyword">in</span> 
+<span class="type">Scala</span>.<span class="type">TraversableOnce</span>. <span class="type">Both</span> <span class="keyword">of</span> these functions are allowed to 
+modify <span class="keyword">and</span> <span class="keyword">return</span> their first argument instead <span class="keyword">of</span> creating a new U 
+to avoid memory allocation. 
+</code></pre><p><strong>aggregate</strong>函数首先对每个分区里面的元素进行聚合，然后用combine函数将每个分区的结果和初始值（zeroValue）进行combine操作。这个操作返回的类型不需要和RDD中元素类型一致，所以在使用 <strong>aggregate()</strong>时，需要提供我们期待的返回类型的初始值，然后通过一个函数把RDD中的元素累加起来􏵧􏲢放入累加器􏵌。考虑到每个节点是在本地进行累加的，最终还需要提供第二个函数来将累加器两两合并。</p>
+<p>其中<strong>seqOp</strong>操作会聚合各分区中的元素，然后<strong>combOp</strong>操作会把所有分区的聚合结果再次聚合，两个操作的初始值都是<strong>zeroValue</strong>. <strong>seqOp</strong>的操作是遍历分区中的所有元素(T)，第一个T跟<strong>zeroValue</strong>做操作，结果再作为与第二个T做操作的<strong>zeroValue</strong>，直到遍历完整个分区。<strong>combOp</strong>操作是把各分区聚合的结果，再聚合。<strong>aggregate</strong>函数返回一个跟<strong>RDD</strong>不同类型的值。因此，需要一个操作<strong>seqOp</strong>来把分区中的元素T合并成一个U，另外一个操作<strong>combOp</strong>把所有U聚合。</p>
+<p>下面举一个利用aggreated求平均数的例子:</p>
+<pre><code>val rdd = <span class="type">List</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>)
+val input = sc.parallelize(rdd)
+val <span class="literal">result</span> = input.aggregate((<span class="number">0</span>,<span class="number">0</span>))(
+(acc,value) =&gt; (acc._1 + value, acc._2 + <span class="number">1</span>),
+(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)
+)
+<span class="literal">result</span>: (<span class="type">Int</span>, <span class="type">Int</span>) = (<span class="number">10</span>, <span class="number">4</span>)
+val avg = <span class="literal">result</span>._1 / <span class="literal">result</span>._2
+avg: <span class="type">Int</span> = <span class="number">2</span>.<span class="number">5</span>
+</code></pre><p>程序的详细过程大概如下：</p>
+<ol>
+<li>首先定义一个初始值 (0, 0)，即我们期待的返回类型的初始值。</li>
+<li><p><strong>(acc,value) =&gt; (acc._1 + value, acc._2 + 1)</strong>， <strong>value</strong>是函数定义里面的<strong>T</strong>，这里是List里面的元素。所以<strong>acc._1 + value, acc._2 + 1</strong>的过程如下：</p>
+<pre><code><span class="number">1.</span>  <span class="number">0</span>+<span class="number">1</span>,  <span class="number">0</span>+<span class="number">1</span>
+<span class="number">2.</span>  <span class="number">1</span>+<span class="number">2</span>,  <span class="number">1</span>+<span class="number">1</span>
+<span class="number">3.</span>  <span class="number">3</span>+<span class="number">3</span>,  <span class="number">2</span>+<span class="number">1</span>
+<span class="number">4.</span>  <span class="number">6</span>+<span class="number">4</span>,  <span class="number">3</span>+<span class="number">1</span>
+</code></pre></li>
+<li><p>结果为 (10,4)。在实际Spark执行中是分布式计算，可能会把List分成多个分区，假如3个，p1(1,2), p2(3), p3(4)，经过计算各分区的的结果 (3,2), (3,1), (4,1)，这样，执行 <strong>(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)</strong> 就是 <strong>(3+3+4,2+1+1)</strong> 即 <strong>(10,4)</strong>，然后再计算平均值。 </p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/08/GraphX学习/" itemprop="url">
+                  GraphX学习:基础知识
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-08T14:25:44+08:00" content="2016-10-08">
+              2016-10-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/08/GraphX学习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/08/GraphX学习/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/08/GraphX学习/" class="leancloud_visitors" data-flag-title="GraphX学习:基础知识">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-_简介">1. 简介</h3><p>GraphX是Spark用于解决图和并行图计算问题的新组件。通过RDD（Resilient Distributed Datasets，弹性分布式数据集）的扩展，GraphX在其中引入了一个新的图抽象，即顶点和边带有特性的有向多重图。Graph提供了一些基本运算符和优化了的Pregel API，来支持图计算。另外，Graph包含了大量的图算法和构造器来简化图的分析任务，并且这个数量还在增加。</p>
+<h3 id="2-_GraphX使用">2. GraphX使用</h3><p>第一步，引入Spark和GraphX相关的包：</p>
+<pre><code>import org<span class="class">.apache</span><span class="class">.spark</span>._
+import org<span class="class">.apache</span><span class="class">.spark</span><span class="class">.graphx</span>._
+
+<span class="comment">// 此处仍然需要用到RDD来让一些例子正常运行</span>
+import org<span class="class">.apache</span><span class="class">.spark</span><span class="class">.rdd</span><span class="class">.RDD</span>
+</code></pre><p>如果你没有使用Spark Shell（例如在外部的IDE中编辑项目），那么你还需要引入SparkContext。具体方法请参阅Spark官方文档，此处不再赘述。</p>
+<h3 id="3-_属性图">3. 属性图</h3><p>属性图是一个有向多重图，它的每个顶点和每条边都附有用户定义的对象。作为有向图，有向多重图可能有多个平行的边来共享相同的源顶点和目标顶点。作为多重图，它支持并行边，这个特性简化了许多涉及多重关系的建模场景。每个顶点的主键是一个长度为64 bit的唯一标识符<strong>（VertexID）</strong>。<strong>GraphX</strong>没有为顶点添加任何顺序的约束。类似地，每一条边有对应的源顶点和目标顶点的标识符。</p>
+<p>因此，属性图的参数是通过顶点（VD）和边的类型（ED）来决定的。</p>
+<p>在某些情况下，你可能希望在同一个图里面，顶点能够有不同的属性类型。这个想法可以通过继承实现。举个例子，我们可以对用户和产品进行建模，将其作为一个二分图，然后进行如下的定义（请在Spark Shell中输入语句）：</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">VertexProperty</span></span>()
+case <span class="class"><span class="keyword">class</span> <span class="title">UserProperty</span></span>(<span class="variable"><span class="keyword">val</span> name</span>: String) extends VertexProperty
+case <span class="class"><span class="keyword">class</span> <span class="title">ProductProperty</span></span>(<span class="variable"><span class="keyword">val</span> name</span>: String, <span class="variable"><span class="keyword">val</span> price</span>: <span class="typename">Double</span>) extends VertexProperty
+
+<span class="comment">// 图可能会有这个类型:</span>
+<span class="variable"><span class="keyword">var</span> graph</span>: Graph[VertexProperty, String] = <span class="literal">null</span>
+</code></pre><p>类似于RDD，属性图是不可变的、分布式的，并且具有容错性。对于图而言，它的值或者结构上的改变，是通过产生带有预期改变的新图来完成的。主要注意的是，原始图的主要部分（即不受影响的结构、属性和索引等）在新图中被重用，以减少固有功能的数据结构成本。通过使用大量的启发式顶点分区，图在不同的执行器里被划分。就像RDD一样，图的每个分区可以在发生故障时被不同的机器重建。</p>
+<p>属性图在逻辑上对应于一对类型化集合（RDD），该集合编码了每个顶点和每条边属性。因而，图类包含了可以访问图的顶点和边的成员，它的定义如下（该定义仅作了解，无需自己手动定义该类）：</p>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>[<span class="title">VD</span>, <span class="typename">ED] {</span></span>
+  <span class="variable"><span class="keyword">val</span> vertices</span>: VertexRDD[VD]
+  <span class="variable"><span class="keyword">val</span> edges</span>: EdgeRDD[ED]
+}
+</code></pre><p><strong>VertexRDD[VD]</strong>类和<strong>EdgeRDD[ED]</strong>类分别继承和优化了<strong>RDD[(VertexID, VD)]</strong>类和<strong>RDD[Edge[ED]]</strong>类。两者都提供基于图计算和内部优化构建的额外功能。在此你可将其简单地理解为以<strong>RDD[(VertexID, VD)]</strong>和<strong>RDD[Edge[ED]]</strong>形式定义的<strong>RDD</strong>。</p>
+<h3 id="4-_一个属性图的例子">4. 一个属性图的例子</h3><p>现在假设我们要构建一个由许多来自GraphX项目组的协作者组成的属性图。顶点的属性可能包含用户名和职业。我们应该用一个可以描述协作者间的关系的字符串来注释图的边。</p>
+<p>这段话可以用下图来表示（图片来自GraphX官方文档）：</p>
+<p><img src="/img/graphx.png" alt=""></p>
+<p>由这些因素构成的图将有下面的类型定义（该定义仅作了解即可，无需输入该语句）：</p>
+<pre><code>val userGraph: <span class="keyword">Graph</span>[(<span class="keyword">String</span>, <span class="keyword">String</span>), <span class="keyword">String</span>]
+</code></pre><p>有很多办法可以由原始文件、RDD或者综合生成器来构建一个属性图。可能最常用的方法还是使用一个<strong>Graph Object</strong>。下面的代码展示了如何通过一个RDD的集合来构建图，你可以尝试在<strong>Spark Shell</strong>中输入下面的代码来完成构建。</p>
+<pre><code><span class="comment">// 在Spark Shell中，这里的SparkContext已经默认给出了。可略过此步。</span>
+val sc: SparkContext
+
+<span class="comment">// 创建一个RDD用于表示顶点</span>
+val users: RDD[(VertexId, (String, String))] =
+  sc.<span class="function"><span class="title">parallelize</span><span class="params">(Array((<span class="number">3</span>L, (<span class="string">"rxin"</span>, <span class="string">"student"</span>)</span></span>), (<span class="number">7</span>L, (<span class="string">"jgonzal"</span>, <span class="string">"postdoc"</span>)),
+                       (<span class="number">5</span>L, (<span class="string">"franklin"</span>, <span class="string">"prof"</span>)), (<span class="number">2</span>L, (<span class="string">"istoica"</span>, <span class="string">"prof"</span>))))
+<span class="comment">// 创建一个RDD用于表示边</span>
+val relationships: RDD[Edge[String]] =
+  sc.<span class="function"><span class="title">parallelize</span><span class="params">(Array(Edge(<span class="number">3</span>L, <span class="number">7</span>L, <span class="string">"collab"</span>)</span></span>,    <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">5</span>L, <span class="number">3</span>L, <span class="string">"advisor"</span>)</span></span>,
+                       <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">2</span>L, <span class="number">5</span>L, <span class="string">"colleague"</span>)</span></span>, <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">5</span>L, <span class="number">7</span>L, <span class="string">"pi"</span>)</span></span>))
+
+<span class="comment">// 定义默认的用户，用于建立与缺失的用户之间的关系</span>
+val defaultUser = (<span class="string">"John Doe"</span>, <span class="string">"Missing"</span>)
+
+<span class="comment">// 构造图对象，即初始化过程</span>
+val graph = <span class="function"><span class="title">Graph</span><span class="params">(users, relationships, defaultUser)</span></span>
+</code></pre><p>在这个例子中，我们用到了名为<strong>Edge</strong>的<strong>case</strong>类。<strong>Edge</strong>类有<strong>srcId</strong>和<strong>dstId</strong>，它们对应于源顶点和目标庆典的标识符。另外，<strong>Edge</strong>类有一个名为<strong>attr</strong>的成员，用于存储边的属性。</p>
+<p>我们也可以使用<strong>graph.vertices</strong>和<strong>graph.edges</strong>函数来解构一个图，将其转化为各个顶点和边的视图。用法如下，请尝试在Shell中输入这些语句：</p>
+<pre><code><span class="comment">// 统计是博士后的用户数量</span>
+<span class="keyword">graph</span>.vertices.filter { case (id, (name, pos)) =&gt; pos == <span class="string">"postdoc"</span> }.<span class="keyword">count</span>
+
+<span class="comment">// 统计符合 src &gt; dst 条件的边的数量 </span>
+<span class="keyword">graph</span>.edges.filter(<span class="keyword">e</span> =&gt; <span class="keyword">e</span>.srcId &gt; <span class="keyword">e</span>.dstId).<span class="keyword">count</span>
+</code></pre><p>注意，<strong>graph.vertices</strong>函数的返回值类型是 <strong>VertexRDD[(String, String)]</strong>，它继承了 <strong>RDD[(VertexID, (String, String))]</strong>，所以我们可以用<strong>Scala</strong>的<strong>case</strong>表达式来解构这个元组。另外，<strong>graph.edges</strong>函数的返回值类型是<strong>EdgeRDD</strong>，它包含了<strong>Edge[String]</strong>对象。我们同样可以使用<strong>case</strong>类的类型构造器，请尝试在<strong>Shell</strong>中输入下面的代码：</p>
+<pre><code><span class="keyword">graph</span>.edges.filter { case Edge(src, dst, <span class="keyword">prop</span>) =&gt; src &gt; dst }.<span class="keyword">count</span>
+</code></pre><p>对于属性类的顶点和边视图，GraphX还提供了三重视图<strong>（Triplet View）</strong>。这个三重视图从逻辑上联合了顶点和边的属性，产生了一个<strong>RDD[EdgeTriplet[VD, ED]]</strong>，它包含了<strong>DegeTriplet</strong>类的实例。这个<strong>join</strong>联合操作可以由下面的<strong>SQL</strong>表达式解释：</p>
+<pre><code><span class="operator"><span class="keyword">SELECT</span> src.<span class="keyword">id</span>, dst.<span class="keyword">id</span>, src.<span class="keyword">attr</span>, <span class="keyword">e</span>.<span class="keyword">attr</span>, dst.<span class="keyword">attr</span>
+<span class="keyword">FROM</span> edges <span class="keyword">AS</span> <span class="keyword">e</span> <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> vertices <span class="keyword">AS</span> src, vertices <span class="keyword">AS</span> dst
+<span class="keyword">ON</span> <span class="keyword">e</span>.srcId = src.<span class="keyword">Id</span> <span class="keyword">AND</span> <span class="keyword">e</span>.dstId = dst.<span class="keyword">Id</span></span>
+</code></pre><p>如果看不懂这段SQL代码，没关系，下图也能帮助你理解该操作的含义：</p>
+<p><img src="/img/graphx2.png" alt=""></p>
+<p><strong>EdgeTriplet</strong>类继承了<strong>Edge</strong>类，并且添加了<strong>srcAttr</strong>和<strong>dstAttr</strong>两个成员。这两个成员分别包含了源属性和目标属性。我们可以用一个图的三重视图来渲染一个描述用户间关系的字符串集合，就像下面这样：</p>
+<pre><code><span class="comment">// 使用 triplets view 来创建一个事实（facts）的RDD</span>
+val facts: RDD[String] =
+  graph<span class="class">.triplets</span><span class="class">.map</span>(triplet =&gt;
+    triplet<span class="class">.srcAttr</span>._1 + <span class="string">" is the "</span> + triplet<span class="class">.attr</span> + <span class="string">" of "</span> + triplet<span class="class">.dstAttr</span>._1)
+facts<span class="class">.collect</span><span class="class">.foreach</span>(<span class="function"><span class="title">println</span><span class="params">(_)</span></span>)
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/07/实现-memcpy-函数/" itemprop="url">
                   实现 memcpy 函数
                 </a>
@@ -1816,301 +2179,6 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/15/TCP-IP基础知识/" itemprop="url">
-                  TCP/IP协议分层模型
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-15T22:01:00+08:00" content="2016-09-15">
-              2016-09-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/15/TCP-IP基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/TCP-IP基础知识/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/15/TCP-IP基础知识/" class="leancloud_visitors" data-flag-title="TCP/IP协议分层模型">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-_物理层（硬件）">1. 物理层（硬件）</h3><p>TCP/IP的最底层是负责数据传输的硬件。</p>
-<h3 id="2-_数据链路层（网络接口层）">2. 数据链路层（网络接口层）</h3><p>数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。</p>
-<h3 id="3-_网络层（互联网层）">3. 网络层（互联网层）</h3><p>网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得实现通过网络层转发分组数据包的功能。</p>
-<h4 id="IP">IP</h4><p>IP是跨越网络传送数据包，使整个互联网都能收到数据的协议。IP协议使数据能够发送到地球的另一端，这期间使用IP地址作为主机的标识。虽然IP也是分组交换的一种协议，但是它不具有重发机制。即使分组数据包未能到达对端主机也不会重发。因此，属于非可靠性传输。</p>
-<h4 id="ICMP">ICMP</h4><p>IP数据包在发送途中一旦发送异常导致无法到达对端目标地址时，需要给发送端发送一个发送异常的通知。ICMP就是被用来诊断网络的健康状况。</p>
-<h4 id="ARP">ARP</h4><p>从分组数据包的IP地址中解析出物理地址（MAC地址）的一种协议。</p>
-<h3 id="4-_传输层">4. 传输层</h3><p>传输层主要的功能就是能够让应用程序之间实现通信。计算机内部，通常同一时间运行着多个程序。为此，必须分清是哪些程序与哪些程序在进行通信。识别这些应用程序的事端口号。</p>
-<h4 id="TCP">TCP</h4><p>TCP是一种面向有连接的传输层协议。它可以保证两端通信主机之间的通信可达。TCP能够正确处理在传输过程中丢包、传输顺序乱掉等异常情况。此外，TCP还能够有效利用带宽，缓解网络拥堵。</p>
-<h4 id="UDP">UDP</h4><p>UDP有别于TCP，它是一种面向无连接的传输层协议。UDP不会关注对端是否真的收到了传送过去的数据。UDP常用于分组数据较少或多播、广播通信以及视频通信等多媒体领域。</p>
-<h3 id="5-_应用层（会话层以上的分层）">5. 应用层（会话层以上的分层）</h3><p>TCP/IP的分层中，将OSI参考模型中的会话层、表示层和应用层的功能都集中到了应用程序中实现。</p>
-<p>HTTP协议属于应用层的协议，HTML和电子邮件属于表示层协议。</p>
-<h3 id="6-_TCP/IP分层模型及通信示例">6. TCP/IP分层模型及通信示例</h3><p>以甲向乙发送电子邮件为例，来讲解TCP/IP的通信过程。</p>
-<h4 id="应用程序处理">应用程序处理</h4><p>启动应用新建邮件，填写好内容并点击发送之后，应用程序会进行编码处理，这些编码相当于OSI的表示层的功能。编码转化后，实际邮件不一定会马上被发送出去，因为有些邮件的软件有一次同时发送多个邮件的功能。像这种何时建立通信连接何时发送数据的管理功能，其实属于OSI参考模型中会话层的功能。</p>
-<p>应用在发送电子邮件的那一刻建立TCP连接，从而利用这个TCP连接发送数据。它的过程首先是将应用的数据发送给下一层的TCP，再做实际的转发处理。</p>
-<h4 id="TCP模块的处理">TCP模块的处理</h4><p>TCP根据应用的指示，负责建立连接、发送数据以及断开连接。TCP提供将应用层发来的数据顺利发送至对端的可靠传输。为了实现TCP的这一功能，需要在应用层数据的前端附加一个TCP首部。TCP首部中包括源端口号和目标端口号。（用以识别发送主机跟接收主机上的应用）、序号（用以发送的包中哪部分是数据）以及校验和（用以判断数据是否被损坏）。随后将附加了TCP首部的包再发送给IP。</p>
-<h4 id="IP模块的处理">IP模块的处理</h4><p>IP将TCP传过来的TCP首部和TCP数据合起来当做自己的数据，并在TCP首部的前端加上自己的IP首部。因此，IP数据包中的IP首部后面紧跟着TCP首部，然后才是应用的数据首部和数据本身。IP首部中包含接收端IP地址以及发送端IP地址。紧随IP首部的还有用来判断其后面数据是TCP还是UDP的信息。</p>
-<h4 id="网络接口（以太网驱动）的处理">网络接口（以太网驱动）的处理</h4><p>从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附上以太网首部并进行发送处理。以太网首部中包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包将通过物理层传输给接收端。</p>
-<h4 id="经过数据链路的包">经过数据链路的包</h4><p>每个包首部中至少都会包含两个信息：一个是发送端和接收端地址，另一个是上一层的协议类型。经过每个协议分层时，都必须有识别包发送端和接收端的信息。以太网会用MAC地址，IP会用IP地址，而TCP/UDP会用端口号作为识别两端主机的地址。分层中包的结构如下所示：</p>
-<p><img src="/img/tcp.png" alt=""></p>
-<p>此外每个分层的包首部中还包含一个识别位，它是用来标识上一层协议的种类信息。例如以太网的包首部中的以太网类型，IP中的协议类型以及TCP/UDP中两个端口的端口号都起着识别协议类型的作用。</p>
-<h4 id="数据包接收处理">数据包接收处理</h4><p>包的接收流程是发送流程的逆序过程。</p>
-<h4 id="网络接口（以太网驱动）的处理-1">网络接口（以太网驱动）的处理</h4><p>主机收到以太网包以后，首先从以太网的包首部找到MAC地址判断是否为发给自己的包。如果不是则丢弃。而如果接收到了恰好是发送给自己的包，就查找以太网包首部中的类型域从而确定以太网协议所传送过来的数据类型（IP或其他诸如ARP的协议）。如果以太网首部的类型域包含了一个无法识别的协议类型，则丢弃数据。</p>
-<h4 id="IP模块的处理-1">IP模块的处理</h4><p>IP模块收到IP包首部以及后面的数据部分后，如果判断得出包首部中的IP地址与自己的IP地址匹配，则可接收数据并从中查找上一层的协议。如果上一层是TCP就将IP包首部之后的传给TCP处理；UDP类似。对于有路由器的情况，接收端地址往往不是自己的地址，此时需要借助路由控制表，在调查应该送达的主机或路由器以后再转发数据。</p>
-<h4 id="TCP模块的处理-1">TCP模块的处理</h4><p>在TCP模块中，首先会计算一下校验和，判断数据是否被破坏。然后检查是否在按序号接收数据。最后检查端口号，确定具体的应用程序。数据接收完毕之后，接收端返回一个“确认回执”给发送端。</p>
-<p>数据被完整地接收以后，会传给由端口号识别的应用程序。</p>
-<h4 id="应用程序的处理">应用程序的处理</h4><p>接收端应用程序会直接接收发送端发送的数据，如果确认是发送给自己的，则邮件会被保存到本机的硬盘上。如果保存能正常进行，那么会返回给一个“处理正常”的回执给发送端。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/15/理解有连接和无连接/" itemprop="url">
-                  理解计算机网络中的传输方式
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-15T09:05:01+08:00" content="2016-09-15">
-              2016-09-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/15/理解有连接和无连接/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/理解有连接和无连接/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/15/理解有连接和无连接/" class="leancloud_visitors" data-flag-title="理解计算机网络中的传输方式">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-_面向有连接型与面向无连接型">1. 面向有连接型与面向无连接型</h3><p>通过网络发送数据，大致可以分为面向有连接与面向无连接类型</p>
-<p>(1) 面向无连接型包括以太网、IP、UDP等协议。</p>
-<p>(2) 面向有连接型包括ATM、帧中继、TCP。</p>
-<h4 id="面向有连接型">面向有连接型</h4><p>面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据</p>
-<h4 id="面向无连接型">面向无连接型</h4><p>面向无连接型则不要求建立和断开连接。发送端可于任何时候自由发送数据。反之，接收端也永远不知道自己会在何时从哪里接收到数据。</p>
-<h3 id="2-_电路交换与分组交换">2. 电路交换与分组交换</h3><h4 id="电路交换">电路交换</h4><p>计算机之间在发送数据时，需要通过交换机与目标主机建立通信电路。我们将连接电路称为建立连接。建立好连接以后，用户就可以一直使用这条电路，直到该连接被断开为止。</p>
-<h4 id="分组交换">分组交换</h4><p>在分组交换中，由分组交换机（路由器）连接通信线路。分组交换的大致处理过程是：发送端计算机将数据分组发送给路由器，路由器收到这些分组数据以后，缓存到自己的缓冲区，然后再转发给目标计算机。因此，分组交换也有另一个名称：蓄积交换。</p>
-<p>在分组交换中，计算机与路由器之间以及路由器与路由器之间通常只有一条通信线路。因此，这条线路其实是一条共享线路。</p>
-<h3 id="3-_根据接收端数量分类">3. 根据接收端数量分类</h3><p>网络通信中，也可以根据目标地址的个数以及后续的行为对通信进行分类。如广播、多播等。</p>
-<h4 id="单播（Unicast）">单播（Unicast）</h4><p>1对1通信</p>
-<h4 id="广播（Broadcast）">广播（Broadcast）</h4><p>广播指将消息从1台主机发送给与之相连的所有其他主机。典型的例子是电视播放。</p>
-<h4 id="多播（Multicast）">多播（Multicast）</h4><p>多播与广播类似，也是将消息发送给多个接收主机。不同之处在于多播要限定某一组作为接收端。多播通信最典型的例子是电视会议。</p>
-<h4 id="任播_（Anycast）">任播 （Anycast）</h4><p>任播是指在特定的多台主机中选出一台作为接收端的一种通信方式。任播通信从目标主机群中选择一台最符合网络条件的主机作为目标主机发送消息。通常被选中的那台特定主机将返回一个单播信号，随后发送端主机会只跟这台主机进行通信。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2156,7 +2224,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">45</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

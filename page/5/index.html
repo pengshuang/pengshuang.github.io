@@ -258,6 +258,599 @@
             
               
                 
+                <a class="post-title-link" href="/2015/11/06/HITS算法的Java实现/" itemprop="url">
+                  HITS算法的Java实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-06T22:33:46+08:00" content="2015-11-06">
+              2015-11-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
+                    <span itemprop="name">数据挖掘</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/06/HITS算法的Java实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/06/HITS算法的Java实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/11/06/HITS算法的Java实现/" class="leancloud_visitors" data-flag-title="HITS算法的Java实现">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。</p>
+<h2 id="HITS算法的原理">HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
+<p>通过HITS算法名我们可以看出，它的工作原理是：通过链接发掘话题。HITS算法想要解决的问题是，在海量的网页中找到与用户查询主题相关的高质量Authority（权威）页面与Hub（目录）页面，尤其是 Authority 页面，因为这些页面代表了满足用户查询的高质量内容，搜索引擎就以此作为搜索结果返回给用户。</p>
+<p>通俗的来讲，对于“Authority”页面，是指与某个领域或者某个话题相关的高质量网页，比如搜索引擎领域，Google和百度首页即该领域的高质量网页，比如读书领域，当当和亚马逊首页即该领域的高质量网页。</p>
+<p>而对于Hub”页面，指的是包含了很多指向高质量“Authority”页面链接的网页，比如hao123首页可以认为是一个典型的高质量“Hub”网页。</p>
+<h2 id="HITS算法的思想:彼此之间相互增强关系">HITS算法的思想:彼此之间相互增强关系</h2><ol>
+<li><p>基本假设1：一个好的“Authority”页面会被很多好的“Hub”页面指向；</p>
+</li>
+<li><p>基本假设2：一个好的“Hub”页面会指向很多好的“Authority”页面；</p>
+</li>
+</ol>
+<h2 id="HITS算法的基本步骤">HITS算法的基本步骤</h2><ol>
+<li><p>接受一个用户查询的请求。HITS 算法与用户输入的查询请求密切相关，它的查询结果是动态生成的，而 PageRank 算法则与用户的查询无关。</p>
+</li>
+<li><p>将查询提交给某个现有的搜索引擎（或者是自己构造的检索系统），并在返回的搜索结果中，提取排名靠前的网页，得到一组与用户查询高度相关的初始网页集合，这个集合被称作为 root set。</p>
+</li>
+<li><p>建立 base set，凡是与根集内网页有直接链接指向关系的网页都被扩充进来，形成如下集合</p>
+</li>
+<li><p>计算：</p>
+</li>
+</ol>
+<p><img src="/img/11.jpg" alt=""></p>
+<h2 id="HITS算法的Java实现">HITS算法的Java实现</h2><p>算法实现类：</p>
+<pre><code>package org.tseg.search;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+<span class="comment">/**
+ * HITS链接分析算法工具类
+ */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> HITSTool {
+    <span class="comment">// 输入数据文件地址</span>
+    <span class="keyword">private</span> String filePath;
+    <span class="comment">// 网页个数</span>
+    <span class="keyword">private</span> <span class="keyword">int</span> pageNum;
+    <span class="comment">// 网页Authority权威值</span>
+    <span class="keyword">private</span> <span class="keyword">double</span>[] authority;
+    <span class="comment">// 网页hub中心值</span>
+    <span class="keyword">private</span> <span class="keyword">double</span>[] hub;
+    <span class="comment">// 链接矩阵关系</span>
+    <span class="keyword">private</span> <span class="keyword">int</span>[][] linkMatrix;
+    <span class="comment">// 网页种类</span>
+    <span class="keyword">private</span> ArrayList&lt;String&gt; pageClass;
+
+    <span class="function"><span class="keyword">public</span> <span class="title">HITSTool</span><span class="params">(String filePath)</span> </span>{
+        <span class="keyword">this</span>.filePath = filePath;
+        readDataFile();
+    }
+    <span class="comment">/**
+     * 从文件中读取数据
+     */</span>
+    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFile</span><span class="params">()</span> </span>{
+        File file = <span class="keyword">new</span> File(filePath);
+        ArrayList&lt;String[]&gt; dataArray = <span class="keyword">new</span> ArrayList&lt;String[]&gt;();
+
+        <span class="keyword">try</span> {
+            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(file));
+            String str;
+            String[] tempArray;
+            <span class="keyword">while</span> ((str = in.readLine()) != null) {
+                tempArray = str.split(<span class="string">" "</span>);
+                dataArray.add(tempArray);
+            }
+            in.close();
+        } <span class="keyword">catch</span> (IOException e) {
+            e.getStackTrace();
+        }
+        pageClass = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="comment">// 统计网页类型种数</span>
+        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
+            <span class="keyword">for</span> (String s : <span class="built_in">array</span>) {
+                <span class="keyword">if</span> (!pageClass.contains(s)) {
+                    pageClass.add(s);
+                }
+            }
+        }
+        <span class="keyword">int</span> i = <span class="number">0</span>;
+        <span class="keyword">int</span> j = <span class="number">0</span>;
+        pageNum = pageClass.size();
+        linkMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[pageNum][pageNum];
+        authority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+        hub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+
+        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+            <span class="comment">// 初始时默认权威值和中心值都为1</span>
+            authority[k] = <span class="number">1</span>;
+            hub[k] = <span class="number">1</span>;
+        }
+
+        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
+
+            i = Integer.parseInt(<span class="built_in">array</span>[<span class="number">0</span>]);
+            j = Integer.parseInt(<span class="built_in">array</span>[<span class="number">1</span>]);
+
+            <span class="comment">// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接</span>
+            linkMatrix[i - <span class="number">1</span>][j - <span class="number">1</span>] = <span class="number">1</span>;
+        }
+    }
+    <span class="comment">/**
+     * 输出结果页面，也就是authority权威值最高的页面
+     */</span>
+    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printResultPage</span><span class="params">()</span> </span>{
+        <span class="comment">// 最大Hub和Authority值，用于后面的归一化计算</span>
+        <span class="keyword">double</span> maxHub = <span class="number">0</span>;
+        <span class="keyword">double</span> maxAuthority = <span class="number">0</span>;
+        <span class="keyword">int</span> maxAuthorityIndex = <span class="number">0</span>;
+        <span class="comment">// 误差值，用于收敛判断</span>
+        <span class="keyword">double</span> error = Integer.MAX_VALUE;
+        <span class="keyword">double</span>[] newHub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+        <span class="keyword">double</span>[] newAuthority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+
+        <span class="keyword">while</span> (error &gt; <span class="number">0.01</span> * pageNum) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                newHub[k] = <span class="number">0</span>;
+                newAuthority[k] = <span class="number">0</span>;
+            }
+
+            <span class="comment">// hub和authority值的更新计算</span>
+            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pageNum; i++) {
+                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; pageNum; j++) {
+                    <span class="keyword">if</span> (linkMatrix[i][j] == <span class="number">1</span>) {
+                        newHub[i] += authority[j];
+                        newAuthority[j] += hub[i];
+                    }
+                }
+            }
+            maxHub = <span class="number">0</span>;
+            maxAuthority = <span class="number">0</span>;
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                <span class="keyword">if</span> (newHub[k] &gt; maxHub) {
+                    maxHub = newHub[k];
+                }
+
+                <span class="keyword">if</span> (newAuthority[k] &gt; maxAuthority) {
+                    maxAuthority = newAuthority[k];
+                    maxAuthorityIndex = k;
+                }
+            }
+
+            error = <span class="number">0</span>;
+            <span class="comment">// 归一化处理</span>
+            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+                newHub[k] /= maxHub;
+                newAuthority[k] /= maxAuthority;
+
+                error += Math.<span class="built_in">abs</span>(newHub[k] - hub[k]);
+                System.out.println(newAuthority[k] + <span class="string">":"</span> + newHub[k]);
+
+                hub[k] = newHub[k];
+                authority[k] = newAuthority[k];
+            }
+            System.out.println(<span class="string">"---------"</span>);
+        }
+        System.out.println(<span class="string">"****最终收敛的网页的权威值和中心值****"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+            System.out.println(<span class="string">"网页"</span> + pageClass.get(k) + <span class="string">":"</span> + authority[k] + <span class="string">":"</span> + hub[k]);
+        }
+        System.out.println(<span class="string">"权威值最高的网页为：网页"</span> + pageClass.get(maxAuthorityIndex));
+    }
+
+}
+</code></pre><p>主类：</p>
+<pre><code><span class="keyword">package</span> org.tseg.search;
+
+<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{
+
+    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+
+        String Path = <span class="string">"Users/pengshuang/Desktop/pagerank/input/HITS.txt"</span>;
+        HITSTool ht = <span class="keyword">new</span> HITSTool(Path);
+        ht.printResultPage();
+    }
+
+}
+</code></pre><p>输入文件示例：</p>
+<p><img src="/img/10.png" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2015/10/27/K-means算法java实现/" itemprop="url">
+                  K-means算法java实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-27T14:09:30+08:00" content="2015-10-27">
+              2015-10-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
+                    <span itemprop="name">数据挖掘</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/10/27/K-means算法java实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/27/K-means算法java实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/27/K-means算法java实现/" class="leancloud_visitors" data-flag-title="K-means算法java实现">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天用Java实现了一下K-means算法，把它应用在一个小例子中，效果还不错。下面附上代码和注释。</p>
+<p>测试用例：</p>
+<p><img src="/img/kmeans/1.png" alt=""></p>
+<p>第一列是属性名称，其他列代表相应属性值。</p>
+<p>代码如下：</p>
+<pre><code><span class="keyword">package</span> org.tseg.kmeans;
+
+<span class="keyword">import</span> java.io.<span class="keyword">BufferedReader</span>;
+<span class="keyword">import</span> java.io.FileInputStream;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.io.InputStreamReader;
+<span class="keyword">import</span> java.util.ArrayList;
+<span class="keyword">import</span> java.util.List;
+<span class="keyword">import</span> java.util.Vector;
+
+<span class="keyword">public</span> class MyKmeans {
+
+<span class="keyword">static</span> Vector&lt;Point&gt; exprValues = <span class="keyword">new</span> Vector&lt;Point&gt;();
+<span class="keyword">static</span> List&lt;Vector&lt;Point&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;Vector&lt;Point&gt;&gt;(); <span class="comment">// 每次迭代保存结果，一个vector代表一个簇</span>
+<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Integer K = <span class="number">2</span>; <span class="comment">// 选K=2，也就是估算有两个簇。</span>
+<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Double converge = <span class="number">0.001</span>; <span class="comment">// 当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001</span>
+
+<span class="comment">// 读取数据</span>
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> readF1() <span class="keyword">throws</span> IOException {
+    <span class="comment">// 读取我们的测试文件</span>
+    <span class="keyword">String</span> filePath = <span class="string">"src/simple_k-means.txt"</span>;
+    <span class="keyword">BufferedReader</span> br = <span class="keyword">new</span> <span class="keyword">BufferedReader</span>(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(filePath)));
+    <span class="comment">// 按行来读取文件，每行之间按空格隔开</span>
+    <span class="keyword">for</span> (<span class="keyword">String</span> <span class="built_in">line</span> = br.readLine(); <span class="built_in">line</span> != <span class="keyword">null</span>; <span class="built_in">line</span> = br.readLine()) {
+        <span class="keyword">if</span> (<span class="built_in">line</span>.length() == <span class="number">0</span> || <span class="string">""</span>.equals(<span class="built_in">line</span>))
+            <span class="keyword">continue</span>;
+        <span class="keyword">String</span>[] <span class="built_in">str</span> = <span class="built_in">line</span>.<span class="built_in">split</span>(<span class="string">" "</span>);
+        Point p0 = <span class="keyword">new</span> Point();
+        <span class="comment">// 存放相应的X，Y坐标</span>
+        p0.setname(<span class="keyword">String</span>.valueOf(<span class="built_in">str</span>[<span class="number">0</span>]));
+        p0.setX(Double.valueOf(<span class="built_in">str</span>[<span class="number">1</span>]));
+        p0.setY(Double.valueOf(<span class="built_in">str</span>[<span class="number">2</span>]));
+        <span class="comment">//</span>
+        exprValues.<span class="built_in">add</span>(p0);
+    }
+    br.close();
+}
+
+<span class="comment">// 采用欧氏距离</span>
+<span class="keyword">public</span> <span class="keyword">static</span> Double DistanceMeasure(Point p1, Point p2) {
+
+    Double tmp = StrictMath.<span class="built_in">pow</span>(p2.getX() - p1.getX(), <span class="number">2</span>) + StrictMath.<span class="built_in">pow</span>(p2.getY() - p1.getY(), <span class="number">2</span>);
+    <span class="keyword">return</span> Math.<span class="built_in">sqrt</span>(tmp);
+}
+
+<span class="comment">// 计算新的簇心</span>
+<span class="keyword">public</span> <span class="keyword">static</span> Double CalCentroid() {
+    System.out.<span class="built_in">println</span>(<span class="string">"------------------------------------------------"</span>);
+    Double movedist = Double.MAX_VALUE;
+    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; list.<span class="built_in">size</span>(); i++) {
+        Vector&lt;Point&gt; subli = list.<span class="built_in">get</span>(i);
+        Point po = <span class="keyword">new</span> Point();
+        Double sumX = <span class="number">0.0</span>;
+        Double sumY = <span class="number">0.0</span>;
+        Double Clusterlen = Double.valueOf(subli.<span class="built_in">size</span>());
+        <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; Clusterlen; j++) {
+            Point nextp = subli.<span class="built_in">get</span>(j);
+            sumX = sumX + nextp.getX();
+            sumY = sumY + nextp.getY();
+        }
+        po.setX(sumX / Clusterlen);
+        po.setY(sumY / Clusterlen);
+        <span class="comment">// 新的点与旧点之间的距离</span>
+        Double <span class="built_in">dist</span> = DistanceMeasure(subli.<span class="built_in">get</span>(<span class="number">0</span>), po);
+        <span class="comment">// 在多个簇心移动的过程中，返回移动距离最小的值</span>
+        <span class="keyword">if</span> (<span class="built_in">dist</span> &lt; movedist)
+            movedist = <span class="built_in">dist</span>;
+        list.<span class="built_in">get</span>(i).<span class="built_in">clear</span>();
+        list.<span class="built_in">get</span>(i).<span class="built_in">add</span>(po);
+        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + i + <span class="string">"的簇心为："</span> + po.getX() + <span class="string">","</span> + po.getY());
+    }
+    <span class="keyword">return</span> movedist;
+}
+<span class="comment">// 本次的簇心</span>
+<span class="comment">// 下一次移动的簇心</span>
+
+<span class="keyword">private</span> <span class="keyword">static</span> Double move = Double.MAX_VALUE;<span class="comment">// 移动距离</span>
+<span class="comment">// 不断地迭代，直到收敛</span>
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> RecursionKluster() {
+    <span class="keyword">for</span> (<span class="built_in">int</span> times = <span class="number">2</span>; move &gt; converge; times++) {
+        System.out.<span class="built_in">println</span>(<span class="string">"第"</span> + times + <span class="string">"次迭代"</span>);
+        <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
+        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">1</span>; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
+            Point p = <span class="keyword">new</span> Point();
+            p = exprValues.<span class="built_in">get</span>(i);
+            <span class="built_in">int</span> index = -<span class="number">1</span>;
+
+            <span class="keyword">double</span> neardist = Double.MAX_VALUE;
+            <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
+                Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
+                <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
+                <span class="keyword">if</span> (currentdist &lt; neardist) {
+                    neardist = currentdist;
+                    index = k;
+                }
+            }
+            System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
+            list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
+        }
+        <span class="comment">// 重新计算簇心,并返回移动的距离，最小的那个距离</span>
+
+        move = CalCentroid();
+        System.out.<span class="built_in">println</span>(<span class="string">"各个簇心移动中最小的距离为，move="</span> + move);
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> Kluster() {
+
+    <span class="comment">// K为簇的个数</span>
+    <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
+        Vector&lt;Point&gt; vect = <span class="keyword">new</span> Vector&lt;Point&gt;();
+        Point p = <span class="keyword">new</span> Point();
+        <span class="comment">// p依次取得每个簇</span>
+        p = exprValues.<span class="built_in">get</span>(k);
+        vect.<span class="built_in">add</span>(p);
+        list.<span class="built_in">add</span>(vect);
+    }
+    System.out.<span class="built_in">println</span>(<span class="string">"第1次迭代"</span>);
+    <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
+    <span class="keyword">for</span> (<span class="built_in">int</span> i = K; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
+        Point p = <span class="keyword">new</span> Point();
+        p = exprValues.<span class="built_in">get</span>(i);
+        <span class="built_in">int</span> index = -<span class="number">1</span>;
+
+        <span class="keyword">double</span> neardist = Double.MAX_VALUE;
+        <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
+            Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
+            <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
+            <span class="keyword">if</span> (currentdist &lt; neardist) {
+                neardist = currentdist;
+                index = k;
+            }
+        }
+        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
+        list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) <span class="keyword">throws</span> IOException {
+
+    <span class="comment">// 读取数据</span>
+    readF1();
+    <span class="comment">// 第一次迭代</span>
+    Kluster();
+    <span class="comment">// 第一次迭代后计算簇心</span>
+    CalCentroid();
+    <span class="comment">// 不断迭代，直到收敛</span>
+    RecursionKluster();
+    }
+}
+</code></pre><p>根据我上一篇文章《K-means算法之我见》再结合这个代码应该很好理解。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-3/" itemprop="url">
                   PageRank-的三种实现方式(3)
                 </a>
@@ -1345,7 +1938,7 @@ ctx.stop()
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">45</span>
+              <span class="site-state-item-count">47</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
