@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="计算机网络," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,23 +84,25 @@
 
 
 
-<meta name="description" content="1. 物理层（硬件）TCP/IP的最底层是负责数据传输的硬件。
-2. 数据链路层（网络接口层）数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。
-3. 网络层（互联网层）网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得">
+<meta name="description" content="HBase 提供的第一种过滤器实现就是比较过滤器。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。
+CompareFilter(CompareOp valueCompareOp,
+    WritableByteArrayCompareable valueComparator)
+用户需要提供比较运算符和比较类来">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TCP/IP协议分层模型">
-<meta property="og:url" content="http://pengshuang.space/2016/09/15/TCP-IP基础知识/index.html">
+<meta property="og:title" content="HBase学习: 比较过滤器">
+<meta property="og:url" content="http://pengshuang.space/2016/11/07/HBase学习-比较过滤器/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="1. 物理层（硬件）TCP/IP的最底层是负责数据传输的硬件。
-2. 数据链路层（网络接口层）数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。
-3. 网络层（互联网层）网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得">
-<meta property="og:image" content="http://pengshuang.space/img/tcp.png">
-<meta property="og:updated_time" content="2016-09-16T13:49:28.000Z">
+<meta property="og:description" content="HBase 提供的第一种过滤器实现就是比较过滤器。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。
+CompareFilter(CompareOp valueCompareOp,
+    WritableByteArrayCompareable valueComparator)
+用户需要提供比较运算符和比较类来">
+<meta property="og:updated_time" content="2016-11-08T09:36:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TCP/IP协议分层模型">
-<meta name="twitter:description" content="1. 物理层（硬件）TCP/IP的最底层是负责数据传输的硬件。
-2. 数据链路层（网络接口层）数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。
-3. 网络层（互联网层）网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得">
+<meta name="twitter:title" content="HBase学习: 比较过滤器">
+<meta name="twitter:description" content="HBase 提供的第一种过滤器实现就是比较过滤器。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。
+CompareFilter(CompareOp valueCompareOp,
+    WritableByteArrayCompareable valueComparator)
+用户需要提供比较运算符和比较类来">
 
 
 
@@ -121,9 +123,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/09/15/TCP-IP基础知识/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/11/07/HBase学习-比较过滤器/"/>
 
-  <title> TCP/IP协议分层模型 | 小沙文的博客 </title>
+  <title> HBase学习: 比较过滤器 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -263,7 +265,7 @@
             
             
               
-                TCP/IP协议分层模型
+                HBase学习: 比较过滤器
               
             
           </h1>
@@ -275,8 +277,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-15T22:01:00+08:00" content="2016-09-15">
-              2016-09-15
+            <time itemprop="dateCreated" datetime="2016-11-07T16:55:42+08:00" content="2016-11-07">
+              2016-11-07
             </time>
           </span>
 
@@ -289,8 +291,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
                   </a>
                 </span>
 
@@ -305,8 +307,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/15/TCP-IP基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/TCP-IP基础知识/" itemprop="commentsCount"></span>
+                <a href="/2016/11/07/HBase学习-比较过滤器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/07/HBase学习-比较过滤器/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -316,7 +318,7 @@
 
           
           
-             <span id="/2016/09/15/TCP-IP基础知识/" class="leancloud_visitors" data-flag-title="TCP/IP协议分层模型">
+             <span id="/2016/11/07/HBase学习-比较过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 比较过滤器">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -338,33 +340,163 @@
       
 
       
-        <h3 id="1-_物理层（硬件）">1. 物理层（硬件）</h3><p>TCP/IP的最底层是负责数据传输的硬件。</p>
-<h3 id="2-_数据链路层（网络接口层）">2. 数据链路层（网络接口层）</h3><p>数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。</p>
-<h3 id="3-_网络层（互联网层）">3. 网络层（互联网层）</h3><p>网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得实现通过网络层转发分组数据包的功能。</p>
-<h4 id="IP">IP</h4><p>IP是跨越网络传送数据包，使整个互联网都能收到数据的协议。IP协议使数据能够发送到地球的另一端，这期间使用IP地址作为主机的标识。虽然IP也是分组交换的一种协议，但是它不具有重发机制。即使分组数据包未能到达对端主机也不会重发。因此，属于非可靠性传输。</p>
-<h4 id="ICMP">ICMP</h4><p>IP数据包在发送途中一旦发送异常导致无法到达对端目标地址时，需要给发送端发送一个发送异常的通知。ICMP就是被用来诊断网络的健康状况。</p>
-<h4 id="ARP">ARP</h4><p>从分组数据包的IP地址中解析出物理地址（MAC地址）的一种协议。</p>
-<h3 id="4-_传输层">4. 传输层</h3><p>传输层主要的功能就是能够让应用程序之间实现通信。计算机内部，通常同一时间运行着多个程序。为此，必须分清是哪些程序与哪些程序在进行通信。识别这些应用程序的事端口号。</p>
-<h4 id="TCP">TCP</h4><p>TCP是一种面向有连接的传输层协议。它可以保证两端通信主机之间的通信可达。TCP能够正确处理在传输过程中丢包、传输顺序乱掉等异常情况。此外，TCP还能够有效利用带宽，缓解网络拥堵。</p>
-<h4 id="UDP">UDP</h4><p>UDP有别于TCP，它是一种面向无连接的传输层协议。UDP不会关注对端是否真的收到了传送过去的数据。UDP常用于分组数据较少或多播、广播通信以及视频通信等多媒体领域。</p>
-<h3 id="5-_应用层（会话层以上的分层）">5. 应用层（会话层以上的分层）</h3><p>TCP/IP的分层中，将OSI参考模型中的会话层、表示层和应用层的功能都集中到了应用程序中实现。</p>
-<p>HTTP协议属于应用层的协议，HTML和电子邮件属于表示层协议。</p>
-<h3 id="6-_TCP/IP分层模型及通信示例">6. TCP/IP分层模型及通信示例</h3><p>以甲向乙发送电子邮件为例，来讲解TCP/IP的通信过程。</p>
-<h4 id="应用程序处理">应用程序处理</h4><p>启动应用新建邮件，填写好内容并点击发送之后，应用程序会进行编码处理，这些编码相当于OSI的表示层的功能。编码转化后，实际邮件不一定会马上被发送出去，因为有些邮件的软件有一次同时发送多个邮件的功能。像这种何时建立通信连接何时发送数据的管理功能，其实属于OSI参考模型中会话层的功能。</p>
-<p>应用在发送电子邮件的那一刻建立TCP连接，从而利用这个TCP连接发送数据。它的过程首先是将应用的数据发送给下一层的TCP，再做实际的转发处理。</p>
-<h4 id="TCP模块的处理">TCP模块的处理</h4><p>TCP根据应用的指示，负责建立连接、发送数据以及断开连接。TCP提供将应用层发来的数据顺利发送至对端的可靠传输。为了实现TCP的这一功能，需要在应用层数据的前端附加一个TCP首部。TCP首部中包括源端口号和目标端口号。（用以识别发送主机跟接收主机上的应用）、序号（用以发送的包中哪部分是数据）以及校验和（用以判断数据是否被损坏）。随后将附加了TCP首部的包再发送给IP。</p>
-<h4 id="IP模块的处理">IP模块的处理</h4><p>IP将TCP传过来的TCP首部和TCP数据合起来当做自己的数据，并在TCP首部的前端加上自己的IP首部。因此，IP数据包中的IP首部后面紧跟着TCP首部，然后才是应用的数据首部和数据本身。IP首部中包含接收端IP地址以及发送端IP地址。紧随IP首部的还有用来判断其后面数据是TCP还是UDP的信息。</p>
-<h4 id="网络接口（以太网驱动）的处理">网络接口（以太网驱动）的处理</h4><p>从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附上以太网首部并进行发送处理。以太网首部中包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包将通过物理层传输给接收端。</p>
-<h4 id="经过数据链路的包">经过数据链路的包</h4><p>每个包首部中至少都会包含两个信息：一个是发送端和接收端地址，另一个是上一层的协议类型。经过每个协议分层时，都必须有识别包发送端和接收端的信息。以太网会用MAC地址，IP会用IP地址，而TCP/UDP会用端口号作为识别两端主机的地址。分层中包的结构如下所示：</p>
-<p><img src="/img/tcp.png" alt=""></p>
-<p>此外每个分层的包首部中还包含一个识别位，它是用来标识上一层协议的种类信息。例如以太网的包首部中的以太网类型，IP中的协议类型以及TCP/UDP中两个端口的端口号都起着识别协议类型的作用。</p>
-<h4 id="数据包接收处理">数据包接收处理</h4><p>包的接收流程是发送流程的逆序过程。</p>
-<h4 id="网络接口（以太网驱动）的处理-1">网络接口（以太网驱动）的处理</h4><p>主机收到以太网包以后，首先从以太网的包首部找到MAC地址判断是否为发给自己的包。如果不是则丢弃。而如果接收到了恰好是发送给自己的包，就查找以太网包首部中的类型域从而确定以太网协议所传送过来的数据类型（IP或其他诸如ARP的协议）。如果以太网首部的类型域包含了一个无法识别的协议类型，则丢弃数据。</p>
-<h4 id="IP模块的处理-1">IP模块的处理</h4><p>IP模块收到IP包首部以及后面的数据部分后，如果判断得出包首部中的IP地址与自己的IP地址匹配，则可接收数据并从中查找上一层的协议。如果上一层是TCP就将IP包首部之后的传给TCP处理；UDP类似。对于有路由器的情况，接收端地址往往不是自己的地址，此时需要借助路由控制表，在调查应该送达的主机或路由器以后再转发数据。</p>
-<h4 id="TCP模块的处理-1">TCP模块的处理</h4><p>在TCP模块中，首先会计算一下校验和，判断数据是否被破坏。然后检查是否在按序号接收数据。最后检查端口号，确定具体的应用程序。数据接收完毕之后，接收端返回一个“确认回执”给发送端。</p>
-<p>数据被完整地接收以后，会传给由端口号识别的应用程序。</p>
-<h4 id="应用程序的处理">应用程序的处理</h4><p>接收端应用程序会直接接收发送端发送的数据，如果确认是发送给自己的，则邮件会被保存到本机的硬盘上。如果保存能正常进行，那么会返回给一个“处理正常”的回执给发送端。</p>
+        <p>HBase 提供的第一种过滤器实现就是<strong>比较过滤器</strong>。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。</p>
+<pre><code>CompareFilter<span class="list">(<span class="keyword">CompareOp</span> valueCompareOp,
+    WritableByteArrayCompareable valueComparator)</span>
+</code></pre><p>用户需要提供比较运算符和比较类来让过滤器工作。</p>
+<p>HBase 中过滤器本来的目的是为了筛掉无用的信息，被过滤掉的信息不会被传递到客户端，过滤器不能用来指定用户需要哪些信息，而是在读取数据的过程中不返回用户不想要的信息。</p>
+<p>相反，所有基于 CompareFilter 的过滤处理过程与上述描述正好相反，它们返回匹配的值</p>
+<h3 id="行过滤器">行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = <span class="built_in">new</span> HTable(conf, <span class="string">"temp2"</span>);
 
+Scan scan = <span class="built_in">new</span> Scan();
+scan.addColumn(Bytes.toBytes(<span class="string">"colfam1"</span>), Bytes.toBytes(<span class="string">"col-0"</span>));
+<span class="comment">// 指定比较运算符和比较器</span>
+Filter filter1 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
+        <span class="built_in">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"row-22"</span>)));
+scan.setFilter(filter1);
+ResultScanner scanner1 = hTable.getScanner(scan);
+<span class="keyword">for</span>(Result res: scanner1){
+    System.out.<span class="built_in">println</span>(res);
+}
+scanner1.<span class="built_in">close</span>();
+
+<span class="comment">// 用正则表达式来匹配行键</span>
+Filter filter2 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
+        <span class="built_in">new</span> RegexStringComparator(<span class="string">".*-.5"</span>));
+scan.setFilter(filter2);
+ResultScanner scanner2 = hTable.getScanner(scan);
+<span class="keyword">for</span>(Result res: scanner2){
+    System.out.<span class="built_in">println</span>(res);
+}
+scanner2.<span class="built_in">close</span>();
+
+<span class="comment">// 子串匹配方法</span>
+Filter filter3 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
+        <span class="built_in">new</span> SubstringComparator(<span class="string">"-5"</span>));
+scan.setFilter(filter3);
+ResultScanner scanner3 = hTable.getScanner(scan);
+<span class="keyword">for</span>(Result res: scanner3){
+    System.out.<span class="built_in">println</span>(res);
+}
+scanner3.<span class="built_in">close</span>();
+</code></pre><h3 id="列族过滤器">列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = <span class="keyword">new</span> HTable(conf, <span class="string">"temp2"</span>);
+<span class="comment">// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族</span>
+Filter filter1 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.LESS,
+        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
+Scan scan = <span class="keyword">new</span> Scan();
+scan.setFilter(filter1);
+<span class="comment">// 使用扫描器扫描</span>
+ResultScanner scanner = hTable.getScanner(scan);
+<span class="keyword">for</span>(Result res: scanner){
+    System.<span class="keyword">out</span>.println(res);
+}
+scanner.close();
+
+Get get1 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
+<span class="comment">// 使用和之前相同的过滤器获取同一行的数据</span>
+get1.setFilter(filter1);
+Result result1 = hTable.<span class="keyword">get</span>(get1);
+System.<span class="keyword">out</span>.println(<span class="string">"Result of get(): "</span> + result1);
+
+ <span class="comment">// 在一个列族上创建一个过滤器，同时获取另一行的数据</span>
+Filter filter2 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.EQUAL,
+        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
+Get get2 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
+get2.addFamily(Bytes.toBytes(<span class="string">"colfam1"</span>));
+get2.setFilter(filter2);
+<span class="comment">// 使用新的过滤器获取同一行数据，此时返回的结果为 None </span>
+Result result2 = hTable.<span class="keyword">get</span>(get2);
+System.<span class="keyword">out</span>.print(<span class="string">"Result of get(): "</span> + result2);
+</code></pre><h4 id="列名过滤器">列名过滤器</h4><p>通过列名筛选特定的列。</p>
+<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
+<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+
+<span class="type">Filter</span> filter = new <span class="type">QualifierFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">LESS_OR_EQUAL</span>,
+        new <span class="type">BinaryComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"col-2"</span>)));
+<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+scan.setFilter(filter);
+<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
+<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>: scanner){
+    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+}
+scanner.close();
+
+<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+get.setFilter(filter);
+<span class="type">Result</span> result2 = hTable.get(get);
+<span class="type">System</span>.<span class="keyword">out</span>.print(result2);
+</code></pre><h4 id="值过滤器">值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
+<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
+<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+
+<span class="type">Filter</span> filter = new <span class="type">ValueFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
+        new <span class="type">SubstringComparator</span>(<span class="string">".4"</span>));
+<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+scan.setFilter(filter);
+<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
+<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
+    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+}
+scanner.close();
+</code></pre><h3 id="参考列过滤器">参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
+<p>下面是它们的构造方法：</p>
+<pre><code><span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier)
+<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
+    <span class="keyword">boolean </span>dropDependentColumn)
+<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
+    <span class="keyword">boolean </span>dropDependentColumn, CompareOp valueCompareOp,
+    <span class="keyword">ByteArrayComparable </span>valueComparator)
+</code></pre><p>由于参考过滤器也是继承自 CompareFilter，所以它也可以帮助用户筛选列，不过这个过滤器是基于这些列值进行筛选的。用户可以把他理解为一个 ValueFilter 和 一个时间戳过滤器的组合。用户可以传入比较运算符和基准值来启用 ValueFilter 的功能。</p>
+<p>下面这个例子展示了参考过滤器的用法：</p>
+<pre><code>public class <span class="type">Filter5</span> {
+    private <span class="keyword">static</span> <span class="type">void</span> filter(boolean drop,
+                               <span class="type">CompareFilter</span>.<span class="type">CompareOp</span> operator,
+                               <span class="type">ByteArrayComparable</span> comparator)
+    throws <span class="type">IOException</span> {
+        <span class="type">Filter</span> filter;
+        <span class="keyword">if</span>(comparator != null){
+            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
+                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop, operator, comparator);
+        } <span class="keyword">else</span> {
+            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
+                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop);
+        }
+
+    <span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
+    <span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+    <span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+    scan.setFilter(filter);
+    <span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
+    <span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
+        <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+    }
+    scanner.close();
+
+    <span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+    get.setFilter(filter);
+    <span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
+    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+
+}
+public <span class="keyword">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) throws <span class="type">IOException</span>
+{
+    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
+    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
+    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
+            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
+    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
+            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
+    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
+            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
+    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
+            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
+    }
+}
+</code></pre>
       
     </div>
 
@@ -384,27 +516,21 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/计算机网络/" rel="tag">#计算机网络</a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/15/理解有连接和无连接/" rel="next" title="理解计算机网络中的传输方式">
-                <i class="fa fa-chevron-left"></i> 理解计算机网络中的传输方式
+              <a href="/2016/10/29/HBase-学习-扫描/" rel="next" title="HBase 学习: 扫描">
+                <i class="fa fa-chevron-left"></i> HBase 学习: 扫描
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/09/16/HiveQL-视图/" rel="prev" title="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-                《Hive编程指南》学习笔记：HiveQL:视图与索引 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/11/08/HBase学习-专用过滤器/" rel="prev" title="HBase学习: 专用过滤器">
+                HBase学习: 专用过滤器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -420,10 +546,10 @@
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/09/15/TCP-IP基础知识/"
-     data-title="TCP/IP协议分层模型"
+        <div class="ds-share flat" data-thread-key="2016/11/07/HBase学习-比较过滤器/"
+     data-title="HBase学习: 比较过滤器"
      data-content=""
-     data-url="http://pengshuang.space/2016/09/15/TCP-IP基础知识/">
+     data-url="http://pengshuang.space/2016/11/07/HBase学习-比较过滤器/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -450,8 +576,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/15/TCP-IP基础知识/"
-           data-title="TCP/IP协议分层模型" data-url="http://pengshuang.space/2016/09/15/TCP-IP基础知识/">
+      <div class="ds-thread" data-thread-key="2016/11/07/HBase学习-比较过滤器/"
+           data-title="HBase学习: 比较过滤器" data-url="http://pengshuang.space/2016/11/07/HBase学习-比较过滤器/">
       </div>
     
   </div>
@@ -584,7 +710,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_物理层（硬件）"><span class="nav-number">1.</span> <span class="nav-text">1. 物理层（硬件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_数据链路层（网络接口层）"><span class="nav-number">2.</span> <span class="nav-text">2. 数据链路层（网络接口层）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_网络层（互联网层）"><span class="nav-number">3.</span> <span class="nav-text">3. 网络层（互联网层）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP"><span class="nav-number">3.1.</span> <span class="nav-text">IP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ICMP"><span class="nav-number">3.2.</span> <span class="nav-text">ICMP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ARP"><span class="nav-number">3.3.</span> <span class="nav-text">ARP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_传输层"><span class="nav-number">4.</span> <span class="nav-text">4. 传输层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP"><span class="nav-number">4.1.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP"><span class="nav-number">4.2.</span> <span class="nav-text">UDP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_应用层（会话层以上的分层）"><span class="nav-number">5.</span> <span class="nav-text">5. 应用层（会话层以上的分层）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_TCP/IP分层模型及通信示例"><span class="nav-number">6.</span> <span class="nav-text">6. TCP/IP分层模型及通信示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#应用程序处理"><span class="nav-number">6.1.</span> <span class="nav-text">应用程序处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP模块的处理"><span class="nav-number">6.2.</span> <span class="nav-text">TCP模块的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP模块的处理"><span class="nav-number">6.3.</span> <span class="nav-text">IP模块的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络接口（以太网驱动）的处理"><span class="nav-number">6.4.</span> <span class="nav-text">网络接口（以太网驱动）的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#经过数据链路的包"><span class="nav-number">6.5.</span> <span class="nav-text">经过数据链路的包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据包接收处理"><span class="nav-number">6.6.</span> <span class="nav-text">数据包接收处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#网络接口（以太网驱动）的处理-1"><span class="nav-number">6.7.</span> <span class="nav-text">网络接口（以太网驱动）的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP模块的处理-1"><span class="nav-number">6.8.</span> <span class="nav-text">IP模块的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP模块的处理-1"><span class="nav-number">6.9.</span> <span class="nav-text">TCP模块的处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#应用程序的处理"><span class="nav-number">6.10.</span> <span class="nav-text">应用程序的处理</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#行过滤器"><span class="nav-number">1.</span> <span class="nav-text">行过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列族过滤器"><span class="nav-number">2.</span> <span class="nav-text">列族过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#列名过滤器"><span class="nav-number">2.1.</span> <span class="nav-text">列名过滤器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#值过滤器"><span class="nav-number">2.2.</span> <span class="nav-text">值过滤器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考列过滤器"><span class="nav-number">3.</span> <span class="nav-text">参考列过滤器</span></a></li></ol></div>
             
           </div>
         </section>
