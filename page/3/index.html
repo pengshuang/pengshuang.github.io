@@ -258,6 +258,208 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/11/数据库系统实现-索引结构/" itemprop="url">
+                  数据库系统实现:索引结构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-11T22:35:45+08:00" content="2016-10-11">
+              2016-10-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/11/数据库系统实现-索引结构/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/11/数据库系统实现-索引结构/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/11/数据库系统实现-索引结构/" class="leancloud_visitors" data-flag-title="数据库系统实现:索引结构">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>数据库系统中最常用的索引结构为：B-树 和 散列表索引。最近在看《数据库系统实现》这本书，特此学习总结一下。</p>
+<h3 id="索引结构基础">索引结构基础</h3><p>数据库存储结构由文件构成，一个数据文件可以用来存储一个关系。一个数据文件可能拥有一个或多个索引文件，每个索引文件建立查找键和数据记录之间的关联，查找键的指针指向与查找键具有相同属性值的记录。</p>
+<p>索引的个数视情况而定，可以稠密也可以稀疏。即数据文件中每个记录在索引文件中都设有一个索引项；索引也可以是稀疏的，即数据文件中只有部分记录在索引文件中表示出来，通常为每个数据块在索引文件中设一个索引项。索引还可以是“主索引”或者“辅助索引”。主索引能确定记录在数据文件中的位置，而辅助索引不能。通常，我们会在关系的主键上建立主索引，而在其他的属性上建立辅助索引。</p>
+<h4 id="顺序文件">顺序文件</h4><p><strong>顺序文件</strong>是对关系中的元组按主键进行排序而生成的文件。关系中的元组按照这个次序分布在多个数据块中。如图3-2所示，它的右半部分显示了一个顺序文件，这里假定主键是整数，并且每个存储块中只可存放两条记录。这里我们以尽量紧凑的方式将数据记录存入数据块中，但是在一般情况下，我们会为每个数据块预留一些空间，以容纳之后可能插入关系中的新元组。还有一种方法是将新插入的元组存储在溢出块中。</p>
+<h4 id="稠密索引">稠密索引</h4><p>如果记录是排好序的，我们就可以在记录上建立稠密索引，它是这样的一系列存储块：块中只存放记录的键以及指向记录本身的指针。稠密索引文件中的索引块保存键的顺序与文件中的排序顺序一致。既然我们假定查找键和指针所占存储空间远小于记录本身，我们就可以认为存储索引文件比存储数据文件所需存储块要少得多。当内存容纳不下数据文件，但容纳得下索引文件时，索引的优势尤为明显。这时，通过使用索引文件，我们每次查询只用一次I/O操作就能找到给定键值的记录</p>
+<p>如图3-2所示，它为一个建立在顺序文件上的稠密索引。第一个索引块存放指向前四个记录的指针，第二存放指向接下来四个记录的指针，依次类推。</p>
+<p>稠密索引支持按给定键值查找相应记录的查询。给定一个键值K，我们现在索引块中查找K。当找到K后，我们按照K所对应的指针到数据文件中找到相应的记录。似乎在找到K之前我们需要检索索引文件中的每个存储快，或平均一半的存储块。然后，由于有下面几个因素，基于索引的查找还是相对更高效：</p>
+<ol>
+<li>索引块的数量通常比数据块要少</li>
+<li>由于键被排序，我们可以使用二分查找法来查找K。若有n个索引块，我们只需查找log2(n)个块。</li>
+<li>索引文件可能足够小，以至可以永久地存放在主存缓冲区中。这样查找键K时就只涉及主存访问而不需执行I/O操作。</li>
+</ol>
+<p><img src="/img/index1.png" alt=""></p>
+<h4 id="稀疏索引">稀疏索引</h4><p><strong>稀疏索引</strong>只为数据文件的每个存储块设一个键—指针对，它比稠密索引节省了更多的存储空间，但查找给定值的记录需要更多的时间。只有当数据文件是按照某个查找键排序时，在该查找键上建立的稀疏索引才能被使用，而稠密索引则可以应用在任何的查找键。如下图所示，稀疏索引只为每个存储块设一个键-指针对。键值是每个数据块中的第一个记录的对应值。</p>
+<p>在下图中，我们假定数据文件已经排序好，而且其键值为连续的10的倍数，直至某个较大的数。我们还继续假定每个存储块可存放四个键-指针对。这样，第一个索引存储块中为前四个数据存储块的第一个键值的索引项，它们分别为10、30、50和70，后面的以此类推，不在解释。</p>
+<p>在已有稀疏索引的情况下，要找出查找键值为K的记录，我们得在索引中查找到键值小于或等于K的最大键值。由于索引文件已按键排序，我们可以使用二分查找法来定位这个索引项，然后根据它的指针找到相应的数据块。</p>
+<p><img src="/img/index2.png" alt=""></p>
+<h4 id="多级索引">多级索引</h4><p>索引文件可能占据多个存储块，即便我们能定位索引存储块，并且能使用二分查找法找到所需索引项，我们仍可能需要执行多次I/O操作才能得到我们所需的记录。通过在索引上再见了索引，我们能够使第一级索引的使用更为有效。</p>
+<p>下图展示了一个典型的二级索引，在这个例子中，一级索引是稀疏的，虽然我们也可以选择稠密索引来作为一级索引。但是，二级和更高级的索引必须是稀疏的，原因在于一个索引上的稠密索引将需要和其前一级索引同样多的键-指针对，因而也就需要同样的存储空间。</p>
+<p><img src="/img/index3.png" alt=""></p>
+<h4 id="辅助索引">辅助索引</h4><p>辅助索引可用于任何索引目的，这种数据结构有助于查找给定一个或多个字段值的记录。但是，辅助索引与主索引最大的差别在于辅助索引不决定数据文件中记录的存放位置。而仅能告诉我们记录的当前存放位置，这一位置可能是建立在其他某个字段上的主索引确定的。辅助索引和主索引这一差别有一个有趣的推论：</p>
+<ul>
+<li>辅助索引总是稠密索引。一个稀疏的辅助索引没有意义，因为辅助索引不影响记录的存储位置，我们也就不能根据它来预测键值不在索引中显示指明的任何记录的位置。 </li>
+</ul>
+<p>下图为一个典型的辅助索引，我们发现，索引文件中的键是排序的，而数据文件没有按查找键排序。这样就造成索引块中的指针并不是指向一个或少数几个连续的存储块，而是指向许多不同的的数据块。例如，为了检索键值为20的所有记录，我们不仅需要查找两个索引块，而且还得访问指针指向的三个不同的数据块。因此，查找同样数量的记录，使用辅助索引比使用主索引可能需要更多的磁盘I/O。</p>
+<p><img src="/img/index4.png" alt=""></p>
+<h3 id="辅助索引的运用">辅助索引的运用</h3><p>除了能在被组织成顺序文件的关系上建立附件索引外，辅助索引还可以用作某种数据结构的主键索引。这样的结构比如说有“堆”，在这种结构中，关系的记录之间没有特定的顺序。</p>
+<p>第二种需要辅助索引的常见数据结构是<strong>聚集文件</strong>。假设有关系R和S，R中的元组和S中的元组具有多对一的对应关系。一种组织结构是把关系R的每个元组和关系S中的相关的元组存储在一起，另一种结构是按照主键来存储关系R。前一种结构在某些情况下更加合理。下面的一个例子说明了这种组织结构在特定情况下的合理性。</p>
+<p>考虑<strong>movie</strong>和<strong>studio</strong>两个标准的关系：</p>
+<pre><code><span class="function"><span class="title">Movie</span><span class="params">(title, year, length, genre, studioName, producerC#)</span></span>
+<span class="function"><span class="title">Studio</span><span class="params">(name, address, presC#)</span></span>
+</code></pre><p>进一步假定查询的常见形式如下：</p>
+<pre><code><span class="operator"><span class="keyword">SELECT</span> title, <span class="keyword">year</span>
+<span class="keyword">FROM</span> Movie, Studio
+<span class="keyword">WHERE</span> presC# = zzz <span class="keyword">AND</span> Movie.studioName = Studio.<span class="keyword">name</span>;</span>
+</code></pre><p>这里， zzz可以表示任意制片厂经理的证件号，即，已知一个制片厂的经理，我们需要找到由该制片厂制作的所有电影。</p>
+<p>当我们确信上面这类查询是典型的查询，那么我们就可不按主键title和year排序，而是为Studio和Movie两个关系建立一个聚集文件结构，如下图所示。我们在每个Studio的元组后面存放关系Movie中该制片厂的所有电影元组。</p>
+<p><img src="/img/index5.png" alt=""></p>
+<p>如果我们为关系Studio在查找键presC#上建立索引，那么不管zzz是什么，我们都可以快速的找到所有符合条件的制片厂的元组。并且，Movie中所有studioName属性和某个制片厂的name属性匹配的元组。并且，Movie中所有studioName属性和某个制片厂的name属性匹配的元组，都会在聚集文件中紧跟在该制片厂的元组后出现。这样的话，我们可以用尽量少的几次I/O就找到该制片厂的所有电影，因为要查找的Movie元组已经以尽可能稠密的方式存储在紧跟着的数据块里。尽管如此，在Movie上对任意属性建立的索引只能是辅助索引。</p>
+<h3 id="辅助索引中的间接">辅助索引中的间接</h3><p>采用辅助索引的方式存放数据，有时空间浪费很大。假如某个索引键值在数据文件中出现n次，那么这个键值在索引文件中就要写n次，如果我们只为指向该键值的所有指针存储一次键值，这样比较节省空间。</p>
+<p>避免键值重复的一种简便方法是使用一个称为桶的间接层，它介于辅助索引文件和数据文件之间。如下图所示，每个查找键K有一个键-指针对，指针指向一个桶文件，该文件中存放K的桶。从这个位置开始，直到索引指向的下一个位置，期间指针指向索引键值为K的所有记录。</p>
+<p><img src="/img/index6.png" alt=""></p>
+<p>在上图的例子中，我们沿索引键为50的索引项指针找到中间“桶”文件。这一指针刚好将我们带到桶文件中的第一个块的最后一个指针。我们继续向前查找，找到下一块的第一个指针。因为索引文件中键值为60的索引项指针刚好指向桶文件的第二个块的第二个指针，所以我们停止查找。</p>
+<p>在辅助索引上使用间接层有一个重要的好处：我们通常可以在不访问数据文件记录的前提下利用桶的指针来帮助回答一些查询。特别是，当查询有多个条件，而每个条件都有一个可用的辅助索引时，我们可以通过在主存中将指针集合求交来找到满足所有条件的指针，然后只需要检索交集中指针指向的记录。这样，我们就节省了检索满足部分条件而非所有条件的记录所需的I/O开销。</p>
+<p>举例：</p>
+<p>考虑常用的Movie关系：</p>
+<pre><code>Movie(title, <span class="property">year</span>, <span class="property">length</span>, genere, studioName, producerC<span class="comment">#)</span>
+</code></pre><p>假定我们在studioName和year上都建立了有间接的桶的辅助索引，而且我们要执行如下查询：</p>
+<pre><code><span class="operator"><span class="keyword">SELECT</span> title
+<span class="keyword">FROM</span> Movie
+<span class="keyword">WHERE</span> studioName = <span class="string">'Disney'</span> <span class="keyword">AND</span> <span class="keyword">year</span> = <span class="number">2005</span>;</span>
+</code></pre><p>下图说明我们如何使用索引来回答这个查询。通过studioName上的索引，我们找出了所有指向Disney制作的电影的指针。但是，我们并不把这些记录从磁盘上取到主存中，而是通过year上的索引，再找出所有指向2005年制作的电影的指针。然后我们求两个指针集的交集，正好得到2005年Disney制作的所有电影。最后我们到磁盘上去检索所有包含一部或几部这样的电影的块，这样只需检索尽可能少的数据块。</p>
+<p><img src="/img/index7.png" alt=""></p>
+<h3 id="文档索引和倒排索引">文档索引和倒排索引</h3><h4 id="文档索引">文档索引</h4><ul>
+<li><p>一个文档可被看成是关系Doc的元组。这个关系有很多的属性，每个属性对应于文档可能出现的一个词。每个属性都是布尔型的—-表明该词在该文档出现还是没有出现。因此，这一关系模型可以被看作：</p>
+<pre><code><span class="function"><span class="title">Doc</span><span class="params">(hasCat, hasDog, ...)</span></span>
+</code></pre><p>其中<strong>hasCat</strong>取值为真当且仅当该文档中至少出现一次“cat”这个词</p>
+</li>
+<li><p>关系Doc的每个属性上都建有辅助索引。不过，我们不必费心为属性值为False的元组建索引项；相反，索引只会将我们带到出现该词的那些文档。也就是说，索引中只有查找键值为TRUE的索引项</p>
+</li>
+<li>我们不是给每个属性(即每个词）建立一个单独的索引，而是把所有的索引合成一个，称为倒排索引。这个索引使用间接桶来提高空间利用率。</li>
+</ul>
+<p>如下图所示，展示了一个倒排索引。这里取代记录数据文件的是一个文档集合，每个文档可以被存放在一个或多个磁盘块上。倒排索引本身由一系列词-指针对组成；词实际上是索引的查找键。正如之前讨论的任何一种索引那样，倒排索引被存储在连续的块中。</p>
+<p><img src="/img/index8.png" alt=""></p>
+<p>指针指向“桶”文件中的位置。例如，在上图中，“cat”一词有一个指针指向桶文件。该指针指向所有包含“cat”的文档的指针列表的表头。</p>
+<p>桶文件中指针可以是：</p>
+<ol>
+<li>指向文档本身的指针。</li>
+<li>指向词的一个出现的指针。在这种情况下，指针可以是由文档的第一个块和一个表示该词在文档中出现次数的整数构成的对。</li>
+</ol>
+<p>当我们使用指针“桶”指向每个词的多次出现的时候，我们可能就会想扩展这个想法，使桶数组包含更多有关词的出现的信息。这样，桶文件本身就成了有重要结构的记录集合。这种早期应用在区分一个词出现在文档的题目、摘要还是正文中的情况。随着Web上文档的增长，尤其是使用HTML、XML或者其他标记语言的文档的增长，我们也可以指明与词关联的的标记。例如，我们不仅可以区分出现在题头或表中的词，而且可以区分以不同字体和字号出现的词。</p>
+<p>举例：</p>
+<p>下图所示为一个标明HTML文档中词的出现情况的桶文件。如果有出现类型（即标记），就在第一列表明。第二、第三列一起构成指针指向词的出现：第三列指明文档，而第二列给出了该文档中该词出现的位置。</p>
+<p><img src="/img/index9.png" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="url">
                   Spark RDD学习: aggregate函数
                 </a>
@@ -1993,192 +2195,6 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/16/HiveQL-视图/" itemprop="url">
-                  《Hive编程指南》学习笔记：HiveQL:视图与索引
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-16T21:56:00+08:00" content="2016-09-16">
-              2016-09-16
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/16/HiveQL-视图/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/16/HiveQL-视图/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/16/HiveQL-视图/" class="leancloud_visitors" data-flag-title="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。</p>
-<h3 id="1-_使用视图来降低查询的复杂度">1. 使用视图来降低查询的复杂度</h3><p>例如，一个具有嵌套子查询的查询：</p>
-<pre><code>FROM (
-    <span class="operator"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-        <span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname = <span class="string">'John'</span>
-    ) a <span class="keyword">SELECT</span> a.lastname <span class="keyword">WHERE</span> a.<span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><p>将上面这个嵌套子查询变成一个视图：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> shorter_join <span class="keyword">AS</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-<span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname=<span class="string">'john'</span>;</span>
-</code></pre><p>现在就可以像操作表一样操作这个视图了：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> lastname <span class="keyword">FROM</span> shorter_join <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><h3 id="2-_使用视图来限制基于条件过滤的数据">2. 使用视图来限制基于条件过滤的数据</h3><p>视图有一个常见的使用场景就是基于一个或多个列的值来限制输出结果，</p>
-<h4 id="(1)_通过视图来限制输入出结果：">(1) 通过视图来限制输入出结果：</h4><pre><code>hive&gt; CREATE TABLE userinfo (
-      firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>, ssn <span class="built_in">string</span>, password <span class="built_in">string</span>);
-hive&gt; CREATE VIEW safer_user_info <span class="keyword">AS</span>
-      <span class="keyword">SElECT</span> firstname, lastname <span class="keyword">FROM</span> userinfo;
-</code></pre><h4 id="(2)_通过使用视图来只暴露部分结果：">(2) 通过使用视图来只暴露部分结果：</h4><pre><code>hive&gt; CREATE TABLE employee (firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>,
-      ssn <span class="built_in">string</span>, password <span class="built_in">string</span>, department <span class="built_in">string</span>);
- hive&gt; CREATE VIEW techops_employee <span class="keyword">AS</span> 
-       <span class="keyword">SELECT</span> firstname, lastname,ssn <span class="keyword">FROM</span> userinfo <span class="keyword">WHERE</span> department=<span class="string">"techops"</span>;
-</code></pre><h3 id="3-_创建索引">3. 创建索引</h3><p>下面以为一个分区表创建索引为例：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> employee (
-    <span class="keyword">name</span>    <span class="keyword">STRING</span>,
-    salary    <span class="built_in">FLOAT</span>,
-    subordinates    <span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;,
-    deductions    <span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;,
-    address    <span class="keyword">STRUCT</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">INT</span>&gt;
-    )
-    PARTITIONED <span class="keyword">BY</span> (country <span class="keyword">STRING</span>, state <span class="keyword">STRING</span>);</span>
-</code></pre><p>下面对分区字段country建立索引：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> TBALE employess (country)
-<span class="keyword">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-<span class="keyword">WITH</span> <span class="keyword">DEFERRED</span> <span class="keyword">REBUILD</span>
-IDXPROPERTIES (<span class="string">'creator = '</span>me<span class="string">', '</span>created_at<span class="string">' = '</span>some_time<span class="string">')
-IN TABLE employee_index_table
-PARTITIONED BY (country_name)
-COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span class="keyword">and</span> <span class="keyword">name</span>.<span class="string">';</span></span>
-</code></pre><p>如果在这里我省略掉PARTITIONED BY语句的话，那么索引将会包含原始表的所有分区。</p>
-<p>AS … 语句指定了索引处理器，也就是一个实现了索引接口的Java类。</p>
-<p>如果要求索引处理器在一张新表中保留索引数据，会使用到 IN_TABLE… 子句。</p>
-<h4 id="Bitmap_索引">Bitmap 索引</h4><p>如果想使用Bitmap索引，那么将</p>
-<pre><code><span class="title">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-</code></pre><p>替换为：</p>
-<pre><code><span class="title">AS</span> <span class="string">'BITMAP'</span>
-</code></pre><p>即可。</p>
-<h3 id="4-_重建索引">4. 重建索引</h3><p>如果用户指定了 <strong>DEFERRED REBUILD</strong>， 那么新索引将呈现空白状态。在任何时候，都可以进行第一次索引创建或者使用ALTER INDEX对索引进行重建。</p>
-<pre><code><span class="operator"><span class="keyword">ALTER</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> <span class="keyword">TABLE</span> employees
-<span class="keyword">PARTITION</span> (country = <span class="string">'US'</span>)
-<span class="keyword">REBUILD</span></span>
-</code></pre><p>如果省略掉PARTITION，那么将会对所有分区进行重建索引。</p>
-<h3 id="5-_显示索引">5. 显示索引</h3><pre><code><span class="operator"><span class="keyword">SHOW</span> (FORMATTED) <span class="keyword">INDEX</span> <span class="keyword">on</span> employees;</span>
-</code></pre><p>关键字FORMATTED是可选的。增加这个关键字可以使输出中包含有列名称。用户还可以替换INDEX为INDEXES，这样输出中就可以列举多个索引信息了。</p>
-<h3 id="6-_删除索引">6. 删除索引</h3><p>如果有索引表的话，删除一个索引将会删除这个索引表：</p>
-<pre><code><span class="operator"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> employees_index <span class="keyword">ON</span> <span class="keyword">TABLE</span> employees;</span>
-</code></pre><p>Hive不允许用户直接使用 <strong>DROP TABLE</strong> 语句之前删除索引表。如果被索引的表被删除了，那么其对应的索引和索引表也会被删除。如果原始表的某个分区被删除了，那么这个分区对应的分区索引也同时会被删除掉。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2224,7 +2240,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">47</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2241,7 +2257,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
