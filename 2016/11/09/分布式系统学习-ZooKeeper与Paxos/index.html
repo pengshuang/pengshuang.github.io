@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://pengshuang.space/2016/11/09/分布式系统学习-ZooKeeper与Paxos/index.html">
 <meta property="og:site_name" content="小沙文的博客">
 <meta property="og:description" content="ZooKeeper 的设计目标ZooKeeper致力于提供一个高性能、高可用，且具有严格的顺序访问控制能力（主要是写操作的严格顺序性）的分布式协调服务。高性能使得 ZooKeeper 能够应用于那些对系统吞吐有明确要求的大型分布式系统中，高可用使得分布式的单点问题得到了很好的解决，而严格的顺序访问控制使得客户端能够基于 ZooKeeper 实现一些复杂的同步原语。下面介绍一下 ZooKeeper">
-<meta property="og:updated_time" content="2016-11-12T14:37:35.000Z">
+<meta property="og:updated_time" content="2016-11-12T14:59:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统学习: ZooKeeper与Paxos">
 <meta name="twitter:description" content="ZooKeeper 的设计目标ZooKeeper致力于提供一个高性能、高可用，且具有严格的顺序访问控制能力（主要是写操作的严格顺序性）的分布式协调服务。高性能使得 ZooKeeper 能够应用于那些对系统吞吐有明确要求的大型分布式系统中，高可用使得分布式的单点问题得到了很好的解决，而严格的顺序访问控制使得客户端能够基于 ZooKeeper 实现一些复杂的同步原语。下面介绍一下 ZooKeeper">
@@ -352,7 +352,16 @@
 <li>DELETE</li>
 <li>ADMIN</li>
 </ul>
-<h3 id="ZooKeeper_的_ZAB_协议">ZooKeeper 的 ZAB 协议</h3>
+<h3 id="ZooKeeper_的_ZAB_协议">ZooKeeper 的 ZAB 协议</h3><p>事实上，ZooKeeper 并没有完全采用 Paxos 算法，而是使用了一种称为 ZooKeeper Atomic Broadcast（ZAB）的协议作为其数据一致性的核心算法。</p>
+<p>ZAB 协议是一种支持崩溃恢复的原子广播协议。在 ZooKeeper 中，主要通过 ZAB 协议来实现分布式数据一致性，基于该协议，ZooKeeper 实现了一种主备模式的系统架构来保持集群中各副本之间数据的一致性。ZAB 协议的这个主备模型架构保证了同一时刻集群中只能够有一个主进程来广播服务器的状态变更，因此可以很好的处理大量客户端的并发请求。另一方面，考虑到在分布式环境中，顺序执行的一些状态变更前后会存在一定的依赖关系，因此 ZAB 协议必须保证一个全局的变更序列被顺序应用。最后考虑到主进程可能会存在崩溃的可能，所以，ZAB 协议还需要做到在当前主进程出现上述异常情况的时候，依旧能够正常工作。</p>
+<p>ZAB 的核心是定义了对于那些会改变 ZooKeeper 服务器数据状态的事务请求的处理方式：</p>
+<pre><code>所以的事务请求必须由一个全局的唯一的服务器来协调处理，它被称为 <span class="built_in">Leader</span>，其他的被
+称为 Follower。<span class="built_in">Leader</span> 负责将一个客户端事务请求转换成一个事务 Proposal (提
+议)，并将该 Proposal 分发给集群中所有的 Follower。之后 <span class="built_in">Leader</span> 服务器需要等
+待所有 Follower 服务器反馈，一旦得到超过半数的 Follower 进行正确的反馈之后，
+那么 <span class="built_in">Leader</span> 再次向所有的 Follower 发送 Commit 消息，要求其将前一个 
+Proposal 进行提交。
+</code></pre>
       
     </div>
 
