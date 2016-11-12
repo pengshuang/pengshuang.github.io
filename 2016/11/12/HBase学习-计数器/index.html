@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hive,数据库," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,31 +84,25 @@
 
 
 
-<meta name="description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
+<meta name="description" content="计数器简介许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。
+单计数器第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：
+long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qua">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-<meta property="og:url" content="http://pengshuang.space/2016/09/16/HiveQL-视图/index.html">
+<meta property="og:title" content="HBase学习: 计数器">
+<meta property="og:url" content="http://pengshuang.space/2016/11/12/HBase学习-计数器/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
-<meta property="og:updated_time" content="2016-09-17T13:03:55.000Z">
+<meta property="og:description" content="计数器简介许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。
+单计数器第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：
+long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qua">
+<meta property="og:updated_time" content="2016-11-12T14:10:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Hive编程指南》学习笔记：HiveQL:视图与索引">
-<meta name="twitter:description" content="视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。
-1. 使用视图来降低查询的复杂度例如，一个具有嵌套子查询的查询：
-FROM (
-    SELECT * FROM people JOIN cart
-        ON (cart.people_id = people.id) WHERE firstname = &apos;John&apos;
-    ) a SE">
+<meta name="twitter:title" content="HBase学习: 计数器">
+<meta name="twitter:description" content="计数器简介许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。
+单计数器第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：
+long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qua">
 
 
 
@@ -129,9 +123,9 @@ FROM (
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/09/16/HiveQL-视图/"/>
+  <link rel="canonical" href="http://pengshuang.space/2016/11/12/HBase学习-计数器/"/>
 
-  <title> 《Hive编程指南》学习笔记：HiveQL:视图与索引 | 小沙文的博客 </title>
+  <title> HBase学习: 计数器 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +265,7 @@ FROM (
             
             
               
-                《Hive编程指南》学习笔记：HiveQL:视图与索引
+                HBase学习: 计数器
               
             
           </h1>
@@ -283,8 +277,8 @@ FROM (
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-16T21:56:00+08:00" content="2016-09-16">
-              2016-09-16
+            <time itemprop="dateCreated" datetime="2016-11-12T20:51:25+08:00" content="2016-11-12">
+              2016-11-12
             </time>
           </span>
 
@@ -297,8 +291,8 @@ FROM (
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
                   </a>
                 </span>
 
@@ -313,8 +307,8 @@ FROM (
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/16/HiveQL-视图/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/16/HiveQL-视图/" itemprop="commentsCount"></span>
+                <a href="/2016/11/12/HBase学习-计数器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/12/HBase学习-计数器/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -324,7 +318,7 @@ FROM (
 
           
           
-             <span id="/2016/09/16/HiveQL-视图/" class="leancloud_visitors" data-flag-title="《Hive编程指南》学习笔记：HiveQL:视图与索引">
+             <span id="/2016/11/12/HBase学习-计数器/" class="leancloud_visitors" data-flag-title="HBase学习: 计数器">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -346,65 +340,48 @@ FROM (
       
 
       
-        <p>视图可以允许保存一个查询并像对待表一样对这个查询进行操作。这是一个逻辑结构，而非物化的一个表结构。</p>
-<h3 id="1-_使用视图来降低查询的复杂度">1. 使用视图来降低查询的复杂度</h3><p>例如，一个具有嵌套子查询的查询：</p>
-<pre><code>FROM (
-    <span class="operator"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-        <span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname = <span class="string">'John'</span>
-    ) a <span class="keyword">SELECT</span> a.lastname <span class="keyword">WHERE</span> a.<span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><p>将上面这个嵌套子查询变成一个视图：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> shorter_join <span class="keyword">AS</span>
-<span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people <span class="keyword">JOIN</span> cart
-<span class="keyword">ON</span> (cart.people_id = people.<span class="keyword">id</span>) <span class="keyword">WHERE</span> firstname=<span class="string">'john'</span>;</span>
-</code></pre><p>现在就可以像操作表一样操作这个视图了：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> lastname <span class="keyword">FROM</span> shorter_join <span class="keyword">WHERE</span> <span class="keyword">id</span> = <span class="number">3</span>;</span>
-</code></pre><h3 id="2-_使用视图来限制基于条件过滤的数据">2. 使用视图来限制基于条件过滤的数据</h3><p>视图有一个常见的使用场景就是基于一个或多个列的值来限制输出结果，</p>
-<h4 id="(1)_通过视图来限制输入出结果：">(1) 通过视图来限制输入出结果：</h4><pre><code>hive&gt; CREATE TABLE userinfo (
-      firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>, ssn <span class="built_in">string</span>, password <span class="built_in">string</span>);
-hive&gt; CREATE VIEW safer_user_info <span class="keyword">AS</span>
-      <span class="keyword">SElECT</span> firstname, lastname <span class="keyword">FROM</span> userinfo;
-</code></pre><h4 id="(2)_通过使用视图来只暴露部分结果：">(2) 通过使用视图来只暴露部分结果：</h4><pre><code>hive&gt; CREATE TABLE employee (firstname <span class="built_in">string</span>, lastname <span class="built_in">string</span>,
-      ssn <span class="built_in">string</span>, password <span class="built_in">string</span>, department <span class="built_in">string</span>);
- hive&gt; CREATE VIEW techops_employee <span class="keyword">AS</span> 
-       <span class="keyword">SELECT</span> firstname, lastname,ssn <span class="keyword">FROM</span> userinfo <span class="keyword">WHERE</span> department=<span class="string">"techops"</span>;
-</code></pre><h3 id="3-_创建索引">3. 创建索引</h3><p>下面以为一个分区表创建索引为例：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> employee (
-    <span class="keyword">name</span>    <span class="keyword">STRING</span>,
-    salary    <span class="built_in">FLOAT</span>,
-    subordinates    <span class="built_in">ARRAY</span>&lt;<span class="keyword">STRING</span>&gt;,
-    deductions    <span class="keyword">MAP</span>&lt;<span class="keyword">STRING</span>, <span class="built_in">FLOAT</span>&gt;,
-    address    <span class="keyword">STRUCT</span>&lt;street:<span class="keyword">STRING</span>, city:<span class="keyword">STRING</span>, state:<span class="keyword">STRING</span>, zip:<span class="built_in">INT</span>&gt;
-    )
-    PARTITIONED <span class="keyword">BY</span> (country <span class="keyword">STRING</span>, state <span class="keyword">STRING</span>);</span>
-</code></pre><p>下面对分区字段country建立索引：</p>
-<pre><code><span class="operator"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> TBALE employess (country)
-<span class="keyword">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-<span class="keyword">WITH</span> <span class="keyword">DEFERRED</span> <span class="keyword">REBUILD</span>
-IDXPROPERTIES (<span class="string">'creator = '</span>me<span class="string">', '</span>created_at<span class="string">' = '</span>some_time<span class="string">')
-IN TABLE employee_index_table
-PARTITIONED BY (country_name)
-COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span class="keyword">and</span> <span class="keyword">name</span>.<span class="string">';</span></span>
-</code></pre><p>如果在这里我省略掉PARTITIONED BY语句的话，那么索引将会包含原始表的所有分区。</p>
-<p>AS … 语句指定了索引处理器，也就是一个实现了索引接口的Java类。</p>
-<p>如果要求索引处理器在一张新表中保留索引数据，会使用到 IN_TABLE… 子句。</p>
-<h4 id="Bitmap_索引">Bitmap 索引</h4><p>如果想使用Bitmap索引，那么将</p>
-<pre><code><span class="title">AS</span> <span class="string">'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'</span>
-</code></pre><p>替换为：</p>
-<pre><code><span class="title">AS</span> <span class="string">'BITMAP'</span>
-</code></pre><p>即可。</p>
-<h3 id="4-_重建索引">4. 重建索引</h3><p>如果用户指定了 <strong>DEFERRED REBUILD</strong>， 那么新索引将呈现空白状态。在任何时候，都可以进行第一次索引创建或者使用ALTER INDEX对索引进行重建。</p>
-<pre><code><span class="operator"><span class="keyword">ALTER</span> <span class="keyword">INDEX</span> employees_index
-<span class="keyword">ON</span> <span class="keyword">TABLE</span> employees
-<span class="keyword">PARTITION</span> (country = <span class="string">'US'</span>)
-<span class="keyword">REBUILD</span></span>
-</code></pre><p>如果省略掉PARTITION，那么将会对所有分区进行重建索引。</p>
-<h3 id="5-_显示索引">5. 显示索引</h3><pre><code><span class="operator"><span class="keyword">SHOW</span> (FORMATTED) <span class="keyword">INDEX</span> <span class="keyword">on</span> employees;</span>
-</code></pre><p>关键字FORMATTED是可选的。增加这个关键字可以使输出中包含有列名称。用户还可以替换INDEX为INDEXES，这样输出中就可以列举多个索引信息了。</p>
-<h3 id="6-_删除索引">6. 删除索引</h3><p>如果有索引表的话，删除一个索引将会删除这个索引表：</p>
-<pre><code><span class="operator"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> employees_index <span class="keyword">ON</span> <span class="keyword">TABLE</span> employees;</span>
-</code></pre><p>Hive不允许用户直接使用 <strong>DROP TABLE</strong> 语句之前删除索引表。如果被索引的表被删除了，那么其对应的索引和索引表也会被删除。如果原始表的某个分区被删除了，那么这个分区对应的分区索引也同时会被删除掉。</p>
+        <h3 id="计数器简介">计数器简介</h3><p>许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。</p>
+<h3 id="单计数器">单计数器</h3><p>第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：</p>
+<pre><code><span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
+    qualifier, <span class="keyword">long</span> amount) <span class="keyword">throws</span> IOException
+<span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
+    qualifier, <span class="keyword">long</span> amount, <span class="keyword">boolean</span> writeToWAL) <span class="keyword">throws</span> IOException
+</code></pre><p>这两种方法都需要提供列的坐标和增加值，除此之外这两种方法只在参数 writeToWAL 上有差别，这个参数的作用与 Put.setWriteToWAL() 方法一致。忽略该参数会直接使用默认值 True。下面举一个使用单计数器的列子。</p>
+<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
+HTable hTable = <span class="literal">new</span> HTable(conf, <span class="string">"temp2"</span>);
+<span class="comment">// 计数器值加一</span>
+long cnt1 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
+        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
+long cnt2 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
+        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
+<span class="comment">// 得到计数器的当前值</span>
+long current = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
+        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">0</span>);
 
+long cnt3 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
+        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), -<span class="number">1</span>);
+</code></pre><p>对应的输出结果为：</p>
+<pre><code>cnt1: <span class="number">1</span>, cnt2: <span class="number">2</span>, current: <span class="number">2</span>, cnt: <span class="number">3</span>
+</code></pre><h3 id="多计数器">多计数器</h3><p>另一个计数器值的途径是使用 HTable() 的方法 increment()。工作模式与 CRUD 操作类似。使用以下方法完成该功能：</p>
+<pre><code>Result <span class="function"><span class="title">increment</span><span class="params">(Increment increment)</span></span> throws IOException 
+</code></pre><p>用户需要创建一个 Increment 实例，同时需要填充一些相应的的细节到该实例中，比如：</p>
+<pre><code><span class="function"><span class="title">Increment</span><span class="params">()</span></span>
+<span class="function"><span class="title">Increment</span><span class="params">(byte[] row)</span></span>
+<span class="function"><span class="title">Increment</span><span class="params">(byte[] row, RowLock rowLock)</span></span>
+</code></pre><p>用户构造 Increment 实例时需要传入行键，此行应当包含此实例需要通过 increment() 方法修改的所有计数器。</p>
+<p>可选参数 rowLock 设置了用户自定义锁实例，这样可以使本次操作完全在用户的控制下完成，例如，当用户需要多次修改同一行时，可以保证其间此行不被其他写程序修改。</p>
+<p>一旦用户使用行键创建了一个 Increment 实例，就需要向其中加入实际的计数器，也就是说，用户需要增加列，使用方法如下：</p>
+<pre><code>Increment addColumn(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier, <span class="keyword">long</span> amount)
+</code></pre><p>Increment 类的特别功能是可以增加一个时间范围：</p>
+<pre><code>Increment setTimeRange(<span class="keyword">long</span> minStamp, <span class="keyword">long</span> maxStamp) <span class="keyword">throws</span> IOException
+</code></pre><p>用户限制时间的范围，可以用来屏蔽比较老的计数器，使它们看上去不存在，一次增加操作会认为较老的计数器不存在，并把它们重置为 1。</p>
+<p>下面这个例子表示增加了一行中多个计数器的计数。</p>
+<pre><code> Increment increment1 = <span class="literal">new</span> Increment(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>));
+increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"clicks"</span>), <span class="number">1</span>);
+increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
+increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"click"</span>), <span class="number">10</span>);
+increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">10</span>);
+</code></pre>
       
     </div>
 
@@ -424,30 +401,18 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Hive/" rel="tag">#Hive</a>
-          
-            <a href="/tags/数据库/" rel="tag">#数据库</a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/15/TCP-IP基础知识/" rel="next" title="TCP/IP协议分层模型">
-                <i class="fa fa-chevron-left"></i> TCP/IP协议分层模型
+              <a href="/2016/11/09/分布式系统学习-ZooKeeper与Paxos/" rel="next" title="分布式系统学习: ZooKeeper与Paxos">
+                <i class="fa fa-chevron-left"></i> 分布式系统学习: ZooKeeper与Paxos
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/20/hive模式设计/" rel="prev" title="《Hive编程指南》学习笔记：Hive模式设计">
-                《Hive编程指南》学习笔记：Hive模式设计 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -462,10 +427,10 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/09/16/HiveQL-视图/"
-     data-title="《Hive编程指南》学习笔记：HiveQL:视图与索引"
+        <div class="ds-share flat" data-thread-key="2016/11/12/HBase学习-计数器/"
+     data-title="HBase学习: 计数器"
      data-content=""
-     data-url="http://pengshuang.space/2016/09/16/HiveQL-视图/">
+     data-url="http://pengshuang.space/2016/11/12/HBase学习-计数器/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -492,8 +457,8 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/16/HiveQL-视图/"
-           data-title="《Hive编程指南》学习笔记：HiveQL:视图与索引" data-url="http://pengshuang.space/2016/09/16/HiveQL-视图/">
+      <div class="ds-thread" data-thread-key="2016/11/12/HBase学习-计数器/"
+           data-title="HBase学习: 计数器" data-url="http://pengshuang.space/2016/11/12/HBase学习-计数器/">
       </div>
     
   </div>
@@ -626,7 +591,7 @@ COMMENT '</span>Employees indexed <span class="keyword">by</span> country <span 
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_使用视图来降低查询的复杂度"><span class="nav-number">1.</span> <span class="nav-text">1. 使用视图来降低查询的复杂度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_使用视图来限制基于条件过滤的数据"><span class="nav-number">2.</span> <span class="nav-text">2. 使用视图来限制基于条件过滤的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#(1)_通过视图来限制输入出结果："><span class="nav-number">2.1.</span> <span class="nav-text">(1) 通过视图来限制输入出结果：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#(2)_通过使用视图来只暴露部分结果："><span class="nav-number">2.2.</span> <span class="nav-text">(2) 通过使用视图来只暴露部分结果：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_创建索引"><span class="nav-number">3.</span> <span class="nav-text">3. 创建索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Bitmap_索引"><span class="nav-number">3.1.</span> <span class="nav-text">Bitmap 索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_重建索引"><span class="nav-number">4.</span> <span class="nav-text">4. 重建索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_显示索引"><span class="nav-number">5.</span> <span class="nav-text">5. 显示索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_删除索引"><span class="nav-number">6.</span> <span class="nav-text">6. 删除索引</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#计数器简介"><span class="nav-number">1.</span> <span class="nav-text">计数器简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单计数器"><span class="nav-number">2.</span> <span class="nav-text">单计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多计数器"><span class="nav-number">3.</span> <span class="nav-text">多计数器</span></a></li></ol></div>
             
           </div>
         </section>
