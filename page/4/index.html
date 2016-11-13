@@ -258,6 +258,155 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/20/IP协议/" itemprop="url">
+                  IP协议学习(一):IP基础知识
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-20T16:32:15+08:00" content="2016-09-20">
+              2016-09-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/20/IP协议/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/20/IP协议/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/20/IP协议/" class="leancloud_visitors" data-flag-title="IP协议学习(一):IP基础知识">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-_网络层与数据链路层的关系">1. 网络层与数据链路层的关系</h3><p>数据链路层提供直连两个设备之间的通信功能。与之相比，作为网络层的IP则负责在没有直连的两个网络之间进行通信传输。</p>
+<p>数据链路只负责某一个区间之间的通信传输。IP负责将数据包发送给最终的目标地址。即点对点通信。</p>
+<p>IP大致分为三大作用模块，它们是IP寻址、路由（最终节点为止的转发）以及IP分包与组包。</p>
+<h3 id="2-_IP地址属于网络层地址">2. IP地址属于网络层地址</h3><p>在计算机通信中，为了识别通信对端，必须要有一个类似于地址的识别码进行标识。数据链路的MAC地址是用来标识同一个链路中不同计算机的一种标识码。</p>
+<p>而作为网络层的IP，我们常称为IP地址，也包含着这样一种地址信息。IP地址用于在“连接到网络中的所有主机中识别出进行通信的目标地址”。因此，在TCP/IP通信中所有的主机或路由器必须设定自己的IP地址。（严格来说，要针对每块网卡至少配置一个或一个以上的IP地址）</p>
+<p>不论一台主机与哪种数据链路连接，其IP地址的形式都保持不变。以太网、无线局域网、PPP等，都不会改变IP地址的形式。</p>
+<h3 id="3-_路由控制">3. 路由控制</h3><p>路由控制（Routiong）是指将分组数据发送到最终目标地址的功能。即使网络非常复杂，也可以通过路由控制确定到达目标地址的通路。一旦这个路由控制的运行出现异常，分组数据极有可能“迷失”，无法到达目标地址。因此，一个数据包之所以能够成功第达到最终的目标地址，全靠路由控制。</p>
+<p><strong>发送数据至最终目标地址</strong></p>
+<p><strong>Hop</strong> 译为“跳”。它是指网络中的一个区间。IP包正是在网络中一个个跳间被转发。因此IP路由也叫做多跳路由。在每一个区间内决定着包在下一跳被转发的路径。下面这张图形象的表示了包转发的整个过程。</p>
+<p><img src="/img/hop.png" alt=""></p>
+<p><strong>一跳的范围</strong></p>
+<p>一跳（1 Hop）是指利用数据链路层以下分层的功能传输数据帧的一个区间。</p>
+<p>以太网等数据链路中使用MAC地址传输数据帧。此时的一跳是指从源MAC地址到目标MAC地址之间传输帧的区间。也就是说它是主机或路由器网卡不经其他路由器而能直接到达的相邻主机或路由器网卡之间的一个区间。在一跳的这个区间内，电缆可以通过网桥或交换集线器相连，不会通过路由器或网关相连。</p>
+<p>多跳路由是指路由器或主机在转发IP数据包时只指定下一个路由器或主机，而不是将到最终目标地址为止的所有通路全都指定出来。因为每一个区间（跳）在转发IP数据包时会分别指定下一跳的操作，直至包到达最终的目标地址。如果用购买火车票为例来说的话，IP就相当于在每次换乘时购买了标有下一个MAC地址的车票。</p>
+<p><strong>路由控制表</strong></p>
+<p>为了将数据包发送给目标主机，所有路由器都维护着一张路由控制表（Routing Table）。该表记录IP数据在下一步应该发给哪个路由器。IP包将根据这个路由表在各个数据链路上传输。下图是一个路由控制表的示意图。</p>
+<p><img src="/img/routing.png" alt=""></p>
+<h3 id="4-_数据链路的抽象化">4. 数据链路的抽象化</h3><p>IP是实现多个数据链路之间通信的协议。数据链路根据种类的不同各有特点。对这些不同数据链路的相异特性进行抽象化是IP的重要作用之一。不论底层数据链路使用以太网LAN亦或是PPP，都将被一视同仁。</p>
+<p>不同数据链路有个很大的区别，就是它们各自的最大传输单播（MTU）不同。IP的上一层可能会要求传送比这些MTU更多字节的数据，因此必须在线路上传送比包长还要小的MTU。</p>
+<p>为了解决这个问题，IP进行分片处理(IP Fragmentation)。所谓分片处理，就是将较大的IP包分成多个较小的IP包。分片的包到了对端目标地址以后会再被组合起来传给上一层。即从IP的上次层看，它完全可以忽略数据包在途中的各个数据链路上的MTU，而只需要按照源地址发送的长度接收数据包。IP就是以这种方式抽象化了数据链路层，使得从上层更不容易看到底层网络构造的细节。</p>
+<h3 id="5-_IP属于面向无连接型">5. IP属于面向无连接型</h3><p>IP面向无连接。即在发包之前，不需要建立与对端目标地址之间的连接。上层如果遇到需要发送给IP的数据，该数据会立即被压缩成IP包发送出去。之所以IP要面向无连接，一是为了简化，二是为了提速。面向连接比起面向无连接处理相对复杂。甚至管理每个连接本身就是一个相当繁琐的事情。IP在需要有连接时，可以委托上一层提供此服务，因此，IP为了实现简单化与高速化采用面向无连接的方式。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/20/hive模式设计/" itemprop="url">
                   《Hive编程指南》学习笔记：Hive模式设计
                 </a>
@@ -1945,206 +2094,6 @@ k = <span class="number">8</span>,
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="url">
-                  Flask中向前端传递或者接收Json文件的方法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-19T10:48:40+08:00" content="2016-08-19">
-              2016-08-19
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/19/flask中向前端传递或者接收Json文件的方法/" class="leancloud_visitors" data-flag-title="Flask中向前端传递或者接收Json文件的方法">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在学习Python的flask微框架，用到最多的就是和前端针对REST API进行交互，那么自然而然传递Json就成为了家常便饭，特意总结了一下和前端交互几种方法。</p>
-<h3 id="1-_利用flask的request-form-get()方法">1. 利用flask的<strong>request.form.get()</strong>方法</h3><p>这一中方法主要利用flask的<strong>request.form.get</strong>方法，获得前端发送给后台的json文件</p>
-<p>Python 端代码：</p>
-<pre><code><span class="decorator">@app.route('/sendjson', methods=['POST'])</span>
-<span class="function"><span class="keyword">def</span> <span class="title">sendjson</span><span class="params">()</span>:</span>
-
-<span class="comment"># 接受前端发来的数据</span>
-data = json.loads(request.form.get(<span class="string">'data'</span>))
-
-<span class="comment"># lesson: "Operation System"</span>
-<span class="comment"># score: 100</span>
-lesson = data[<span class="string">"lesson"</span>]
-score = data[<span class="string">"score"</span>]
-
-<span class="comment"># 自己在本地组装成Json格式,用到了flask的jsonify方法</span>
-info = dict()
-info[<span class="string">'name'</span>] = <span class="string">"pengshuang"</span>
-info[<span class="string">'lesson'</span>] = lesson
-info[<span class="string">'score'</span>] = score
-<span class="keyword">return</span> jsonify(info)
-</code></pre><p>JS代码：</p>
-<pre><code><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-    $(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
-    <span class="keyword">var</span> data = {
-         data: <span class="built_in">JSON</span>.stringify({<span class="string">"lesson"</span>: <span class="string">"Operation System"</span>, <span class="string">"score"</span>: <span class="number">100</span>})
-   }
-      $.ajax({
-        url:<span class="string">"/sendjson"</span>,
-        type: <span class="string">'POST'</span>,
-        data: data,
-        success: <span class="function"><span class="keyword">function</span> (<span class="params">msg</span>) </span>{
-            alert(msg.name)
-        }
-    })
-  });
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre><h3 id="2-_利用flask的request-get_data()方法">2. 利用flask的<strong>request.get_data()</strong>方法</h3><p>Python端代码：</p>
-<pre><code><span class="decorator">@app.route('/sendjson2',methods=['POST'])</span>
-<span class="function"><span class="keyword">def</span> <span class="title">sendjson2</span><span class="params">()</span>:</span>
-
-<span class="comment"># 接收前端发来的数据,转化为Json格式,我个人理解就是Python里面的字典格式</span>
-data = json.loads(request.get_data())
-
-<span class="comment"># 然后在本地对数据进行处理,再返回给前端</span>
-name = data[<span class="string">"name"</span>]
-age = data[<span class="string">"age"</span>]
-location = data[<span class="string">"location"</span>]
-data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
-
-<span class="comment"># Output: {u'age': 23, u'name': u'Peng Shuang', u'location': u'China'}</span>
-<span class="comment"># print data</span>
-<span class="keyword">return</span> jsonify(data)
-</code></pre><p> 相比第一种方法JS的代码，这一种更常见也更容易理解一些，在前端组织好Json，再传递给后台</p>
-<p> JS代码：</p>
-<pre><code> <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-    $(<span class="built_in">document</span>).ready(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{
-        <span class="keyword">var</span> student = <span class="keyword">new</span> <span class="built_in">Object</span>();
-        student.name = <span class="string">"Peng Shuang"</span>;
-        student.age = <span class="number">23</span>;
-        student.location = <span class="string">"China"</span>;
-        <span class="keyword">var</span> data = <span class="built_in">JSON</span>.stringify(student)
-
-    $.ajax({
-        url: <span class="string">"/sendjson2"</span>,
-        type: <span class="string">"POST"</span>,
-        data: data,
-        success: <span class="function"><span class="keyword">function</span> (<span class="params">msg</span>) </span>{
-            alert(msg.time)
-        }
-    })
-    })
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2190,7 +2139,7 @@ data[<span class="string">"time"</span>] = <span class="string">"2016"</span>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">50</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
