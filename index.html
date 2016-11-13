@@ -258,153 +258,6 @@
             
               
                 
-                <a class="post-title-link" href="/2016/11/13/HBase学习-协处理器/" itemprop="url">
-                  HBase学习: HTablePool
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-13T11:49:47+08:00" content="2016-11-13">
-              2016-11-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/13/HBase学习-协处理器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/13/HBase学习-协处理器/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/13/HBase学习-协处理器/" class="leancloud_visitors" data-flag-title="HBase学习: HTablePool">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>与其为客户端每个请求创建一个 HTable 实例，不如创建一个实例，然后不断地复用这个实例。这样做的主要原因是创建 HTable 是一件非常耗时的操作，所以用户应当在一开始创建实例，然后在客户端生命周期内不断复用它们。</p>
-<p>但是，在多线程环境中重用 HTable 实例会出现其他问题。因为 HTable 类不是线程安全的，本地的写缓冲区并不能保证一致性，所以必须为每个线程创建一个 HTable 实例。</p>
-<p>客户端可以通过 HTablePool 类来解决这个问题。它只有一个目的，就是可以为 HBase 集群提供客户端连接池。用户可以用以下其中一个构造器来创建池：</p>
-<pre><code><span class="function"><span class="title">HTablePool</span><span class="params">()</span></span>
-<span class="function"><span class="title">HTablePool</span><span class="params">(Configuration config, int MaxSize)</span></span>
-HTablePool(Configuration config, int MaxSize, 
-HTableInterfaceFactory tableFactory)
-</code></pre><p>默认的构造器，即没有参数的那个，使用 classpath 中的配置创建一个表实例池，设定大小为无限。这等价于使用第二个构造函数编写以下例子：</p>
-<pre><code><span class="keyword">Configuration</span> conf = HBaseConfiguration.create();
-HTablePool pool = <span class="keyword">new</span> HTablePool(conf, <span class="typename">Integer</span>.MAX_VALUE);
-</code></pre><p>maxSize 参数是连接池中允许的最大 HTable 实例数目。可选参数 tableFactory 将会被用来操作自定义工厂类，以创建实际的 HTable 实例。</p>
-<p>可以使用如下调用方式来使用表实例池：</p>
-<pre><code>HTableInterface getTable<span class="list">(<span class="keyword">String</span> tableName)</span><span class="comment">;</span>
-HTableInterface getTable<span class="list">(<span class="keyword">byte</span>[] tableName)</span><span class="comment">;</span>
-void putTable<span class="list">(<span class="keyword">HTableInterface</span> table)</span><span class="comment">;</span>
-</code></pre><p>getTable() 方法从表实例池中获取 HTable 实例，使用之后通过 putTable() 方法收回。以上两种方法把一些工作迁移到了表实例池配置的 HTableInterfaceFactory 接口。</p>
-<p>关闭表实例池中特定表实例的方法：</p>
-<pre><code>void <span class="function"><span class="title">closeTablePool</span><span class="params">(String tableName)</span></span>
-void <span class="function"><span class="title">closeTablePool</span><span class="params">(byte[] tableName)</span></span>
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/2016/11/12/HBase学习-计数器/" itemprop="url">
                   HBase学习: 计数器
                 </a>
@@ -2158,6 +2011,175 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
 
 
     
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/25/Linux常用命令-find-和-ping/" itemprop="url">
+                  Linux常用命令: find 和 ping
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-25T19:52:43+08:00" content="2016-10-25">
+              2016-10-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/25/Linux常用命令-find-和-ping/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/25/Linux常用命令-find-和-ping/" class="leancloud_visitors" data-flag-title="Linux常用命令: find 和 ping">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="find_命令">find 命令</h3><pre><code>$ find <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span> <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span> <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>
+
+- <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span>: 所要搜索的目录及其所有子目录
+- <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span>: 所要搜索的文件的特征 (eg: -name -type)
+- <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+</code></pre><h3 id="locate_命令">locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
+<p>为了避免这种情况，可以在使用locate之前，先使用<strong>updatedb</strong>命令，手动更新数据库。</p>
+<pre><code>$ locate /etc/<span class="keyword">sh</span>
+搜索etc目录下所有以<span class="keyword">sh</span>开头的文件。
+
+$ locate ~/<span class="literal">m</span>
+搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件。
+
+$ locate -i ~/<span class="literal">m</span>
+搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件，同时忽略大小写。
+</code></pre><h3 id="whereis_命令">whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
+<h3 id="ping_多个_ip">ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
+<p>Linux 自带的 ping 命令本身不可以 ping 多个 ip，但可以用 shell 来实现同时 ping 多个 ip。</p>
+<ol>
+<li><p>建一个空的输出文件 </p>
+<pre><code>touch /output<span class="class">.txt</span> 
+</code></pre></li>
+<li><p>新建一个脚本。</p>
+<pre><code><span class="keyword">vim</span> ping.<span class="keyword">sh</span>
+</code></pre></li>
+<li><p>脚本内容</p>
+<pre><code><span class="shebang">#!/bin/bash</span>
+A = <span class="string">'cat /ip.txt'</span>
+<span class="keyword">for</span> B <span class="keyword">in</span> <span class="variable">$A</span> 
+<span class="keyword">do</span>
+ping -c <span class="number">3</span> <span class="variable">$B</span> &gt;&gt;/output
+<span class="keyword">done</span>
+wq
+</code></pre></li>
+<li><p>执行脚本</p>
+<pre><code>./ <span class="built_in">ping</span>.sh
+</code></pre></li>
+<li><p>查看结果</p>
+<pre><code><span class="tag">cat</span> <span class="tag">output</span><span class="class">.txt</span>
+</code></pre></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -2203,7 +2225,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">50</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
