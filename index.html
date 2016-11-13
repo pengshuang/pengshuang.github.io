@@ -337,7 +337,26 @@
       
         
           
-            
+            <p>与其为客户端每个请求创建一个 HTable 实例，不如创建一个实例，然后不断地复用这个实例。这样做的主要原因是创建 HTable 是一件非常耗时的操作，所以用户应当在一开始创建实例，然后在客户端生命周期内不断复用它们。</p>
+<p>但是，在多线程环境中重用 HTable 实例会出现其他问题。因为 HTable 类不是线程安全的，本地的写缓冲区并不能保证一致性，所以必须为每个线程创建一个 HTable 实例。</p>
+<p>客户端可以通过 HTablePool 类来解决这个问题。它只有一个目的，就是可以为 HBase 集群提供客户端连接池。用户可以用以下其中一个构造器来创建池：</p>
+<pre><code><span class="function"><span class="title">HTablePool</span><span class="params">()</span></span>
+<span class="function"><span class="title">HTablePool</span><span class="params">(Configuration config, int MaxSize)</span></span>
+HTablePool(Configuration config, int MaxSize, 
+HTableInterfaceFactory tableFactory)
+</code></pre><p>默认的构造器，即没有参数的那个，使用 classpath 中的配置创建一个表实例池，设定大小为无限。这等价于使用第二个构造函数编写以下例子：</p>
+<pre><code><span class="keyword">Configuration</span> conf = HBaseConfiguration.create();
+HTablePool pool = <span class="keyword">new</span> HTablePool(conf, <span class="typename">Integer</span>.MAX_VALUE);
+</code></pre><p>maxSize 参数是连接池中允许的最大 HTable 实例数目。可选参数 tableFactory 将会被用来操作自定义工厂类，以创建实际的 HTable 实例。</p>
+<p>可以使用如下调用方式来使用表实例池：</p>
+<pre><code>HTableInterface getTable<span class="list">(<span class="keyword">String</span> tableName)</span><span class="comment">;</span>
+HTableInterface getTable<span class="list">(<span class="keyword">byte</span>[] tableName)</span><span class="comment">;</span>
+void putTable<span class="list">(<span class="keyword">HTableInterface</span> table)</span><span class="comment">;</span>
+</code></pre><p>getTable() 方法从表实例池中获取 HTable 实例，使用之后通过 putTable() 方法收回。以上两种方法把一些工作迁移到了表实例池配置的 HTableInterfaceFactory 接口。</p>
+<p>关闭表实例池中特定表实例的方法：</p>
+<pre><code>void <span class="function"><span class="title">closeTablePool</span><span class="params">(String tableName)</span></span>
+void <span class="function"><span class="title">closeTablePool</span><span class="params">(byte[] tableName)</span></span>
+</code></pre>
           
         
       
