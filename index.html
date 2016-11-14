@@ -258,6 +258,149 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/14/HBase架构学习-数据查找和传输/" itemprop="url">
+                  HBase架构学习: 数据查找和传输
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-14T15:06:44+08:00" content="2016-11-14">
+              2016-11-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/14/HBase架构学习-数据查找和传输/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/14/HBase架构学习-数据查找和传输/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/14/HBase架构学习-数据查找和传输/" class="leancloud_visitors" data-flag-title="HBase架构学习: 数据查找和传输">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在介绍 HBase 架构之前，首先来介绍典型的 RDBMS 和其他非关系型数据库底层存储结构之间的不同。其中传统关系型存储引擎广泛采用了 B 树和 B + 树；而 BigTable 的底层架构则采用了 LSM 树（Log-Structured Merge Tree）。</p>
+<h3 id="B_+_树">B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
+<p>除此之外，B + 树能够提供高效的范围扫描功能，这得益于它的叶节点相互连接并且按主键有序，扫描时避免了耗时的遍历树操作。这也是 B + 树被关系型数据库用作索引的原因之一。</p>
+<h3 id="LSM_树">LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
+<p>当系统经历过许多次数据修改，且内存空间被逐渐占满后，LSM 树会把有序的“键 - 记录”对写到磁盘中，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了。</p>
+<p>存储文件的组织与 B 树相似，不过其为磁盘顺序读取做了优化，所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成，即，系统将现有的页与内存刷写数据混合在一起进行管理，直到数据块达到它的容量。</p>
+<p>多次数据刷写之后会创建许多数据存储文件，后台线程就会自动将小文件聚合成大文件，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中。所有的数据存储文件都按键排序，所以没有必要再存储文件中为新的键预留位置。</p>
+<p>查询时先查找内存中的存储，然后再查找磁盘上的文件。这样在客户端看来数据存储文件的位置是透明的。</p>
+<p>删除是一种特殊的更改，当删除标记被存储之后，查找会跳过这些删除过的键。当页被重写时，有删除标记的键会被丢弃。</p>
+<p>此外，后台运维过程可以处理预先设定的删除请求。这些请求由 TTL 触发，例如当 TTL 设为 20 天后，合并进程会检查这些预设的时间戳，同时在重写数据块时丢弃过期的记录。</p>
+<p>B 树 和 LSM 树最主要的区别在于它们的结构如何利用硬件，特别是磁盘。</p>
+<p>比较 B + 树 和 LSM 树的意义在于理解它们的相对优势和不足。在没有太多的修改时，B + 树表现得很好，因为这些修改要求执行高代价的优化操作以保证查询能在有限时间内完成。在任意位置添加数据的规模越大、速度越快，这些页成为碎片的速度就越快。最后，用户写入的速度可能比优化后重写文件的处理速度更快。由于更新和删除以磁盘寻道的速率完成，这就强制用户就范于磁盘提供的较差的性能指标。</p>
+<p>LSM 树以磁盘传输速率工作并能较好地扩展以处理大量的数据。它们使用日志文件和内存存储来将随机写转换成顺序写，因此也能保证稳定的数据插入速率。由于读和写独立，因此在这两种操作之间没有冲突。</p>
+<p>由于存储数据的布局较优，查询一个键需要的磁盘寻道次数在一个可预测的范围内，并且读取与该键连续的任意数量的记录都不会引发任何额外的磁盘寻道。一般来说，基于 LSM 树的系统强调的是成本透明：假如有 5 个存储文件，一个访问需要最多 5 次磁盘寻道。反观关系型数据库，即使在存在索引的情况下，它也没有办法确定一次查询需要的寻道次数。</p>
+<p>所以， HBase 和 BigTable 一样，都是基于 LSM 树的系统。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/12/HBase学习-计数器/" itemprop="url">
                   HBase学习: 计数器
                 </a>
@@ -2011,175 +2154,6 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/25/Linux常用命令-find-和-ping/" itemprop="url">
-                  Linux常用命令: find 和 ping
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-25T19:52:43+08:00" content="2016-10-25">
-              2016-10-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/25/Linux常用命令-find-和-ping/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/25/Linux常用命令-find-和-ping/" class="leancloud_visitors" data-flag-title="Linux常用命令: find 和 ping">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="find_命令">find 命令</h3><pre><code>$ find <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span> <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span> <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>
-
-- <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span>: 所要搜索的目录及其所有子目录
-- <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span>: 所要搜索的文件的特征 (eg: -name -type)
-- <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>: 对搜索结果进行特定的处理 (eg: -ls, -print,)
-</code></pre><h3 id="locate_命令">locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
-<p>为了避免这种情况，可以在使用locate之前，先使用<strong>updatedb</strong>命令，手动更新数据库。</p>
-<pre><code>$ locate /etc/<span class="keyword">sh</span>
-搜索etc目录下所有以<span class="keyword">sh</span>开头的文件。
-
-$ locate ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件。
-
-$ locate -i ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件，同时忽略大小写。
-</code></pre><h3 id="whereis_命令">whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
-<h3 id="ping_多个_ip">ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
-<p>Linux 自带的 ping 命令本身不可以 ping 多个 ip，但可以用 shell 来实现同时 ping 多个 ip。</p>
-<ol>
-<li><p>建一个空的输出文件 </p>
-<pre><code>touch /output<span class="class">.txt</span> 
-</code></pre></li>
-<li><p>新建一个脚本。</p>
-<pre><code><span class="keyword">vim</span> ping.<span class="keyword">sh</span>
-</code></pre></li>
-<li><p>脚本内容</p>
-<pre><code><span class="shebang">#!/bin/bash</span>
-A = <span class="string">'cat /ip.txt'</span>
-<span class="keyword">for</span> B <span class="keyword">in</span> <span class="variable">$A</span> 
-<span class="keyword">do</span>
-ping -c <span class="number">3</span> <span class="variable">$B</span> &gt;&gt;/output
-<span class="keyword">done</span>
-wq
-</code></pre></li>
-<li><p>执行脚本</p>
-<pre><code>./ <span class="built_in">ping</span>.sh
-</code></pre></li>
-<li><p>查看结果</p>
-<pre><code><span class="tag">cat</span> <span class="tag">output</span><span class="class">.txt</span>
-</code></pre></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2225,7 +2199,7 @@ wq
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">50</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
