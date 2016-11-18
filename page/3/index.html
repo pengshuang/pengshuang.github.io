@@ -258,6 +258,171 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/21/数据库系统实现-多维数据的树结构/" itemprop="url">
+                  数据库系统实现: 多维数据的树结构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-21T15:40:23+08:00" content="2016-10-21">
+              2016-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/21/数据库系统实现-多维数据的树结构/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/21/数据库系统实现-多维数据的树结构/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/21/数据库系统实现-多维数据的树结构/" class="leancloud_visitors" data-flag-title="数据库系统实现: 多维数据的树结构">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>多维数据常用的几种树结构有：</p>
+<ol>
+<li>多建索引</li>
+<li>kd - 树</li>
+<li>四叉树</li>
+<li>R - 树</li>
+</ol>
+<p>前三种用于点集。 R - 树通常用来表示区域的集合，它也可以用来表示点集合。</p>
+<h3 id="多键索引">多键索引</h3><p>假若我们有几个属性来表示我们的数据点的维，并且我们想在这些点上支持范围查询或最近邻查询。用来访问这些点的一个简单的树模式是索引的索引，即它的每一层的结点都是一个属性的索引。</p>
+<p>在多键索引中，有些第二级或更高级索引可能会很小。因此把几个简单表压缩到一个块中来实现这些索引可能是合适的。</p>
+<h3 id="多键索引的性能">多键索引的性能</h3><p>我们这里考虑两种属性的情形。</p>
+<h4 id="部分匹配查询">部分匹配查询</h4><p>如果第一个属性被指定，那访问是很有效的。我们使用根索引找到一个子索引，该子索引引导我们到想要的点上。与此相反，如果第一个属性没有给出一个指定值，那我们必须搜索每一个子索引，潜在地这是一个耗时的处理过程。</p>
+<h4 id="范围查询">范围查询</h4><p>如果单个索引本身在它们各自的属性上支持范围查询—比如说，B - 树索引或者索引顺序文件，多键索引对范围查询就会运作得很好。为了回答一个范围查询，我们使用根索引和第一个属性的范围找出可能包含答案点的索引子索引。然后我们使用第二个属性的指定范围搜索每个子索引。</p>
+<h4 id="最近邻查询">最近邻查询</h4><p>这类查询可以通过一系列范围查询来完成。</p>
+<h3 id="kd_-_树">kd - 树</h3><p>kd - 树 (k维搜索树) 是把二叉搜索树推广到多维数据的一种主存数据结构。我们将介绍这种思想，然后讨论怎样使这种思想适合存储的块模型。 kd - 树是一个二叉树，它的内部结点有一个相关联的属性 a 和一个值 V，它将数据点集划分成两个部分：a 值小于V的部分和a值大于等于V的部分。由于所有维的属性在层间交替出现，所以树的不同层上的属性是不同的。一个典型的 kd - 树如下图所示。</p>
+<p><img src="/img/kdtree.png" alt=""> </p>
+<p>在一般的 kd - 树中，数据点被存放在结点内，就像在二叉搜索树中一样。不过我们开始引入这个思想时做了两个修改，以便获得块模式的有限益处：</p>
+<ol>
+<li>内部结点只有一个属性，该属性的一个划分值和指向左、右子树的指针。</li>
+<li>叶结点是块，块空间中存放着尽可能多的记录。</li>
+</ol>
+<h3 id="kd_-_树的操作">kd - 树的操作</h3><p>查找一个所有维都给定值的元组的处理如同在二叉树中一样。我们在每个内部结点上决定哪个走向并且被引向我们所需的单个叶结点的块。</p>
+<p>为了实现一个插入，我们先做一个查找。最后我们找到一个叶结点，如果叶结点的块中还有空间，我们就把新的数据点放在那里；如果没有空间，我们把块分裂成两个，并根据分裂叶结点所在层的相应属性划分叶结点中的内容。最后，我们创建一个新的内部结点：它的子结点为分裂得到的两个新块，并且给该内部结点一个与分裂相对应的划分值。</p>
+<p>下图展示了一个 kd - 树插入的例子：如果我们要插入一个年龄为35且薪水为500K的点</p>
+<p><img src="/img/kdtree2.png" alt=""></p>
+<h4 id="部分匹配查询-1">部分匹配查询</h4><p>如果我们给定某些属性的值，那么当我们处于属性值已知的层的结点上时，我们可以往一个方向走；当我们处于属性值未知的结点上时，我们必须考察它的两个子结点。如果我们要找出图3-39的树中索引年龄为50的点，我们必须考察根的两个子结点，因为根是按薪水来分裂的。可是，在根的左子结点上，我们只需要往左走；在根的右子结点上，我们也只需考察它的右子树。假如，假定树是完全平衡的，索引有两维，如果只给定其中一维的值，那我们将不得不交替使用这两种方式来考察各层结点。(访问结点数)最终达到叶结点数的平方根。</p>
+<h4 id="范围查询-1">范围查询</h4><p>有时一个范围运行我们移动到结点的某个唯一的子结点，但如果范围跨越了结点的划分值，那我们就必须考察两个子结点。</p>
+<h3 id="使_kd_-_树适合辅助存储器">使 kd - 树适合辅助存储器</h3><p>假定我们用一个有 n 个叶结点的 kd - 树存放文件，那么从根到叶结点的路径的平均长度将大约是log2n，如同任何二叉树一样。如果我们每块存放一个结点，那么当我们遍历一条路径时，我们必须为每个结点做一次磁盘 I/O。例如，如果n = 1000，那我们大约需要10次磁盘 I/O，远远超过通常 B -树的2到3次磁盘 I/O—即使是一个十分大的文件。另外，由于 kd - 树内部结点的信息相对地少，块的大部分空间将被浪费掉。下面的两种方法有助于解决长路径和未用空间这一孪生问题。</p>
+<ol>
+<li><p>内部结点的多分支。 kd - 树的内部结点里可以有多个键 -指针对，它看起来更像 B -树结点。如果我们在结点里有n个键，我们能够把属性a的值分裂成 n + 1个范围。如果有 n + 1个指针，我们能够沿着适当的指针到只包含属性 a 值的那个范围内的点的子树。</p>
+</li>
+<li><p>聚集内部结点到块。我们可以把多个内部结点压缩到一个块中。为了减少遍历路径访问的块数量，我们最好远离一个结点一个块的方式二将若干层的所有子结点存入一个块。在这种方式下，一旦我们检索到该结点的块，我们必定会使用该块中的其他某些结点，节省了磁盘I/O。</p>
+</li>
+</ol>
+<h3 id="四叉树">四叉树</h3><p>在一个四叉树中，每个内部结点对应于二维空间中的一个正方形区域，或是k维空间的k维立方体。像之前介绍的其他数据结构一样，我们主要考虑二维的情形。如果一个正方形中的点数不比一个块中能存放的数多，那么我们就把这个正方形看作树的叶结点，并且它由存放它的点的块表示；如果矩形中还有太多的点以至于一个块存放不下，那么把这个正方形看作内部结点，它的子结点对应于它的4个象限。</p>
+<h3 id="R-树">R-树</h3><p>R-树 (区域树) 是一种利用 B -树的某些本质特征来处理多维数据的数据结构。B - 树的结点有一个键的集合，这些键把线分成片段，沿着那条线的每个点仅属于一个片段，B - 树因此使我们很容易地找到点。如果我们把沿线各处的点表示成 B - 树结点，我们就能够确认定点所属的唯一子结点，在那里可以找到该点。</p>
+<p>而R - 树表示由二维或更高维区域组成的数据，我们把它称为<em>数据区</em>。R - 树的一个内部结点对应于某个<em>内部区域</em>，或称“区域”，它不是普通的数据区。原则上，区域可以是任何形状，虽然实际上它经常为矩形或其他简单形状。R - 树的结点的键位置上含有子区域，它表示结点的子结点的内容。允许子区域有部分重叠，尽管我们希望重叠较小。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/20/数据库系统实现-散列表/" itemprop="url">
                   数据库系统实现: 散列表
                 </a>
@@ -2049,158 +2214,6 @@ start为当前需要调整最大堆的位置，end为调整边界
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/25/IP地址基础知识/" itemprop="url">
-                  IP协议学习(二):IP地址基础知识
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-25T21:15:14+08:00" content="2016-09-25">
-              2016-09-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/25/IP地址基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/25/IP地址基础知识/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/25/IP地址基础知识/" class="leancloud_visitors" data-flag-title="IP协议学习(二):IP地址基础知识">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。</p>
-<h3 id="1-_IP地址的定义">1. IP地址的定义</h3><p>IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。</p>
-<p>IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，网络标识在数据链路的每个段配置不同的值。网络标识必须保证相互连接的每个段的地址不相重复。而相同段内相连的主机必须有相同的网络地址。IP地址的 “主机标识” 则不允许在同一个网段内重复出现。</p>
-<p>通过下图也可以看出，IP包被转发到途中某个路由器时，正是利用目标IP地址的网络标识进行路由。因为即使不看主机标识，只要一见到网络标识就能判断出是否为该网段内的主机。网络标识和主机标识通常通过子网掩码（网络前缀）区分。</p>
-<p><img src="/img/IPnet.png" alt=""></p>
-<h3 id="2-_IP地址的分类">2. IP地址的分类</h3><p><img src="/img/IPaddress.png" alt=""></p>
-<p>IP地址分为四个级别，分为A类，B类，C类，D类。它根据IP地址中从第1位到第4位的比特列对网络标识和主机标识进行区分。</p>
-<h4 id="A类地址">A类地址</h4><p>A类IP地址是首位以 “0” 开头的地址。从第1位到第8位是它的网络标识。用十进制表示的话，0.0.0.0 ~ 127.0.0.0 是A类的网络地址。A类地址的后24位相当于主机标识。因此，一个网段内可容纳的主机地址上限为16，777，214个。</p>
-<h4 id="B类地址">B类地址</h4><p>B类IP地址是前两位为 “10” 的地址。从第1位到第16位是它的网络标识。用十进制表示的话，128.0.0.1 ~ 191.255.0.0是B类的网络地址。B类网络地址的后16位相当于主机标识。因此，一个网段内可容纳的主机上限为65，534个。</p>
-<h4 id="C类地址">C类地址</h4><p>C类IP地址是前三位为 “110” 的地址。从第1位到第24位是它的网络标识。用十进制表示的话，192.168.0.0 ~ 239.255.255.0 是C类的网络地址。C类地址的后8位相当于主机标识。因此，一个网段内可容纳的主机地址上限为254个。</p>
-<h4 id="D类地址">D类地址</h4><p>D类IP地址是前四位为 “1110” 地址。从第1位到第32位是它的网络标识。用十进制表示的话，224.0.0.0 ~ 239.255.255.255 是D类的网络地址。D类地址没有主机标识，常被用于多播。</p>
-<p><strong>注意</strong></p>
-<p>主机地址全部为0只有在表示对应的网络地址或IP地址不可获知的情况下才使用。而全部为1的主机地址通常作为广播地址。</p>
-<h3 id="3-_广播地址">3. 广播地址</h3><p>广播地址用于在同一个链路中相互连接的主机之间发生数据。IP地址中的主机地址部分全部设置为1，就成了广播地址。</p>
-<p>广播地址分为本地广播和直接广播两种。在本网络内的广播为本地广播，这个广播地址的IP包会被路由器屏蔽；在不同网络之间的广播叫做之间广播。</p>
-<h3 id="4-_IP多播">4. IP多播</h3><h4 id="同时发送提供效率">同时发送提供效率</h4><p>多播用于将包发送给特点组内的所有主机。由于其之间使用IP协议，因此也不存在可靠传输。</p>
-<h4 id="IP多播与地址">IP多播与地址</h4><p>多播使用D类地址。因此，如果从首位开始到第4位是“1110”，就可以认为是多播地址。而剩下的28位可以成为多播的组编号。</p>
-<h3 id="5-_子网掩码">5. 子网掩码</h3><p><img src="/img/mask.png" alt=""></p>
-<p>引入了子网以后，一个IP地址就有了两种识别码。一是IP地址本身，另一个是表示网络内部的子网掩码。子网掩码用二进制的方式表示的话，也是一个32位的数字。它对应IP地址网络标识部分的位全部为“1”，对应IP地址主机标识的部分则全部为“0”。由此，一个IP地址可以不再受限于自己的类别，而是可以用这样的子网掩码自由的定位自己的网络标识长度。当然，子网掩码必须是IP地址的首位开始连续的“1”。表示方法如下：</p>
-<p>IP地址：    172.20.100.52/26</p>
-<p>子网掩码：    255.255.255.192</p>
-<p>网络地址：  172.20.100.0</p>
-<p>广播地址：    172.20.100.63</p>
-<p><strong>子网掩码可以灵活的指定网络标识的长度</strong></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2246,7 +2259,7 @@ start为当前需要调整最大堆的位置，end为调整边界
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">51</span>
+              <span class="site-state-item-count">52</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
