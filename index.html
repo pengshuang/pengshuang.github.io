@@ -393,7 +393,11 @@ DeleteIndexResponse response4 =
     <span class="keyword">client</span>.admin().indices().prepareDelete(<span class="string">"facebook"</span>).execute().actionGet();
 </code></pre><h3 id="Update_API_更新操作">Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
 <p>第一种</p>
-<pre><code>client.prepareUpdate(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>).setDoc(jsonBuilder<span class="literal">()</span>.startObject<span class="literal">()</span>.field(<span class="string">"age"</span>, <span class="number">32</span>).endObject<span class="literal">()</span>).get<span class="literal">()</span>;
+<pre><code>client.prepareUpdate(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+    .setDoc(jsonBuilder<span class="literal">()</span>
+    .startObject<span class="literal">()</span>.field(<span class="string">"age"</span>, <span class="number">32</span>)
+    .endObject<span class="literal">()</span>)
+    .get<span class="literal">()</span>;
 </code></pre><p>第二种</p>
 <pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"4"</span>)
     .source(jsonBuilder()
