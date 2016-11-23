@@ -258,6 +258,202 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/28/HBase-学习-Delete-和-行锁/" itemprop="url">
+                  HBase 学习: Delete、批量处理操作
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-28T15:50:58+08:00" content="2016-10-28">
+              2016-10-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/28/HBase-学习-Delete-和-行锁/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/28/HBase-学习-Delete-和-行锁/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/28/HBase-学习-Delete-和-行锁/" class="leancloud_visitors" data-flag-title="HBase 学习: Delete、批量处理操作">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="单行删除">单行删除</h3><p>delete() 方法 </p>
+<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(<span class="keyword">Delete</span> <span class="keyword">delete</span>) <span class="keyword">throws</span> IOException
+</code></pre><p>和 get 及 post 方法一样，用户必须先创建一个 Delete 实例，然后再添加想要删除的数据的详细信息。</p>
+<p>下面是一个使用 delete() 函数的例子</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, "test1");
+<span class="operator"><span class="keyword">Delete</span> <span class="keyword">delete</span> = <span class="keyword">new</span> <span class="keyword">Delete</span>(<span class="keyword">Bytes</span>.toBytes(<span class="string">"row1"</span>));</span>
+// 设置时间戳
+<span class="operator"><span class="keyword">delete</span>.setTimestamp(<span class="number">1</span>);</span>
+// 删除一列中的特定版本
+<span class="operator"><span class="keyword">delete</span>.deleteColumn(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>), <span class="number">1</span>);</span>
+// 删除一列中的全部版本
+<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>));</span>
+// 删除一列中的给定版本和所有更旧的版本
+<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual3"</span>),<span class="number">15</span>);</span>
+// 删除整个列族,包括所有的列和版本
+<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>));</span>
+// 删除给定列族中的所有列的给定版本和所有更旧的版本
+<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>), <span class="number">3</span>);</span>
+table.delete(<span class="operator"><span class="keyword">delete</span>);</span>
+table.close(); 
+</code></pre><h3 id="多行删除">多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
+<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(List&lt;<span class="keyword">Delete</span>&gt; deletes) <span class="keyword">throw</span> IOException
+</code></pre><p>这里不再赘述。</p>
+<h3 id="批量处理操作">批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
+<pre><code>void <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions, Object[] results)</span></span> throws 
+    IOException, InterruptedException
+Object[] <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions)</span></span> throws
+    IOException, InterruptedException
+</code></pre><p>上面的 API 提供了批量处理操作。用户可能注意到这里引入了一个新的名为 Row 的类，它是 Put、Get 和 Delete 的祖先，或者是父类。</p>
+<p>使用同样的父类允许在列表中实现多态，即放入以上 3 种不同的子类。这种调用跟之前介绍的基于列表的调用方法一样简单易用。下面展示了一个简单的例子。</p>
+<pre><code>Configuration <span class="keyword">conf</span> = HBaseConfiguration.create();
+HTable table = <span class="keyword">new</span> HTable(<span class="keyword">conf</span>, <span class="string">"test"</span>);
+
+byte[] ROW1 = Bytes.toBytes(<span class="string">"row1"</span>);
+byte[] ROW2 = Bytes.toBytes(<span class="string">"row2"</span>);
+
+byte[] COLFAM1 = Bytes.toBytes(<span class="string">"colfam1"</span>);
+
+byte[] QUAL1 = Bytes.toBytes(<span class="string">"qual1"</span>);
+
+List&lt;Row&gt; batch = <span class="keyword">new</span> ArrayList&lt;Row&gt;();
+
+Put <span class="keyword">put</span> = <span class="keyword">new</span> Put(ROW1);
+<span class="keyword">put</span>.<span class="built_in">add</span>(COLFAM1, QUAL2,Bytes.toBytes(<span class="string">"val5"</span>));
+batch.<span class="built_in">add</span>(<span class="keyword">put</span>);
+
+Get get1 = <span class="keyword">new</span> Get(ROW2);
+get1.addColumn(COLFAM1,QUAL2);
+batch.<span class="built_in">add</span>(get1);
+
+Delete <span class="built_in">delete</span> = <span class="keyword">new</span> Delete(ROW1);
+<span class="built_in">delete</span>.deleteColumns(COLFAM1,QUAL2);
+batch.<span class="built_in">add</span>(<span class="built_in">delete</span>);
+
+table.batch(batch, results);
+</code></pre><p><strong>注意</strong>：不可以将针对同一行的 Put 和 Delete 操作放在同一个批量处理请求中。</p>
+<h3 id="行锁">行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
+<p>处理服务器端隐式加锁之外，客户端也可以显示地对当行数据的多次操作进行加锁，通过以下调用实现：</p>
+<pre><code>RowLock <span class="function"><span class="title">lockRow</span><span class="params">(byte[] row)</span></span> throws IOException
+void <span class="function"><span class="title">unlockRow</span><span class="params">(RowLock r1)</span></span> throws IOException
+</code></pre><p>第一个调用 lockRow() 需要一个行健作为参数，返回一个 RowLock 的实例，这个实例可以供后续的 Put 或者 Delete 的构造函数使用。一旦不再需要锁时，必须通过 unLockRow() 调用来释放它。</p>
+<p>默认的锁超时时间是一分钟，但是可以在 <strong>hbase-site.xml</strong> 文件中添加一下配置项。</p>
+<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.regionserver.lease.period<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">value</span>&gt;</span>1200000<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
+<span class="tag">&lt;<span class="title">property</span>&gt;</span>
+</code></pre><p><strong>注意</strong>：Get 方法是不需要锁的。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/27/HBase-学习-Put-和-Get“/" itemprop="url">
                   HBase 学习: Put 和 Get
                 </a>
@@ -2198,199 +2394,6 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/22/Hash-Heap详解/" itemprop="url">
-                  Hash Heap详解
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-22T10:08:22+08:00" content="2016-10-22">
-              2016-10-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据结构/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/22/Hash-Heap详解/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/Hash-Heap详解/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/22/Hash-Heap详解/" class="leancloud_visitors" data-flag-title="Hash Heap详解">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="性质和性质">性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
-<h3 id="接口和时间复杂度分析">接口和时间复杂度分析</h3><pre><code>插入 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
-<span class="number">1</span>. <span class="function"><span class="title">add</span><span class="params">(self, key, value)</span></span>
-
-删除 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
-<span class="number">2</span>. <span class="function"><span class="title">remove</span><span class="params">(self, key)</span></span>
-
-查找 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
-<span class="number">3</span>. <span class="function"><span class="title">hasKey</span><span class="params">(self, key)</span></span>
-
-取最大值 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
-<span class="number">4</span>. <span class="function"><span class="title">max</span><span class="params">(self)</span></span>
-</code></pre><h3 id="代码实现">代码实现</h3><pre><code><span class="class"><span class="keyword">class</span> <span class="title">HashHeap</span>:</span>
-    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>
-        self.heap = [<span class="number">0</span>]
-        self.hash = {}
-
-<span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, key, value)</span>:</span>
-    self.heap.append((key, value))
-    self.hash[key] = self.heap[<span class="number">0</span>] + <span class="number">1</span>
-    self.heap[<span class="number">0</span>] += <span class="number">1</span>
-    self._siftup(self.heap[<span class="number">0</span>])
-
-<span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, key)</span>:</span>
-    index = self.hash[key]
-    self._swap(index, self.heap[<span class="number">0</span>])
-    <span class="keyword">del</span> self.hash[self.heap[self.heap[<span class="number">0</span>]][<span class="number">0</span>]]
-    self.heap.pop()
-    self.heap[<span class="number">0</span>] -= <span class="number">1</span>
-    <span class="keyword">if</span> index &lt;= self.heap[<span class="number">0</span>]:
-        index = self._siftup(index)
-        self._siftdown(index)
-
-<span class="function"><span class="keyword">def</span> <span class="title">hasKey</span><span class="params">(self, key)</span>:</span>
-    <span class="keyword">return</span> key <span class="keyword">in</span> self.hash
-
-<span class="function"><span class="keyword">def</span> <span class="title">max</span><span class="params">(self)</span>:</span>
-    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> self.heap[<span class="number">0</span>] == <span class="number">0</span> <span class="keyword">else</span> self.heap[<span class="number">1</span>][<span class="number">1</span>]
-
-<span class="function"><span class="keyword">def</span> <span class="title">_swap</span><span class="params">(self, a, b)</span>:</span>
-    self.heap[a], self.heap[b] = self.heap[b], self.heap[a]
-    self.hash[self.heap[a][<span class="number">0</span>]] = a
-    self.hash[self.heap[b][<span class="number">0</span>]] = b
-
-<span class="function"><span class="keyword">def</span> <span class="title">_siftup</span><span class="params">(self, index)</span>:</span>
-    <span class="keyword">while</span> index != <span class="number">1</span>:
-        <span class="keyword">if</span> self.heap[index][<span class="number">1</span>] &lt;= self.heap[index / <span class="number">2</span>][<span class="number">1</span>]:
-            <span class="keyword">break</span>
-        self._swap(index, index / <span class="number">2</span>)
-        index /= <span class="number">2</span>
-    <span class="keyword">return</span> index
-
-<span class="function"><span class="keyword">def</span> <span class="title">_siftdown</span><span class="params">(self, index)</span>:</span>
-    size = self.heap[<span class="number">0</span>]
-    <span class="keyword">while</span> index &lt; size:
-        t = index
-        <span class="keyword">if</span> index * <span class="number">2</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span>][<span class="number">1</span>]:
-            t = index * <span class="number">2</span>
-        <span class="keyword">if</span> index * <span class="number">2</span> + <span class="number">1</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span> + <span class="number">1</span>][<span class="number">1</span>]:
-            t = index * <span class="number">2</span> + <span class="number">1</span>
-        <span class="keyword">if</span> t == index:
-            <span class="keyword">break</span>
-        self._swap(index, t)
-        index = t
-    <span class="keyword">return</span> index
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2436,7 +2439,7 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">53</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2453,7 +2456,7 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">27</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

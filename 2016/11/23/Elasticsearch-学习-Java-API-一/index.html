@@ -1,0 +1,979 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。
+使用 Maven 工程，我的 pom 文件如下所示：
+&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;grou">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 学习: Java API (一)">
+<meta property="og:url" content="http://pengshuang.space/2016/11/23/Elasticsearch-学习-Java-API-一/index.html">
+<meta property="og:site_name" content="小沙文的博客">
+<meta property="og:description" content="最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。
+使用 Maven 工程，我的 pom 文件如下所示：
+&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;grou">
+<meta property="og:updated_time" content="2016-11-23T08:16:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Elasticsearch 学习: Java API (一)">
+<meta name="twitter:description" content="最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。
+使用 Maven 工程，我的 pom 文件如下所示：
+&amp;lt;dependencies&amp;gt;
+    &amp;lt;dependency&amp;gt;
+        &amp;lt;grou">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://pengshuang.space/2016/11/23/Elasticsearch-学习-Java-API-一/"/>
+
+  <title> Elasticsearch 学习: Java API (一) | 小沙文的博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小沙文的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Elasticsearch 学习: Java API (一)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-23T10:51:30+08:00" content="2016-11-23">
+              2016-11-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/23/Elasticsearch-学习-Java-API-一/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/23/Elasticsearch-学习-Java-API-一/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/23/Elasticsearch-学习-Java-API-一/" class="leancloud_visitors" data-flag-title="Elasticsearch 学习: Java API (一)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。</p>
+<p>使用 Maven 工程，我的 pom 文件如下所示：</p>
+<pre><code><span class="tag">&lt;<span class="title">dependencies</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.elasticsearch<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>elasticsearch<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.4.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-api<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-core<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span>
+</code></pre><h3 id="连接机器">连接机器</h3><pre><code><span class="label">TransportClient</span> client = TransportClient.<span class="keyword">builder()
+</span>    .<span class="keyword">build()
+</span>    .<span class="keyword">addTransportAddress(new </span>InetSocketTransportAddress(InetAddress
+    .getByName(<span class="string">"localhost"</span>), <span class="number">9300</span>))<span class="comment">;       </span>
+</code></pre><h3 id="Index_API_创建_Index_并且插入_Document">Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
+<pre><code><span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
+json.put(<span class="string">"first_name"</span>,<span class="string">"Shuang"</span>);
+json.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
+json.put(<span class="string">"age"</span>, <span class="number">24</span>);
+json.put(<span class="string">"about"</span>, <span class="string">"I love coding"</span>);
+IndexResponse response = client
+    .prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
+    .setSource(json).<span class="built_in">get</span>();
+
+IndexResponse response = client.prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
+   .setSource(jsonBuilder()
+   .startObject()
+   .field(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
+   .field(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>)
+   .field(<span class="string">"age"</span>, <span class="number">24</span>)
+   .field(<span class="string">"about"</span>, <span class="string">"I love coding"</span>)
+   .endObject())
+   .<span class="built_in">get</span>();
+</code></pre><p><strong>注意</strong>：Index API 只能用于创建 index，类似于关系型数据库里面的 create table，他不能对已有的数据库进行添加。追加操作可以用后面会提到的 Update 或者 Bulk 来完成。    </p>
+<h3 id="Get_API_获取_Document">Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>).<span class="literal">get</span>();
+<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; res = response2.getSource();
+<span class="keyword">for</span> (<span class="built_in">Map</span>.Entry&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; entry: res.entrySet()){
+     System.out.println(entry.getKey() + <span class="string">" : "</span> + entry.getValue());
+     }
+</code></pre><h3 id="Delete_API_删除_Index_或者_Document">Delete API 删除 Index 或者 Document</h3><pre><code><span class="comment">// 用来删除对应的 document </span>
+DeleteResponse response3 = 
+    <span class="keyword">client</span>.prepareDelete(<span class="string">"tesg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>).get();
+<span class="comment">// 用来删除对应的 index</span>
+DeleteIndexResponse response4 = 
+    <span class="keyword">client</span>.admin().indices().prepareDelete(<span class="string">"facebook"</span>).execute().actionGet();
+</code></pre><h3 id="Update_API_更新操作">Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
+<p>第一种</p>
+<pre><code>client.prepareUpdate(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>).setDoc(jsonBuilder<span class="literal">()</span>.startObject<span class="literal">()</span>.field(<span class="string">"age"</span>, <span class="number">32</span>).endObject<span class="literal">()</span>).get<span class="literal">()</span>;
+</code></pre><p>第二种</p>
+<pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"4"</span>)
+    .source(jsonBuilder()
+    .startObject().<span class="keyword">field</span>(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
+    .<span class="keyword">field</span>(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
+    .<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">24</span>)
+    .<span class="keyword">field</span>(<span class="string">"about"</span>, <span class="string">"I loving coding"</span>)
+    .endObject());
+
+UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">"tseg"</span>,<span class="string">"students"</span>, <span class="string">"5"</span>)
+    .doc(jsonBuilder()
+    .startObject().<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">21</span>)
+    .endObject())
+    .upsert(indexRequest);
+ client.update(updateRequest).get();
+</code></pre><p>不过这里提一下第二种方法，如果对应的 <strong>field</strong> 不存在的话，则更新操作自动变为插入操作，否则，就是正常的修改操作。</p>
+<h3 id="Multi_Get_API_多查找">Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
+<pre><code>MultiGetResponse multiGetItemResponses = client.prepareMultiGet()
+    .<span class="built_in">add</span>(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"3"</span>).<span class="built_in">get</span>();
+
+<span class="keyword">for</span> (MultiGetItemResponse itemResponses : multiGetItemResponses) {
+    GetResponse response5 = itemResponses.getResponse();
+    <span class="keyword">if</span> (response5.isExists()) {
+<span class="comment">// 第一种用法</span>
+    Map&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; fields = response5.getSource();
+    System.out.<span class="built_in">println</span>(fields.<span class="built_in">get</span>(<span class="string">"first_name"</span>));
+
+<span class="comment">// 第二种用法</span>
+    <span class="keyword">String</span> json2 = response5.getSourceAsString();
+    System.out.<span class="built_in">println</span>(json2);
+}
+</code></pre><h3 id="Bulk_API_批量操作">Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
+<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+           .setSource(jsonBuilder()
+           .startObject()
+           .field(<span class="string">"first_name"</span>, <span class="string">"Allen"</span>)
+           .field(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
+           .field(<span class="string">"age"</span>, <span class="string">"22"</span>)
+           .endObject()))
+           .<span class="built_in">get</span>();
+
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"2"</span>))
+            .setSource(jsonBuilder()
+            .startObject()
+            .field(<span class="string">"first_name"</span>, <span class="string">"Hou"</span>)
+            .field(<span class="string">"last_name"</span>, <span class="string">"Xue"</span>)
+            .field(<span class="string">"age"</span>, <span class="string">"30"</span>)
+            .endObject()))
+            .<span class="built_in">get</span>();
+
+<span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json2 = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
+List&lt;<span class="keyword">String</span>&gt; list = <span class="keyword">new</span> ArrayList&lt;<span class="keyword">String</span>&gt;();
+list.<span class="built_in">add</span>(<span class="string">"music"</span>);
+list.<span class="built_in">add</span>(<span class="string">"football"</span>);
+json2.put(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>);
+json2.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
+json2.put(<span class="string">"interests"</span>, list);
+BulkRequestBuilder bulkRequest2 = client.prepareBulk();
+<span class="comment">// 两种执行方法，个人倾向于第一种</span>
+bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, <span class="string">"info"</span>, 
+    <span class="string">"3"</span>).setSource(json2)).<span class="built_in">get</span>();
+<span class="comment">// 第二种方法</span>
+bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, 
+    <span class="string">"info"</span>,<span class="string">"1"</span>).setSource(json2)).execute().actionGet();
+</code></pre><p>还可以这样做：</p>
+<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>).setSource(<span class="keyword">source</span>);
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>).setSource(<span class="keyword">source</span>);
+BulkResponse bulkResponse = bulkRequest.<span class="keyword">execute</span>().actionGet();
+</code></pre><h3 id="Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
+        client,  
+        <span class="keyword">new</span> BulkProcessor.Listener() {
+            @<span class="function">Override
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+                                  BulkRequest request)</span> </span>{ ... } 
+
+            @<span class="function">Override
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+                                  BulkRequest request,
+                                  BulkResponse response)</span> </span>{ ... } 
+
+            @<span class="function">Override
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+                                  BulkRequest request,
+                                  Throwable failure)</span> </span>{ ... } 
+        })
+        .setBulkActions(<span class="number">10000</span>) 
+        .setBulkSize(<span class="keyword">new</span> ByteSizeValue(<span class="number">1</span>, ByteSizeUnit.GB)) 
+        .setFlushInterval(TimeValue.timeValueSeconds(<span class="number">5</span>)) 
+        .setConcurrentRequests(<span class="number">1</span>) 
+         .build();
+
+bulkProcessor.add(<span class="keyword">new</span> IndexRequest(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>).source(source1));  
+bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>);        
+</code></pre><ol>
+<li>beforeBulk 会在批量提交之前执行，可以从 BulkRequest 中获取请求信息request.requests() 或者请求数量 request.numberOfActions()。 </li>
+<li>第一个 afterBulk 会在批量成功后执行，可以跟 beforeBulk 配合计算批量所需时间。 </li>
+<li>第二个 afterBulk 会在批量失败后执行。 </li>
+<li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag">#Java</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/22/一致性-Hash-学习/" rel="next" title="一致性 Hash 学习">
+                <i class="fa fa-chevron-left"></i> 一致性 Hash 学习
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2016/11/23/Elasticsearch-学习-Java-API-一/"
+     data-title="Elasticsearch 学习: Java API (一)"
+     data-content=""
+     data-url="http://pengshuang.space/2016/11/23/Elasticsearch-学习-Java-API-一/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/11/23/Elasticsearch-学习-Java-API-一/"
+           data-title="Elasticsearch 学习: Java API (一)" data-url="http://pengshuang.space/2016/11/23/Elasticsearch-学习-Java-API-一/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="PengShuang" />
+          <p class="site-author-name" itemprop="name">PengShuang</p>
+          <p class="site-description motion-element" itemprop="description">在路上，慢慢走！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/pengshuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lingyu.wang/" title="天镶的博客" target="_blank">天镶的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coolshell.cn/" title="酷壳" target="_blank">酷壳</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dongwm.com" title="小明明的博客" target="_blank">小明明的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接机器"><span class="nav-number">1.</span> <span class="nav-text">连接机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index_API_创建_Index_并且插入_Document"><span class="nav-number">2.</span> <span class="nav-text">Index API 创建 Index 并且插入 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get_API_获取_Document"><span class="nav-number">3.</span> <span class="nav-text">Get API 获取 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete_API_删除_Index_或者_Document"><span class="nav-number">4.</span> <span class="nav-text">Delete API 删除 Index 或者 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update_API_更新操作"><span class="nav-number">5.</span> <span class="nav-text">Update API 更新操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi_Get_API_多查找"><span class="nav-number">6.</span> <span class="nav-text">Multi Get API 多查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_API_批量操作"><span class="nav-number">7.</span> <span class="nav-text">Bulk API 批量操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作"><span class="nav-number">8.</span> <span class="nav-text">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PengShuang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"pengshuang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DKbLgBme7UkAx9JX6sM3D4Hj-gzGzoHsz", "GXjJ9Ox3pUGI9PJhm6CNfJGN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
