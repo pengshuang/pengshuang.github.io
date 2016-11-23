@@ -98,7 +98,7 @@
 &amp;lt;dependencies&amp;gt;
     &amp;lt;dependency&amp;gt;
         &amp;lt;grou">
-<meta property="og:updated_time" content="2016-11-23T08:19:36.000Z">
+<meta property="og:updated_time" content="2016-11-23T08:21:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch 学习: Java API (一)">
 <meta name="twitter:description" content="最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。
@@ -405,17 +405,18 @@ DeleteIndexResponse response4 =
     .endObject<span class="literal">()</span>)
     .get<span class="literal">()</span>;
 </code></pre><p>第二种</p>
-<pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"4"</span>)
+<pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
     .source(jsonBuilder()
-    .startObject().<span class="keyword">field</span>(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
+    .startObject()
+    .<span class="keyword">field</span>(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
     .<span class="keyword">field</span>(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
-    .<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">24</span>)
+    .<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
     .<span class="keyword">field</span>(<span class="string">"about"</span>, <span class="string">"I loving coding"</span>)
     .endObject());
 
-UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">"tseg"</span>,<span class="string">"students"</span>, <span class="string">"5"</span>)
+UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">"tseg"</span>,<span class="string">"students"</span>, <span class="string">"1"</span>)
     .doc(jsonBuilder()
-    .startObject().<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">21</span>)
+    .startObject().<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
     .endObject())
     .upsert(indexRequest);
  client.update(updateRequest).get();
@@ -427,6 +428,7 @@ UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<sp
 <span class="keyword">for</span> (MultiGetItemResponse itemResponses : multiGetItemResponses) {
     GetResponse response5 = itemResponses.getResponse();
     <span class="keyword">if</span> (response5.isExists()) {
+
 <span class="comment">// 第一种用法</span>
     Map&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; fields = response5.getSource();
     System.out.<span class="built_in">println</span>(fields.<span class="built_in">get</span>(<span class="string">"first_name"</span>));
@@ -463,6 +465,7 @@ json2.put(<span class="string">"first_name"</span>, <span class="string">"Peng"<
 json2.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
 json2.put(<span class="string">"interests"</span>, list);
 BulkRequestBuilder bulkRequest2 = client.prepareBulk();
+
 <span class="comment">// 两种执行方法，个人倾向于第一种</span>
 bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, <span class="string">"info"</span>, 
     <span class="string">"3"</span>).setSource(json2)).<span class="built_in">get</span>();
@@ -471,8 +474,10 @@ bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="
     <span class="string">"info"</span>,<span class="string">"1"</span>).setSource(json2)).execute().actionGet();
 </code></pre><p>还可以这样做：</p>
 <pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>).setSource(<span class="keyword">source</span>);
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>).setSource(<span class="keyword">source</span>);
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>)
+    .setSource(<span class="keyword">source</span>);
+bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>)
+    .setSource(<span class="keyword">source</span>);
 BulkResponse bulkResponse = bulkRequest.<span class="keyword">execute</span>().actionGet();
 </code></pre><h3 id="Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
         client,  
