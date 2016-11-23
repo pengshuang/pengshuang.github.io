@@ -98,7 +98,7 @@
 &amp;lt;dependencies&amp;gt;
     &amp;lt;dependency&amp;gt;
         &amp;lt;grou">
-<meta property="og:updated_time" content="2016-11-23T08:21:53.000Z">
+<meta property="og:updated_time" content="2016-11-23T08:27:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elasticsearch 学习: Java API (一)">
 <meta name="twitter:description" content="最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。
@@ -510,6 +510,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
 <li>第二个 afterBulk 会在批量失败后执行。 </li>
 <li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
 </ol>
+<h3 id="后记">后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
 
       
     </div>
@@ -726,7 +727,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接机器"><span class="nav-number">1.</span> <span class="nav-text">连接机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index_API_创建_Index_并且插入_Document"><span class="nav-number">2.</span> <span class="nav-text">Index API 创建 Index 并且插入 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get_API_获取_Document"><span class="nav-number">3.</span> <span class="nav-text">Get API 获取 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete_API_删除_Index_或者_Document"><span class="nav-number">4.</span> <span class="nav-text">Delete API 删除 Index 或者 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update_API_更新操作"><span class="nav-number">5.</span> <span class="nav-text">Update API 更新操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi_Get_API_多查找"><span class="nav-number">6.</span> <span class="nav-text">Multi Get API 多查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_API_批量操作"><span class="nav-number">7.</span> <span class="nav-text">Bulk API 批量操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作"><span class="nav-number">8.</span> <span class="nav-text">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接机器"><span class="nav-number">1.</span> <span class="nav-text">连接机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index_API_创建_Index_并且插入_Document"><span class="nav-number">2.</span> <span class="nav-text">Index API 创建 Index 并且插入 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get_API_获取_Document"><span class="nav-number">3.</span> <span class="nav-text">Get API 获取 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete_API_删除_Index_或者_Document"><span class="nav-number">4.</span> <span class="nav-text">Delete API 删除 Index 或者 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update_API_更新操作"><span class="nav-number">5.</span> <span class="nav-text">Update API 更新操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi_Get_API_多查找"><span class="nav-number">6.</span> <span class="nav-text">Multi Get API 多查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_API_批量操作"><span class="nav-number">7.</span> <span class="nav-text">Bulk API 批量操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作"><span class="nav-number">8.</span> <span class="nav-text">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">9.</span> <span class="nav-text">后记</span></a></li></ol></div>
             
           </div>
         </section>
