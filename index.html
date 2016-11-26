@@ -258,6 +258,226 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/" itemprop="url">
+                  Kaggle 比赛: 德国信用卡违约数据分析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-26T11:35:38+08:00" content="2016-11-26">
+              2016-11-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
+                    <span itemprop="name">数据挖掘</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/" class="leancloud_visitors" data-flag-title="Kaggle 比赛: 德国信用卡违约数据分析">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="数据描述">数据描述</h3><p>German Credit Data， 我们来看看数据的格式,</p>
+<p>A1 到 A15 为 15个不同类别的特征，A16 为 label 列，一共有 690条数据，下面列举其中一条当作例子：</p>
+<table>
+<thead>
+<tr>
+<th>A1</th>
+<th>A2</th>
+<th>A3</th>
+<th>A4</th>
+<th>A5</th>
+<th>A6</th>
+<th>A7</th>
+<th>A8</th>
+<th>A9</th>
+<th>A10</th>
+<th>A11</th>
+<th>A12</th>
+<th>A13</th>
+<th>A14</th>
+<th>A15</th>
+<th>A16</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>30.83</td>
+<td>0</td>
+<td>u</td>
+<td>g</td>
+<td>w</td>
+<td>v</td>
+<td>1.25</td>
+<td>t</td>
+<td>t</td>
+<td>01</td>
+<td>f</td>
+<td>g</td>
+<td>00202</td>
+<td>0</td>
+<td>+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Attribute_Information:">Attribute Information:</h4><pre><code><span class="attribute">A1</span>: <span class="string">   b, a.</span>
+<span class="attribute">A2</span>: <span class="string">   continuous.</span>
+<span class="attribute">A3</span>: <span class="string">   continuous.</span>
+<span class="attribute">A4</span>: <span class="string">   u, y, l, t.</span>
+<span class="attribute">A5</span>: <span class="string">   g, p, gg.</span>
+<span class="attribute">A6</span>: <span class="string">   c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.</span>
+<span class="attribute">A7</span>: <span class="string">   v, h, bb, j, n, z, dd, ff, o.</span>
+<span class="attribute">A8</span>: <span class="string">   continuous.</span>
+<span class="attribute">A9</span>: <span class="string">   t, f.</span>
+<span class="attribute">A10</span>: <span class="string">   t, f.</span>
+<span class="attribute">A11</span>: <span class="string">   continuous.</span>
+<span class="attribute">A12</span>: <span class="string">   t, f.</span>
+<span class="attribute">A13</span>: <span class="string">   g, p, s.</span>
+<span class="attribute">A14</span>: <span class="string">   continuous.</span>
+<span class="attribute">A15</span>: <span class="string">   continuous.</span>
+<span class="attribute">A16</span>: <span class="string">+,-         (class attribute)</span>
+</code></pre><h4 id="Missing_Attribute_Values:">Missing Attribute Values:</h4><pre><code><span class="number">37</span> cases (<span class="number">5</span>%) have one or more missing values.  The missing
+values from particular attributes are:
+
+A1:  <span class="number">12</span>
+A2:  <span class="number">12</span>
+A4:   <span class="number">6</span>
+A5:   <span class="number">6</span>
+A6:   <span class="number">9</span>
+A7:   <span class="number">9</span>
+A14: <span class="number">13</span>
+</code></pre><h4 id="Class_Distribution">Class Distribution</h4><pre><code>+: <span class="number">307</span> (<span class="number">44.5</span>%)
+-: <span class="number">383</span> (<span class="number">55.5</span>%)
+</code></pre><h4 id="数据处理与数据分析">数据处理与数据分析</h4><p>下面展示一下数据处理流程，主要是处理了一下缺失值，然后根据特征按连续型和离散型进行分别处理，使用了 sklearn 里面的 LogisticRegression 包，下面的代码都有很详细的注释。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">data = pd.read_csv(<span class="string">"./crx.data"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给数据增加列标签</span></span><br><span class="line">data.columns = [<span class="string">"f1"</span>, <span class="string">"f2"</span>, <span class="string">"f3"</span>, <span class="string">"f4"</span>, <span class="string">"f5"</span>, <span class="string">"f6"</span>, <span class="string">"f7"</span>, <span class="string">"f8"</span>, <span class="string">"f9"</span>, <span class="string">"f10"</span>, <span class="string">"f11"</span>, <span class="string">"f12"</span>, <span class="string">"f13"</span>, <span class="string">"f14"</span>, <span class="string">"f15"</span>, <span class="string">"label"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换 label 映射</span></span><br><span class="line">label_mapping = &#123;</span><br><span class="line">    <span class="string">"+"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"-"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"label"</span>] = data[<span class="string">"label"</span>].map(label_mapping)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理缺省值的方法</span></span><br><span class="line">data = data.replace(<span class="string">"?"</span>, np.nan)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 object 类型的列转换为 float型</span></span><br><span class="line">data[<span class="string">"f2"</span>] = pd.to_numeric(data[<span class="string">"f2"</span>])</span><br><span class="line">data[<span class="string">"f14"</span>] = pd.to_numeric(data[<span class="string">"f14"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连续型特征如果有缺失值的话，用它们的平均值替代</span></span><br><span class="line">data[<span class="string">"f2"</span>] = data[<span class="string">"f2"</span>].fillna(data[<span class="string">"f2"</span>].mean())</span><br><span class="line">data[<span class="string">"f3"</span>] = data[<span class="string">"f3"</span>].fillna(data[<span class="string">"f3"</span>].mean())</span><br><span class="line">data[<span class="string">"f8"</span>] = data[<span class="string">"f8"</span>].fillna(data[<span class="string">"f8"</span>].mean())</span><br><span class="line">data[<span class="string">"f11"</span>] = data[<span class="string">"f11"</span>].fillna(data[<span class="string">"f11"</span>].mean())</span><br><span class="line">data[<span class="string">"f14"</span>] = data[<span class="string">"f14"</span>].fillna(data[<span class="string">"f14"</span>].mean())</span><br><span class="line">data[<span class="string">"f15"</span>] = data[<span class="string">"f15"</span>].fillna(data[<span class="string">"f15"</span>].mean())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 离散型特征如果有缺失值的话，用另外一个不同的值替代</span></span><br><span class="line">data[<span class="string">"f1"</span>] = data[<span class="string">"f1"</span>].fillna(<span class="string">"c"</span>)</span><br><span class="line">data[<span class="string">"f4"</span>] = data[<span class="string">"f4"</span>].fillna(<span class="string">"s"</span>)</span><br><span class="line">data[<span class="string">"f5"</span>] = data[<span class="string">"f5"</span>].fillna(<span class="string">"gp"</span>)</span><br><span class="line">data[<span class="string">"f6"</span>] = data[<span class="string">"f6"</span>].fillna(<span class="string">"hh"</span>)</span><br><span class="line">data[<span class="string">"f7"</span>] = data[<span class="string">"f7"</span>].fillna(<span class="string">"ee"</span>)</span><br><span class="line">data[<span class="string">"f13"</span>] = data[<span class="string">"f13"</span>].fillna(<span class="string">"ps"</span>)</span><br><span class="line"></span><br><span class="line">tf_mapping = &#123;</span><br><span class="line">    <span class="string">"t"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"f"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"f9"</span>] = data[<span class="string">"f9"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f10"</span>] = data[<span class="string">"f10"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f12"</span>] = data[<span class="string">"f12"</span>].map(tf_mapping)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给离散的特征进行 one-hot 编码</span></span><br><span class="line">data = pd.get_dummies(data)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱顺序</span></span><br><span class="line">shuffled_rows = np.random.permutation(data.index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分本地测试集和训练集</span></span><br><span class="line">highest_train_row = int(data.shape[<span class="number">0</span>] * <span class="number">0.70</span>)</span><br><span class="line">train = data.iloc[<span class="number">0</span>:highest_train_row]</span><br><span class="line">loc_test = data.iloc[highest_train_row:]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 去掉最后一列 label 之后的才是 feature</span></span><br><span class="line">features = train.drop([<span class="string">"label"</span>], axis = <span class="number">1</span>).columns</span><br><span class="line"></span><br><span class="line">model = LogisticRegression()</span><br><span class="line">X_train = train[features]</span><br><span class="line">y_train = train[<span class="string">"label"</span>] == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line">X_test = loc_test[features]</span><br><span class="line"></span><br><span class="line">test_prob = model.predict(X_test)</span><br><span class="line">test_label = loc_test[<span class="string">'label'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地测试集上的准确率</span></span><br><span class="line">accuracy_test = (test_prob == loc_test[<span class="string">"label"</span>]).mean()</span><br><span class="line"><span class="keyword">print</span> accuracy_test</span><br></pre></td></tr></table></figure>
+<pre><code><span class="number">0.835748792271</span>
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> cross_validation, metrics</span><br><span class="line"></span><br><span class="line"><span class="comment">#验证集上的auc值</span></span><br><span class="line">test_auc = metrics.roc_auc_score(test_label, test_prob)<span class="comment">#验证集上的auc值</span></span><br><span class="line"><span class="keyword">print</span> test_auc</span><br></pre></td></tr></table></figure>
+<pre><code><span class="number">0.835748792271</span>
+</code></pre><p>简单使用了一下逻辑回归，发现准确率是 0.835748792271，AUC 值是 0.835748792271，效果还不错，接下来对模型进行优化来进一步提高准确率</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/23/Elasticsearch-学习-Java-API-一/" itemprop="url">
                   Elasticsearch 学习: Java API (一)
                 </a>
@@ -2005,199 +2225,6 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/29/HBase-学习-扫描/" itemprop="url">
-                  HBase 学习: 扫描
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-29T10:30:50+08:00" content="2016-10-29">
-              2016-10-29
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/29/HBase-学习-扫描/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/29/HBase-学习-扫描/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/29/HBase-学习-扫描/" class="leancloud_visitors" data-flag-title="HBase 学习: 扫描">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="基本概念">基本概念</h3><p>扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。</p>
-<p>Scan 类拥有以下构造器：</p>
-<pre><code><span class="function"><span class="title">Scan</span><span class="params">()</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, Filter filter)</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow)</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, byte[] stopRow)</span></span>
-</code></pre><p>我们可以选择性地提供 startRow 参数，来定义扫描读取 HBase 表的起始行键，即行键不是必须指定的。同时可选 stopRow 来限定读取到何时停止。</p>
-<p>创建 Scan 实例之后，用户可能还要给它增加更多限制条件。可以使用多种方法限制所要读取的数据：</p>
-<pre><code>Scan <span class="function"><span class="title">addFamily</span><span class="params">(byte[] family)</span></span>
-Scan <span class="function"><span class="title">addColumn</span><span class="params">(byte[] family, byte[] qualifier)</span></span>
-</code></pre><p>一旦设置好了 Scan 实例，就可以调用 Htable 的 getScanner() 方法，获得用于检索数据的 ResultScanner 实例。</p>
-<p>扫描操作不会通过一次 RPC 请求返回所有匹配的行，而是以行为单位进行返回，很明显，行的数目很大，可能有上千条甚至更多，同时在一次请求中发送大量数据，会占用大量的系统资源并消耗很长时间。</p>
-<p>ResultScanner 把扫描操作转换为类似的 get 操作，它将每一行数据封装成一个 Result 实例，并将所有的 Result 实例放入一个迭代器中，ResultScanner 的一些方法如下：</p>
-<pre><code>Result <span class="function"><span class="title">next</span><span class="params">()</span></span> throws IOException
-Result <span class="function"><span class="title">next</span><span class="params">(int nbRows)</span></span> throws IOException
-void <span class="function"><span class="title">close</span><span class="params">()</span></span>
-</code></pre><p>有 2 种类型的 next() 调用供用户选择。调用 close() 方法会释放所有由扫描控制的资源。</p>
-<p>next() 调用返回一个单独的 Result 实例，这个实例代表了下一个可用的行。此外，用户可以使用 next(int nbRows) 一次获取多行数据，它返回一个数组，数组中包含的 Result 实例最多可达 nbRows 个，每个实例代表唯一的一行。下面展示了一个关于扫描的简单例子。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable <span class="built_in">table</span> = new HTable(conf, <span class="string">"test"</span>);
-
-Scan scan1 = new Scan();
-ResultScanner scanner1 = <span class="built_in">table</span>.getScanner(scan1);
-<span class="keyword">for</span> (Result res: scanner1) {
-    System.<span class="keyword">out</span>.println(res);
-}
-scanner1.close();
-
-Scan scan2 = new Scan();
-scan2.addFamily(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>));
-ResultScanner scanner2 = <span class="built_in">table</span>.getScanner(scan2);
-<span class="keyword">for</span> (Result res: scanner2) {
-    System.<span class="keyword">out</span>.println(res);
-}
-scanner2.close();
-
-Scan scan3 = new Scan();
-// 使用 builder 模式将详细限制条件添加到 Scan 中
-scan3.addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-5"</span>))
-        .addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam2"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-33"</span>))
-        .<span class="built_in">set</span>StartRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-10"</span>)).<span class="built_in">set</span>StopRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-20"</span>));
-ResultScanner scanner3 = <span class="built_in">table</span>.getScanner(scan3);
-<span class="keyword">for</span>(Result res: scanner3) {
-    System.<span class="keyword">out</span>.println(res);
-}
-scanner3.close();
-</code></pre><p><strong>注意</strong>：要确保尽早释放扫描器实例，一个打开的扫描器会占用不少服务端资源，累积多了会占用大量的堆空间。当使用完 ResultScanner 之后应调用它的 close() 方法，同时应当把 close() 方法放到 try/finally 块中，以保证其在迭代获取数据过程中出现异常和错误时，仍然能执行 close()。</p>
-<h3 id="缓存与批量处理">缓存与批量处理</h3><p>当我想要一次 RPC 请求可以获取多行数据时，可以使用<strong>扫描器缓存</strong>，默认情况下，这个缓存是关闭的。</p>
-<p>可以在连个层面上打开它：在表的层面，这个表所有扫描实例的缓存都会生效：也可以在扫描层面，这样便只会影响当前的扫描实例。用户可以使用以下的 HTable 方法设置表级的扫描器缓存：</p>
-<pre><code>void <span class="function"><span class="title">setScannerCaching</span><span class="params">(int scannerCaching)</span></span>
-int <span class="function"><span class="title">getScannerCaching</span><span class="params">()</span></span>
-</code></pre><p>用户可以修改整个 HBase 集群的默认值1，只要把下面的配置项添加到 hbase-site.xml 中即可。</p>
-<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.client.scanner.caching<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>10<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">property</span>&gt;</span>
-</code></pre><p>可以使用下列 Scan 类的方法设置扫描级别的缓存：</p>
-<pre><code>void <span class="function"><span class="title">setCaching</span><span class="params">(int caching)</span></span>
-int <span class="function"><span class="title">getCaching</span><span class="params">()</span></span>
-</code></pre><p><strong>注意</strong>：扫描层面的配置高于表层面的配置，这两种方法能控制每次RPC调用取回的行数。</p>
-<p>我们之前介绍的了如何使用客户端的扫描器缓存来从远程 region 服务器向客户端整批传输数据，不过还有一件事需要注意：数据量非常大的行，这些行有可能超过客户端进程的内存容量。HBase 和它的客户端 API 对这个问题有一个解决方法：批量。用户可以使用以下方法控制批量获取操作：</p>
-<pre><code>void <span class="function"><span class="title">setBatch</span><span class="params">(int batch)</span></span>
-int <span class="function"><span class="title">getBatch</span><span class="params">()</span></span>
-</code></pre><p>缓存是面向行一级的操作，而批量则是面向列一级的操作。批量可以让用户选择每一次 ResultScanner 实例的 next() 操作要取回多少列。例如，在扫描中设置 setBatch(5)，则一次 next() 返回的 Result 实例会包括 5 列。</p>
-<p>通过组合使用扫描器缓存和批量大小，可以让用户方便地控制一个范围内的行键时所需要的 RPC 调用次数。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2243,7 +2270,7 @@ int <span class="function"><span class="title">getBatch</span><span class="param
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2251,7 +2278,7 @@ int <span class="function"><span class="title">getBatch</span><span class="param
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2260,7 +2287,7 @@ int <span class="function"><span class="title">getBatch</span><span class="param
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

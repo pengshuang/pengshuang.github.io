@@ -258,6 +258,199 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/29/HBase-学习-扫描/" itemprop="url">
+                  HBase 学习: 扫描
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-29T10:30:50+08:00" content="2016-10-29">
+              2016-10-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/29/HBase-学习-扫描/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/29/HBase-学习-扫描/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/29/HBase-学习-扫描/" class="leancloud_visitors" data-flag-title="HBase 学习: 扫描">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="基本概念">基本概念</h3><p>扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。</p>
+<p>Scan 类拥有以下构造器：</p>
+<pre><code><span class="function"><span class="title">Scan</span><span class="params">()</span></span>
+<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, Filter filter)</span></span>
+<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow)</span></span>
+<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, byte[] stopRow)</span></span>
+</code></pre><p>我们可以选择性地提供 startRow 参数，来定义扫描读取 HBase 表的起始行键，即行键不是必须指定的。同时可选 stopRow 来限定读取到何时停止。</p>
+<p>创建 Scan 实例之后，用户可能还要给它增加更多限制条件。可以使用多种方法限制所要读取的数据：</p>
+<pre><code>Scan <span class="function"><span class="title">addFamily</span><span class="params">(byte[] family)</span></span>
+Scan <span class="function"><span class="title">addColumn</span><span class="params">(byte[] family, byte[] qualifier)</span></span>
+</code></pre><p>一旦设置好了 Scan 实例，就可以调用 Htable 的 getScanner() 方法，获得用于检索数据的 ResultScanner 实例。</p>
+<p>扫描操作不会通过一次 RPC 请求返回所有匹配的行，而是以行为单位进行返回，很明显，行的数目很大，可能有上千条甚至更多，同时在一次请求中发送大量数据，会占用大量的系统资源并消耗很长时间。</p>
+<p>ResultScanner 把扫描操作转换为类似的 get 操作，它将每一行数据封装成一个 Result 实例，并将所有的 Result 实例放入一个迭代器中，ResultScanner 的一些方法如下：</p>
+<pre><code>Result <span class="function"><span class="title">next</span><span class="params">()</span></span> throws IOException
+Result <span class="function"><span class="title">next</span><span class="params">(int nbRows)</span></span> throws IOException
+void <span class="function"><span class="title">close</span><span class="params">()</span></span>
+</code></pre><p>有 2 种类型的 next() 调用供用户选择。调用 close() 方法会释放所有由扫描控制的资源。</p>
+<p>next() 调用返回一个单独的 Result 实例，这个实例代表了下一个可用的行。此外，用户可以使用 next(int nbRows) 一次获取多行数据，它返回一个数组，数组中包含的 Result 实例最多可达 nbRows 个，每个实例代表唯一的一行。下面展示了一个关于扫描的简单例子。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable <span class="built_in">table</span> = new HTable(conf, <span class="string">"test"</span>);
+
+Scan scan1 = new Scan();
+ResultScanner scanner1 = <span class="built_in">table</span>.getScanner(scan1);
+<span class="keyword">for</span> (Result res: scanner1) {
+    System.<span class="keyword">out</span>.println(res);
+}
+scanner1.close();
+
+Scan scan2 = new Scan();
+scan2.addFamily(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>));
+ResultScanner scanner2 = <span class="built_in">table</span>.getScanner(scan2);
+<span class="keyword">for</span> (Result res: scanner2) {
+    System.<span class="keyword">out</span>.println(res);
+}
+scanner2.close();
+
+Scan scan3 = new Scan();
+// 使用 builder 模式将详细限制条件添加到 Scan 中
+scan3.addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-5"</span>))
+        .addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam2"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-33"</span>))
+        .<span class="built_in">set</span>StartRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-10"</span>)).<span class="built_in">set</span>StopRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-20"</span>));
+ResultScanner scanner3 = <span class="built_in">table</span>.getScanner(scan3);
+<span class="keyword">for</span>(Result res: scanner3) {
+    System.<span class="keyword">out</span>.println(res);
+}
+scanner3.close();
+</code></pre><p><strong>注意</strong>：要确保尽早释放扫描器实例，一个打开的扫描器会占用不少服务端资源，累积多了会占用大量的堆空间。当使用完 ResultScanner 之后应调用它的 close() 方法，同时应当把 close() 方法放到 try/finally 块中，以保证其在迭代获取数据过程中出现异常和错误时，仍然能执行 close()。</p>
+<h3 id="缓存与批量处理">缓存与批量处理</h3><p>当我想要一次 RPC 请求可以获取多行数据时，可以使用<strong>扫描器缓存</strong>，默认情况下，这个缓存是关闭的。</p>
+<p>可以在连个层面上打开它：在表的层面，这个表所有扫描实例的缓存都会生效：也可以在扫描层面，这样便只会影响当前的扫描实例。用户可以使用以下的 HTable 方法设置表级的扫描器缓存：</p>
+<pre><code>void <span class="function"><span class="title">setScannerCaching</span><span class="params">(int scannerCaching)</span></span>
+int <span class="function"><span class="title">getScannerCaching</span><span class="params">()</span></span>
+</code></pre><p>用户可以修改整个 HBase 集群的默认值1，只要把下面的配置项添加到 hbase-site.xml 中即可。</p>
+<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.client.scanner.caching<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">value</span>&gt;</span>10<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">property</span>&gt;</span>
+</code></pre><p>可以使用下列 Scan 类的方法设置扫描级别的缓存：</p>
+<pre><code>void <span class="function"><span class="title">setCaching</span><span class="params">(int caching)</span></span>
+int <span class="function"><span class="title">getCaching</span><span class="params">()</span></span>
+</code></pre><p><strong>注意</strong>：扫描层面的配置高于表层面的配置，这两种方法能控制每次RPC调用取回的行数。</p>
+<p>我们之前介绍的了如何使用客户端的扫描器缓存来从远程 region 服务器向客户端整批传输数据，不过还有一件事需要注意：数据量非常大的行，这些行有可能超过客户端进程的内存容量。HBase 和它的客户端 API 对这个问题有一个解决方法：批量。用户可以使用以下方法控制批量获取操作：</p>
+<pre><code>void <span class="function"><span class="title">setBatch</span><span class="params">(int batch)</span></span>
+int <span class="function"><span class="title">getBatch</span><span class="params">()</span></span>
+</code></pre><p>缓存是面向行一级的操作，而批量则是面向列一级的操作。批量可以让用户选择每一次 ResultScanner 实例的 next() 操作要取回多少列。例如，在扫描中设置 setBatch(5)，则一次 next() 返回的 Result 实例会包括 5 列。</p>
+<p>通过组合使用扫描器缓存和批量大小，可以让用户方便地控制一个范围内的行键时所需要的 RPC 调用次数。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/28/HBase-学习-Delete-和-行锁/" itemprop="url">
                   HBase 学习: Delete、批量处理操作
                 </a>
@@ -2247,153 +2440,6 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/22/数据库系统实现-索引结构小结/" itemprop="url">
-                  数据库系统实现: 索引结构小结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-22T15:22:02+08:00" content="2016-10-22">
-              2016-10-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/22/数据库系统实现-索引结构小结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/数据库系统实现-索引结构小结/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/22/数据库系统实现-索引结构小结/" class="leancloud_visitors" data-flag-title="数据库系统实现: 索引结构小结">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><strong>顺序文件</strong>：几种简单的文件组织，其产生方式是将数据文件按某个排序键排序并在该文件上建立索引。</p>
-<p><strong>稠密索引和稀疏索引</strong>：稠密索引为数据文件的每个记录设一个键 - 指针对，而稀疏索引为数据文件的每个存储块设一个键 - 指针对。</p>
-<p><strong>多级索引</strong>：在索引文件上再建立索引，在索引的索引上再建索引……这在有时候是很有用的。高级索引必须是稀疏的。</p>
-<p><strong>辅助索引</strong>：即使数据文件没有按查找键 K 排序，我们也可以在键 K 上建立索引。这样的索引必须是稠密的。</p>
-<p><strong>倒排索引</strong>：文件及其包含的词之间的关系通常可通过一个词 - 指针对的索引结构来表示。指针指向“桶”文件的某个位置，该位置上有一个指向文件中该词出现的地方的指针列表。</p>
-<p><strong>B - 树</strong>：这些结构实质上是有着很好的扩充性能的多级索引。带有 N 个键和 N + 1 个指针的存储块被组织成一棵树。叶结点指向记录。任何时候所有非根索引块都在半满与全满之间。</p>
-<p><strong>散列表</strong>：同我们创建主存散列表一样，我们也可以基于辅存的存储块来建立散列表。散列函数将键值映射到桶，有效地将数据文件的记录分配到多个小组（桶）。桶用一个存储块和可能出现的溢出块表示。</p>
-<p><strong>可扩展散列</strong>：这种方法允许在存在记录数太多的桶时将桶的数目加倍。它使用指向块的指针数组来表示同。为了避免块过多，几个桶可以用同一个块表示。</p>
-<p><strong>线性散列</strong>：这种方法每当桶中的记录比例超出阈值时增加一个桶。由于单个桶的记录不会引起表的扩展，所以在某些情形下需要溢出块。</p>
-<p><strong>需要多维索引的查询</strong>：在多维数据上需要被支持的查询种类有：部分匹配、范围查询、最近邻查询和 where-am-I(包含一个给定点的区域或区域集)查询。</p>
-<p><strong>最近邻查询的执行</strong>：许多数据结构允许通过执行一个围绕给定点的范围查询来执行最近邻查询。要是在该范围内不存在点，则扩大这个范围。因为在矩形范围内找到了点并不排除在矩形外有更近点的可能性，所以我们必须小心。</p>
-<p><strong>网格文件</strong>：网格文件在每一维上切分点空间。网格线间的距离可以不同，且每一维上的网格线也可以不同。只有数据分布得相当均匀，网格文件就能很好的支持范围查询、部分匹配查询和最近邻查询。</p>
-<p><strong>分段散列表</strong>：分段散列函数从每一维上构造桶号的一些二进制位。它们支持部分匹配查询较好，且不依赖于数据的均匀分布。</p>
-<p><strong>多键索引</strong>：一个简单的多维结构有一个根，根是某个属性的索引，它导入第二个属性上的索引集合，而第二个属性的索引又导入第三个属性的索引集合等等。它们对于范围和最近邻查询有用。</p>
-<p><strong>kd - 树</strong>：kd - 树像二叉搜索树，但它们按不同层次在不同属性上分支。它们较好地支持部分匹配、范围和最近邻查询。为了使该结构适合二维辅存操作，需要把多个树结点压缩到一个块。</p>
-<p><strong>四叉树</strong>：四叉树划分多维立方体成四个象限，且若它们有太多的点，则递归地用同样的方式划分这些象限。它们支持部分匹配、范围和最近邻查询。</p>
-<p><strong>R - 树</strong>：这种树的结构通常表示成区域的集合，且通过聚集它们成一个更大区域的层次结构。它对 where-am-I 查询有帮助。</p>
-<p><strong>位图索引</strong>：这种索引结构支持多维查询。它排序点或记录并且通过位向量表示记录的位置。这些索引支持范围、最近邻和部分匹配查询。</p>
-<p><strong>压缩位图</strong>：为了节省由很少个 1 的向量组成位的图索引的空间，通过采用分段长度编码来对位图索引进行压缩。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2439,7 +2485,7 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">55</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2447,7 +2493,7 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2456,7 +2502,7 @@ public V put(K <span class="built_in">key</span>, V <span class="built_in">value
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
