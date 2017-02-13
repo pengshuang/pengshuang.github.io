@@ -258,6 +258,381 @@
             
               
                 
+                <a class="post-title-link" href="/2016/08/14/Hadoop-Restful-Api总结/" itemprop="url">
+                  Hadoop Restful API总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-14T23:17:29+08:00" content="2016-08-14">
+              2016-08-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
+                    <span itemprop="name">Hadoop</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/14/Hadoop-Restful-Api总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/14/Hadoop-Restful-Api总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/14/Hadoop-Restful-Api总结/" class="leancloud_visitors" data-flag-title="Hadoop Restful API总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下<a href="http://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html" target="_blank" rel="external">ResourceManager的Restful API</a>（网上现在大部分的中文资料都是关于hadoop2.4.0的Yarn Web Service API），看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
+<p>注意:</p>
+<p>Restful API 返回的格式为JSON，然后这里tseg0是主机的名字，即namenode的名字</p>
+<h3 id="Cluster_Information_API">Cluster Information API</h3><p>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster"</span>
+</code></pre><p>通过访问这个API,可以访问集群，知道整个hadoop集群的总体状态。<br>主要作用可以知道hadoop的版本号，感觉对工作并无什么太大作用。比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"clusterInfo"</span>: {
+        <span class="string">"id"</span>: <span class="number">1465889061871</span>,
+        <span class="string">"startedOn"</span>: <span class="number">1465889061871</span>,
+        <span class="string">"state"</span>: <span class="string">"STARTED"</span>,
+        <span class="string">"haState"</span>: <span class="string">"ACTIVE"</span>,
+      }
+</code></pre><h3 id="Cluster_Metrics_API">Cluster Metrics API</h3><p>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/metrics"</span>
+</code></pre><p>通过访问这个API，可以监控集群的具体状态：</p>
+<ol>
+<li>集群上一共提交了多少应用。</li>
+<li>集群上一共完成了多少应用。</li>
+<li>集群上正在跑的应用有多少个。</li>
+<li>多少个应用被killed掉了。</li>
+<li>多少个应用失败了。</li>
+<li>集群可供使用的内存有多少。</li>
+<li>集群已经使用的内存有多少。</li>
+<li>集群总共的内存大小数。</li>
+<li>集群总共拥有的节点个数。</li>
+<li>集群挂掉的节点个数。</li>
+<li>集群健在的节点个数。</li>
+<li>集群可以使用的VirtualCores个数。</li>
+<li>集群总共的VirtualCores个数。</li>
+<li>集群已经分配了的VirtualCores个数。</li>
+<li>集群已经分配了的container个数。</li>
+<li>集群上还剩下的container个数</li>
+<li>集群上正在pending状态的container个数。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"clusterMetrics"</span>: {
+       <span class="string">"appsSubmitted"</span>: <span class="number">476969</span>,
+       <span class="string">"appsCompleted"</span>: <span class="number">476306</span>,
+       <span class="string">"appsPending"</span>: <span class="number">0</span>,
+       <span class="string">"appsRunning"</span>: <span class="number">18</span>,
+       <span class="string">"appsFailed"</span>: <span class="number">41</span>,
+       <span class="string">"appsKilled"</span>: <span class="number">604</span>,
+       <span class="string">"reservedMB"</span>: <span class="number">0</span>,
+       <span class="string">"availableMB"</span>: <span class="number">3682720</span>,
+       <span class="string">"allocatedMB"</span>: <span class="number">842752</span>,
+       <span class="string">"reservedVirtualCores"</span>: <span class="number">0</span>,
+       <span class="string">"availableVirtualCores"</span>: <span class="number">1565</span>,
+       <span class="string">"allocatedVirtualCores"</span>: <span class="number">177</span>,
+       <span class="string">"containersAllocated"</span>: <span class="number">130</span>,
+       <span class="string">"containersReserved"</span>: <span class="number">0</span>,
+       <span class="string">"containersPending"</span>: <span class="number">759</span>,
+       <span class="string">"totalMB"</span>: <span class="number">4525472</span>,
+       <span class="string">"totalVirtualCores"</span>: <span class="number">1742</span>,
+       <span class="string">"totalNodes"</span>: <span class="number">104</span>,
+       <span class="string">"lostNodes"</span>: <span class="number">42</span>,
+       <span class="string">"unhealthyNodes"</span>: <span class="number">0</span>,
+       <span class="string">"decommissionedNodes"</span>: <span class="number">0</span>,
+       <span class="string">"rebootedNodes"</span>: <span class="number">0</span>,
+       <span class="string">"activeNodes"</span>: <span class="number">62</span>
+     }
+</code></pre><h3 id="Cluster_Scheduler_API">Cluster Scheduler API</h3><p>PI使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/scheduler"</span>
+</code></pre><p>通过访问这个api可以知道整个集群的调度过程具体信息。Hadoop的调度按队列（eg：webopa）来进行，不同部门的应用分成不同的队列。通过使用这个API可以知道每个部门队列的状态，比如：</p>
+<ol>
+<li>可以知道每个队列至多/至少可以拥有的资源数（包括内存和vCores数）</li>
+<li>可以知道每个队列最多可以运行的应用个数。</li>
+<li>可以知道每个队列使用的资源个数（memory和vcores）</li>
+<li>知道每个队列的调度策略。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"scheduler"</span>: {
+        <span class="string">"schedulerInfo"</span>: {
+          <span class="string">"type"</span>: <span class="string">"fairScheduler"</span>,
+          <span class="string">"rootQueue"</span>: {
+            <span class="string">"maxApps"</span>: <span class="number">2147483647</span>,
+            <span class="string">"minResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">0</span>,
+              <span class="string">"vCores"</span>: <span class="number">0</span>
+            },
+            <span class="string">"maxResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"usedResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">891904</span>,
+              <span class="string">"vCores"</span>: <span class="number">210</span>
+            },
+            <span class="string">"steadyFairResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"fairResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"clusterResources"</span>: {
+              <span class="string">"memory"</span>: <span class="number">4525472</span>,
+              <span class="string">"vCores"</span>: <span class="number">1742</span>
+            },
+            <span class="string">"queueName"</span>: <span class="string">"root"</span>,
+            <span class="string">"schedulingPolicy"</span>: <span class="string">"fair"</span>,
+            <span class="string">"childQueues"</span>: [
+              {
+                <span class="string">"type"</span>: <span class="string">"fairSchedulerLeafQueueInfo"</span>,
+                <span class="string">"maxApps"</span>: <span class="number">200</span>,
+                <span class="string">"minResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">110592</span>,
+                  <span class="string">"vCores"</span>: <span class="number">64</span>
+                },
+                <span class="string">"maxResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">768552</span>,
+                  <span class="string">"vCores"</span>: <span class="number">384</span>
+                },
+                <span class="string">"usedResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">0</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"steadyFairResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">110592</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"fairResources"</span>: {
+                  <span class="string">"memory"</span>: <span class="number">0</span>,
+                  <span class="string">"vCores"</span>: <span class="number">0</span>
+                },
+                <span class="string">"queueName"</span>: <span class="string">"root.default"</span>,
+                <span class="string">"schedulingPolicy"</span>: <span class="string">"fair"</span>,
+                <span class="string">"numPendingApps"</span>: <span class="number">0</span>,
+                <span class="string">"numActiveApps"</span>: <span class="number">0</span>
+              },....
+</code></pre><h3 id="Cluster_Apps_AppID_API">Cluster Apps AppID API</h3><p>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/apps/application_1465889061871_478559"</span>
+</code></pre><p>可以指定去查看在集群上跑的某个应用的状态。<br>具体的有：</p>
+<ol>
+<li>启动应用的user。</li>
+<li>应用名称。</li>
+<li>应用类型。</li>
+<li>应用的状态。</li>
+<li>应用所属队列。</li>
+<li>应用最终运行状态。</li>
+<li>应用开始/停止时间</li>
+<li>应用的进度。</li>
+<li>应用耗时多久。 </li>
+<li>分配给这个应用所在container的资源（memory和Vcores）。</li>
+<li><p>负责运行这个应用的container的个数。<br>比较重要的信息摘要如下：</p>
+<p> “app”: {</p>
+<pre><code><span class="string">"id"</span>: <span class="string">"application_1465889061871_478559"</span>,
+<span class="string">"user"</span>: <span class="string">"webopa"</span>,
+<span class="string">"name"</span>: <span class="string">"\"rpt_web_nextpage_channel_hourly\""</span>,
+<span class="string">"queue"</span>: <span class="string">"root.webopa"</span>,
+<span class="string">"state"</span>: <span class="string">"FINISHED"</span>,
+<span class="string">"finalStatus"</span>: <span class="string">"SUCCEEDED"</span>,
+<span class="string">"progress"</span>: <span class="number">100.0</span>,
+<span class="string">"trackingUI"</span>: <span class="string">"History"</span>,
+<span class="string">"trackingUrl"</span>: <span class="string">"http://tseg0:8089/proxy/application_1465889061871_478559/jobhistory/job/job_1465889061871_478559"</span>,
+<span class="string">"diagnostics"</span>: <span class="string">""</span>,
+<span class="string">"clusterId"</span>: <span class="number">1465889061871</span>,
+<span class="string">"applicationType"</span>: <span class="string">"MAPREDUCE"</span>,
+<span class="string">"startedTime"</span>: <span class="number">1469585351258</span>,
+<span class="string">"finishedTime"</span>: <span class="number">1469585406607</span>,
+<span class="string">"elapsedTime"</span>: <span class="number">55349</span>,
+<span class="string">"amContainerLogs"</span>: <span class="string">"http://datanode048.tseg0:8042/node/containerlogs/container_1465889061871_478559_01_000001/webopa"</span>,
+<span class="string">"amHostHttpAddress"</span>: <span class="string">"datanode048. tseg0:8042"</span>,
+<span class="string">"allocatedMB"</span>: -<span class="number">1</span>,
+<span class="string">"allocatedVCores"</span>: -<span class="number">1</span>,
+<span class="string">"runningContainers"</span>: -<span class="number">1</span>,
+}
+</code></pre></li>
+</ol>
+<p>###Cluster Appstatistic<br>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X   <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/appstatistics/"</span>
+</code></pre><p>通过这个api可以统计出不同类型（mapreduce或spark）、不同状态（running或finished）的应用个数。<br>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"appStatInfo"</span>: {
+       <span class="string">"statItem"</span>: [
+         {
+           <span class="string">"state"</span>: <span class="string">"FAILED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"ACCEPTED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">2</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"FINISHED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">9971</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"SUBMITTED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"RUNNING"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">8</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"KILLED"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">29</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"NEW"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         },
+         {
+           <span class="string">"state"</span>: <span class="string">"NEW_SAVING"</span>,
+           <span class="string">"type"</span>: <span class="string">"*"</span>,
+           <span class="string">"count"</span>: <span class="number">0</span>
+         }
+       ]
+     }
+</code></pre><h3 id="Cluster_Nodes_API">Cluster Nodes API</h3><p>API使用方法：</p>
+<pre><code><span class="label">curl</span> --compressed -H <span class="string">"Accept: application/json"</span> -X <span class="preprocessor">GET</span> <span class="string">"http://tseg0:8088/ws/v1/cluster/nodes"</span>
+</code></pre><p>通过这个API我们可以知道不同node的状态，比如：</p>
+<ol>
+<li>nodeHostname 和 nodeHttpAddress。</li>
+<li>该node的状态。（healthy或者其他)</li>
+<li>该node已经使用和还可以使用的memory/vCores数。</li>
+<li>该node上container的个数。</li>
+<li>上一次健康状态的更新时间（unix时间戳）。</li>
+</ol>
+<p>注：因为有时候node节点数特别多，想具体查询某个node可以通过指定nodeid来查询。</p>
+<p>比较重要的信息摘要如下：</p>
+<pre><code><span class="string">"nodes"</span>: {
+        <span class="string">"node"</span>: [
+        {
+        <span class="string">"rack"</span>: <span class="string">"/default-rack"</span>,
+        <span class="string">"state"</span>: <span class="string">"RUNNING"</span>,
+        <span class="string">"id"</span>: <span class="string">"datanode018. tseg0:50523"</span>,
+        <span class="string">"nodeHostName"</span>: <span class="string">"datanode018. tseg0"</span>,
+        <span class="string">"nodeHTTPAddress"</span>: <span class="string">"datanode018. tseg0:8042"</span>,
+        <span class="string">"lastHealthUpdate"</span>: <span class="number">1469609570494</span>,
+        <span class="string">"version"</span>: <span class="string">"2.5.0-cdh5.2.0"</span>,
+        <span class="string">"healthReport"</span>: <span class="string">""</span>,
+        <span class="string">"numContainers"</span>: <span class="number">1</span>,
+        <span class="string">"usedMemoryMB"</span>: <span class="number">15360</span>,
+        <span class="string">"availMemoryMB"</span>: <span class="number">7168</span>,
+        <span class="string">"usedVirtualCores"</span>: <span class="number">2</span>,
+        <span class="string">"availableVirtualCores"</span>: <span class="number">22</span>
+        },...
+        ]
+      }
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/12/K-means简介/" itemprop="url">
                   K-means算法简介
                 </a>
@@ -2130,7 +2505,7 @@ ctx.stop()
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">58</span>
+              <span class="site-state-item-count">59</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
