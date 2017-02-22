@@ -345,172 +345,172 @@
       
         <p>最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。</p>
 <p>使用 Maven 工程，我的 pom 文件如下所示：</p>
-<pre><code><span class="tag">&lt;<span class="title">dependencies</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.elasticsearch<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>elasticsearch<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.4.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-api<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-core<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span>
-</code></pre><h3 id="连接机器">连接机器</h3><pre><code><span class="label">TransportClient</span> client = TransportClient.<span class="keyword">builder()
-</span>    .<span class="keyword">build()
-</span>    .<span class="keyword">addTransportAddress(new </span>InetSocketTransportAddress(InetAddress
-    .getByName(<span class="string">"localhost"</span>), <span class="number">9300</span>))<span class="comment">;       </span>
-</code></pre><h3 id="Index_API_创建_Index_并且插入_Document">Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
-<pre><code><span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
-json.put(<span class="string">"first_name"</span>,<span class="string">"Shuang"</span>);
-json.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
-json.put(<span class="string">"age"</span>, <span class="number">24</span>);
-json.put(<span class="string">"about"</span>, <span class="string">"I love coding"</span>);
+<pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.elasticsearch&lt;/groupId&gt;
+        &lt;artifactId&gt;elasticsearch&lt;/artifactId&gt;
+        &lt;version&gt;2.4.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h3 id="连接机器"><a href="#连接机器" class="headerlink" title="连接机器"></a>连接机器</h3><pre><code>TransportClient client = TransportClient.builder()
+    .build()
+    .addTransportAddress(new InetSocketTransportAddress(InetAddress
+    .getByName(&quot;localhost&quot;), 9300));       
+</code></pre><h3 id="Index-API-创建-Index-并且插入-Document"><a href="#Index-API-创建-Index-并且插入-Document" class="headerlink" title="Index API 创建 Index 并且插入 Document"></a>Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
+<pre><code>HashMap&lt;String, Object&gt; json = new HashMap&lt;String, Object&gt;();
+json.put(&quot;first_name&quot;,&quot;Shuang&quot;);
+json.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json.put(&quot;age&quot;, 24);
+json.put(&quot;about&quot;, &quot;I love coding&quot;);
 IndexResponse response = client
-    .prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
-    .setSource(json).<span class="built_in">get</span>();
+    .prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
+    .setSource(json).get();
 
-IndexResponse response = client.prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
+IndexResponse response = client.prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
    .setSource(jsonBuilder()
    .startObject()
-   .field(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
-   .field(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>)
-   .field(<span class="string">"age"</span>, <span class="number">24</span>)
-   .field(<span class="string">"about"</span>, <span class="string">"I love coding"</span>)
+   .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+   .field(&quot;first_name&quot;, &quot;Peng&quot;)
+   .field(&quot;age&quot;, 24)
+   .field(&quot;about&quot;, &quot;I love coding&quot;)
    .endObject())
-   .<span class="built_in">get</span>();
+   .get();
 </code></pre><p><strong>注意</strong>：Index API 只能用于创建 index，类似于关系型数据库里面的 create table，他不能对已有的数据库进行添加。追加操作可以用后面会提到的 Update 或者 Bulk 来完成。    </p>
-<h3 id="Get_API_获取_Document">Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>).<span class="literal">get</span>();
-<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; res = response2.getSource();
-<span class="keyword">for</span> (<span class="built_in">Map</span>.Entry&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; entry: res.entrySet()){
-     System.out.println(entry.getKey() + <span class="string">" : "</span> + entry.getValue());
+<h3 id="Get-API-获取-Document"><a href="#Get-API-获取-Document" class="headerlink" title="Get API 获取 Document"></a>Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;).get();
+Map&lt;String, Object&gt; res = response2.getSource();
+for (Map.Entry&lt;String, Object&gt; entry: res.entrySet()){
+     System.out.println(entry.getKey() + &quot; : &quot; + entry.getValue());
      }
-</code></pre><h3 id="Delete_API_删除_Index_或者_Document">Delete API 删除 Index 或者 Document</h3><pre><code><span class="comment">// 用来删除对应的 document </span>
+</code></pre><h3 id="Delete-API-删除-Index-或者-Document"><a href="#Delete-API-删除-Index-或者-Document" class="headerlink" title="Delete API 删除 Index 或者 Document"></a>Delete API 删除 Index 或者 Document</h3><pre><code>// 用来删除对应的 document 
 DeleteResponse response3 = 
-    <span class="keyword">client</span>.prepareDelete(<span class="string">"tesg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>).get();
-<span class="comment">// 用来删除对应的 index</span>
+    client.prepareDelete(&quot;tesg&quot;,&quot;students&quot;,&quot;1&quot;).get();
+// 用来删除对应的 index
 DeleteIndexResponse response4 = 
-    <span class="keyword">client</span>.admin().indices().prepareDelete(<span class="string">"facebook"</span>).execute().actionGet();
-</code></pre><h3 id="Update_API_更新操作">Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
+    client.admin().indices().prepareDelete(&quot;facebook&quot;).execute().actionGet();
+</code></pre><h3 id="Update-API-更新操作"><a href="#Update-API-更新操作" class="headerlink" title="Update API 更新操作"></a>Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
 <p>第一种</p>
-<pre><code>client.prepareUpdate(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
-    .setDoc(jsonBuilder<span class="literal">()</span>
-    .startObject<span class="literal">()</span>.field(<span class="string">"age"</span>, <span class="number">32</span>)
-    .endObject<span class="literal">()</span>)
-    .get<span class="literal">()</span>;
+<pre><code>client.prepareUpdate(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
+    .setDoc(jsonBuilder()
+    .startObject().field(&quot;age&quot;, 32)
+    .endObject())
+    .get();
 </code></pre><p>第二种</p>
-<pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+<pre><code>IndexRequest indexRequest = new IndexRequest(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
     .source(jsonBuilder()
     .startObject()
-    .<span class="keyword">field</span>(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
-    .<span class="keyword">field</span>(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
-    .<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
-    .<span class="keyword">field</span>(<span class="string">"about"</span>, <span class="string">"I loving coding"</span>)
+    .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+    .field(&quot;last_name&quot;, &quot;Peng&quot;)
+    .field(&quot;age&quot;, 32)
+    .field(&quot;about&quot;, &quot;I loving coding&quot;)
     .endObject());
 
-UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">"tseg"</span>,<span class="string">"students"</span>, <span class="string">"1"</span>)
+UpdateRequest updateRequest = new UpdateRequest(&quot;tseg&quot;,&quot;students&quot;, &quot;1&quot;)
     .doc(jsonBuilder()
-    .startObject().<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
+    .startObject().field(&quot;age&quot;, 32)
     .endObject())
     .upsert(indexRequest);
  client.update(updateRequest).get();
 </code></pre><p>不过这里提一下第二种方法，如果对应的 <strong>field</strong> 不存在的话，则更新操作自动变为插入操作，否则，就是正常的修改操作。</p>
-<h3 id="Multi_Get_API_多查找">Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
+<h3 id="Multi-Get-API-多查找"><a href="#Multi-Get-API-多查找" class="headerlink" title="Multi Get API 多查找"></a>Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
 <pre><code>MultiGetResponse multiGetItemResponses = client.prepareMultiGet()
-    .<span class="built_in">add</span>(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"3"</span>).<span class="built_in">get</span>();
+    .add(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;).get();
 
-<span class="keyword">for</span> (MultiGetItemResponse itemResponses : multiGetItemResponses) {
+for (MultiGetItemResponse itemResponses : multiGetItemResponses) {
     GetResponse response5 = itemResponses.getResponse();
-    <span class="keyword">if</span> (response5.isExists()) {
+    if (response5.isExists()) {
 
-<span class="comment">// 第一种用法</span>
-    Map&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; fields = response5.getSource();
-    System.out.<span class="built_in">println</span>(fields.<span class="built_in">get</span>(<span class="string">"first_name"</span>));
+// 第一种用法
+    Map&lt;String, Object&gt; fields = response5.getSource();
+    System.out.println(fields.get(&quot;first_name&quot;));
 
-<span class="comment">// 第二种用法</span>
-    <span class="keyword">String</span> json2 = response5.getSourceAsString();
-    System.out.<span class="built_in">println</span>(json2);
+// 第二种用法
+    String json2 = response5.getSourceAsString();
+    System.out.println(json2);
 }
-</code></pre><h3 id="Bulk_API_批量操作">Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
+</code></pre><h3 id="Bulk-API-批量操作"><a href="#Bulk-API-批量操作" class="headerlink" title="Bulk API 批量操作"></a>Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
 <pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
            .setSource(jsonBuilder()
            .startObject()
-           .field(<span class="string">"first_name"</span>, <span class="string">"Allen"</span>)
-           .field(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
-           .field(<span class="string">"age"</span>, <span class="string">"22"</span>)
+           .field(&quot;first_name&quot;, &quot;Allen&quot;)
+           .field(&quot;last_name&quot;, &quot;Peng&quot;)
+           .field(&quot;age&quot;, &quot;22&quot;)
            .endObject()))
-           .<span class="built_in">get</span>();
+           .get();
 
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"2"</span>))
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;2&quot;))
             .setSource(jsonBuilder()
             .startObject()
-            .field(<span class="string">"first_name"</span>, <span class="string">"Hou"</span>)
-            .field(<span class="string">"last_name"</span>, <span class="string">"Xue"</span>)
-            .field(<span class="string">"age"</span>, <span class="string">"30"</span>)
+            .field(&quot;first_name&quot;, &quot;Hou&quot;)
+            .field(&quot;last_name&quot;, &quot;Xue&quot;)
+            .field(&quot;age&quot;, &quot;30&quot;)
             .endObject()))
-            .<span class="built_in">get</span>();
+            .get();
 
-<span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json2 = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
-List&lt;<span class="keyword">String</span>&gt; list = <span class="keyword">new</span> ArrayList&lt;<span class="keyword">String</span>&gt;();
-list.<span class="built_in">add</span>(<span class="string">"music"</span>);
-list.<span class="built_in">add</span>(<span class="string">"football"</span>);
-json2.put(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>);
-json2.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
-json2.put(<span class="string">"interests"</span>, list);
+HashMap&lt;String, Object&gt; json2 = new HashMap&lt;String, Object&gt;();
+List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+list.add(&quot;music&quot;);
+list.add(&quot;football&quot;);
+json2.put(&quot;first_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;interests&quot;, list);
 BulkRequestBuilder bulkRequest2 = client.prepareBulk();
 
-<span class="comment">// 两种执行方法，个人倾向于第一种</span>
-bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, <span class="string">"info"</span>, 
-    <span class="string">"3"</span>).setSource(json2)).<span class="built_in">get</span>();
-<span class="comment">// 第二种方法</span>
-bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, 
-    <span class="string">"info"</span>,<span class="string">"1"</span>).setSource(json2)).execute().actionGet();
+// 两种执行方法，个人倾向于第一种
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, &quot;info&quot;, 
+    &quot;3&quot;).setSource(json2)).get();
+// 第二种方法
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, 
+    &quot;info&quot;,&quot;1&quot;).setSource(json2)).execute().actionGet();
 </code></pre><p>还可以这样做：</p>
 <pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>)
-    .setSource(<span class="keyword">source</span>);
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>)
-    .setSource(<span class="keyword">source</span>);
-BulkResponse bulkResponse = bulkRequest.<span class="keyword">execute</span>().actionGet();
-</code></pre><h3 id="Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
+bulkRequest.add(client.prepareIndex(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;)
+    .setSource(source);
+bulkRequest.add(client.prepareIndex(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;)
+    .setSource(source);
+BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+</code></pre><h3 id="Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作"><a href="#Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作" class="headerlink" title="Bulk Processor API 可在批量操作完成之前和之后进行相应的操作"></a>Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
         client,  
-        <span class="keyword">new</span> BulkProcessor.Listener() {
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeBulk</span><span class="params">(<span class="keyword">long</span> executionId,
-                                  BulkRequest request)</span> </span>{ ... } 
+        new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId,
+                                  BulkRequest request) { ... } 
 
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+            @Override
+            public void afterBulk(long executionId,
                                   BulkRequest request,
-                                  BulkResponse response)</span> </span>{ ... } 
+                                  BulkResponse response) { ... } 
 
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+            @Override
+            public void afterBulk(long executionId,
                                   BulkRequest request,
-                                  Throwable failure)</span> </span>{ ... } 
+                                  Throwable failure) { ... } 
         })
-        .setBulkActions(<span class="number">10000</span>) 
-        .setBulkSize(<span class="keyword">new</span> ByteSizeValue(<span class="number">1</span>, ByteSizeUnit.GB)) 
-        .setFlushInterval(TimeValue.timeValueSeconds(<span class="number">5</span>)) 
-        .setConcurrentRequests(<span class="number">1</span>) 
+        .setBulkActions(10000) 
+        .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)) 
+        .setFlushInterval(TimeValue.timeValueSeconds(5)) 
+        .setConcurrentRequests(1) 
          .build();
 
-bulkProcessor.add(<span class="keyword">new</span> IndexRequest(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>).source(source1));  
-bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>);        
+bulkProcessor.add(new IndexRequest(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;).source(source1));  
+bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;);        
 </code></pre><ol>
 <li>beforeBulk 会在批量提交之前执行，可以从 BulkRequest 中获取请求信息request.requests() 或者请求数量 request.numberOfActions()。 </li>
 <li>第一个 afterBulk 会在批量成功后执行，可以跟 beforeBulk 配合计算批量所需时间。 </li>
 <li>第二个 afterBulk 会在批量失败后执行。 </li>
 <li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
 </ol>
-<h3 id="后记">后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
 
       
     </div>
@@ -643,7 +643,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -651,7 +651,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -660,7 +660,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -731,7 +731,7 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接机器"><span class="nav-number">1.</span> <span class="nav-text">连接机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index_API_创建_Index_并且插入_Document"><span class="nav-number">2.</span> <span class="nav-text">Index API 创建 Index 并且插入 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get_API_获取_Document"><span class="nav-number">3.</span> <span class="nav-text">Get API 获取 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete_API_删除_Index_或者_Document"><span class="nav-number">4.</span> <span class="nav-text">Delete API 删除 Index 或者 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update_API_更新操作"><span class="nav-number">5.</span> <span class="nav-text">Update API 更新操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi_Get_API_多查找"><span class="nav-number">6.</span> <span class="nav-text">Multi Get API 多查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_API_批量操作"><span class="nav-number">7.</span> <span class="nav-text">Bulk API 批量操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作"><span class="nav-number">8.</span> <span class="nav-text">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">9.</span> <span class="nav-text">后记</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#连接机器"><span class="nav-number">1.</span> <span class="nav-text">连接机器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-API-创建-Index-并且插入-Document"><span class="nav-number">2.</span> <span class="nav-text">Index API 创建 Index 并且插入 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-API-获取-Document"><span class="nav-number">3.</span> <span class="nav-text">Get API 获取 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-API-删除-Index-或者-Document"><span class="nav-number">4.</span> <span class="nav-text">Delete API 删除 Index 或者 Document</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Update-API-更新操作"><span class="nav-number">5.</span> <span class="nav-text">Update API 更新操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Get-API-多查找"><span class="nav-number">6.</span> <span class="nav-text">Multi Get API 多查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk-API-批量操作"><span class="nav-number">7.</span> <span class="nav-text">Bulk API 批量操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作"><span class="nav-number">8.</span> <span class="nav-text">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">9.</span> <span class="nav-text">后记</span></a></li></ol></div>
             
           </div>
         </section>
@@ -886,6 +886,26 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

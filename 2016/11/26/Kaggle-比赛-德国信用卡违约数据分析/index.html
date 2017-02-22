@@ -460,7 +460,7 @@ g
       
 
       
-        <h3 id="数据描述">数据描述</h3><p>German Credit Data， 我们来看看数据的格式,</p>
+        <h3 id="数据描述"><a href="#数据描述" class="headerlink" title="数据描述"></a>数据描述</h3><p>German Credit Data， 我们来看看数据的格式,</p>
 <p>A1 到 A15 为 15个不同类别的特征，A16 为 label 列，一共有 690条数据，下面列举其中一条当作例子：</p>
 <table>
 <thead>
@@ -504,41 +504,41 @@ g
 </tr>
 </tbody>
 </table>
-<h4 id="Attribute_Information:">Attribute Information:</h4><pre><code><span class="attribute">A1</span>: <span class="string">   b, a.</span>
-<span class="attribute">A2</span>: <span class="string">   continuous.</span>
-<span class="attribute">A3</span>: <span class="string">   continuous.</span>
-<span class="attribute">A4</span>: <span class="string">   u, y, l, t.</span>
-<span class="attribute">A5</span>: <span class="string">   g, p, gg.</span>
-<span class="attribute">A6</span>: <span class="string">   c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.</span>
-<span class="attribute">A7</span>: <span class="string">   v, h, bb, j, n, z, dd, ff, o.</span>
-<span class="attribute">A8</span>: <span class="string">   continuous.</span>
-<span class="attribute">A9</span>: <span class="string">   t, f.</span>
-<span class="attribute">A10</span>: <span class="string">   t, f.</span>
-<span class="attribute">A11</span>: <span class="string">   continuous.</span>
-<span class="attribute">A12</span>: <span class="string">   t, f.</span>
-<span class="attribute">A13</span>: <span class="string">   g, p, s.</span>
-<span class="attribute">A14</span>: <span class="string">   continuous.</span>
-<span class="attribute">A15</span>: <span class="string">   continuous.</span>
-<span class="attribute">A16</span>: <span class="string">+,-         (class attribute)</span>
-</code></pre><h4 id="Missing_Attribute_Values:">Missing Attribute Values:</h4><pre><code><span class="number">37</span> cases (<span class="number">5</span>%) have one or more missing values.  The missing
+<h4 id="Attribute-Information"><a href="#Attribute-Information" class="headerlink" title="Attribute Information:"></a>Attribute Information:</h4><pre><code>A1:    b, a.
+A2:    continuous.
+A3:    continuous.
+A4:    u, y, l, t.
+A5:    g, p, gg.
+A6:    c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.
+A7:    v, h, bb, j, n, z, dd, ff, o.
+A8:    continuous.
+A9:    t, f.
+A10:    t, f.
+A11:    continuous.
+A12:    t, f.
+A13:    g, p, s.
+A14:    continuous.
+A15:    continuous.
+A16: +,-         (class attribute)
+</code></pre><h4 id="Missing-Attribute-Values"><a href="#Missing-Attribute-Values" class="headerlink" title="Missing Attribute Values:"></a>Missing Attribute Values:</h4><pre><code>37 cases (5%) have one or more missing values.  The missing
 values from particular attributes are:
 
-A1:  <span class="number">12</span>
-A2:  <span class="number">12</span>
-A4:   <span class="number">6</span>
-A5:   <span class="number">6</span>
-A6:   <span class="number">9</span>
-A7:   <span class="number">9</span>
-A14: <span class="number">13</span>
-</code></pre><h4 id="Class_Distribution">Class Distribution</h4><pre><code>+: <span class="number">307</span> (<span class="number">44.5</span>%)
--: <span class="number">383</span> (<span class="number">55.5</span>%)
-</code></pre><h4 id="数据处理与数据分析">数据处理与数据分析</h4><p>下面展示一下数据处理流程，主要是处理了一下缺失值，然后根据特征按连续型和离散型进行分别处理，使用了 sklearn 里面的 LogisticRegression 包，下面的代码都有很详细的注释。</p>
+A1:  12
+A2:  12
+A4:   6
+A5:   6
+A6:   9
+A7:   9
+A14: 13
+</code></pre><h4 id="Class-Distribution"><a href="#Class-Distribution" class="headerlink" title="Class Distribution"></a>Class Distribution</h4><pre><code>+: 307 (44.5%)
+-: 383 (55.5%)
+</code></pre><h4 id="数据处理与数据分析"><a href="#数据处理与数据分析" class="headerlink" title="数据处理与数据分析"></a>数据处理与数据分析</h4><p>下面展示一下数据处理流程，主要是处理了一下缺失值，然后根据特征按连续型和离散型进行分别处理，使用了 sklearn 里面的 LogisticRegression 包，下面的代码都有很详细的注释。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">data = pd.read_csv(<span class="string">"./crx.data"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给数据增加列标签</span></span><br><span class="line">data.columns = [<span class="string">"f1"</span>, <span class="string">"f2"</span>, <span class="string">"f3"</span>, <span class="string">"f4"</span>, <span class="string">"f5"</span>, <span class="string">"f6"</span>, <span class="string">"f7"</span>, <span class="string">"f8"</span>, <span class="string">"f9"</span>, <span class="string">"f10"</span>, <span class="string">"f11"</span>, <span class="string">"f12"</span>, <span class="string">"f13"</span>, <span class="string">"f14"</span>, <span class="string">"f15"</span>, <span class="string">"label"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换 label 映射</span></span><br><span class="line">label_mapping = &#123;</span><br><span class="line">    <span class="string">"+"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"-"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"label"</span>] = data[<span class="string">"label"</span>].map(label_mapping)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理缺省值的方法</span></span><br><span class="line">data = data.replace(<span class="string">"?"</span>, np.nan)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 object 类型的列转换为 float型</span></span><br><span class="line">data[<span class="string">"f2"</span>] = pd.to_numeric(data[<span class="string">"f2"</span>])</span><br><span class="line">data[<span class="string">"f14"</span>] = pd.to_numeric(data[<span class="string">"f14"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连续型特征如果有缺失值的话，用它们的平均值替代</span></span><br><span class="line">data[<span class="string">"f2"</span>] = data[<span class="string">"f2"</span>].fillna(data[<span class="string">"f2"</span>].mean())</span><br><span class="line">data[<span class="string">"f3"</span>] = data[<span class="string">"f3"</span>].fillna(data[<span class="string">"f3"</span>].mean())</span><br><span class="line">data[<span class="string">"f8"</span>] = data[<span class="string">"f8"</span>].fillna(data[<span class="string">"f8"</span>].mean())</span><br><span class="line">data[<span class="string">"f11"</span>] = data[<span class="string">"f11"</span>].fillna(data[<span class="string">"f11"</span>].mean())</span><br><span class="line">data[<span class="string">"f14"</span>] = data[<span class="string">"f14"</span>].fillna(data[<span class="string">"f14"</span>].mean())</span><br><span class="line">data[<span class="string">"f15"</span>] = data[<span class="string">"f15"</span>].fillna(data[<span class="string">"f15"</span>].mean())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 离散型特征如果有缺失值的话，用另外一个不同的值替代</span></span><br><span class="line">data[<span class="string">"f1"</span>] = data[<span class="string">"f1"</span>].fillna(<span class="string">"c"</span>)</span><br><span class="line">data[<span class="string">"f4"</span>] = data[<span class="string">"f4"</span>].fillna(<span class="string">"s"</span>)</span><br><span class="line">data[<span class="string">"f5"</span>] = data[<span class="string">"f5"</span>].fillna(<span class="string">"gp"</span>)</span><br><span class="line">data[<span class="string">"f6"</span>] = data[<span class="string">"f6"</span>].fillna(<span class="string">"hh"</span>)</span><br><span class="line">data[<span class="string">"f7"</span>] = data[<span class="string">"f7"</span>].fillna(<span class="string">"ee"</span>)</span><br><span class="line">data[<span class="string">"f13"</span>] = data[<span class="string">"f13"</span>].fillna(<span class="string">"ps"</span>)</span><br><span class="line"></span><br><span class="line">tf_mapping = &#123;</span><br><span class="line">    <span class="string">"t"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"f"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"f9"</span>] = data[<span class="string">"f9"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f10"</span>] = data[<span class="string">"f10"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f12"</span>] = data[<span class="string">"f12"</span>].map(tf_mapping)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给离散的特征进行 one-hot 编码</span></span><br><span class="line">data = pd.get_dummies(data)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱顺序</span></span><br><span class="line">shuffled_rows = np.random.permutation(data.index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分本地测试集和训练集</span></span><br><span class="line">highest_train_row = int(data.shape[<span class="number">0</span>] * <span class="number">0.70</span>)</span><br><span class="line">train = data.iloc[<span class="number">0</span>:highest_train_row]</span><br><span class="line">loc_test = data.iloc[highest_train_row:]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 去掉最后一列 label 之后的才是 feature</span></span><br><span class="line">features = train.drop([<span class="string">"label"</span>], axis = <span class="number">1</span>).columns</span><br><span class="line"></span><br><span class="line">model = LogisticRegression()</span><br><span class="line">X_train = train[features]</span><br><span class="line">y_train = train[<span class="string">"label"</span>] == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line">X_test = loc_test[features]</span><br><span class="line"></span><br><span class="line">test_prob = model.predict(X_test)</span><br><span class="line">test_label = loc_test[<span class="string">'label'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地测试集上的准确率</span></span><br><span class="line">accuracy_test = (test_prob == loc_test[<span class="string">"label"</span>]).mean()</span><br><span class="line"><span class="keyword">print</span> accuracy_test</span><br></pre></td></tr></table></figure>
-<pre><code><span class="number">0.835748792271</span>
+<pre><code>0.835748792271
 </code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> cross_validation, metrics</span><br><span class="line"></span><br><span class="line"><span class="comment">#验证集上的auc值</span></span><br><span class="line">test_auc = metrics.roc_auc_score(test_label, test_prob)<span class="comment">#验证集上的auc值</span></span><br><span class="line"><span class="keyword">print</span> test_auc</span><br></pre></td></tr></table></figure>
-<pre><code><span class="number">0.835748792271</span>
+<pre><code>0.835748792271
 </code></pre><p>简单使用了一下逻辑回归，发现准确率是 0.835748792271，AUC 值是 0.835748792271，效果还不错，接下来对模型进行优化来进一步提高准确率。</p>
 
       
@@ -672,7 +672,7 @@ A14: <span class="number">13</span>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -680,7 +680,7 @@ A14: <span class="number">13</span>
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -689,7 +689,7 @@ A14: <span class="number">13</span>
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -760,7 +760,7 @@ A14: <span class="number">13</span>
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据描述"><span class="nav-number">1.</span> <span class="nav-text">数据描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attribute_Information:"><span class="nav-number">1.1.</span> <span class="nav-text">Attribute Information:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Missing_Attribute_Values:"><span class="nav-number">1.2.</span> <span class="nav-text">Missing Attribute Values:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Class_Distribution"><span class="nav-number">1.3.</span> <span class="nav-text">Class Distribution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据处理与数据分析"><span class="nav-number">1.4.</span> <span class="nav-text">数据处理与数据分析</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据描述"><span class="nav-number">1.</span> <span class="nav-text">数据描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attribute-Information"><span class="nav-number">1.1.</span> <span class="nav-text">Attribute Information:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Missing-Attribute-Values"><span class="nav-number">1.2.</span> <span class="nav-text">Missing Attribute Values:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Class-Distribution"><span class="nav-number">1.3.</span> <span class="nav-text">Class Distribution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据处理与数据分析"><span class="nav-number">1.4.</span> <span class="nav-text">数据处理与数据分析</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
@@ -915,6 +915,26 @@ A14: <span class="number">13</span>
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

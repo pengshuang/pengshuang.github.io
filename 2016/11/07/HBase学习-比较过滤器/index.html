@@ -341,159 +341,159 @@ CompareFilter(CompareOp valueCompareOp,
 
       
         <p>HBase 提供的第一种过滤器实现就是<strong>比较过滤器</strong>。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。</p>
-<pre><code>CompareFilter<span class="list">(<span class="keyword">CompareOp</span> valueCompareOp,
-    WritableByteArrayCompareable valueComparator)</span>
+<pre><code>CompareFilter(CompareOp valueCompareOp,
+    WritableByteArrayCompareable valueComparator)
 </code></pre><p>用户需要提供比较运算符和比较类来让过滤器工作。</p>
 <p>HBase 中过滤器本来的目的是为了筛掉无用的信息，被过滤掉的信息不会被传递到客户端，过滤器不能用来指定用户需要哪些信息，而是在读取数据的过程中不返回用户不想要的信息。</p>
 <p>相反，所有基于 CompareFilter 的过滤处理过程与上述描述正好相反，它们返回匹配的值</p>
-<h3 id="行过滤器">行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
+<h3 id="行过滤器"><a href="#行过滤器" class="headerlink" title="行过滤器"></a>行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = <span class="built_in">new</span> HTable(conf, <span class="string">"temp2"</span>);
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-Scan scan = <span class="built_in">new</span> Scan();
-scan.addColumn(Bytes.toBytes(<span class="string">"colfam1"</span>), Bytes.toBytes(<span class="string">"col-0"</span>));
-<span class="comment">// 指定比较运算符和比较器</span>
-Filter filter1 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
-        <span class="built_in">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"row-22"</span>)));
+Scan scan = new Scan();
+scan.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;col-0&quot;));
+// 指定比较运算符和比较器
+Filter filter1 = new RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;row-22&quot;)));
 scan.setFilter(filter1);
 ResultScanner scanner1 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner1){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner1){
+    System.out.println(res);
 }
-scanner1.<span class="built_in">close</span>();
+scanner1.close();
 
-<span class="comment">// 用正则表达式来匹配行键</span>
-Filter filter2 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="built_in">new</span> RegexStringComparator(<span class="string">".*-.5"</span>));
+// 用正则表达式来匹配行键
+Filter filter2 = new RowFilter(CompareFilter.CompareOp.EQUAL,
+        new RegexStringComparator(&quot;.*-.5&quot;));
 scan.setFilter(filter2);
 ResultScanner scanner2 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner2){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner2){
+    System.out.println(res);
 }
-scanner2.<span class="built_in">close</span>();
+scanner2.close();
 
-<span class="comment">// 子串匹配方法</span>
-Filter filter3 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="built_in">new</span> SubstringComparator(<span class="string">"-5"</span>));
+// 子串匹配方法
+Filter filter3 = new RowFilter(CompareFilter.CompareOp.EQUAL,
+        new SubstringComparator(&quot;-5&quot;));
 scan.setFilter(filter3);
 ResultScanner scanner3 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner3){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner3){
+    System.out.println(res);
 }
-scanner3.<span class="built_in">close</span>();
-</code></pre><h3 id="列族过滤器">列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
+scanner3.close();
+</code></pre><h3 id="列族过滤器"><a href="#列族过滤器" class="headerlink" title="列族过滤器"></a>列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = <span class="keyword">new</span> HTable(conf, <span class="string">"temp2"</span>);
-<span class="comment">// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族</span>
-Filter filter1 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.LESS,
-        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
-Scan scan = <span class="keyword">new</span> Scan();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族
+Filter filter1 = new FamilyFilter(CompareFilter.CompareOp.LESS,
+        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
+Scan scan = new Scan();
 scan.setFilter(filter1);
-<span class="comment">// 使用扫描器扫描</span>
+// 使用扫描器扫描
 ResultScanner scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner){
-    System.<span class="keyword">out</span>.println(res);
+for(Result res: scanner){
+    System.out.println(res);
 }
 scanner.close();
 
-Get get1 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
-<span class="comment">// 使用和之前相同的过滤器获取同一行的数据</span>
+Get get1 = new Get(Bytes.toBytes(&quot;row-5&quot;));
+// 使用和之前相同的过滤器获取同一行的数据
 get1.setFilter(filter1);
-Result result1 = hTable.<span class="keyword">get</span>(get1);
-System.<span class="keyword">out</span>.println(<span class="string">"Result of get(): "</span> + result1);
+Result result1 = hTable.get(get1);
+System.out.println(&quot;Result of get(): &quot; + result1);
 
- <span class="comment">// 在一个列族上创建一个过滤器，同时获取另一行的数据</span>
-Filter filter2 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
-Get get2 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
-get2.addFamily(Bytes.toBytes(<span class="string">"colfam1"</span>));
+ // 在一个列族上创建一个过滤器，同时获取另一行的数据
+Filter filter2 = new FamilyFilter(CompareFilter.CompareOp.EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
+Get get2 = new Get(Bytes.toBytes(&quot;row-5&quot;));
+get2.addFamily(Bytes.toBytes(&quot;colfam1&quot;));
 get2.setFilter(filter2);
-<span class="comment">// 使用新的过滤器获取同一行数据，此时返回的结果为 None </span>
-Result result2 = hTable.<span class="keyword">get</span>(get2);
-System.<span class="keyword">out</span>.print(<span class="string">"Result of get(): "</span> + result2);
-</code></pre><h4 id="列名过滤器">列名过滤器</h4><p>通过列名筛选特定的列。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+// 使用新的过滤器获取同一行数据，此时返回的结果为 None 
+Result result2 = hTable.get(get2);
+System.out.print(&quot;Result of get(): &quot; + result2);
+</code></pre><h4 id="列名过滤器"><a href="#列名过滤器" class="headerlink" title="列名过滤器"></a>列名过滤器</h4><p>通过列名筛选特定的列。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">QualifierFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">LESS_OR_EQUAL</span>,
-        new <span class="type">BinaryComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"col-2"</span>)));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new QualifierFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;col-2&quot;)));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>: scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result: scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> result2 = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.print(result2);
-</code></pre><h4 id="值过滤器">值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+Result result2 = hTable.get(get);
+System.out.print(result2);
+</code></pre><h4 id="值过滤器"><a href="#值过滤器" class="headerlink" title="值过滤器"></a>值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">ValueFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-        new <span class="type">SubstringComparator</span>(<span class="string">".4"</span>));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new ValueFilter(CompareFilter.CompareOp.EQUAL,
+        new SubstringComparator(&quot;.4&quot;));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result : scanner){
+    System.out.println(result);
 }
 scanner.close();
-</code></pre><h3 id="参考列过滤器">参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
+</code></pre><h3 id="参考列过滤器"><a href="#参考列过滤器" class="headerlink" title="参考列过滤器"></a>参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
 <p>下面是它们的构造方法：</p>
-<pre><code><span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier)
-<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
-    <span class="keyword">boolean </span>dropDependentColumn)
-<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
-    <span class="keyword">boolean </span>dropDependentColumn, CompareOp valueCompareOp,
-    <span class="keyword">ByteArrayComparable </span>valueComparator)
+<pre><code>DependentColumnFilter(byte[] family, byte[] qualifier)
+DependentColumnFilter(byte[] family, byte[] qualifier,
+    boolean dropDependentColumn)
+DependentColumnFilter(byte[] family, byte[] qualifier,
+    boolean dropDependentColumn, CompareOp valueCompareOp,
+    ByteArrayComparable valueComparator)
 </code></pre><p>由于参考过滤器也是继承自 CompareFilter，所以它也可以帮助用户筛选列，不过这个过滤器是基于这些列值进行筛选的。用户可以把他理解为一个 ValueFilter 和 一个时间戳过滤器的组合。用户可以传入比较运算符和基准值来启用 ValueFilter 的功能。</p>
 <p>下面这个例子展示了参考过滤器的用法：</p>
-<pre><code>public class <span class="type">Filter5</span> {
-    private <span class="keyword">static</span> <span class="type">void</span> filter(boolean drop,
-                               <span class="type">CompareFilter</span>.<span class="type">CompareOp</span> operator,
-                               <span class="type">ByteArrayComparable</span> comparator)
-    throws <span class="type">IOException</span> {
-        <span class="type">Filter</span> filter;
-        <span class="keyword">if</span>(comparator != null){
-            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop, operator, comparator);
-        } <span class="keyword">else</span> {
-            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop);
+<pre><code>public class Filter5 {
+    private static void filter(boolean drop,
+                               CompareFilter.CompareOp operator,
+                               ByteArrayComparable comparator)
+    throws IOException {
+        Filter filter;
+        if(comparator != null){
+            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
+                    Bytes.toBytes(&quot;col-5&quot;), drop, operator, comparator);
+        } else {
+            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
+                    Bytes.toBytes(&quot;col-5&quot;), drop);
         }
 
-    <span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-    <span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
-    <span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+    Configuration conf = HBaseConfiguration.create();
+    HTable hTable = new HTable(conf, &quot;temp2&quot;);
+    Scan scan = new Scan();
     scan.setFilter(filter);
-    <span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-    <span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-        <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+    ResultScanner scanner = hTable.getScanner(scan);
+    for(Result result : scanner){
+        System.out.println(result);
     }
     scanner.close();
 
-    <span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+    Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
     get.setFilter(filter);
-    <span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+    Result result = hTable.get(get);
+    System.out.println(result);
 
 }
-public <span class="keyword">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) throws <span class="type">IOException</span>
+public static void main(String[] args) throws IOException
 {
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
+    filter(true, CompareFilter.CompareOp.NO_OP, null);
+    filter(false, CompareFilter.CompareOp.NO_OP, null);
+    filter(true, CompareFilter.CompareOp.EQUAL,
+            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
+    filter(false, CompareFilter.CompareOp.EQUAL,
+            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
+    filter(true, CompareFilter.CompareOp.EQUAL,
+            new RegexStringComparator(&quot;.*\\.5&quot;));
+    filter(false, CompareFilter.CompareOp.EQUAL,
+            new RegexStringComparator(&quot;.*\\.5&quot;));
     }
 }
 </code></pre>
@@ -622,7 +622,7 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -630,7 +630,7 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -639,7 +639,7 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -865,6 +865,26 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

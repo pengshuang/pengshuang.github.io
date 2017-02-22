@@ -338,103 +338,103 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
 
       
         <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
-<h3 id="单列值过滤器">单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
-<pre><code><span class="function">SingleColumnValueFilter</span>(byte<span class="attr_selector">[]</span> family, byte<span class="attr_selector">[]</span> qualifier,
-    CompareOp compareOp, byte<span class="attr_selector">[]</span> value)
-<span class="function">SingleColumnValueFilter</span>(byte<span class="attr_selector">[]</span> family, byte<span class="attr_selector">[]</span> qualifier,
+<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
+<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
+    CompareOp compareOp, byte[] value)
+SingleColumnValueFilter(byte[] family, byte[] qualifier,
     CompareOp compareOp, ByteArrayComparable comparator)
 </code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
 <p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
-<pre><code>boolean <span class="function"><span class="title">getFilterIfMissing</span><span class="params">()</span></span>
-void <span class="function"><span class="title">setFilterIfMissing</span><span class="params">(boolean filterIfMissing)</span></span>
-boolean <span class="function"><span class="title">getLatestVersionOnly</span><span class="params">()</span></span>
-void <span class="function"><span class="title">setLatestVersionOnly</span><span class="params">(boolean latestVersionOnly)</span></span>
+<pre><code>boolean getFilterIfMissing()
+void setFilterIfMissing(boolean filterIfMissing)
+boolean getLatestVersionOnly()
+void setLatestVersionOnly(boolean latestVersionOnly)
 </code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
 <p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">SingleColumnValueFilter</span> filter = new <span class="type">SingleColumnValueFilter</span>(
-        <span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-        <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>),
-        <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NOT_EQUAL</span>,
-        new <span class="type">SubstringComparator</span>(<span class="string">"val-5"</span>));
-filter.setFilterIfMissing(<span class="literal">true</span>);
+SingleColumnValueFilter filter = new SingleColumnValueFilter(
+        Bytes.toBytes(&quot;colfam1&quot;),
+        Bytes.toBytes(&quot;col-5&quot;),
+        CompareFilter.CompareOp.NOT_EQUAL,
+        new SubstringComparator(&quot;val-5&quot;));
+filter.setFilterIfMissing(true);
 
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>: scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result: scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-6"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
-</code></pre><h3 id="单列排除过滤器">单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
-<h3 id="前缀过滤器">前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
-<pre><code>Public <span class="function"><span class="title">PrefixFilter</span><span class="params">(byte[] prefix)</span></span>
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
+<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
+<pre><code>Public PrefixFilter(byte[] prefix)
 </code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">PrefixFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-1"</span>));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result : scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
-</code></pre><h3 id="包含结束的过滤器">包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
-<span class="type">Filter</span> filter = new <span class="type">InclusiveStopFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
 
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
-scan.setStartRow(<span class="type">Bytes</span>.toBytes(<span class="string">"row-3"</span>));
+Scan scan = new Scan();
+scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result:scanner){
+    System.out.println(result);
 }
 scanner.close();
-</code></pre><h3 id="时间戳过滤器">时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
-<pre><code><span class="function"><span class="title">TimestampFilter</span><span class="params">(List&lt;Long&gt; timestamps)</span></span>
+</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
+<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
 </code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">List</span>&lt;<span class="type">Long</span>&gt; ts = new <span class="type">ArrayList</span>&lt;<span class="type">Long</span>&gt;();
+List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
 // 向列表中添加时间戳
-ts.add(new <span class="type">Long</span>(<span class="number">5</span>));
-ts.add(new <span class="type">Long</span>(<span class="number">10</span>));
-ts.add(new <span class="type">Long</span>(<span class="number">15</span>));
-<span class="type">Filter</span> filter = new <span class="type">TimestampsFilter</span>(ts);
+ts.add(new Long(5));
+ts.add(new Long(10));
+ts.add(new Long(15));
+Filter filter = new TimestampsFilter(ts);
 
-<span class="type">Scan</span> scan1 = new <span class="type">Scan</span>();
+Scan scan1 = new Scan();
 // 向scan实例中添加过滤器
 scan1.setFilter(filter);
-<span class="type">ResultScanner</span> scanner1 = hTable.getScanner(scan1);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner1){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner1 = hTable.getScanner(scan1);
+for(Result result:scanner1){
+    System.out.println(result);
 }
 scanner1.close();
 
-<span class="type">Scan</span> scan2 = new <span class="type">Scan</span>();
+Scan scan2 = new Scan();
 scan2.setFilter(filter);
 // 添加时间范围限制
-scan2.setTimeRange(<span class="number">8</span>,<span class="number">12</span>);
-<span class="type">ResultScanner</span> scanner2 = hTable.getScanner(scan2);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner2){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+scan2.setTimeRange(8,12);
+ResultScanner scanner2 = hTable.getScanner(scan2);
+for(Result result:scanner2){
+    System.out.println(result);
 }
 scanner2.close();
 </code></pre>
@@ -563,7 +563,7 @@ scanner2.close();
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -571,7 +571,7 @@ scanner2.close();
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -580,7 +580,7 @@ scanner2.close();
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -806,6 +806,26 @@ scanner2.close();
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

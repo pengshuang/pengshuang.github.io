@@ -354,47 +354,47 @@
 <p>第1列为测试集中的所有网页序号，第二列表示每个网页的初始权重，之后的每列代表链接关系。</p>
 <p>首先，我们来介绍一下Hadoop的MapReduce计算框架实现方法，和以前一样，讲解我会穿插在代码注释中。</p>
 <p>首先是Map类：</p>
-<pre><code><span class="keyword">package</span> org.tseg.pagerank;
+<pre><code>package org.tseg.pagerank;
 
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.util.StringTokenizer;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
-<span class="keyword">import</span> org.apache.hadoop.io.IntWritable;
-<span class="keyword">import</span> org.apache.hadoop.io.Text;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
 
-<span class="keyword">public</span> class MyMapper extends Mapper&lt;<span class="keyword">Object</span>, Text, IntWritable, Text&gt; {
+public class MyMapper extends Mapper&lt;Object, Text, IntWritable, Text&gt; {
 
-<span class="comment">//IntWritable 即是Hadoop里面的int，其他类似</span>
-<span class="keyword">private</span> IntWritable id;
-<span class="keyword">private</span> <span class="keyword">String</span> pr;
-<span class="keyword">private</span> <span class="built_in">int</span> count;
-<span class="keyword">private</span> <span class="built_in">float</span> average_pr;
+//IntWritable 即是Hadoop里面的int，其他类似
+private IntWritable id;
+private String pr;
+private int count;
+private float average_pr;
 
-<span class="keyword">public</span> <span class="keyword">void</span> <span class="built_in">map</span>(<span class="keyword">Object</span> <span class="variable">key</span>, Text value, Context context) <span class="keyword">throws</span> IOException, InterruptedException {
+public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
-    <span class="comment">//StringTokenizer方法自动以空格为间隔，返回值为Enumeration&lt;Object&gt;类型的一个容器，容器中的每个元素为之前由空格分开后的元素组成</span>
-    StringTokenizer <span class="built_in">str</span> = <span class="keyword">new</span> StringTokenizer(value.toString());
-    <span class="comment">//遍历整个容器，第一步取id为测试网页的序号</span>
-    <span class="keyword">if</span>(<span class="built_in">str</span>.hasMoreTokens()) {
-        id = <span class="keyword">new</span> IntWritable(Integer.parseInt(<span class="built_in">str</span>.nextToken()));
-    }<span class="keyword">else</span>{
-        <span class="keyword">return</span>;
+    //StringTokenizer方法自动以空格为间隔，返回值为Enumeration&lt;Object&gt;类型的一个容器，容器中的每个元素为之前由空格分开后的元素组成
+    StringTokenizer str = new StringTokenizer(value.toString());
+    //遍历整个容器，第一步取id为测试网页的序号
+    if(str.hasMoreTokens()) {
+        id = new IntWritable(Integer.parseInt(str.nextToken()));
+    }else{
+        return;
     }
-    <span class="comment">//pr代表测试网页的初始权值</span>
-    pr = <span class="built_in">str</span>.nextToken();
-    <span class="comment">//count代表每个网页链接其他网页的个数</span>
-    count = <span class="built_in">str</span>.countTokens();
-    <span class="comment">//average_pr 为平均贡献值</span>
+    //pr代表测试网页的初始权值
+    pr = str.nextToken();
+    //count代表每个网页链接其他网页的个数
+    count = str.countTokens();
+    //average_pr 为平均贡献值
     average_pr = Float.parseFloat(pr) / count ;
-    <span class="keyword">while</span>(<span class="built_in">str</span>.hasMoreTokens()) {
-        <span class="keyword">String</span> nextId = <span class="built_in">str</span>.nextToken();
-        IntWritable next_id = <span class="keyword">new</span> IntWritable(Integer.parseInt(nextId));
-        <span class="comment">//Map函数输出给Reduce函数的类型有2种，第一种为（链接网页序号，“@”+对链接网页的平均贡献值）</span>
-        Text t = <span class="keyword">new</span> Text(<span class="string">"@"</span>+average_pr);
+    while(str.hasMoreTokens()) {
+        String nextId = str.nextToken();
+        IntWritable next_id = new IntWritable(Integer.parseInt(nextId));
+        //Map函数输出给Reduce函数的类型有2种，第一种为（链接网页序号，“@”+对链接网页的平均贡献值）
+        Text t = new Text(&quot;@&quot;+average_pr);
         context.write(next_id, t);
-        <span class="comment">//第二种为（网页序号，"&amp;"+它所链接的网页）</span>
-        Text tt = <span class="keyword">new</span> Text(<span class="string">"&amp;"</span>+nextId);
+        //第二种为（网页序号，&quot;&amp;&quot;+它所链接的网页）
+        Text tt = new Text(&quot;&amp;&quot;+nextId);
         context.write(id,tt);
         }
 
@@ -404,73 +404,73 @@
 </code></pre><p>然后是我们的Reduce类，Reduce类简单一些，</p>
 <pre><code>package org.tseg.pagerank;
 
-<span class="keyword">import</span> java.io.<span class="type">IOException</span>;
-<span class="keyword">import</span> java.util.<span class="type">ArrayList</span>;
+import java.io.IOException;
+import java.util.ArrayList;
 
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">FloatWritable</span>;
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">IntWritable</span>;
-<span class="keyword">import</span> org.apache.hadoop.io.<span class="type">Text</span>;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.<span class="type">Reducer</span>;
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
 
-public class <span class="type">MyReducer</span> extends <span class="type">Reducer</span>&lt;<span class="type">IntWritable</span>, <span class="type">Text</span>, <span class="type">IntWritable</span>, <span class="type">Text</span>&gt; {
+public class MyReducer extends Reducer&lt;IntWritable, Text, IntWritable, Text&gt; {
 
-public <span class="type">void</span> reduce(<span class="type">IntWritable</span> key, <span class="type">Iterable</span>&lt;<span class="type">Text</span>&gt; values, <span class="type">Context</span> context) throws <span class="type">IOException</span>, <span class="type">InterruptedException</span> {
+public void reduce(IntWritable key, Iterable&lt;Text&gt; values, Context context) throws IOException, InterruptedException {
 
-    <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt; idlist = new <span class="type">ArrayList</span>&lt;<span class="type">String</span>&gt;();
-    <span class="type">String</span> link = <span class="string">" "</span>;
-    <span class="type">float</span> pr = <span class="number">0</span>;
+    ArrayList&lt;String&gt; idlist = new ArrayList&lt;String&gt;();
+    String link = &quot; &quot;;
+    float pr = 0;
     //提取贡献值，并累加起来，用pr保存
-    <span class="keyword">for</span>(<span class="type">Text</span> id : values) {
-        <span class="type">String</span> id2 = id.toString();
-        <span class="keyword">if</span>(id2.substring(<span class="number">0</span>, <span class="number">1</span>).equals(<span class="string">"@"</span>)){
-            pr += <span class="type">Float</span>.parseFloat(id2.substring(<span class="number">1</span>));
+    for(Text id : values) {
+        String id2 = id.toString();
+        if(id2.substring(0, 1).equals(&quot;@&quot;)){
+            pr += Float.parseFloat(id2.substring(1));
         }
         //把所有链接的节点存放于idlist中
-        <span class="keyword">else</span> <span class="keyword">if</span> (id2.substring(<span class="number">0</span>,<span class="number">1</span>).equals(<span class="string">"&amp;"</span>)) {
+        else if (id2.substring(0,1).equals(&quot;&amp;&quot;)) {
             idlist.add(nextid);
         }
     }
 
-    pr = pr * <span class="number">0</span>.<span class="number">85</span>f + <span class="number">0</span>.<span class="number">15</span>f;
-    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i&lt; idlist.size();i++){
-        link += idlist.get(i) + <span class="string">" "</span>;
+    pr = pr * 0.85f + 0.15f;
+    for(int i = 0; i&lt; idlist.size();i++){
+        link += idlist.get(i) + &quot; &quot;;
     }
 
-    <span class="type">String</span> <span class="literal">result</span> = <span class="type">String</span>.valueOf(pr);
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="string">"Reduce  result= "</span> + <span class="literal">result</span>);
-    context.write(key, new <span class="type">Text</span>(<span class="literal">result</span>));
+    String result = String.valueOf(pr);
+    System.out.println(&quot;Reduce  result= &quot; + result);
+    context.write(key, new Text(result));
     }
 }
 </code></pre><p>最后是我们的PageRank主函数，</p>
 <pre><code>package org.tseg.pagerank;
 
-<span class="keyword">import</span> java.io.IOException;
+import java.io.IOException;
 
-<span class="keyword">import</span> org.apache.hadoop.conf.Configuration;
-<span class="keyword">import</span> org.apache.hadoop.fs.Path;
-<span class="keyword">import</span> org.apache.hadoop.io.IntWritable;
-<span class="keyword">import</span> org.apache.hadoop.io.Text;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.Job;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-<span class="keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">rank</span> </span>{
-    <span class="keyword">public</span> <span class="keyword">static</span> void main(<span class="type">String</span>[] args) <span class="keyword">throws</span> <span class="type">IOException</span>,
-    <span class="type">InterruptedException</span>, <span class="type">ClassNotFoundException</span> {
+public class rank {
+    public static void main(String[] args) throws IOException,
+    InterruptedException, ClassNotFoundException {
 
-    <span class="type">Configuration</span> conf = new <span class="type">Configuration</span>();
-    <span class="type">String</span> pathIn = <span class="string">"/Users/pengshuang/Desktop/pagerank/input"</span>;<span class="comment">//输入路径  </span>
-    <span class="type">String</span> pathOut =<span class="string">"/Users/pengshuang/Desktop/pagerank/1"</span>;<span class="comment">//输出路径  </span>
-    <span class="comment">//迭代10次</span>
-        <span class="type">Job</span> job = <span class="type">Job</span>.getInstance(conf, <span class="string">"rank"</span>);
-        job.setJarByClass(rank.<span class="keyword">class</span>);
-        job.setMapperClass(<span class="type">MyMapper</span>.<span class="keyword">class</span>);
-        job.setReducerClass(<span class="type">MyReducer</span>.<span class="keyword">class</span>);
-        job.setOutputKeyClass(<span class="type">IntWritable</span>.<span class="keyword">class</span>);
-        job.setOutputValueClass(<span class="type">Text</span>.<span class="keyword">class</span>);
-        <span class="type">FileInputFormat</span>.addInputPath(job, new <span class="type">Path</span>(pathIn));
-        <span class="type">FileOutputFormat</span>.setOutputPath(job, new <span class="type">Path</span>(pathOut));
-        job.waitForCompletion(<span class="literal">true</span>);
+    Configuration conf = new Configuration();
+    String pathIn = &quot;/Users/pengshuang/Desktop/pagerank/input&quot;;//输入路径  
+    String pathOut =&quot;/Users/pengshuang/Desktop/pagerank/1&quot;;//输出路径  
+    //迭代10次
+        Job job = Job.getInstance(conf, &quot;rank&quot;);
+        job.setJarByClass(rank.class);
+        job.setMapperClass(MyMapper.class);
+        job.setReducerClass(MyReducer.class);
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
+        FileInputFormat.addInputPath(job, new Path(pathIn));
+        FileOutputFormat.setOutputPath(job, new Path(pathOut));
+        job.waitForCompletion(true);
     }
 }
 </code></pre><p>得到结果如下：</p>
@@ -479,9 +479,9 @@ public <span class="type">void</span> reduce(<span class="type">IntWritable</spa
 <p><img src="/img/test3.png" alt=""></p>
 <p>这是推特上用户之间的关注关系，我们用PageRank算法实现用户影响力分析。</p>
 <p>代码如下：</p>
-<pre><code><span class="comment">/**
+<pre><code>/**
  * Created by pengshuang on 15/10/21.
- */</span>
+ */
 package spark
 
 import org.apache.spark.{SparkConf, SparkContext}
@@ -489,29 +489,29 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object SparkPageRank {
 
-  <span class="function">def <span class="title">main</span><span class="params">(args: Array[String])</span> </span>{
+  def main(args: Array[String]) {
 
-      <span class="comment">//设置测试环境为本地测试</span>
-    val sparkConf = <span class="keyword">new</span> SparkConf().setAppName(<span class="string">"PageRank"</span>).setMaster(<span class="string">"local"</span>)
-    val iters = <span class="keyword">if</span> (args.length &gt; <span class="number">1</span>) args(<span class="number">1</span>).toInt <span class="keyword">else</span> <span class="number">10</span>
-    val ctx = <span class="keyword">new</span> SparkContext(sparkConf)
-    <span class="comment">//读取测试文件</span>
-    val lines = ctx.textFile(<span class="string">"file:///Users/pengshuang/Desktop/pagerank/input/twitter_combined.txt"</span>, <span class="number">1</span>)
-    <span class="comment">//每行用空格隔开</span>
-    val links = lines.<span class="built_in">map</span> { s =&gt;
-      val parts = s.split(<span class="string">"\\s+"</span>)
-      (parts(<span class="number">0</span>), parts(<span class="number">1</span>))
+      //设置测试环境为本地测试
+    val sparkConf = new SparkConf().setAppName(&quot;PageRank&quot;).setMaster(&quot;local&quot;)
+    val iters = if (args.length &gt; 1) args(1).toInt else 10
+    val ctx = new SparkContext(sparkConf)
+    //读取测试文件
+    val lines = ctx.textFile(&quot;file:///Users/pengshuang/Desktop/pagerank/input/twitter_combined.txt&quot;, 1)
+    //每行用空格隔开
+    val links = lines.map { s =&gt;
+      val parts = s.split(&quot;\\s+&quot;)
+      (parts(0), parts(1))
     }.distinct().groupByKey().cache()
-    var ranks = links.mapValues(v =&gt; <span class="number">1.0</span>)
+    var ranks = links.mapValues(v =&gt; 1.0)
 
-<span class="keyword">for</span> (i &lt;- <span class="number">1</span> to iters) {
-  val contribs = links.join(ranks).values.flatMap { <span class="keyword">case</span> (urls, rank) =&gt;
+for (i &lt;- 1 to iters) {
+  val contribs = links.join(ranks).values.flatMap { case (urls, rank) =&gt;
     val size = urls.size
-    urls.<span class="built_in">map</span>(url =&gt; (url, rank / size))
+    urls.map(url =&gt; (url, rank / size))
   }
-  ranks = contribs.reduceByKey(_ + _).mapValues(<span class="number">0.15</span> + <span class="number">0.85</span> * _)
+  ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
 }
-ranks.<span class="built_in">map</span>(x =&gt; (x._2,x._1)).sortByKey(<span class="literal">false</span>).<span class="built_in">map</span>(x =&gt; (x._2,x._1)).saveAsTextFile(<span class="string">"file:///Users/pengshuang/Desktop/pagerank/output"</span>)
+ranks.map(x =&gt; (x._2,x._1)).sortByKey(false).map(x =&gt; (x._2,x._1)).saveAsTextFile(&quot;file:///Users/pengshuang/Desktop/pagerank/output&quot;)
 ctx.stop()
     }
 }
@@ -649,7 +649,7 @@ ctx.stop()
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -657,7 +657,7 @@ ctx.stop()
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -666,7 +666,7 @@ ctx.stop()
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -892,6 +892,26 @@ ctx.stop()
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

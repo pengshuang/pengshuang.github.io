@@ -335,10 +335,10 @@
 
       
         <p>在对一个分布式系统进行架构设计的过程中、往往会在系统的可用性和数据一致性之间进行反复的权衡，于是就产生了一系列的一致性协议。其中最近经典的就是二阶段提交协议、三阶段提交协议和Paxos算法了。</p>
-<h3 id="2PC_与_3PC">2PC 与 3PC</h3><p>在分布式系统中，每一个机器节点虽然能够明确知道自己在进行事务操作中的结果是成功或失败，但却无法直接获取到其他分布式结点的操作结果。因此，当一个事务操作需要跨越多个分布式节点的时候，为了保持事务处理的 ACID 特性，就需要引入一个称为“协调者”的组件来统一调度所有分布式节点的执行逻辑，这些被调度的分布式节点则被称为“参与者”，协调者辅助调度参与者的行为，并最终决定这些参与者是否要把事务真正的提交。基于这个思想，衍生出了二阶段提交(2PC)和三阶段提交(3PC)两种协议。</p>
-<h3 id="2PC">2PC</h3><p>2PC是计算机网络尤其是在数据库领域内，为了使基于分布式系统架构下的所有节点在进行事务处理过程中能够保持原子性和一致性而设计的一种算法。目前，绝大部分的关系型数据库都是采用二阶段提交协议来完成分布式事务处理的，利用该协议能够非常方便地完成所有分布式事务参与者的协调，统一决定事务的提交或回滚，从而能够有效的保证分布式数据一致性，因此二阶段提交协议被广泛地应用在许多分布式系统中。</p>
-<h4 id="协议说明">协议说明</h4><p>二阶段协议将事务的提交过程分成两个阶段来进行处理。</p>
-<h4 id="阶段一：提交事务请求">阶段一：提交事务请求</h4><ol>
+<h3 id="2PC-与-3PC"><a href="#2PC-与-3PC" class="headerlink" title="2PC 与 3PC"></a>2PC 与 3PC</h3><p>在分布式系统中，每一个机器节点虽然能够明确知道自己在进行事务操作中的结果是成功或失败，但却无法直接获取到其他分布式结点的操作结果。因此，当一个事务操作需要跨越多个分布式节点的时候，为了保持事务处理的 ACID 特性，就需要引入一个称为“协调者”的组件来统一调度所有分布式节点的执行逻辑，这些被调度的分布式节点则被称为“参与者”，协调者辅助调度参与者的行为，并最终决定这些参与者是否要把事务真正的提交。基于这个思想，衍生出了二阶段提交(2PC)和三阶段提交(3PC)两种协议。</p>
+<h3 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h3><p>2PC是计算机网络尤其是在数据库领域内，为了使基于分布式系统架构下的所有节点在进行事务处理过程中能够保持原子性和一致性而设计的一种算法。目前，绝大部分的关系型数据库都是采用二阶段提交协议来完成分布式事务处理的，利用该协议能够非常方便地完成所有分布式事务参与者的协调，统一决定事务的提交或回滚，从而能够有效的保证分布式数据一致性，因此二阶段提交协议被广泛地应用在许多分布式系统中。</p>
+<h4 id="协议说明"><a href="#协议说明" class="headerlink" title="协议说明"></a>协议说明</h4><p>二阶段协议将事务的提交过程分成两个阶段来进行处理。</p>
+<h4 id="阶段一：提交事务请求"><a href="#阶段一：提交事务请求" class="headerlink" title="阶段一：提交事务请求"></a>阶段一：提交事务请求</h4><ol>
 <li><p>事务询问</p>
 <p> 协调者向所有的参与者发送事务内容，询问是否可以执行事务提交操作，并开始等待各参与者的响应。</p>
 </li>
@@ -349,7 +349,7 @@
 <p> 如果参与者成功执行了事务操作，那么就反馈给协调者 Yes 响应，表示事务可以执行；如果参与者没有成功执行事务，那么就反馈给协调者 No 响应，表示事务不可以执行。</p>
 </li>
 </ol>
-<h4 id="阶段二：执行事务提交">阶段二：执行事务提交</h4><p>阶段二中，协调者会根据各参与者的反馈情况来决定最终是否可以进行事务提交操作，正常情况下，包括两种可能。</p>
+<h4 id="阶段二：执行事务提交"><a href="#阶段二：执行事务提交" class="headerlink" title="阶段二：执行事务提交"></a>阶段二：执行事务提交</h4><p>阶段二中，协调者会根据各参与者的反馈情况来决定最终是否可以进行事务提交操作，正常情况下，包括两种可能。</p>
 <p><strong>执行事务提交</strong></p>
 <p>假如协调者从所有的参与者获得的反馈都是 Yes 响应，那么就会执行事务提交。</p>
 <ol>
@@ -383,7 +383,7 @@
 </li>
 </ol>
 <p>简单来说，二阶段提交将一个事务的处理过程分为了投票和执行两个阶段，其核心是对每个事务都采用先尝试后提交的处理方式，因此也可以将二阶段提交看作一个强一致性的算法。</p>
-<h3 id="2PC_的优缺点">2PC 的优缺点</h3><p>优点： 原理简单，实现方便</p>
+<h3 id="2PC-的优缺点"><a href="#2PC-的优缺点" class="headerlink" title="2PC 的优缺点"></a>2PC 的优缺点</h3><p>优点： 原理简单，实现方便</p>
 <p>缺点：</p>
 <ol>
 <li><p>同步阻塞</p>
@@ -399,8 +399,8 @@
 <p> 没有完善的容错机制，任意几个节点的失败都会导致整个事务的失败。</p>
 </li>
 </ol>
-<h3 id="3PC">3PC</h3><p>3PC 将 2PC 的“提交事务请求”过程一分为二，形成了CanCommit、PreCommit和do Commit 三个阶段组成的事务处理协议</p>
-<h4 id="阶段一：CanCommit">阶段一：CanCommit</h4><ol>
+<h3 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h3><p>3PC 将 2PC 的“提交事务请求”过程一分为二，形成了CanCommit、PreCommit和do Commit 三个阶段组成的事务处理协议</p>
+<h4 id="阶段一：CanCommit"><a href="#阶段一：CanCommit" class="headerlink" title="阶段一：CanCommit"></a>阶段一：CanCommit</h4><ol>
 <li><p>事务询问</p>
 <p> 协调者向所有的参与者发送一个包含事务内容的 canCommit 请求，询问是否可以执行事务提交操作，并开始等待各参与者的响应。</p>
 </li>
@@ -408,7 +408,7 @@
 <p> 参与者在接收到来自协调者的 canCommit 请求后，正常情况下，如果自身认为可以顺利执行事务，那么会反馈 Yes，并且进入预备状态；否则，反馈No。</p>
 </li>
 </ol>
-<h4 id="阶段二：PreCommit">阶段二：PreCommit</h4><p>在阶段二中，协调者会根据各参与者的反馈情况来决定是否可以进行事务的PreCommit操作、正常情况下，包含两种可能。</p>
+<h4 id="阶段二：PreCommit"><a href="#阶段二：PreCommit" class="headerlink" title="阶段二：PreCommit"></a>阶段二：PreCommit</h4><p>在阶段二中，协调者会根据各参与者的反馈情况来决定是否可以进行事务的PreCommit操作、正常情况下，包含两种可能。</p>
 <p><strong>执行事务预提交</strong></p>
 <p>假如协调者从所有的参与者获得的反馈都是 Yes，那么会进入预提交。</p>
 <ol>
@@ -429,7 +429,7 @@
 </li>
 <li>中断事务</li>
 </ol>
-<h4 id="阶段三：doCommit">阶段三：doCommit</h4><p>该阶段真正实现事务提交，会存在以下两种情况：</p>
+<h4 id="阶段三：doCommit"><a href="#阶段三：doCommit" class="headerlink" title="阶段三：doCommit"></a>阶段三：doCommit</h4><p>该阶段真正实现事务提交，会存在以下两种情况：</p>
 <p><strong>执行提交</strong></p>
 <ol>
 <li><p>发送提交请求</p>
@@ -463,7 +463,7 @@
 <li>协调者和参与者之间网络出现故障</li>
 </ul>
 <p>这两种情况会导致参与者无法及时接收到协调者发来的消息。针对这种情况，参与者都会在等待超时之后，继续进行事务提交。</p>
-<h3 id="3PC_的优缺点">3PC 的优缺点</h3><p>相比 2PC，3PC 降低了参与者的阻塞范围，并且能够在出现单点故障后继续达成一致。但是，3PC 在参与者接收到 preCommit 消息后，如果出现网络分区，此时协调者所在的节点和参与者无法进行正常的网络通信，在这种情况下，该参与者依然会进行事务的提交，这必然会出现数据不一致的情况。</p>
+<h3 id="3PC-的优缺点"><a href="#3PC-的优缺点" class="headerlink" title="3PC 的优缺点"></a>3PC 的优缺点</h3><p>相比 2PC，3PC 降低了参与者的阻塞范围，并且能够在出现单点故障后继续达成一致。但是，3PC 在参与者接收到 preCommit 消息后，如果出现网络分区，此时协调者所在的节点和参与者无法进行正常的网络通信，在这种情况下，该参与者依然会进行事务的提交，这必然会出现数据不一致的情况。</p>
 
       
     </div>
@@ -590,7 +590,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -598,7 +598,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -607,7 +607,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -678,7 +678,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC_与_3PC"><span class="nav-number">1.</span> <span class="nav-text">2PC 与 3PC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC"><span class="nav-number">2.</span> <span class="nav-text">2PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#协议说明"><span class="nav-number">2.1.</span> <span class="nav-text">协议说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段一：提交事务请求"><span class="nav-number">2.2.</span> <span class="nav-text">阶段一：提交事务请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段二：执行事务提交"><span class="nav-number">2.3.</span> <span class="nav-text">阶段二：执行事务提交</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC_的优缺点"><span class="nav-number">3.</span> <span class="nav-text">2PC 的优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3PC"><span class="nav-number">4.</span> <span class="nav-text">3PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段一：CanCommit"><span class="nav-number">4.1.</span> <span class="nav-text">阶段一：CanCommit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段二：PreCommit"><span class="nav-number">4.2.</span> <span class="nav-text">阶段二：PreCommit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段三：doCommit"><span class="nav-number">4.3.</span> <span class="nav-text">阶段三：doCommit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3PC_的优缺点"><span class="nav-number">5.</span> <span class="nav-text">3PC 的优缺点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC-与-3PC"><span class="nav-number">1.</span> <span class="nav-text">2PC 与 3PC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC"><span class="nav-number">2.</span> <span class="nav-text">2PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#协议说明"><span class="nav-number">2.1.</span> <span class="nav-text">协议说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段一：提交事务请求"><span class="nav-number">2.2.</span> <span class="nav-text">阶段一：提交事务请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段二：执行事务提交"><span class="nav-number">2.3.</span> <span class="nav-text">阶段二：执行事务提交</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2PC-的优缺点"><span class="nav-number">3.</span> <span class="nav-text">2PC 的优缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3PC"><span class="nav-number">4.</span> <span class="nav-text">3PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段一：CanCommit"><span class="nav-number">4.1.</span> <span class="nav-text">阶段一：CanCommit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段二：PreCommit"><span class="nav-number">4.2.</span> <span class="nav-text">阶段二：PreCommit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阶段三：doCommit"><span class="nav-number">4.3.</span> <span class="nav-text">阶段三：doCommit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3PC-的优缺点"><span class="nav-number">5.</span> <span class="nav-text">3PC 的优缺点</span></a></li></ol></div>
             
           </div>
         </section>
@@ -833,6 +833,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

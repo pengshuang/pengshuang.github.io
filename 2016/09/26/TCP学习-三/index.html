@@ -337,22 +337,22 @@
       
 
       
-        <h3 id="1-_路由控制表">1. 路由控制表</h3><p>路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。</p>
-<h3 id="2-_默认路由">2. 默认路由</h3><p>如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路由是不错的选择。默认路由是指路由表中任何一个地址都能与之匹配的记录。</p>
-<h3 id="3-_主机路由">3. 主机路由</h3><p>“IP地址/32” 也被称为主机路由。例如，192.168.153.15/32 就是一种主机路由。它的意思是整个IP地址的所有位都将参与路由。进行主机路由，意味着要基于主机上网卡上配置的IP地址本身，而不是基于该地址的网络地址部分进行路由。</p>
-<h3 id="4-_环回地址">4. 环回地址</h3><p>环回地址是同一台计算机上的程序之间进行网络通信时所使用的一个默认地址。计算机使用一个特殊的IP地址127.0.0.1作为环回地址。与该地址具有相同意义的一个叫做localhost的主机名。使用这个IP或主机名时，数据包不会流向网络。</p>
-<h3 id="5-_路由控制表的聚合">5. 路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行分层配置。对内即使有多个子网掩码，对外呈现出的也是同一个网络地址。这样可以更好的构建网络，通过路由信息的聚合可以有效地减少路由表的条目。下图展示一个简单的路由聚合的例子。</p>
+        <h3 id="1-路由控制表"><a href="#1-路由控制表" class="headerlink" title="1. 路由控制表"></a>1. 路由控制表</h3><p>路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。</p>
+<h3 id="2-默认路由"><a href="#2-默认路由" class="headerlink" title="2. 默认路由"></a>2. 默认路由</h3><p>如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路由是不错的选择。默认路由是指路由表中任何一个地址都能与之匹配的记录。</p>
+<h3 id="3-主机路由"><a href="#3-主机路由" class="headerlink" title="3. 主机路由"></a>3. 主机路由</h3><p>“IP地址/32” 也被称为主机路由。例如，192.168.153.15/32 就是一种主机路由。它的意思是整个IP地址的所有位都将参与路由。进行主机路由，意味着要基于主机上网卡上配置的IP地址本身，而不是基于该地址的网络地址部分进行路由。</p>
+<h3 id="4-环回地址"><a href="#4-环回地址" class="headerlink" title="4. 环回地址"></a>4. 环回地址</h3><p>环回地址是同一台计算机上的程序之间进行网络通信时所使用的一个默认地址。计算机使用一个特殊的IP地址127.0.0.1作为环回地址。与该地址具有相同意义的一个叫做localhost的主机名。使用这个IP或主机名时，数据包不会流向网络。</p>
+<h3 id="5-路由控制表的聚合"><a href="#5-路由控制表的聚合" class="headerlink" title="5. 路由控制表的聚合"></a>5. 路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行分层配置。对内即使有多个子网掩码，对外呈现出的也是同一个网络地址。这样可以更好的构建网络，通过路由信息的聚合可以有效地减少路由表的条目。下图展示一个简单的路由聚合的例子。</p>
 <p><img src="/img/juhe.png" alt=""></p>
-<h3 id="6-_IPv4首部">6. IPv4首部</h3><p>IP首部包含着用于IP协议进行发包控制时所有的必要信息。下图展示了一个IP数据包格式(IPv4)。</p>
+<h3 id="6-IPv4首部"><a href="#6-IPv4首部" class="headerlink" title="6. IPv4首部"></a>6. IPv4首部</h3><p>IP首部包含着用于IP协议进行发包控制时所有的必要信息。下图展示了一个IP数据包格式(IPv4)。</p>
 <p><img src="/img/ipv4.png" alt=""></p>
 <p>下面对IP首部各部分一一进行介绍。</p>
-<h4 id="（1）版本">（1）版本</h4><p>没什么实际意义。。。忽略</p>
-<h4 id="（2）首部长度">（2）首部长度</h4><p>由4比特构成，表明IP首部的大小，单位为4字节(32比特)，对应没有可选项的IP包，首部长度则设置为5，即没有可选项时，IP首部的长度为20字节(4*5=20)。</p>
-<h4 id="（3）区分服务（TOS）">（3）区分服务（TOS）</h4><p>由8比特构成，用来表明服务质量。用0、1、2这三位来表示0~7的优先度。从0到7表示优先度从低到高。每一位具体含义如下所示。</p>
+<h4 id="（1）版本"><a href="#（1）版本" class="headerlink" title="（1）版本"></a>（1）版本</h4><p>没什么实际意义。。。忽略</p>
+<h4 id="（2）首部长度"><a href="#（2）首部长度" class="headerlink" title="（2）首部长度"></a>（2）首部长度</h4><p>由4比特构成，表明IP首部的大小，单位为4字节(32比特)，对应没有可选项的IP包，首部长度则设置为5，即没有可选项时，IP首部的长度为20字节(4*5=20)。</p>
+<h4 id="（3）区分服务（TOS）"><a href="#（3）区分服务（TOS）" class="headerlink" title="（3）区分服务（TOS）"></a>（3）区分服务（TOS）</h4><p>由8比特构成，用来表明服务质量。用0、1、2这三位来表示0~7的优先度。从0到7表示优先度从低到高。每一位具体含义如下所示。</p>
 <p><img src="/img/tos.png" alt=""></p>
-<h4 id="（4）总长度（Total_Length）">（4）总长度（Total Length）</h4><p>表示IP首部与数据部分合起来的总字节数。该字段长16比特。因此IP包的最大长度为65535。</p>
-<h4 id="（5）标识_（ID：Identification）">（5）标识 （ID：Identification）</h4><p>由16比特构成，用于分片重组。同一个分片的标识值相同，不同分片的标识值不同。通常，没发送一个IP包，它的值也逐渐递增。此外，即使ID相同，如果目标地址、源地址或协议不同的话，也会被认为是不同的分片。</p>
-<h4 id="（6）标志（Flags）">（6）标志（Flags）</h4><p>由3比特构成，表示包被分片的相关信息。每一位的具体含义如下：</p>
+<h4 id="（4）总长度（Total-Length）"><a href="#（4）总长度（Total-Length）" class="headerlink" title="（4）总长度（Total Length）"></a>（4）总长度（Total Length）</h4><p>表示IP首部与数据部分合起来的总字节数。该字段长16比特。因此IP包的最大长度为65535。</p>
+<h4 id="（5）标识-（ID：Identification）"><a href="#（5）标识-（ID：Identification）" class="headerlink" title="（5）标识 （ID：Identification）"></a>（5）标识 （ID：Identification）</h4><p>由16比特构成，用于分片重组。同一个分片的标识值相同，不同分片的标识值不同。通常，没发送一个IP包，它的值也逐渐递增。此外，即使ID相同，如果目标地址、源地址或协议不同的话，也会被认为是不同的分片。</p>
+<h4 id="（6）标志（Flags）"><a href="#（6）标志（Flags）" class="headerlink" title="（6）标志（Flags）"></a>（6）标志（Flags）</h4><p>由3比特构成，表示包被分片的相关信息。每一位的具体含义如下：</p>
 <table>
 <thead>
 <tr>
@@ -375,13 +375,13 @@
 </tr>
 </tbody>
 </table>
-<h4 id="（7）片偏移（FO:_Fragment_Offset)">（7）片偏移（FO: Fragment Offset)</h4><p>由13比特构成，用来标识被分片的每一个分段相对于原始数据的位置。第一个分片对应的值为0.由于FO域占13位，因此最多可以表示8192个相对位置。单位为8字节，因此最大可以表示原始数据为65536字节。</p>
-<h4 id="（8）生存时间_(TTL)">（8）生存时间 (TTL)</h4><p>由8比特构成，在实际中表示可以中转多少个路由器。每经过一个路由器，TTL会减少1，直到变成0则丢弃该包。</p>
-<h4 id="（9）协议（Protocol）">（9）协议（Protocol）</h4><p>由8比特构成，表示IP首部的下一个首部隶属于哪个协议。</p>
-<h4 id="（10）首部校验和">（10）首部校验和</h4><p>由16比特（2个字节构成），也叫IP首部校验和。该字段只校验数据报的首部，不校验数据部分。它主要用来确保IP数据报不被破坏。校验和的计算过程，首先要将校验和的所有位置设置为0，然后以16比特为单位划分IP首部，并用1补数计算所有16位字的和。最后将所得到这个和1的补数赋给首部校验和字段。</p>
-<h4 id="（11）源地址">（11）源地址</h4><p>由32位比特（4个字节）构成，表示发送端IP地址。</p>
-<h4 id="（12）目标地址">（12）目标地址</h4><p>由32位比特（4个字节）构成，表示接收端IP地址。 </p>
-<h4 id="（13）数据">（13）数据</h4><p>存入数据。将IP上层协议的首部也作为数据进行处理。</p>
+<h4 id="（7）片偏移（FO-Fragment-Offset"><a href="#（7）片偏移（FO-Fragment-Offset" class="headerlink" title="（7）片偏移（FO: Fragment Offset)"></a>（7）片偏移（FO: Fragment Offset)</h4><p>由13比特构成，用来标识被分片的每一个分段相对于原始数据的位置。第一个分片对应的值为0.由于FO域占13位，因此最多可以表示8192个相对位置。单位为8字节，因此最大可以表示原始数据为65536字节。</p>
+<h4 id="（8）生存时间-TTL"><a href="#（8）生存时间-TTL" class="headerlink" title="（8）生存时间 (TTL)"></a>（8）生存时间 (TTL)</h4><p>由8比特构成，在实际中表示可以中转多少个路由器。每经过一个路由器，TTL会减少1，直到变成0则丢弃该包。</p>
+<h4 id="（9）协议（Protocol）"><a href="#（9）协议（Protocol）" class="headerlink" title="（9）协议（Protocol）"></a>（9）协议（Protocol）</h4><p>由8比特构成，表示IP首部的下一个首部隶属于哪个协议。</p>
+<h4 id="（10）首部校验和"><a href="#（10）首部校验和" class="headerlink" title="（10）首部校验和"></a>（10）首部校验和</h4><p>由16比特（2个字节构成），也叫IP首部校验和。该字段只校验数据报的首部，不校验数据部分。它主要用来确保IP数据报不被破坏。校验和的计算过程，首先要将校验和的所有位置设置为0，然后以16比特为单位划分IP首部，并用1补数计算所有16位字的和。最后将所得到这个和1的补数赋给首部校验和字段。</p>
+<h4 id="（11）源地址"><a href="#（11）源地址" class="headerlink" title="（11）源地址"></a>（11）源地址</h4><p>由32位比特（4个字节）构成，表示发送端IP地址。</p>
+<h4 id="（12）目标地址"><a href="#（12）目标地址" class="headerlink" title="（12）目标地址"></a>（12）目标地址</h4><p>由32位比特（4个字节）构成，表示接收端IP地址。 </p>
+<h4 id="（13）数据"><a href="#（13）数据" class="headerlink" title="（13）数据"></a>（13）数据</h4><p>存入数据。将IP上层协议的首部也作为数据进行处理。</p>
 
       
     </div>
@@ -514,7 +514,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -522,7 +522,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -531,7 +531,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -602,7 +602,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_路由控制表"><span class="nav-number">1.</span> <span class="nav-text">1. 路由控制表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_默认路由"><span class="nav-number">2.</span> <span class="nav-text">2. 默认路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_主机路由"><span class="nav-number">3.</span> <span class="nav-text">3. 主机路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_环回地址"><span class="nav-number">4.</span> <span class="nav-text">4. 环回地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_路由控制表的聚合"><span class="nav-number">5.</span> <span class="nav-text">5. 路由控制表的聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_IPv4首部"><span class="nav-number">6.</span> <span class="nav-text">6. IPv4首部</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）版本"><span class="nav-number">6.1.</span> <span class="nav-text">（1）版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）首部长度"><span class="nav-number">6.2.</span> <span class="nav-text">（2）首部长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）区分服务（TOS）"><span class="nav-number">6.3.</span> <span class="nav-text">（3）区分服务（TOS）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（4）总长度（Total_Length）"><span class="nav-number">6.4.</span> <span class="nav-text">（4）总长度（Total Length）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（5）标识_（ID：Identification）"><span class="nav-number">6.5.</span> <span class="nav-text">（5）标识 （ID：Identification）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（6）标志（Flags）"><span class="nav-number">6.6.</span> <span class="nav-text">（6）标志（Flags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（7）片偏移（FO:_Fragment_Offset)"><span class="nav-number">6.7.</span> <span class="nav-text">（7）片偏移（FO: Fragment Offset)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（8）生存时间_(TTL)"><span class="nav-number">6.8.</span> <span class="nav-text">（8）生存时间 (TTL)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（9）协议（Protocol）"><span class="nav-number">6.9.</span> <span class="nav-text">（9）协议（Protocol）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（10）首部校验和"><span class="nav-number">6.10.</span> <span class="nav-text">（10）首部校验和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（11）源地址"><span class="nav-number">6.11.</span> <span class="nav-text">（11）源地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（12）目标地址"><span class="nav-number">6.12.</span> <span class="nav-text">（12）目标地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（13）数据"><span class="nav-number">6.13.</span> <span class="nav-text">（13）数据</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-路由控制表"><span class="nav-number">1.</span> <span class="nav-text">1. 路由控制表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-默认路由"><span class="nav-number">2.</span> <span class="nav-text">2. 默认路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-主机路由"><span class="nav-number">3.</span> <span class="nav-text">3. 主机路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-环回地址"><span class="nav-number">4.</span> <span class="nav-text">4. 环回地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-路由控制表的聚合"><span class="nav-number">5.</span> <span class="nav-text">5. 路由控制表的聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-IPv4首部"><span class="nav-number">6.</span> <span class="nav-text">6. IPv4首部</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）版本"><span class="nav-number">6.1.</span> <span class="nav-text">（1）版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）首部长度"><span class="nav-number">6.2.</span> <span class="nav-text">（2）首部长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）区分服务（TOS）"><span class="nav-number">6.3.</span> <span class="nav-text">（3）区分服务（TOS）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（4）总长度（Total-Length）"><span class="nav-number">6.4.</span> <span class="nav-text">（4）总长度（Total Length）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（5）标识-（ID：Identification）"><span class="nav-number">6.5.</span> <span class="nav-text">（5）标识 （ID：Identification）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（6）标志（Flags）"><span class="nav-number">6.6.</span> <span class="nav-text">（6）标志（Flags）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（7）片偏移（FO-Fragment-Offset"><span class="nav-number">6.7.</span> <span class="nav-text">（7）片偏移（FO: Fragment Offset)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（8）生存时间-TTL"><span class="nav-number">6.8.</span> <span class="nav-text">（8）生存时间 (TTL)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（9）协议（Protocol）"><span class="nav-number">6.9.</span> <span class="nav-text">（9）协议（Protocol）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（10）首部校验和"><span class="nav-number">6.10.</span> <span class="nav-text">（10）首部校验和</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（11）源地址"><span class="nav-number">6.11.</span> <span class="nav-text">（11）源地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（12）目标地址"><span class="nav-number">6.12.</span> <span class="nav-text">（12）目标地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（13）数据"><span class="nav-number">6.13.</span> <span class="nav-text">（13）数据</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
@@ -757,6 +757,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

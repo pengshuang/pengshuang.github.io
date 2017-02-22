@@ -346,71 +346,71 @@
       
 
       
-        <h3 id="性质和性质">性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
-<h3 id="接口和时间复杂度分析">接口和时间复杂度分析</h3><pre><code>插入 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
-<span class="number">1</span>. <span class="function"><span class="title">add</span><span class="params">(self, key, value)</span></span>
+        <h3 id="性质和性质"><a href="#性质和性质" class="headerlink" title="性质和性质"></a>性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
+<h3 id="接口和时间复杂度分析"><a href="#接口和时间复杂度分析" class="headerlink" title="接口和时间复杂度分析"></a>接口和时间复杂度分析</h3><pre><code>插入 o(logn)
+1. add(self, key, value)
 
-删除 <span class="function"><span class="title">o</span><span class="params">(logn)</span></span>
-<span class="number">2</span>. <span class="function"><span class="title">remove</span><span class="params">(self, key)</span></span>
+删除 o(logn)
+2. remove(self, key)
 
-查找 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
-<span class="number">3</span>. <span class="function"><span class="title">hasKey</span><span class="params">(self, key)</span></span>
+查找 o(log1)
+3. hasKey(self, key)
 
-取最大值 <span class="function"><span class="title">o</span><span class="params">(log1)</span></span>
-<span class="number">4</span>. <span class="function"><span class="title">max</span><span class="params">(self)</span></span>
-</code></pre><h3 id="代码实现">代码实现</h3><pre><code><span class="class"><span class="keyword">class</span> <span class="title">HashHeap</span>:</span>
-    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span>
-        self.heap = [<span class="number">0</span>]
+取最大值 o(log1)
+4. max(self)
+</code></pre><h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><pre><code>class HashHeap:
+    def __init__(self):
+        self.heap = [0]
         self.hash = {}
 
-<span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(self, key, value)</span>:</span>
+def add(self, key, value):
     self.heap.append((key, value))
-    self.hash[key] = self.heap[<span class="number">0</span>] + <span class="number">1</span>
-    self.heap[<span class="number">0</span>] += <span class="number">1</span>
-    self._siftup(self.heap[<span class="number">0</span>])
+    self.hash[key] = self.heap[0] + 1
+    self.heap[0] += 1
+    self._siftup(self.heap[0])
 
-<span class="function"><span class="keyword">def</span> <span class="title">remove</span><span class="params">(self, key)</span>:</span>
+def remove(self, key):
     index = self.hash[key]
-    self._swap(index, self.heap[<span class="number">0</span>])
-    <span class="keyword">del</span> self.hash[self.heap[self.heap[<span class="number">0</span>]][<span class="number">0</span>]]
+    self._swap(index, self.heap[0])
+    del self.hash[self.heap[self.heap[0]][0]]
     self.heap.pop()
-    self.heap[<span class="number">0</span>] -= <span class="number">1</span>
-    <span class="keyword">if</span> index &lt;= self.heap[<span class="number">0</span>]:
+    self.heap[0] -= 1
+    if index &lt;= self.heap[0]:
         index = self._siftup(index)
         self._siftdown(index)
 
-<span class="function"><span class="keyword">def</span> <span class="title">hasKey</span><span class="params">(self, key)</span>:</span>
-    <span class="keyword">return</span> key <span class="keyword">in</span> self.hash
+def hasKey(self, key):
+    return key in self.hash
 
-<span class="function"><span class="keyword">def</span> <span class="title">max</span><span class="params">(self)</span>:</span>
-    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> self.heap[<span class="number">0</span>] == <span class="number">0</span> <span class="keyword">else</span> self.heap[<span class="number">1</span>][<span class="number">1</span>]
+def max(self):
+    return 0 if self.heap[0] == 0 else self.heap[1][1]
 
-<span class="function"><span class="keyword">def</span> <span class="title">_swap</span><span class="params">(self, a, b)</span>:</span>
+def _swap(self, a, b):
     self.heap[a], self.heap[b] = self.heap[b], self.heap[a]
-    self.hash[self.heap[a][<span class="number">0</span>]] = a
-    self.hash[self.heap[b][<span class="number">0</span>]] = b
+    self.hash[self.heap[a][0]] = a
+    self.hash[self.heap[b][0]] = b
 
-<span class="function"><span class="keyword">def</span> <span class="title">_siftup</span><span class="params">(self, index)</span>:</span>
-    <span class="keyword">while</span> index != <span class="number">1</span>:
-        <span class="keyword">if</span> self.heap[index][<span class="number">1</span>] &lt;= self.heap[index / <span class="number">2</span>][<span class="number">1</span>]:
-            <span class="keyword">break</span>
-        self._swap(index, index / <span class="number">2</span>)
-        index /= <span class="number">2</span>
-    <span class="keyword">return</span> index
+def _siftup(self, index):
+    while index != 1:
+        if self.heap[index][1] &lt;= self.heap[index / 2][1]:
+            break
+        self._swap(index, index / 2)
+        index /= 2
+    return index
 
-<span class="function"><span class="keyword">def</span> <span class="title">_siftdown</span><span class="params">(self, index)</span>:</span>
-    size = self.heap[<span class="number">0</span>]
-    <span class="keyword">while</span> index &lt; size:
+def _siftdown(self, index):
+    size = self.heap[0]
+    while index &lt; size:
         t = index
-        <span class="keyword">if</span> index * <span class="number">2</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span>][<span class="number">1</span>]:
-            t = index * <span class="number">2</span>
-        <span class="keyword">if</span> index * <span class="number">2</span> + <span class="number">1</span> &lt;= size <span class="keyword">and</span> self.heap[t][<span class="number">1</span>] &lt; self.heap[index * <span class="number">2</span> + <span class="number">1</span>][<span class="number">1</span>]:
-            t = index * <span class="number">2</span> + <span class="number">1</span>
-        <span class="keyword">if</span> t == index:
-            <span class="keyword">break</span>
+        if index * 2 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2][1]:
+            t = index * 2
+        if index * 2 + 1 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2 + 1][1]:
+            t = index * 2 + 1
+        if t == index:
+            break
         self._swap(index, t)
         index = t
-    <span class="keyword">return</span> index
+    return index
 </code></pre>
       
     </div>
@@ -543,7 +543,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -551,7 +551,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -560,7 +560,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -786,6 +786,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

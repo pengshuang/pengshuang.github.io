@@ -337,17 +337,17 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
 
       
         <p>在搜索算法领域，我们更熟悉的应该是PageRank算法，而HITS算法相比显得不是那么出名。但是，HITS算法出现在PageRank算法之前，而且，它和PageRank算法有很多相似的地方，今天我们来介绍一下HITS算法，并且用Java语言去实现它。</p>
-<h2 id="HITS算法的原理">HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
+<h2 id="HITS算法的原理"><a href="#HITS算法的原理" class="headerlink" title="HITS算法的原理"></a>HITS算法的原理</h2><p>   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学的Jon Kleinberg 博士于1997年首先提出的,为IBM公司阿尔马登研究中心(IBM Almaden Research Center) 的名为“CLEVER”的研究项目中的一部分。 HITS算法是链接分析中非常基础且重要的算法，目前已被Teoma搜索引擎作为链接分析算法在实际中使用。</p>
 <p>通过HITS算法名我们可以看出，它的工作原理是：通过链接发掘话题。HITS算法想要解决的问题是，在海量的网页中找到与用户查询主题相关的高质量Authority（权威）页面与Hub（目录）页面，尤其是 Authority 页面，因为这些页面代表了满足用户查询的高质量内容，搜索引擎就以此作为搜索结果返回给用户。</p>
 <p>通俗的来讲，对于“Authority”页面，是指与某个领域或者某个话题相关的高质量网页，比如搜索引擎领域，Google和百度首页即该领域的高质量网页，比如读书领域，当当和亚马逊首页即该领域的高质量网页。</p>
 <p>而对于Hub”页面，指的是包含了很多指向高质量“Authority”页面链接的网页，比如hao123首页可以认为是一个典型的高质量“Hub”网页。</p>
-<h2 id="HITS算法的思想:彼此之间相互增强关系">HITS算法的思想:彼此之间相互增强关系</h2><ol>
+<h2 id="HITS算法的思想-彼此之间相互增强关系"><a href="#HITS算法的思想-彼此之间相互增强关系" class="headerlink" title="HITS算法的思想:彼此之间相互增强关系"></a>HITS算法的思想:彼此之间相互增强关系</h2><ol>
 <li><p>基本假设1：一个好的“Authority”页面会被很多好的“Hub”页面指向；</p>
 </li>
 <li><p>基本假设2：一个好的“Hub”页面会指向很多好的“Authority”页面；</p>
 </li>
 </ol>
-<h2 id="HITS算法的基本步骤">HITS算法的基本步骤</h2><ol>
+<h2 id="HITS算法的基本步骤"><a href="#HITS算法的基本步骤" class="headerlink" title="HITS算法的基本步骤"></a>HITS算法的基本步骤</h2><ol>
 <li><p>接受一个用户查询的请求。HITS 算法与用户输入的查询请求密切相关，它的查询结果是动态生成的，而 PageRank 算法则与用户的查询无关。</p>
 </li>
 <li><p>将查询提交给某个现有的搜索引擎（或者是自己构造的检索系统），并在返回的搜索结果中，提取排名靠前的网页，得到一组与用户查询高度相关的初始网页集合，这个集合被称作为 root set。</p>
@@ -358,7 +358,7 @@ HITS算法的原理   HITS(Hyperlink-Induced Topic Search)是由康奈尔大学�
 </li>
 </ol>
 <p><img src="/img/11.jpg" alt=""></p>
-<h2 id="HITS算法的Java实现">HITS算法的Java实现</h2><p>算法实现类：</p>
+<h2 id="HITS算法的Java实现"><a href="#HITS算法的Java实现" class="headerlink" title="HITS算法的Java实现"></a>HITS算法的Java实现</h2><p>算法实现类：</p>
 <pre><code>package org.tseg.search;
 
 import java.io.BufferedReader;
@@ -367,149 +367,149 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-<span class="comment">/**
+/**
  * HITS链接分析算法工具类
- */</span>
-<span class="keyword">public</span> <span class="keyword">class</span> HITSTool {
-    <span class="comment">// 输入数据文件地址</span>
-    <span class="keyword">private</span> String filePath;
-    <span class="comment">// 网页个数</span>
-    <span class="keyword">private</span> <span class="keyword">int</span> pageNum;
-    <span class="comment">// 网页Authority权威值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] authority;
-    <span class="comment">// 网页hub中心值</span>
-    <span class="keyword">private</span> <span class="keyword">double</span>[] hub;
-    <span class="comment">// 链接矩阵关系</span>
-    <span class="keyword">private</span> <span class="keyword">int</span>[][] linkMatrix;
-    <span class="comment">// 网页种类</span>
-    <span class="keyword">private</span> ArrayList&lt;String&gt; pageClass;
+ */
+public class HITSTool {
+    // 输入数据文件地址
+    private String filePath;
+    // 网页个数
+    private int pageNum;
+    // 网页Authority权威值
+    private double[] authority;
+    // 网页hub中心值
+    private double[] hub;
+    // 链接矩阵关系
+    private int[][] linkMatrix;
+    // 网页种类
+    private ArrayList&lt;String&gt; pageClass;
 
-    <span class="function"><span class="keyword">public</span> <span class="title">HITSTool</span><span class="params">(String filePath)</span> </span>{
-        <span class="keyword">this</span>.filePath = filePath;
+    public HITSTool(String filePath) {
+        this.filePath = filePath;
         readDataFile();
     }
-    <span class="comment">/**
+    /**
      * 从文件中读取数据
-     */</span>
-    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">readDataFile</span><span class="params">()</span> </span>{
-        File file = <span class="keyword">new</span> File(filePath);
-        ArrayList&lt;String[]&gt; dataArray = <span class="keyword">new</span> ArrayList&lt;String[]&gt;();
+     */
+    private void readDataFile() {
+        File file = new File(filePath);
+        ArrayList&lt;String[]&gt; dataArray = new ArrayList&lt;String[]&gt;();
 
-        <span class="keyword">try</span> {
-            BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(file));
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
             String str;
             String[] tempArray;
-            <span class="keyword">while</span> ((str = in.readLine()) != null) {
-                tempArray = str.split(<span class="string">" "</span>);
+            while ((str = in.readLine()) != null) {
+                tempArray = str.split(&quot; &quot;);
                 dataArray.add(tempArray);
             }
             in.close();
-        } <span class="keyword">catch</span> (IOException e) {
+        } catch (IOException e) {
             e.getStackTrace();
         }
-        pageClass = <span class="keyword">new</span> ArrayList&lt;&gt;();
-        <span class="comment">// 统计网页类型种数</span>
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
-            <span class="keyword">for</span> (String s : <span class="built_in">array</span>) {
-                <span class="keyword">if</span> (!pageClass.contains(s)) {
+        pageClass = new ArrayList&lt;&gt;();
+        // 统计网页类型种数
+        for (String[] array : dataArray) {
+            for (String s : array) {
+                if (!pageClass.contains(s)) {
                     pageClass.add(s);
                 }
             }
         }
-        <span class="keyword">int</span> i = <span class="number">0</span>;
-        <span class="keyword">int</span> j = <span class="number">0</span>;
+        int i = 0;
+        int j = 0;
         pageNum = pageClass.size();
-        linkMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[pageNum][pageNum];
-        authority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        hub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+        linkMatrix = new int[pageNum][pageNum];
+        authority = new double[pageNum];
+        hub = new double[pageNum];
 
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            <span class="comment">// 初始时默认权威值和中心值都为1</span>
-            authority[k] = <span class="number">1</span>;
-            hub[k] = <span class="number">1</span>;
+        for (int k = 0; k &lt; pageNum; k++) {
+            // 初始时默认权威值和中心值都为1
+            authority[k] = 1;
+            hub[k] = 1;
         }
 
-        <span class="keyword">for</span> (String[] <span class="built_in">array</span> : dataArray) {
+        for (String[] array : dataArray) {
 
-            i = Integer.parseInt(<span class="built_in">array</span>[<span class="number">0</span>]);
-            j = Integer.parseInt(<span class="built_in">array</span>[<span class="number">1</span>]);
+            i = Integer.parseInt(array[0]);
+            j = Integer.parseInt(array[1]);
 
-            <span class="comment">// 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接</span>
-            linkMatrix[i - <span class="number">1</span>][j - <span class="number">1</span>] = <span class="number">1</span>;
+            // 设置linkMatrix[i][j]为1代表i网页包含指向j网页的链接
+            linkMatrix[i - 1][j - 1] = 1;
         }
     }
-    <span class="comment">/**
+    /**
      * 输出结果页面，也就是authority权威值最高的页面
-     */</span>
-    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printResultPage</span><span class="params">()</span> </span>{
-        <span class="comment">// 最大Hub和Authority值，用于后面的归一化计算</span>
-        <span class="keyword">double</span> maxHub = <span class="number">0</span>;
-        <span class="keyword">double</span> maxAuthority = <span class="number">0</span>;
-        <span class="keyword">int</span> maxAuthorityIndex = <span class="number">0</span>;
-        <span class="comment">// 误差值，用于收敛判断</span>
-        <span class="keyword">double</span> error = Integer.MAX_VALUE;
-        <span class="keyword">double</span>[] newHub = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
-        <span class="keyword">double</span>[] newAuthority = <span class="keyword">new</span> <span class="keyword">double</span>[pageNum];
+     */
+    public void printResultPage() {
+        // 最大Hub和Authority值，用于后面的归一化计算
+        double maxHub = 0;
+        double maxAuthority = 0;
+        int maxAuthorityIndex = 0;
+        // 误差值，用于收敛判断
+        double error = Integer.MAX_VALUE;
+        double[] newHub = new double[pageNum];
+        double[] newAuthority = new double[pageNum];
 
-        <span class="keyword">while</span> (error &gt; <span class="number">0.01</span> * pageNum) {
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                newHub[k] = <span class="number">0</span>;
-                newAuthority[k] = <span class="number">0</span>;
+        while (error &gt; 0.01 * pageNum) {
+            for (int k = 0; k &lt; pageNum; k++) {
+                newHub[k] = 0;
+                newAuthority[k] = 0;
             }
 
-            <span class="comment">// hub和authority值的更新计算</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; pageNum; i++) {
-                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; pageNum; j++) {
-                    <span class="keyword">if</span> (linkMatrix[i][j] == <span class="number">1</span>) {
+            // hub和authority值的更新计算
+            for (int i = 0; i &lt; pageNum; i++) {
+                for (int j = 0; j &lt; pageNum; j++) {
+                    if (linkMatrix[i][j] == 1) {
                         newHub[i] += authority[j];
                         newAuthority[j] += hub[i];
                     }
                 }
             }
-            maxHub = <span class="number">0</span>;
-            maxAuthority = <span class="number">0</span>;
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-                <span class="keyword">if</span> (newHub[k] &gt; maxHub) {
+            maxHub = 0;
+            maxAuthority = 0;
+            for (int k = 0; k &lt; pageNum; k++) {
+                if (newHub[k] &gt; maxHub) {
                     maxHub = newHub[k];
                 }
 
-                <span class="keyword">if</span> (newAuthority[k] &gt; maxAuthority) {
+                if (newAuthority[k] &gt; maxAuthority) {
                     maxAuthority = newAuthority[k];
                     maxAuthorityIndex = k;
                 }
             }
 
-            error = <span class="number">0</span>;
-            <span class="comment">// 归一化处理</span>
-            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
+            error = 0;
+            // 归一化处理
+            for (int k = 0; k &lt; pageNum; k++) {
                 newHub[k] /= maxHub;
                 newAuthority[k] /= maxAuthority;
 
-                error += Math.<span class="built_in">abs</span>(newHub[k] - hub[k]);
-                System.out.println(newAuthority[k] + <span class="string">":"</span> + newHub[k]);
+                error += Math.abs(newHub[k] - hub[k]);
+                System.out.println(newAuthority[k] + &quot;:&quot; + newHub[k]);
 
                 hub[k] = newHub[k];
                 authority[k] = newAuthority[k];
             }
-            System.out.println(<span class="string">"---------"</span>);
+            System.out.println(&quot;---------&quot;);
         }
-        System.out.println(<span class="string">"****最终收敛的网页的权威值和中心值****"</span>);
-        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; pageNum; k++) {
-            System.out.println(<span class="string">"网页"</span> + pageClass.get(k) + <span class="string">":"</span> + authority[k] + <span class="string">":"</span> + hub[k]);
+        System.out.println(&quot;****最终收敛的网页的权威值和中心值****&quot;);
+        for (int k = 0; k &lt; pageNum; k++) {
+            System.out.println(&quot;网页&quot; + pageClass.get(k) + &quot;:&quot; + authority[k] + &quot;:&quot; + hub[k]);
         }
-        System.out.println(<span class="string">"权威值最高的网页为：网页"</span> + pageClass.get(maxAuthorityIndex));
+        System.out.println(&quot;权威值最高的网页为：网页&quot; + pageClass.get(maxAuthorityIndex));
     }
 
 }
 </code></pre><p>主类：</p>
-<pre><code><span class="keyword">package</span> org.tseg.search;
+<pre><code>package org.tseg.search;
 
-<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{
+public class Operation {
 
-    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
+    public static void main(String[] args) {
 
-        String Path = <span class="string">"Users/pengshuang/Desktop/pagerank/input/HITS.txt"</span>;
-        HITSTool ht = <span class="keyword">new</span> HITSTool(Path);
+        String Path = &quot;Users/pengshuang/Desktop/pagerank/input/HITS.txt&quot;;
+        HITSTool ht = new HITSTool(Path);
         ht.printResultPage();
     }
 
@@ -648,7 +648,7 @@ import java.util.ArrayList;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -656,7 +656,7 @@ import java.util.ArrayList;
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -665,7 +665,7 @@ import java.util.ArrayList;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -736,7 +736,7 @@ import java.util.ArrayList;
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的原理"><span class="nav-number">1.</span> <span class="nav-text">HITS算法的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的思想:彼此之间相互增强关系"><span class="nav-number">2.</span> <span class="nav-text">HITS算法的思想:彼此之间相互增强关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的基本步骤"><span class="nav-number">3.</span> <span class="nav-text">HITS算法的基本步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的Java实现"><span class="nav-number">4.</span> <span class="nav-text">HITS算法的Java实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的原理"><span class="nav-number">1.</span> <span class="nav-text">HITS算法的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的思想-彼此之间相互增强关系"><span class="nav-number">2.</span> <span class="nav-text">HITS算法的思想:彼此之间相互增强关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的基本步骤"><span class="nav-number">3.</span> <span class="nav-text">HITS算法的基本步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HITS算法的Java实现"><span class="nav-number">4.</span> <span class="nav-text">HITS算法的Java实现</span></a></li></ol></div>
             
           </div>
         </section>
@@ -891,6 +891,26 @@ import java.util.ArrayList;
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

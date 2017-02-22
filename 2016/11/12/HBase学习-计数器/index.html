@@ -340,47 +340,47 @@ long incrementColumnValue(byte[] row, byte[] family, byte[]
       
 
       
-        <h3 id="计数器简介">计数器简介</h3><p>许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。</p>
-<h3 id="单计数器">单计数器</h3><p>第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：</p>
-<pre><code><span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
-    qualifier, <span class="keyword">long</span> amount) <span class="keyword">throws</span> IOException
-<span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
-    qualifier, <span class="keyword">long</span> amount, <span class="keyword">boolean</span> writeToWAL) <span class="keyword">throws</span> IOException
+        <h3 id="计数器简介"><a href="#计数器简介" class="headerlink" title="计数器简介"></a>计数器简介</h3><p>许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。</p>
+<h3 id="单计数器"><a href="#单计数器" class="headerlink" title="单计数器"></a>单计数器</h3><p>第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：</p>
+<pre><code>long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qualifier, long amount) throws IOException
+long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qualifier, long amount, boolean writeToWAL) throws IOException
 </code></pre><p>这两种方法都需要提供列的坐标和增加值，除此之外这两种方法只在参数 writeToWAL 上有差别，这个参数的作用与 Put.setWriteToWAL() 方法一致。忽略该参数会直接使用默认值 True。下面举一个使用单计数器的列子。</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable hTable = <span class="literal">new</span> HTable(conf, <span class="string">"temp2"</span>);
-<span class="comment">// 计数器值加一</span>
-long cnt1 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-long cnt2 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-<span class="comment">// 得到计数器的当前值</span>
-long current = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">0</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+// 计数器值加一
+long cnt1 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+long cnt2 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+// 得到计数器的当前值
+long current = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 0);
 
-long cnt3 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), -<span class="number">1</span>);
+long cnt3 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), -1);
 </code></pre><p>对应的输出结果为：</p>
-<pre><code>cnt1: <span class="number">1</span>, cnt2: <span class="number">2</span>, current: <span class="number">2</span>, cnt: <span class="number">3</span>
-</code></pre><h3 id="多计数器">多计数器</h3><p>另一个计数器值的途径是使用 HTable() 的方法 increment()。工作模式与 CRUD 操作类似。使用以下方法完成该功能：</p>
-<pre><code>Result <span class="function"><span class="title">increment</span><span class="params">(Increment increment)</span></span> throws IOException 
+<pre><code>cnt1: 1, cnt2: 2, current: 2, cnt: 3
+</code></pre><h3 id="多计数器"><a href="#多计数器" class="headerlink" title="多计数器"></a>多计数器</h3><p>另一个计数器值的途径是使用 HTable() 的方法 increment()。工作模式与 CRUD 操作类似。使用以下方法完成该功能：</p>
+<pre><code>Result increment(Increment increment) throws IOException 
 </code></pre><p>用户需要创建一个 Increment 实例，同时需要填充一些相应的的细节到该实例中，比如：</p>
-<pre><code><span class="function"><span class="title">Increment</span><span class="params">()</span></span>
-<span class="function"><span class="title">Increment</span><span class="params">(byte[] row)</span></span>
-<span class="function"><span class="title">Increment</span><span class="params">(byte[] row, RowLock rowLock)</span></span>
+<pre><code>Increment()
+Increment(byte[] row)
+Increment(byte[] row, RowLock rowLock)
 </code></pre><p>用户构造 Increment 实例时需要传入行键，此行应当包含此实例需要通过 increment() 方法修改的所有计数器。</p>
 <p>可选参数 rowLock 设置了用户自定义锁实例，这样可以使本次操作完全在用户的控制下完成，例如，当用户需要多次修改同一行时，可以保证其间此行不被其他写程序修改。</p>
 <p>一旦用户使用行键创建了一个 Increment 实例，就需要向其中加入实际的计数器，也就是说，用户需要增加列，使用方法如下：</p>
-<pre><code>Increment addColumn(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier, <span class="keyword">long</span> amount)
+<pre><code>Increment addColumn(byte[] family, byte[] qualifier, long amount)
 </code></pre><p>Increment 类的特别功能是可以增加一个时间范围：</p>
-<pre><code>Increment setTimeRange(<span class="keyword">long</span> minStamp, <span class="keyword">long</span> maxStamp) <span class="keyword">throws</span> IOException
+<pre><code>Increment setTimeRange(long minStamp, long maxStamp) throws IOException
 </code></pre><p>用户限制时间的范围，可以用来屏蔽比较老的计数器，使它们看上去不存在，一次增加操作会认为较老的计数器不存在，并把它们重置为 1。</p>
 <p>下面这个例子表示增加了一行中多个计数器的计数。</p>
-<pre><code> Increment increment1 = <span class="literal">new</span> Increment(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>));
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"clicks"</span>), <span class="number">1</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"click"</span>), <span class="number">10</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">10</span>);
+<pre><code> Increment increment1 = new Increment(Bytes.toBytes(&quot;20160101&quot;));
+increment1.addColumn(Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;clicks&quot;), 1);
+increment1.addColumn(Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+increment1.addColumn(Bytes.toBytes(&quot;weekly&quot;), Bytes.toBytes(&quot;click&quot;), 10);
+increment1.addColumn(Bytes.toBytes(&quot;weekly&quot;), Bytes.toBytes(&quot;hits&quot;), 10);
 </code></pre>
       
     </div>
@@ -507,7 +507,7 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -515,7 +515,7 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -524,7 +524,7 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -750,6 +750,26 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

@@ -346,73 +346,73 @@ HTable">
       
 
       
-        <h3 id="单行删除">单行删除</h3><p>delete() 方法 </p>
-<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(<span class="keyword">Delete</span> <span class="keyword">delete</span>) <span class="keyword">throws</span> IOException
+        <h3 id="单行删除"><a href="#单行删除" class="headerlink" title="单行删除"></a>单行删除</h3><p>delete() 方法 </p>
+<pre><code>void delete(Delete delete) throws IOException
 </code></pre><p>和 get 及 post 方法一样，用户必须先创建一个 Delete 实例，然后再添加想要删除的数据的详细信息。</p>
 <p>下面是一个使用 delete() 函数的例子</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, "test1");
-<span class="operator"><span class="keyword">Delete</span> <span class="keyword">delete</span> = <span class="keyword">new</span> <span class="keyword">Delete</span>(<span class="keyword">Bytes</span>.toBytes(<span class="string">"row1"</span>));</span>
+HTable table = new HTable(conf, &quot;test1&quot;);
+Delete delete = new Delete(Bytes.toBytes(&quot;row1&quot;));
 // 设置时间戳
-<span class="operator"><span class="keyword">delete</span>.setTimestamp(<span class="number">1</span>);</span>
+delete.setTimestamp(1);
 // 删除一列中的特定版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumn(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>), <span class="number">1</span>);</span>
+delete.deleteColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 1);
 // 删除一列中的全部版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>));</span>
+delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual1&quot;));
 // 删除一列中的给定版本和所有更旧的版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual3"</span>),<span class="number">15</span>);</span>
+delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual3&quot;),15);
 // 删除整个列族,包括所有的列和版本
-<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>));</span>
+delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;));
 // 删除给定列族中的所有列的给定版本和所有更旧的版本
-<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>), <span class="number">3</span>);</span>
-table.delete(<span class="operator"><span class="keyword">delete</span>);</span>
+delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;), 3);
+table.delete(delete);
 table.close(); 
-</code></pre><h3 id="多行删除">多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
-<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(List&lt;<span class="keyword">Delete</span>&gt; deletes) <span class="keyword">throw</span> IOException
+</code></pre><h3 id="多行删除"><a href="#多行删除" class="headerlink" title="多行删除"></a>多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
+<pre><code>void delete(List&lt;Delete&gt; deletes) throw IOException
 </code></pre><p>这里不再赘述。</p>
-<h3 id="批量处理操作">批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
-<pre><code>void <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions, Object[] results)</span></span> throws 
+<h3 id="批量处理操作"><a href="#批量处理操作" class="headerlink" title="批量处理操作"></a>批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
+<pre><code>void batch(List&lt;Row&gt; actions, Object[] results) throws 
     IOException, InterruptedException
-Object[] <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions)</span></span> throws
+Object[] batch(List&lt;Row&gt; actions) throws
     IOException, InterruptedException
 </code></pre><p>上面的 API 提供了批量处理操作。用户可能注意到这里引入了一个新的名为 Row 的类，它是 Put、Get 和 Delete 的祖先，或者是父类。</p>
 <p>使用同样的父类允许在列表中实现多态，即放入以上 3 种不同的子类。这种调用跟之前介绍的基于列表的调用方法一样简单易用。下面展示了一个简单的例子。</p>
-<pre><code>Configuration <span class="keyword">conf</span> = HBaseConfiguration.create();
-HTable table = <span class="keyword">new</span> HTable(<span class="keyword">conf</span>, <span class="string">"test"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test&quot;);
 
-byte[] ROW1 = Bytes.toBytes(<span class="string">"row1"</span>);
-byte[] ROW2 = Bytes.toBytes(<span class="string">"row2"</span>);
+byte[] ROW1 = Bytes.toBytes(&quot;row1&quot;);
+byte[] ROW2 = Bytes.toBytes(&quot;row2&quot;);
 
-byte[] COLFAM1 = Bytes.toBytes(<span class="string">"colfam1"</span>);
+byte[] COLFAM1 = Bytes.toBytes(&quot;colfam1&quot;);
 
-byte[] QUAL1 = Bytes.toBytes(<span class="string">"qual1"</span>);
+byte[] QUAL1 = Bytes.toBytes(&quot;qual1&quot;);
 
-List&lt;Row&gt; batch = <span class="keyword">new</span> ArrayList&lt;Row&gt;();
+List&lt;Row&gt; batch = new ArrayList&lt;Row&gt;();
 
-Put <span class="keyword">put</span> = <span class="keyword">new</span> Put(ROW1);
-<span class="keyword">put</span>.<span class="built_in">add</span>(COLFAM1, QUAL2,Bytes.toBytes(<span class="string">"val5"</span>));
-batch.<span class="built_in">add</span>(<span class="keyword">put</span>);
+Put put = new Put(ROW1);
+put.add(COLFAM1, QUAL2,Bytes.toBytes(&quot;val5&quot;));
+batch.add(put);
 
-Get get1 = <span class="keyword">new</span> Get(ROW2);
+Get get1 = new Get(ROW2);
 get1.addColumn(COLFAM1,QUAL2);
-batch.<span class="built_in">add</span>(get1);
+batch.add(get1);
 
-Delete <span class="built_in">delete</span> = <span class="keyword">new</span> Delete(ROW1);
-<span class="built_in">delete</span>.deleteColumns(COLFAM1,QUAL2);
-batch.<span class="built_in">add</span>(<span class="built_in">delete</span>);
+Delete delete = new Delete(ROW1);
+delete.deleteColumns(COLFAM1,QUAL2);
+batch.add(delete);
 
 table.batch(batch, results);
 </code></pre><p><strong>注意</strong>：不可以将针对同一行的 Put 和 Delete 操作放在同一个批量处理请求中。</p>
-<h3 id="行锁">行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
+<h3 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
 <p>处理服务器端隐式加锁之外，客户端也可以显示地对当行数据的多次操作进行加锁，通过以下调用实现：</p>
-<pre><code>RowLock <span class="function"><span class="title">lockRow</span><span class="params">(byte[] row)</span></span> throws IOException
-void <span class="function"><span class="title">unlockRow</span><span class="params">(RowLock r1)</span></span> throws IOException
+<pre><code>RowLock lockRow(byte[] row) throws IOException
+void unlockRow(RowLock r1) throws IOException
 </code></pre><p>第一个调用 lockRow() 需要一个行健作为参数，返回一个 RowLock 的实例，这个实例可以供后续的 Put 或者 Delete 的构造函数使用。一旦不再需要锁时，必须通过 unLockRow() 调用来释放它。</p>
 <p>默认的锁超时时间是一分钟，但是可以在 <strong>hbase-site.xml</strong> 文件中添加一下配置项。</p>
-<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.regionserver.lease.period<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>1200000<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-<span class="tag">&lt;<span class="title">property</span>&gt;</span>
+<pre><code>&lt;property&gt;
+    &lt;name&gt;hbase.regionserver.lease.period&lt;/name&gt;
+    &lt;value&gt;1200000&lt;/value&gt;
+&lt;property&gt;
 </code></pre><p><strong>注意</strong>：Get 方法是不需要锁的。</p>
 
       
@@ -540,7 +540,7 @@ void <span class="function"><span class="title">unlockRow</span><span class="par
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -548,7 +548,7 @@ void <span class="function"><span class="title">unlockRow</span><span class="par
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -557,7 +557,7 @@ void <span class="function"><span class="title">unlockRow</span><span class="par
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -783,6 +783,26 @@ void <span class="function"><span class="title">unlockRow</span><span class="par
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

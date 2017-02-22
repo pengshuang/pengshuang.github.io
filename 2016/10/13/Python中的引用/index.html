@@ -337,65 +337,65 @@
         <p>Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。</p>
 <p>事实上，当人们复制列表或字典时，就复制了对象列表的引用同，如果改变引用的值，则修改了原始的参数。</p>
 <p>为了简化内存管理，Python通过引用计数机制实现自动垃圾回收功能，Python中的每个对象都有一个引用计数，用来计数该对象在不同场所分别被引用了多少次。每当引用一次Python对象，相应的引用计数就增1，每当消毁一次Python对象，则相应的引用就减1，只有当引用计数为零时，才真正从内存中删除Python对象。</p>
-<h3 id="列表引用">列表引用</h3><p>示例一:</p>
-<pre><code>&gt;&gt;&gt; a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+<h3 id="列表引用"><a href="#列表引用" class="headerlink" title="列表引用"></a>列表引用</h3><p>示例一:</p>
+<pre><code>&gt;&gt;&gt; a = [1,2,3]
 &gt;&gt;&gt; b = a
-&gt;&gt;&gt; b.append(<span class="number">4</span>)
+&gt;&gt;&gt; b.append(4)
 &gt;&gt;&gt; print b
-<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+# output: [1,2,3,4]
 &gt;&gt;&gt; print a
-<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+# output: [1,2,3,4]
 </code></pre><p>这里把a的值赋给了b，相当于把a的引用给了b，这样改变b的值也就改变了a的值。</p>
 <p>示例二:</p>
-<pre><code>&gt;&gt;&gt; a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+<pre><code>&gt;&gt;&gt; a = [1,2,3]
 &gt;&gt;&gt; b = a + []
-&gt;&gt;&gt; b.append(<span class="number">4</span>)
+&gt;&gt;&gt; b.append(4)
 &gt;&gt;&gt; print b
-<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]</span>
+# output: [1,2,3,4]
 &gt;&gt;&gt; print a
-<span class="preprocessor"># output: [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span>
+# output: [1,2,3]
 </code></pre><p>这里把 <strong>a+[ ]</strong> 的值赋给了b， <strong>a+[ ]</strong> 相当于一个新的变量，而不是a的引用传递，所以改变b的值不会同时也改变a。</p>
 <p>示例三:</p>
-<pre><code><span class="function"><span class="keyword">def</span> <span class="title">add_list</span><span class="params">(p)</span>:</span>
-     p = p + [<span class="number">1</span>]
-p1 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+<pre><code>def add_list(p):
+     p = p + [1]
+p1 = [1,2,3]
 add_list(p1)
-<span class="keyword">print</span> p1
-<span class="comment"># output: [1, 2, 3]</span>
+print p1
+# output: [1, 2, 3]
 
-<span class="function"><span class="keyword">def</span> <span class="title">add_list</span><span class="params">(p)</span>:</span>
-    p += [<span class="number">1</span>]
-p2 = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
+def add_list(p):
+    p += [1]
+p2 = [1,2,3]
 proc2(p2)
-<span class="keyword">print</span> p2
-<span class="comment"># output: [1, 2, 3, 1]</span>
+print p2
+# output: [1, 2, 3, 1]
 </code></pre><p>这主要是由于“=”操作符会新建一个新的变量保存赋值结果，然后再把引用名指向“=”左边，即修改了原来的p引用，使p成为指向新赋值变量的引用。而+=不会，直接修改了原来p引用的内容，事实上+=和=在python内部使用了不同的实现函数。</p>
-<h3 id="字典引用">字典引用</h3><p>示例一:</p>
-<pre><code><span class="prompt">&gt;&gt;</span>&gt; a = {<span class="string">"a"</span><span class="symbol">:</span><span class="number">1</span>,<span class="string">"b"</span><span class="symbol">:</span><span class="number">2</span>}
-<span class="prompt">&gt;&gt;</span>&gt; b = a
-<span class="prompt">&gt;&gt;</span>&gt; b[<span class="string">"c"</span>] = <span class="number">3</span>
-<span class="prompt">&gt;&gt;</span>&gt; b
-<span class="symbol">output:</span> {<span class="string">'a'</span><span class="symbol">:</span> <span class="number">1</span>, <span class="string">'c'</span><span class="symbol">:</span> <span class="number">3</span>, <span class="string">'b'</span><span class="symbol">:</span> <span class="number">2</span>}
-<span class="prompt">&gt;&gt;</span>&gt; a
-<span class="symbol">output:</span> {<span class="string">'a'</span><span class="symbol">:</span> <span class="number">1</span>, <span class="string">'c'</span><span class="symbol">:</span> <span class="number">3</span>, <span class="string">'b'</span><span class="symbol">:</span> <span class="number">2</span>}
+<h3 id="字典引用"><a href="#字典引用" class="headerlink" title="字典引用"></a>字典引用</h3><p>示例一:</p>
+<pre><code>&gt;&gt;&gt; a = {&quot;a&quot;:1,&quot;b&quot;:2}
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; b[&quot;c&quot;] = 3
+&gt;&gt;&gt; b
+output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
+&gt;&gt;&gt; a
+output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
 </code></pre><p>同列表引用一样，传递字典的时候其实传递的也是引用。</p>
 <p>示例二:</p>
 <pre><code>a = []
-b = {<span class="string">'num'</span>:<span class="number">0</span>, <span class="string">'sqrt'</span>:<span class="number">0</span>}
-resurse = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
-<span class="keyword">for</span> i <span class="keyword">in</span> resurse:
-  b[<span class="string">'num'</span>] = i
-  b[<span class="string">'sqrt'</span>] = i * i
+b = {&apos;num&apos;:0, &apos;sqrt&apos;:0}
+resurse = [1,2,3]
+for i in resurse:
+  b[&apos;num&apos;] = i
+  b[&apos;sqrt&apos;] = i * i
   a.append(b)
 print a
-output: [{<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}]
+output: [{&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
 </code></pre><p>我们可能会觉得有点奇怪，因为我们想要的值可能是这个:</p>
-<pre><code>output: [{<span class="string">'num'</span>: <span class="number">1</span>, <span class="string">'sqrt'</span>: <span class="number">1</span>}, {<span class="string">'num'</span>: <span class="number">2</span>, <span class="string">'sqrt'</span>: <span class="number">4</span>}, {<span class="string">'num'</span>: <span class="number">3</span>, <span class="string">'sqrt'</span>: <span class="number">9</span>}]
+<pre><code>output: [{&apos;num&apos;: 1, &apos;sqrt&apos;: 1}, {&apos;num&apos;: 2, &apos;sqrt&apos;: 4}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
 </code></pre><p>这是由于a中的元素就是b的引用，那怎么办呢？可以这样来修改:</p>
-<pre><code><span class="tag">a</span> = []
-resurse = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]
-<span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> resurse:
-    <span class="tag">a</span>.<span class="function"><span class="title">append</span><span class="params">({<span class="string">"num"</span>: i, <span class="string">"sqrt"</span>: i * i})</span></span>
+<pre><code>a = []
+resurse = [1,2,3]
+for i in resurse:
+    a.append({&quot;num&quot;: i, &quot;sqrt&quot;: i * i})
 </code></pre>
       
     </div>
@@ -528,7 +528,7 @@ resurse = [<span class="number">1</span>,<span class="number">2</span>,<span cla
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -536,7 +536,7 @@ resurse = [<span class="number">1</span>,<span class="number">2</span>,<span cla
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -545,7 +545,7 @@ resurse = [<span class="number">1</span>,<span class="number">2</span>,<span cla
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -771,6 +771,26 @@ resurse = [<span class="number">1</span>,<span class="number">2</span>,<span cla
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

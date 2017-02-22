@@ -334,22 +334,22 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
       
 
       
-        <h3 id="DNS">DNS</h3><p>我们平常在访问某个网站时不使用 IP 地址，而是用一串由字母和点号组成的字符串。而一般用户在使用 TCP/IP 进行通信时也不使用 IP 地址。能够这样的原因主要是因为有 DNS 功能的支持。DNS 可以将它们自动转换为具体的 IP 地址。</p>
-<h4 id="IP_地址不便记忆">IP 地址不便记忆</h4><p>TCP/IP 网络中要求每一个互连的计算机都具有其唯一的 IP 地址，并基于这个 IP 地址进行通信，但是 IP 地址并不容易记忆。</p>
+        <h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>我们平常在访问某个网站时不使用 IP 地址，而是用一串由字母和点号组成的字符串。而一般用户在使用 TCP/IP 进行通信时也不使用 IP 地址。能够这样的原因主要是因为有 DNS 功能的支持。DNS 可以将它们自动转换为具体的 IP 地址。</p>
+<h4 id="IP-地址不便记忆"><a href="#IP-地址不便记忆" class="headerlink" title="IP 地址不便记忆"></a>IP 地址不便记忆</h4><p>TCP/IP 网络中要求每一个互连的计算机都具有其唯一的 IP 地址，并基于这个 IP 地址进行通信，但是 IP 地址并不容易记忆。</p>
 <p>为此， TCP/IP 世界中从一开始就已经有了一个叫主机识别码的东西。它为每台计算机赋以唯一的主机名，在进行网络通信时可以直接使用主机名称而无需输入长串的 IP 地址。为了实现这种功能，主机往往会利用一个叫做 hosts 的数据库文件。</p>
-<h4 id="DNS_产生">DNS 产生</h4><p>DNS 系统可以有效管理主机名和 IP 地址之间对应关系。这个系统中主机的管理机构可以对数据进行变更和设定，即它可以维护一个用来表示组织内部主机名和 IP 地址之间对应关系的数据库。</p>
+<h4 id="DNS-产生"><a href="#DNS-产生" class="headerlink" title="DNS 产生"></a>DNS 产生</h4><p>DNS 系统可以有效管理主机名和 IP 地址之间对应关系。这个系统中主机的管理机构可以对数据进行变更和设定，即它可以维护一个用来表示组织内部主机名和 IP 地址之间对应关系的数据库。</p>
 <p>在应用中，当用户输入主机名（域名）时，DNS 会自动检索那个注册了主机名和 IP 地址的数据库，并迅速定位对应的 IP 地址。而且，如果主机名和 IP 地址需要进行变更时，也只需要在组织机构内部进行处理即可，而没必要再向其他机构进行申请或报告。</p>
-<h3 id="ARP">ARP</h3><p>只要确定了 IP 地址，就可以向这个目标地址发送 IP 数据报。然而，在底层数据链路层，进行实际通信时却有必要了解每个 IP 地址所对应的 MAC 地址。</p>
-<h4 id="ARP_概要">ARP 概要</h4><p>ARP 是一种解决地址问题的协议。以目标 IP 地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC 地址。如果目标主机不在同一个链路上时，可以通过 ARP 查找下一跳路由器的 MAC 地址。不过 ARP 只适用于 IPv4，不能用于 IPv6。IPv6 中可以用 ICMPv6 替代 ARP 发送邻居探索消息。</p>
+<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>只要确定了 IP 地址，就可以向这个目标地址发送 IP 数据报。然而，在底层数据链路层，进行实际通信时却有必要了解每个 IP 地址所对应的 MAC 地址。</p>
+<h4 id="ARP-概要"><a href="#ARP-概要" class="headerlink" title="ARP 概要"></a>ARP 概要</h4><p>ARP 是一种解决地址问题的协议。以目标 IP 地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC 地址。如果目标主机不在同一个链路上时，可以通过 ARP 查找下一跳路由器的 MAC 地址。不过 ARP 只适用于 IPv4，不能用于 IPv6。IPv6 中可以用 ICMPv6 替代 ARP 发送邻居探索消息。</p>
 <p>假定 主机 A 向同一链路上的主机 B 发送 IP 包，主机 A 的 IP 地址为 172.20.1.1，主机 B 的 IP 地址为 172.20.1.2，它们互不知道对方的 MAC 地址。</p>
 <p>主机 A 为了获得主机 B 的 MAC 地址，起初要通过广播发送一个 ARP 请求包。这个包中包含了想要了解其 MAC 地址的主机 IP 地址。也就是说，ARP 请求包中已经包含了主机 B 的 IP 地址 172.20.1.2。由于广播的包可以被同一个链路上所有的主机或路由器接收，因此 ARP 请求包中的目标 IP 地址与自己的 IP 地址一致，那么这个节点就将自己的 MAC 地址塞入 ARP 响应包返回给主机 A。</p>
 <p>从一个 IP 地址发送 ARP 请求包以了解其 MAC 地址，目标地址将自己的 MAC 地址填入其中的 ARP 响应包返回到 IP 地址。由此，可以通过 ARP 从 IP 地址获得 MAC 地址，实现链路内的 IP 通信。</p>
 <p>根据 ARP 可以动态地进地址解析，因此，在 TCP/IP 的网络构造和网络通信中无需事先知道 MAC 地址究竟是什么，只要有 IP 地址即可。如果每发送一个 IP 数据报都要进行一次 ARP 请求以此确定 MAC 地址，那将会造成不必要的网络流量，因此，通常是把获取到的 MAC 地址缓存一段时间。即把第一次通过 ARP 获取到的 MAC 地址作为 IP 对 MAC 的映射关系记忆到一个 ARP 缓存表中，下一次再向这个 IP 地址发送数据报时不需要再重新发送 ARP 请求，而是直接使用这个缓存表当中的 MAC 地址进行数据报的发送。每执行一次 ARP，其对应的缓存内容都会被清除。不过在清除之前都可以不需要执行 ARP 就可以获取想要的 MAC 地址。这样，在一定程度上防止了 ARP 包在网络上被大量广播的可能性。</p>
-<h4 id="IP_地址和_MAC_地址都需要吗？">IP 地址和 MAC 地址都需要吗？</h4><p>可能会有这么一个问题，数据链路上只要知道接收端的 MAC 地址就可可以发送数据了，还需要知道它的 IP 地址吗？</p>
+<h4 id="IP-地址和-MAC-地址都需要吗？"><a href="#IP-地址和-MAC-地址都需要吗？" class="headerlink" title="IP 地址和 MAC 地址都需要吗？"></a>IP 地址和 MAC 地址都需要吗？</h4><p>可能会有这么一个问题，数据链路上只要知道接收端的 MAC 地址就可可以发送数据了，还需要知道它的 IP 地址吗？</p>
 <p>答案是肯定的，如果我们考虑发送给其他数据链路中某一台主机时的情况。如果主机 A 和 主机 B 不在同一个链路，主机 A 想要发送 IP 数据报给主机 B 时必须得经过路由器 C。即使知道了主机 B 的 MAC 地址，由于路由器 C 会隔断两个网络，还是无法实现从主机 A 发送数据报给主机 B。此时，主机 A 必须得先将数据报发送给路由器 C 的 MAC 地址。</p>
 <p>在以太网上发送 IP 包时，“下次要经由哪个路由器发送数据报” 这一信息非常重要。而这里的“下一个路由器”就是相应的 MAC 地址。</p>
-<h4 id="RARP">RARP</h4><p>RARP 是将 ARP 反过来，从 MAC 地址定位 IP 地址的一种协议。我们平时可以通过个人电脑设置 IP 地址，也可以通过 DHCP 自动分配获取 IP 地址。然而，对于使用嵌入式设备，会遇到没有任何输入接口或无法通过 DHCP 动态获取 IP 地址的情况。在类似这种情况下，就可以使用 RARP。</p>
-<h4 id="代理_ARP">代理 ARP</h4><p>通常 ARP 包会被路由隔离，但是采用代理 ARP（Proxy ARP）的路由器可以将 ARP 请求转发给邻近的网段。由此，两个以上网段的节点之间可以像在同一个网段中一样进行通信。</p>
+<h4 id="RARP"><a href="#RARP" class="headerlink" title="RARP"></a>RARP</h4><p>RARP 是将 ARP 反过来，从 MAC 地址定位 IP 地址的一种协议。我们平时可以通过个人电脑设置 IP 地址，也可以通过 DHCP 自动分配获取 IP 地址。然而，对于使用嵌入式设备，会遇到没有任何输入接口或无法通过 DHCP 动态获取 IP 地址的情况。在类似这种情况下，就可以使用 RARP。</p>
+<h4 id="代理-ARP"><a href="#代理-ARP" class="headerlink" title="代理 ARP"></a>代理 ARP</h4><p>通常 ARP 包会被路由隔离，但是采用代理 ARP（Proxy ARP）的路由器可以将 ARP 请求转发给邻近的网段。由此，两个以上网段的节点之间可以像在同一个网段中一样进行通信。</p>
 
       
     </div>
@@ -482,7 +482,7 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -490,7 +490,7 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -499,7 +499,7 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -570,7 +570,7 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS"><span class="nav-number">1.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP_地址不便记忆"><span class="nav-number">1.1.</span> <span class="nav-text">IP 地址不便记忆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS_产生"><span class="nav-number">1.2.</span> <span class="nav-text">DNS 产生</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP"><span class="nav-number">2.</span> <span class="nav-text">ARP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ARP_概要"><span class="nav-number">2.1.</span> <span class="nav-text">ARP 概要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP_地址和_MAC_地址都需要吗？"><span class="nav-number">2.2.</span> <span class="nav-text">IP 地址和 MAC 地址都需要吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RARP"><span class="nav-number">2.3.</span> <span class="nav-text">RARP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代理_ARP"><span class="nav-number">2.4.</span> <span class="nav-text">代理 ARP</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS"><span class="nav-number">1.</span> <span class="nav-text">DNS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-地址不便记忆"><span class="nav-number">1.1.</span> <span class="nav-text">IP 地址不便记忆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS-产生"><span class="nav-number">1.2.</span> <span class="nav-text">DNS 产生</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARP"><span class="nav-number">2.</span> <span class="nav-text">ARP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ARP-概要"><span class="nav-number">2.1.</span> <span class="nav-text">ARP 概要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IP-地址和-MAC-地址都需要吗？"><span class="nav-number">2.2.</span> <span class="nav-text">IP 地址和 MAC 地址都需要吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RARP"><span class="nav-number">2.3.</span> <span class="nav-text">RARP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代理-ARP"><span class="nav-number">2.4.</span> <span class="nav-text">代理 ARP</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
@@ -725,6 +725,26 @@ IP 地址不便记忆TCP/IP 网络中要求每一个互连的计算机都具有�
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

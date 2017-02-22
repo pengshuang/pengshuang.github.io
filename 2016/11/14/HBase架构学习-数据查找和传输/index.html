@@ -335,9 +335,9 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
 
       
         <p>在介绍 HBase 架构之前，首先来介绍典型的 RDBMS 和其他非关系型数据库底层存储结构之间的不同。其中传统关系型存储引擎广泛采用了 B 树和 B + 树；而 BigTable 的底层架构则采用了 LSM 树（Log-Structured Merge Tree）。</p>
-<h3 id="B_+_树">B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B + 树"></a>B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
 <p>除此之外，B + 树能够提供高效的范围扫描功能，这得益于它的叶节点相互连接并且按主键有序，扫描时避免了耗时的遍历树操作。这也是 B + 树被关系型数据库用作索引的原因之一。</p>
-<h3 id="LSM_树">LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
+<h3 id="LSM-树"><a href="#LSM-树" class="headerlink" title="LSM 树"></a>LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
 <p>当系统经历过许多次数据修改，且内存空间被逐渐占满后，LSM 树会把有序的“键 - 记录”对写到磁盘中，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了。</p>
 <p>存储文件的组织与 B 树相似，不过其为磁盘顺序读取做了优化，所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成，即，系统将现有的页与内存刷写数据混合在一起进行管理，直到数据块达到它的容量。</p>
 <p>多次数据刷写之后会创建许多数据存储文件，后台线程就会自动将小文件聚合成大文件，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中。所有的数据存储文件都按键排序，所以没有必要再存储文件中为新的键预留位置。</p>
@@ -475,7 +475,7 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -483,7 +483,7 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -492,7 +492,7 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -563,7 +563,7 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#B_+_树"><span class="nav-number">1.</span> <span class="nav-text">B + 树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSM_树"><span class="nav-number">2.</span> <span class="nav-text">LSM 树</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树"><span class="nav-number">1.</span> <span class="nav-text">B + 树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSM-树"><span class="nav-number">2.</span> <span class="nav-text">LSM 树</span></a></li></ol></div>
             
           </div>
         </section>
@@ -718,6 +718,26 @@ B + 树B + 树的一些特性使其能够通过主键对记录进行高效插入
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

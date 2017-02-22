@@ -258,6 +258,160 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/21/机器学习常见算法总结/" itemprop="url">
+                  机器学习常见算法总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-21T15:11:48+08:00" content="2017-02-21">
+              2017-02-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/21/机器学习常见算法总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/21/机器学习常见算法总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/21/机器学习常见算法总结/" class="leancloud_visitors" data-flag-title="机器学习常见算法总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><p>事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A</p>
+<p>$$P(A\cap B) = P(B) * P(A|B)$$</p>
+<p>所以，</p>
+<p>$$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$</p>
+<p>对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。</p>
+<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><ol>
+<li>假设现在有样本 \(x = (a_1,a_2,…,a_n)\) 这个待分类项(并认为 x 里面的特征独立)。</li>
+<li>再假设现在有分类目标 \(Y = (y_n,y_n,…,y_n)\)</li>
+<li>那么 \(max(P(y_1|x),P(y_2|x),P(y_3|x),…,P(y_n|x))\) 就是最终的分类类别。</li>
+<li>而 \(Y = (y_n,y_n,…,y_n)\) 就是最终的分类类别。</li>
+</ol>
+<h4 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h4><h5 id="1-准备阶段"><a href="#1-准备阶段" class="headerlink" title="1. 准备阶段"></a>1. 准备阶段</h5><p>确定特征属性，并对每个特征属性进行适当划分，然后由人工对一部分待分类项进行分类，形成训练样本。</p>
+<h4 id="2-训练阶段"><a href="#2-训练阶段" class="headerlink" title="2. 训练阶段"></a>2. 训练阶段</h4><p>计算每个类别在训练样本中的出现频率及每个特征属性划分对每个类别的条件概率估计。</p>
+<h4 id="3-应用阶段"><a href="#3-应用阶段" class="headerlink" title="3. 应用阶段"></a>3. 应用阶段</h4><p>使用分类器进行分类，输入时分类器和待分类样本，输出是样本属于的分类类别。</p>
+<h4 id="属性特征"><a href="#属性特征" class="headerlink" title="属性特征"></a>属性特征</h4><ol>
+<li>特征为离散值时直接统计即可。</li>
+<li>特征为连续值的时候假定特征符合高斯分布：\(g(x,n,u)\)</li>
+</ol>
+<h4 id="拉普拉斯校准"><a href="#拉普拉斯校准" class="headerlink" title="拉普拉斯校准"></a>拉普拉斯校准</h4><p>当某个类别下某个特征划分没有出现时，会有 \(P(a|y) = 0\)，就是导致分类器质量降低，所以此时引入 拉普拉斯校验，就是对每类别下所有划分的计数加 1。</p>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><ol>
+<li>对小规模的数据表现很好，适合多分类任务，适合增量式训练。</li>
+<li>对输入数据的表达形式很敏感。</li>
+</ol>
+<p>未完待续</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/13/算法面试总结：大数据题/" itemprop="url">
                   面试总结：大数据题
                 </a>
@@ -339,12 +493,12 @@
           
             <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-<h3 id="1-_认识布隆过滤器">1. 认识布隆过滤器</h3><h4 id="题目">题目</h4><p>不安全网页的黑名单包含 100 亿个黑名单网页，每个网页的 URL 最多占用 64 B。限制响应实现一种网页过滤系统，可以根据网页的 URL 判断该网页是否在黑名单上，请设计该系统。</p>
-<h4 id="要求">要求</h4><ol>
+<h3 id="1-认识布隆过滤器"><a href="#1-认识布隆过滤器" class="headerlink" title="1. 认识布隆过滤器"></a>1. 认识布隆过滤器</h3><h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p>不安全网页的黑名单包含 100 亿个黑名单网页，每个网页的 URL 最多占用 64 B。限制响应实现一种网页过滤系统，可以根据网页的 URL 判断该网页是否在黑名单上，请设计该系统。</p>
+<h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><ol>
 <li>该系统允许有万分之一以下的判断失误率。</li>
 <li>使用的额外空间不要超过 30 GB。</li>
 </ol>
-<h4 id="解答">解答</h4><p>提示：一个布隆过滤器精确地代表一个集合，并且可以精确判断一个元素是否在集合中。</p>
+<h4 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h4><p>提示：一个布隆过滤器精确地代表一个集合，并且可以精确判断一个元素是否在集合中。</p>
 <p>补充：一个优秀的哈希函数能够做到很多不同的输入值所得到的返回值非常均匀地分布在 S 上，那么将所有的返回值对 m 取余，可以认为所有的返回值也会均匀地分布在 0 ~ m-1 的空间上。</p>
 <p>布隆过滤器：假设有一个长度为 m 的 bit 类型的数组，即数组中的每一个位置只占一个 bit，每一个 bit 只有 0 和 1 两种状态。再假设一共有 k 个哈希函数，这些函数的输入域 S 都大于或等于 m，并且这些哈希函数都足够优秀，彼此之间也完全独立。那么对同一个输入对象（假设是一个字符串记为 URL），经过 k 个哈希函数算出来的结果也是独立的，可能相同，也可能不同，但彼此独立。对算出来的每一个结果都对 m 取余，然后在 bit array 上把相应的位置设为 1。我们把 bit 类型的数组记为 bitMap。至此，一个输入对象对 bitMap 的影响过程就结束了，即 bitMap 中的一些位置会被涂黑。接下来按照该方法处理所有的输入对象，每个对象都可能把 bitMap 中的一些白位置涂黑，也可能遇到已经涂黑的位置，遇到已经涂黑的位置让其继续为黑即可。处理完所有的输入对象后，可能 bitMap 中已经有相当多的位置被涂黑。至此，一个布隆过滤器生成完毕，这个布隆过滤器代表之前所有输入对象组成的集合。</p>
 <p>那么在检查阶段时，假设一个对象为 a，想检查它是否是之前的输入对象，就把 a 通过 k 个哈希函数算出 k 个值，然后把 k 个值取余，就得到在 0 ~ m-1 范围上的 k 个值。接下来在 bitMap 上看这些位置是不是都为黑，如果有一个不为黑，就说明 a 一定不在这个集合里。如果都为黑，说明 a 在这个集合里。</p>
@@ -360,14 +514,14 @@
 <p>因为我们在确定布隆过滤器大学的过程中选择了向上取整，所以还要用如下公式确定布隆过滤器真实的失误率为：</p>
 <p>$$（1 - e^{- \frac{nk}{m}})^k$$</p>
 <p>根据这个公式算出真实的失误率为0.006%，这是比 0.01 % 更低的失误率。</p>
-<h3 id="2-_只用_2GB_内存在_20_亿个整数中找到出现次数最多的数">2. 只用 2GB 内存在 20 亿个整数中找到出现次数最多的数</h3><h4 id="题目-1">题目</h4><p>在一个包含 20 亿个全是 32 位整数的大文件，在其中找到出现次数最多的数。</p>
-<h4 id="要求-1">要求</h4><p>内存限制为 2 GB</p>
-<h4 id="解答-1">解答</h4><p>想要在很多整数中找到出现次数最多的数，通常的做法是使用哈希表对出现的每一个数做词频统计，哈希表的 key 是某一个整数，value 是这个数出现的次数。就本题而言，一共有 20 亿个数，哪怕只是一个数出现 20 亿次，用 32 位的整数也可以表示其出现的次数而不会产生溢出，所以哈希表的 key 需要占用 4B，value 也是 4B。那么哈希表的一条记录（key，value）需要占用 8B，当哈希表记录数为 2 亿个时，至少需要 1.6GB 的内存。</p>
+<h3 id="2-只用-2GB-内存在-20-亿个整数中找到出现次数最多的数"><a href="#2-只用-2GB-内存在-20-亿个整数中找到出现次数最多的数" class="headerlink" title="2. 只用 2GB 内存在 20 亿个整数中找到出现次数最多的数"></a>2. 只用 2GB 内存在 20 亿个整数中找到出现次数最多的数</h3><h4 id="题目-1"><a href="#题目-1" class="headerlink" title="题目"></a>题目</h4><p>在一个包含 20 亿个全是 32 位整数的大文件，在其中找到出现次数最多的数。</p>
+<h4 id="要求-1"><a href="#要求-1" class="headerlink" title="要求"></a>要求</h4><p>内存限制为 2 GB</p>
+<h4 id="解答-1"><a href="#解答-1" class="headerlink" title="解答"></a>解答</h4><p>想要在很多整数中找到出现次数最多的数，通常的做法是使用哈希表对出现的每一个数做词频统计，哈希表的 key 是某一个整数，value 是这个数出现的次数。就本题而言，一共有 20 亿个数，哪怕只是一个数出现 20 亿次，用 32 位的整数也可以表示其出现的次数而不会产生溢出，所以哈希表的 key 需要占用 4B，value 也是 4B。那么哈希表的一条记录（key，value）需要占用 8B，当哈希表记录数为 2 亿个时，至少需要 1.6GB 的内存。</p>
 <p>但如果 20 亿个数中不同的数超过 2亿种，最极端的情况是 20 亿个数都不相同，那么在哈希表中可能需要产生 20 亿条记录，这样内存明显不够用，所以一次性用哈希表统计 20 亿个数非常冒险。</p>
 <p>解决的方法是把包含 20 亿个数的大文件用哈希函数分成 16 个小文件，根据哈希函数的性质，同一种数不可能被哈希到不同的小文件上，同时每个小文件中不同的数一定不会大于 2 亿种，假设哈希函数足够好。然后对每一个小文件用哈希表来统计其中每种数出现的次数，这样我们就得到了 16 个小文件中各自出现次数最多的数，还有各自的次数统计。接下来只要选出 16 个小文件各自的第一名中谁出现的次数最多即可。</p>
-<h3 id="3-_40_亿个非负整数中找到没出现的数">3. 40 亿个非负整数中找到没出现的数</h3><h4 id="题目-2">题目</h4><p>32 位无符号整数的范围是 0 ~ 4294967295，现在有一个正好包含 40 亿个无符号整数的文件，所以在整个范围中必然有没出现过的数。可以使用最多 1 GB 的内存，怎么找到所有没出现过的数。</p>
-<h4 id="进阶">进阶</h4><p>内存限制为 10 MB</p>
-<h4 id="解答-2">解答</h4><p>如果用哈希表来保存出现过的数，那么如果 40 亿个数都不同，则哈希表的记录数为 40 亿条，存一个 32 位整数需要 4B，所有最差情况下需要 40 亿 * 4B = 160 亿字节，大约需要 16 GB的空间，不符合要求。</p>
+<h3 id="3-40-亿个非负整数中找到没出现的数"><a href="#3-40-亿个非负整数中找到没出现的数" class="headerlink" title="3. 40 亿个非负整数中找到没出现的数"></a>3. 40 亿个非负整数中找到没出现的数</h3><h4 id="题目-2"><a href="#题目-2" class="headerlink" title="题目"></a>题目</h4><p>32 位无符号整数的范围是 0 ~ 4294967295，现在有一个正好包含 40 亿个无符号整数的文件，所以在整个范围中必然有没出现过的数。可以使用最多 1 GB 的内存，怎么找到所有没出现过的数。</p>
+<h4 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h4><p>内存限制为 10 MB</p>
+<h4 id="解答-2"><a href="#解答-2" class="headerlink" title="解答"></a>解答</h4><p>如果用哈希表来保存出现过的数，那么如果 40 亿个数都不同，则哈希表的记录数为 40 亿条，存一个 32 位整数需要 4B，所有最差情况下需要 40 亿 * 4B = 160 亿字节，大约需要 16 GB的空间，不符合要求。</p>
 <p>哈希表需要占用很多空间，我们可以使用 bit map 的方式来表示数出现的情况。具体的，申请一个长度为 4294967295 的 bit 类型的数组上的每个位置只可以表示 0 或 1 状态。8 个 bit 为 1B，所以长度为 4294967295 的 bit 类型的数组占用 500 MB 空间。</p>
 <p>进阶问题：现在只有 10 MB 的内存，但也只要求找到其中一个没出现的数即可，首先，0 ~ 4294967295 这个范围是可以平均分成 64 个区间的，每个区间是 67108864 个数。因为一共只有 40 亿个数，所以，如果统计落在每一个区间上的数有多少，肯定至少一个区间上的计数少于 67108864。利用这一点可以找出其中一个没出现的数。</p>
 <p>具体过程如下： 第一次遍历时，先申请长度为 64 的整型数组 countArr[0…63]，countArr[i] 用来统计区间 i 上的数有多少。遍历 40 亿个数，根据当前数是多少来决定哪一个区间上的计数增加。例如，如果当前数是 3422552090，3422552090 / 67108864 = 51，所以第 51 区间上的计数增加，遍历完所有数之和遍历 countArr，必然会有某一个位置上的值小于 67108864，表示第 i 区间上至少有一个数没出现过。我们肯定会至少找到一个这样的区间。此时内存使用为 64 * 4B，是非常小的。</p>
@@ -378,14 +532,14 @@
 <li>之后的方法同普通方法类似。</li>
 <li>遍历完 40 亿个数之后，在 bitArr 上必然存在没被设置为 1 的位置，假设第 i 个位置上的值没设置为 1，那么 67108864 * 37 + i 这个数就是一个没出现过的数。</li>
 </ol>
-<h3 id="4-_找到_100_亿个_URL_中重复的_URL_以及搜索词汇的_top_K_问题">4. 找到 100 亿个 URL 中重复的 URL 以及搜索词汇的 top K 问题</h3><h4 id="题目-3">题目</h4><p>有一个包含 100 亿个 URL 的大文件，假设每个 URL 占用 64 B，请找出其中所有重复的 URL。</p>
-<h4 id="补充题目">补充题目</h4><p>某搜索公司一天的用户搜索词汇是海量的，请设计一种求出每天最热 100 词汇的可行办法。</p>
-<h4 id="解答-3">解答</h4><p>解决这种问题的常规方法是，把大文件通过哈希函数分配到机器，或者通过哈希函数把大文件拆成小文件。一直进行这种划分，直到划分的结果满足机器资源的限制。</p>
+<h3 id="4-找到-100-亿个-URL-中重复的-URL-以及搜索词汇的-top-K-问题"><a href="#4-找到-100-亿个-URL-中重复的-URL-以及搜索词汇的-top-K-问题" class="headerlink" title="4. 找到 100 亿个 URL 中重复的 URL 以及搜索词汇的 top K 问题"></a>4. 找到 100 亿个 URL 中重复的 URL 以及搜索词汇的 top K 问题</h3><h4 id="题目-3"><a href="#题目-3" class="headerlink" title="题目"></a>题目</h4><p>有一个包含 100 亿个 URL 的大文件，假设每个 URL 占用 64 B，请找出其中所有重复的 URL。</p>
+<h4 id="补充题目"><a href="#补充题目" class="headerlink" title="补充题目"></a>补充题目</h4><p>某搜索公司一天的用户搜索词汇是海量的，请设计一种求出每天最热 100 词汇的可行办法。</p>
+<h4 id="解答-3"><a href="#解答-3" class="headerlink" title="解答"></a>解答</h4><p>解决这种问题的常规方法是，把大文件通过哈希函数分配到机器，或者通过哈希函数把大文件拆成小文件。一直进行这种划分，直到划分的结果满足机器资源的限制。</p>
 <p>例如，将 100 亿字节的大文件通过哈希函数分配到 100 台机器上，然后每一台机器分别统计分给自己的 URL 中是否有重复的 URL，同时哈希函数的性质决定了同一条 URL 不可能分给不同的机器；或者可以在单机上将大文件通过哈希函数拆成 1000 个小文件，对每一个小文件再利用哈希表遍历，找出重复的 URL；或者在分给机器或拆完文件之后，进行排序，排序过会再看是否会有重复 URL 出现。大数据问题的处理都离不开分流要么是哈希函数把大文件的内容分配给不同的机器，要么是哈希函数把大文件拆成小文件，然后处理每一个小数量的集合。</p>
 <p>补充题目最开始还是哈希分流的思路来处理，把包含百亿数据量的词汇文件分流到不同的机器上，具体多少台机器由题目来确定。对每一台机器来说，如果分到的数据量依然很大，可以再用哈希函数把每台机器的分流文件拆成更小的文件处理。处理每一个小文件的时候，哈希表统计每种词及其词频，哈希表记录建立完成后，再遍历哈希表，遍历哈希表的过程中使用大小为 100 的小根堆来选出每一个小文件的 top 100。每一个小文件都有自己的词频的小根堆，将小根堆的词按照词频排序，就得到了每个小文件的排序后 top 100。然后把各个小文件排序后的 top 100 进行外排序或者继续利用小根堆，就可以选出每台机器上的 top 100。不同机器之间的 top 100 再进行外排序或者继续利用小根堆，最终求出整个百亿数据量中的 top 100。对于 top k 的问题，除哈希函数分流和用哈希表做词频统计之外，还经常用堆结构和外排序的手段进行处理。</p>
-<h3 id="5-_40_亿个非负整数中找到出现两次的数和所有数的中位数">5. 40 亿个非负整数中找到出现两次的数和所有数的中位数</h3><h4 id="题目-4">题目</h4><p>40 亿个非负整数中找到出现两次的数和所有数的中位数</p>
-<h4 id="补充题目-1">补充题目</h4><p>可以使用最多 10 MB 的内存，怎么找到这 40 亿个整数的中位数</p>
-<h4 id="解答-4">解答</h4><p>可以使用 bit map 的方式来表示数出现的情况。申请一个长度为 4294967295 <em> 2 的 bit 类型的数组 bitArr，用 2 个位置表示一个数出现的词频， 1B 占用 8 个 bit，所以长度为 4294967295 </em> 2 的 bit 类型的数组占用 1 GB 空间，</p>
+<h3 id="5-40-亿个非负整数中找到出现两次的数和所有数的中位数"><a href="#5-40-亿个非负整数中找到出现两次的数和所有数的中位数" class="headerlink" title="5. 40 亿个非负整数中找到出现两次的数和所有数的中位数"></a>5. 40 亿个非负整数中找到出现两次的数和所有数的中位数</h3><h4 id="题目-4"><a href="#题目-4" class="headerlink" title="题目"></a>题目</h4><p>40 亿个非负整数中找到出现两次的数和所有数的中位数</p>
+<h4 id="补充题目-1"><a href="#补充题目-1" class="headerlink" title="补充题目"></a>补充题目</h4><p>可以使用最多 10 MB 的内存，怎么找到这 40 亿个整数的中位数</p>
+<h4 id="解答-4"><a href="#解答-4" class="headerlink" title="解答"></a>解答</h4><p>可以使用 bit map 的方式来表示数出现的情况。申请一个长度为 4294967295 <em> 2 的 bit 类型的数组 bitArr，用 2 个位置表示一个数出现的词频， 1B 占用 8 个 bit，所以长度为 4294967295 </em> 2 的 bit 类型的数组占用 1 GB 空间，</p>
 <p>遍历这 40 亿个无符号数，如果再次遇到 num， 就把 bitArr[num<em>2 + 1] 和 bitArr[num </em> 2] 设置为 01，如果第二次遇到 num，则设置为 10，如果第三次遇到 num，就把它设置为 11，以后再遇到 num，发现此时 bitArr[num<em>2 + 1] 和 bitArr[num </em> 2] 已经被设置为 11，就不再做任何设置。遍历完成后，再次遍历 bitArr，如果发现 bitArr[num<em>2 + 1] 和 bitArr[num </em> 2] 设置为 10，那么 i 就是出现了两次的数。</p>
 <p>对于补充问题，用分区间的方式处理，长度为 2 MB 的无符号整型数组占用的空间为 8 MB，所以将区间的数量定为 4294967295/2M，向上取整为 2148 个区间。</p>
 <p>申请一个长度为 2148 的无符号整型数组 arr[0…2147]，arr[i]表示第 i 区间有多少个数。arr 必然小于 10 MB。然后遍历 40 亿个数，如果遍历到当前数为 num，先看 num 落在哪个区间上（num / 2M)，然后将对应的进行arr[num/2M] ++ 操作，这样遍历下来，就得到了每一个区间的数的出现状况，通过累加每个区间的出现次数，如果遍历到当前数为 num，先看 num 落在哪个区间上（num / 2M），然后将对应的进行 arr[num/2M]++ 操作。这样遍历下来，就得到了每一个区间的数的出现状况，通过累加每个区间的出现次数，就可以找到 40 亿个数的中位数到底落在哪个区间。假设为第 K 区间。</p>
@@ -518,9 +672,9 @@
       
         
           
-            <h3 id="Spark_SQL_基础">Spark SQL 基础</h3><p>使用 Spark SQL 有 2 种方式，一种是通过写 SQL 来进行计算，另外一种是在 Spark 程序中，通过领域 API 的形式来操作数据（被抽象为 DataFrame）。</p>
-<h4 id="分布式_SQL_引擎">分布式 SQL 引擎</h4><p>作为分布式引擎，有两种运行方式，一种是 JDBC/ODBC Server，另一种是使用 Spark SQL 命令行。在正式环境下，使用前者比较好。</p>
-<h4 id="DataFrame">DataFrame</h4><p>通过写 SQL 来使用 Spark SQL 和 hive 区别不大，这里不再详细介绍，稍微提一下的是，有一些 hive 的特性是 Spark SQL 不支持的，最主要的是 Hive 的 bucker 表，使用散列的方式对 hive 表进行分区。</p>
+            <h3 id="Spark-SQL-基础"><a href="#Spark-SQL-基础" class="headerlink" title="Spark SQL 基础"></a>Spark SQL 基础</h3><p>使用 Spark SQL 有 2 种方式，一种是通过写 SQL 来进行计算，另外一种是在 Spark 程序中，通过领域 API 的形式来操作数据（被抽象为 DataFrame）。</p>
+<h4 id="分布式-SQL-引擎"><a href="#分布式-SQL-引擎" class="headerlink" title="分布式 SQL 引擎"></a>分布式 SQL 引擎</h4><p>作为分布式引擎，有两种运行方式，一种是 JDBC/ODBC Server，另一种是使用 Spark SQL 命令行。在正式环境下，使用前者比较好。</p>
+<h4 id="DataFrame"><a href="#DataFrame" class="headerlink" title="DataFrame"></a>DataFrame</h4><p>通过写 SQL 来使用 Spark SQL 和 hive 区别不大，这里不再详细介绍，稍微提一下的是，有一些 hive 的特性是 Spark SQL 不支持的，最主要的是 Hive 的 bucker 表，使用散列的方式对 hive 表进行分区。</p>
 <p>DataFrame 具有和 RDD 类似的概念，但还增加了列的概念。</p>
 <p>在 Spark 中使用 DataFrame 的过程，可以分为 4 步，</p>
 <ol>
@@ -531,8 +685,8 @@
 </ol>
 <ul>
 <li><p>创建 SQLContext。</p>
-<pre><code><span class="variable"><span class="keyword">val</span> sc</span>: SparkContext
-<span class="variable"><span class="keyword">val</span> sqlContext</span> = new SQLContext(sc)
+<pre><code>val sc: SparkContext
+val sqlContext = new SQLContext(sc)
 </code></pre></li>
 <li><p>创建 DataFrame</p>
 </li>
@@ -550,76 +704,76 @@
 <li><p>从其他数据源创建。</p>
 </li>
 </ol>
-<h4 id="使用反射的方法从_RDD_创建_DataFrame">使用反射的方法从 RDD 创建 DataFrame</h4><p>这个方法是先定义一个 case class，参数名即为列名，然后将 RDD 的成员转换成 case class 类型，包含 case class 的 RDD 可以通过反射方式被隐式转换成 DataFrame，case class 的参数名会成为表的列名，然后就可以注册成一张表。</p>
+<h4 id="使用反射的方法从-RDD-创建-DataFrame"><a href="#使用反射的方法从-RDD-创建-DataFrame" class="headerlink" title="使用反射的方法从 RDD 创建 DataFrame"></a>使用反射的方法从 RDD 创建 DataFrame</h4><p>这个方法是先定义一个 case class，参数名即为列名，然后将 RDD 的成员转换成 case class 类型，包含 case class 的 RDD 可以通过反射方式被隐式转换成 DataFrame，case class 的参数名会成为表的列名，然后就可以注册成一张表。</p>
 <p>这种方法前提是在写程序之前就已经知道了数据格式，可以预先设定表的模式。</p>
-<pre><code>def main(args: Array[String]): <span class="typename">Unit</span> = {
-    <span class="variable"><span class="keyword">val</span> conf</span> = new SparkConf().setAppName(<span class="string">"SparkSQLSimpleExample"</span>)
-    <span class="variable"><span class="keyword">val</span> sc</span> = new SparkContext()
+<pre><code>def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setAppName(&quot;SparkSQLSimpleExample&quot;)
+    val sc = new SparkContext()
 
-    <span class="variable"><span class="keyword">val</span> sqlContext</span> = new SQLContext(sc)
-    <span class="keyword">import</span> sqlContext.implicits._
-    case <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(name: String, age: <span class="typename">Int</span>)
-    <span class="variable"><span class="keyword">val</span> rdd</span> = sc.textFile(<span class="string">"path/to/file"</span>).map(_.split(<span class="string">","</span>))
-    <span class="comment">// 包含了 case class 的 RDD</span>
-    <span class="variable"><span class="keyword">val</span> rddContainingCaseClass</span> = rdd.map(p =&gt; Person(p(<span class="number">0</span>), p(<span class="number">1</span>).trim.toInt))
-    <span class="comment">// 被隐式转换成 DataFrame</span>
-    <span class="variable"><span class="keyword">val</span> people</span> = rddContainingCaseClass.toDF()
-    <span class="comment">// 将 DataFrame 的内容打印到标准输出</span>
+    val sqlContext = new SQLContext(sc)
+    import sqlContext.implicits._
+    case class Person(name: String, age: Int)
+    val rdd = sc.textFile(&quot;path/to/file&quot;).map(_.split(&quot;,&quot;))
+    // 包含了 case class 的 RDD
+    val rddContainingCaseClass = rdd.map(p =&gt; Person(p(0), p(1).trim.toInt))
+    // 被隐式转换成 DataFrame
+    val people = rddContainingCaseClass.toDF()
+    // 将 DataFrame 的内容打印到标准输出
     people.show()
   }
-</code></pre><h4 id="使用程序动态从_RDD_创建_DataFrame">使用程序动态从 RDD 创建 DataFrame</h4><p>当 case class 无法提前知道数据格式时，可以在运行时动态指定表模式来从 RDD 创建 DataFrame。具体步骤如下：</p>
+</code></pre><h4 id="使用程序动态从-RDD-创建-DataFrame"><a href="#使用程序动态从-RDD-创建-DataFrame" class="headerlink" title="使用程序动态从 RDD 创建 DataFrame"></a>使用程序动态从 RDD 创建 DataFrame</h4><p>当 case class 无法提前知道数据格式时，可以在运行时动态指定表模式来从 RDD 创建 DataFrame。具体步骤如下：</p>
 <ol>
 <li>从原来的 RDD 创建一个新的 RDD，成员是 Row 类型，包含所有列。</li>
 <li>创建一个 StructType 类型的表模式，其结构与步骤 1 中创建的 RDD 的 Row 结构相匹配。</li>
 <li><p>使用 SQLContext.createDataFrame 方法将表模式应用到步骤 1 创建的 RDD 上。</p>
-<pre><code>val sqLContext = new <span class="function"><span class="title">SQLContext</span><span class="params">(sc)</span></span>
-<span class="comment">// 普通的 RDD</span>
-val people = sc.<span class="function"><span class="title">textFile</span><span class="params">(<span class="string">"path/to/file"</span>)</span></span>
-<span class="comment">// 字符串格式的表模式</span>
-val schemaString = <span class="string">"name age"</span>
-<span class="comment">// 根据字符串格式的表模式创建结构化的表模式，用 StructType 保存</span>
+<pre><code>val sqLContext = new SQLContext(sc)
+// 普通的 RDD
+val people = sc.textFile(&quot;path/to/file&quot;)
+// 字符串格式的表模式
+val schemaString = &quot;name age&quot;
+// 根据字符串格式的表模式创建结构化的表模式，用 StructType 保存
 val schema =
       StructType(
-        schemaString.<span class="function"><span class="title">split</span><span class="params">(<span class="string">" "</span>)</span></span>.<span class="function"><span class="title">map</span><span class="params">(fieldName =&gt; StructField(fieldName, StringType, true)</span></span>)
+        schemaString.split(&quot; &quot;).map(fieldName =&gt; StructField(fieldName, StringType, true))
       )
-<span class="comment">// 将普通 RDD 的成员转换成 Row 对象</span>
-val rowRDD = people.<span class="function"><span class="title">map</span><span class="params">(_.split(<span class="string">","</span>)</span></span>).<span class="function"><span class="title">map</span><span class="params">(p =&gt; Row(p(<span class="number">0</span>)</span></span>, <span class="function"><span class="title">p</span><span class="params">(<span class="number">1</span>)</span></span>.trim))
-<span class="comment">// 将模式作用到 RDD 上，生成 DataFrame</span>
-val peopleDataFrame = sqLContext.<span class="function"><span class="title">createDataFrame</span><span class="params">(rowRDD, schema)</span></span>
-peopleDataFrame.<span class="function"><span class="title">show</span><span class="params">()</span></span>
+// 将普通 RDD 的成员转换成 Row 对象
+val rowRDD = people.map(_.split(&quot;,&quot;)).map(p =&gt; Row(p(0), p(1).trim))
+// 将模式作用到 RDD 上，生成 DataFrame
+val peopleDataFrame = sqLContext.createDataFrame(rowRDD, schema)
+peopleDataFrame.show()
 </code></pre></li>
 </ol>
-<h4 id="从其他数据源生成_DataFrame">从其他数据源生成 DataFrame</h4><p>Spark 提供了统一的接口，可以很方便地从其他数据源创建 DataFrame，例如：</p>
-<pre><code>val df = sqlContext<span class="class">.read</span><span class="class">.json</span>(<span class="string">"path/to/file.json"</span>)
-df.<span class="function"><span class="title">show</span><span class="params">()</span></span>
-</code></pre><h4 id="DataFrame_基本操作">DataFrame 基本操作</h4><pre><code><span class="comment">// select * from </span>
-df.<span class="function"><span class="title">show</span><span class="params">()</span></span>  
+<h4 id="从其他数据源生成-DataFrame"><a href="#从其他数据源生成-DataFrame" class="headerlink" title="从其他数据源生成 DataFrame"></a>从其他数据源生成 DataFrame</h4><p>Spark 提供了统一的接口，可以很方便地从其他数据源创建 DataFrame，例如：</p>
+<pre><code>val df = sqlContext.read.json(&quot;path/to/file.json&quot;)
+df.show()
+</code></pre><h4 id="DataFrame-基本操作"><a href="#DataFrame-基本操作" class="headerlink" title="DataFrame 基本操作"></a>DataFrame 基本操作</h4><pre><code>// select * from 
+df.show()  
 
-<span class="comment">// select name from </span>
-df.<span class="function"><span class="title">select</span><span class="params">(<span class="string">"name"</span>)</span></span>.<span class="function"><span class="title">show</span><span class="params">()</span></span>
+// select name from 
+df.select(&quot;name&quot;).show()
 
-<span class="comment">// select name, age + 1 from</span>
-df.<span class="function"><span class="title">select</span><span class="params">(df(<span class="string">"name"</span>)</span></span>, <span class="function"><span class="title">df</span><span class="params">(<span class="string">"age"</span>)</span></span> + <span class="number">1</span>).<span class="function"><span class="title">show</span><span class="params">()</span></span>
+// select name, age + 1 from
+df.select(df(&quot;name&quot;), df(&quot;age&quot;) + 1).show()
 
-<span class="comment">// select * from  <span class="label">xxx where age &gt; 21</span></span>
-df.<span class="function"><span class="title">filter</span><span class="params">(df(<span class="string">"age"</span>)</span></span> &gt; <span class="number">21</span>).<span class="function"><span class="title">show</span><span class="params">()</span></span>
+// select * from  xxx where age &gt; 21
+df.filter(df(&quot;age&quot;) &gt; 21).show()
 
-<span class="comment">// select age, count(*) from <span class="label">xxx group by age</span></span>
-df.<span class="function"><span class="title">groupBy</span><span class="params">(<span class="string">"age"</span>)</span></span>.<span class="function"><span class="title">count</span><span class="params">()</span></span>.<span class="function"><span class="title">show</span><span class="params">()</span></span>
+// select age, count(*) from xxx group by age
+df.groupBy(&quot;age&quot;).count().show()
 
-<span class="comment">// 使用 registerTempTable 方法将 Dataframe 注册成一张表：</span>
-df.<span class="function"><span class="title">registerTempTable</span><span class="params">(<span class="string">"people"</span>)</span></span>
+// 使用 registerTempTable 方法将 Dataframe 注册成一张表：
+df.registerTempTable(&quot;people&quot;)
 
-<span class="comment">// 之后可以使用纯 SQL 来访问</span>
-val result = sqlContext.<span class="function"><span class="title">sql</span><span class="params">(<span class="string">"SELECT * FROM people"</span>)</span></span>
-</code></pre><h4 id="DataFrame_数据源">DataFrame 数据源</h4><p>DataFrame 支持非常多类型的数据源，包括 Hive、Avro、Parquet、ORC、JSON、JDBC。而 Spark 提供了统一的读写接口。</p>
+// 之后可以使用纯 SQL 来访问
+val result = sqlContext.sql(&quot;SELECT * FROM people&quot;)
+</code></pre><h4 id="DataFrame-数据源"><a href="#DataFrame-数据源" class="headerlink" title="DataFrame 数据源"></a>DataFrame 数据源</h4><p>DataFrame 支持非常多类型的数据源，包括 Hive、Avro、Parquet、ORC、JSON、JDBC。而 Spark 提供了统一的读写接口。</p>
 <p>通过数据源加载数据时，默认的类型是 Parquet，这是一种大数据计算中最常用的列式存储格式：</p>
-<pre><code>val df = sqlContext<span class="class">.read</span><span class="class">.load</span>(<span class="string">"path/to/file.parquet"</span>)
+<pre><code>val df = sqlContext.read.load(&quot;path/to/file.parquet&quot;)
 </code></pre><p>对于其他类型，可以使用 format 指定：</p>
 <pre><code>val df = 
-    sqlContext<span class="class">.read</span><span class="class">.format</span>(<span class="string">"json"</span>).<span class="function"><span class="title">load</span><span class="params">(<span class="string">"path/to/file.json"</span>)</span></span>
+    sqlContext.read.format(&quot;json&quot;).load(&quot;path/to/file.json&quot;)
 </code></pre><p>保存数据时和加加载数据方法类似。</p>
-<h3 id="Spark_SQL_原理和运行机制">Spark SQL 原理和运行机制</h3><h4 id="Catalyst_执行优化器">Catalyst 执行优化器</h4><p>Catalyst 是 Spark SQL 执行优化器的代号，所有 Spark SQL 语句最终都能通过它来解析、优化，最终生成可以执行的 Java 字节码。</p>
+<h3 id="Spark-SQL-原理和运行机制"><a href="#Spark-SQL-原理和运行机制" class="headerlink" title="Spark SQL 原理和运行机制"></a>Spark SQL 原理和运行机制</h3><h4 id="Catalyst-执行优化器"><a href="#Catalyst-执行优化器" class="headerlink" title="Catalyst 执行优化器"></a>Catalyst 执行优化器</h4><p>Catalyst 是 Spark SQL 执行优化器的代号，所有 Spark SQL 语句最终都能通过它来解析、优化，最终生成可以执行的 Java 字节码。</p>
 <p>Catalyst 最主要的数据结构是树，所有 SQL 语句都会用树结构来存储，树中的每个节点有一个类（class），以及 0 或多个子节点。Scala 中定义的新的节点类型都是 TreeNode 这个类的子类。</p>
 <p>Catalyst 另外一个重要的概念是规则。基本上，所有优化都是基于规则的。可以用规则对树进行操作，树中的节点是只读的，所以树也是只读的。规则中定义的函数可能实现从一棵树转换成一颗新树。</p>
 <p>整个 Catalyst 的执行过程可以分为以下 4 个阶段：</p>
@@ -757,14 +911,14 @@ val result = sqlContext.<span class="function"><span class="title">sql</span><sp
       
         
           
-            <h3 id="Spark_核心数据结构_RDD">Spark 核心数据结构 RDD</h3><p>RDD 全称是“弹性分布式数据集”。首先，它是一个数据集；其次，RDD 是分布式存储的。里面的成员被水平切割成小的的数据块，分散在集群的多个节点上，便于对 RDD 里面的数据进行并行计算。最后，RDD 的分布式弹性的，不是固定不变的。RDD 的一些操作可以被拆分成对各数据块直接计算，不涉及其他节点，比如 map。这样的操作一般在数据块所在的节点上直接进行，不影响 RDD 的分布，除非某个节点故障需要转换到其他节点上。但是在有些操作中，例如 groupBy，必须要访问 RDD 的所有数据块。</p>
+            <h3 id="Spark-核心数据结构-RDD"><a href="#Spark-核心数据结构-RDD" class="headerlink" title="Spark 核心数据结构 RDD"></a>Spark 核心数据结构 RDD</h3><p>RDD 全称是“弹性分布式数据集”。首先，它是一个数据集；其次，RDD 是分布式存储的。里面的成员被水平切割成小的的数据块，分散在集群的多个节点上，便于对 RDD 里面的数据进行并行计算。最后，RDD 的分布式弹性的，不是固定不变的。RDD 的一些操作可以被拆分成对各数据块直接计算，不涉及其他节点，比如 map。这样的操作一般在数据块所在的节点上直接进行，不影响 RDD 的分布，除非某个节点故障需要转换到其他节点上。但是在有些操作中，例如 groupBy，必须要访问 RDD 的所有数据块。</p>
 <p>RDD 还具有的特点是：</p>
 <ol>
 <li>RDD 是只读的，一旦生成，内容就不能修改了。这样的好处是让整个系统的设计相对简单，比如并行计算时不用考虑数据互斥的问题。</li>
 <li>RDD 可指定缓存在内存中。一般计算都是流水式生成、使用 RDD，新的 RDD 生成之后，旧的不再使用，并被 Java 虚拟机回收掉。但如果后续有许多计算依赖某个 RDD，我们可以让这个 RDD 缓存在内存中，避免重复计算（尤其适用于机器学习）。</li>
 <li>RDD 可以通过重新计算得到。RDD 的高可靠性不是通过复制来实现的，而是通过记录足够的计算过程。</li>
 </ol>
-<h4 id="RDD_的定义">RDD 的定义</h4><p>一个 RDD 对象，包含如下的 5 个核心属性。</p>
+<h4 id="RDD-的定义"><a href="#RDD-的定义" class="headerlink" title="RDD 的定义"></a>RDD 的定义</h4><p>一个 RDD 对象，包含如下的 5 个核心属性。</p>
 <ul>
 <li>一个分区列表，每个分区里是 RDD 的部分数据（或者称数据块）。</li>
 <li>一个依赖列表，存储依赖的其他 RDD。</li>
@@ -772,22 +926,22 @@ val result = sqlContext.<span class="function"><span class="title">sql</span><sp
 <li>分区器（可选），用于键/值类型的 RDD，比如某个 RDD 是按散列来分区。</li>
 <li>计算各分区时优先的位置列表（可选），比如从 HDFS 上的文件生成 RDD 时，RDD 分区的位置优先选择数据所在的节点，这样可以避免数据移动带来的开销。</li>
 </ul>
-<h4 id="RDD_的_Transformation">RDD 的 Transformation</h4><p>RDD 的 Transformation 是指由一个 RDD 生成新 RDD 的过程，比如 flapMap。filter 操作都会返回一个新的 RDD 对象，类型是 MapPartitionsRDD，它是 RDD 子类。</p>
+<h4 id="RDD-的-Transformation"><a href="#RDD-的-Transformation" class="headerlink" title="RDD 的 Transformation"></a>RDD 的 Transformation</h4><p>RDD 的 Transformation 是指由一个 RDD 生成新 RDD 的过程，比如 flapMap。filter 操作都会返回一个新的 RDD 对象，类型是 MapPartitionsRDD，它是 RDD 子类。</p>
 <p>在 Spark 中，RDD 是有依赖关系的，这种依赖关系有两种类型。</p>
 <ul>
 <li>窄依赖。依赖上级 RDD 的部分分区。</li>
 <li>Shuffle 依赖上级 RDD 的所有分区。</li>
 </ul>
 <p>使用窄依赖时，可以精确知道依赖的上级 RDD 的分区。一般情况下，会选择与自己在同一节点的上级 RDD 分区，这样计算过程都在同一节点进行，没有网络 IO 开销，非常高效，常见的 map、flatMap、filter操作都是这一类。而 Shuffle 依赖则无法精确定位依赖的上级 RDD 的分区，相当于依赖索引分区，计算时涉及所有节点之间的数据传输，开销巨大。所以，以 Shuffle 依赖为分隔，Task 被分成 Stage，方便计算时的管理。</p>
-<h4 id="RDD_的_Action">RDD 的 Action</h4><p>一次 Action 调用之后，不在生成新的 RDD，结果返回到 Driver 程序。</p>
-<h4 id="Shuffle">Shuffle</h4><p>Shuffle 概念来源于 Hadoop MapReduce，当对一个 RDD 的某个结果分区进行操作而无法精确知道依赖前一个 RDD 的哪个分区时，依赖关系变成了依赖前一个 RDD 的所有分区。Shuffle 本身是一个非常耗资源的操作，它的结果是一次调度的 Stage 的结果，而一次 Stage 包含许多 Task，缓存下来比较划算。Shuffle 使用的本地磁盘目录由 spark.local.dir 属性项指定。</p>
-<h3 id="SparkContext">SparkContext</h3><p>SparkContext 是 Spark 程序最主要的入口，用于和 Spark 集群连接。所有的 Spark 程序都必须创建 SparkContext。进行流式计算时使用 StreamingContext，进行 SQL 计算时使用 SQLContext，都会创建一个 SparkContext。每个 JVM 只允许启动一个 SparkContext。</p>
-<h4 id="SparkConf_配置">SparkConf 配置</h4><p>SparkContext 可以无参数配置，也可以自定义配置。SparkContext 在构造的过程中，已经完成了各项服务的启动。最重要的初始化操作之一是启动 Task 调度器和 DAG 调度器。</p>
+<h4 id="RDD-的-Action"><a href="#RDD-的-Action" class="headerlink" title="RDD 的 Action"></a>RDD 的 Action</h4><p>一次 Action 调用之后，不在生成新的 RDD，结果返回到 Driver 程序。</p>
+<h4 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h4><p>Shuffle 概念来源于 Hadoop MapReduce，当对一个 RDD 的某个结果分区进行操作而无法精确知道依赖前一个 RDD 的哪个分区时，依赖关系变成了依赖前一个 RDD 的所有分区。Shuffle 本身是一个非常耗资源的操作，它的结果是一次调度的 Stage 的结果，而一次 Stage 包含许多 Task，缓存下来比较划算。Shuffle 使用的本地磁盘目录由 spark.local.dir 属性项指定。</p>
+<h3 id="SparkContext"><a href="#SparkContext" class="headerlink" title="SparkContext"></a>SparkContext</h3><p>SparkContext 是 Spark 程序最主要的入口，用于和 Spark 集群连接。所有的 Spark 程序都必须创建 SparkContext。进行流式计算时使用 StreamingContext，进行 SQL 计算时使用 SQLContext，都会创建一个 SparkContext。每个 JVM 只允许启动一个 SparkContext。</p>
+<h4 id="SparkConf-配置"><a href="#SparkConf-配置" class="headerlink" title="SparkConf 配置"></a>SparkConf 配置</h4><p>SparkContext 可以无参数配置，也可以自定义配置。SparkContext 在构造的过程中，已经完成了各项服务的启动。最重要的初始化操作之一是启动 Task 调度器和 DAG 调度器。</p>
 <p>DAG 调度与 Task 调度的区别是，DAG 是高层级的调度，为每个 Job 绘制一个有向无环图，跟踪各 Stage 的输出。计算完成 Job 的最短路径，并将 Task 提交给 Task 调度器执行，而 Task 调度器只负责接收 DAG 调度器的请求，负责 Task 的实际调度执行，所以 DAGScheduler 的初始化必须在 Task 调度器之后。</p>
 <p>DAG 与 Task 这种分离设计的好处是，Spark 可以灵活设计自己的 DAG 调度，同时还能与其他资源调度系统结合，比如 YARN、Mesos。</p>
-<h3 id="DAG_调度">DAG 调度</h3><p>SparkContext 在初始化时，创建了 DAG 调度与 Task 调度来负责 RDD Action 操作的调度执行。</p>
-<h4 id="DAGScheduler">DAGScheduler</h4><p>DAGScheduler 负责 Spark 的最高级别的任务调度，调度的粒度是 Stage，它为每个 Job 的所有 Stage 计算一个有向无环图，控制它们的并发，并找到一个最佳路径来执行它们。具体的执行过程是将 Stage 下的 Task 集提交给 TaskScheduler 对象，由它来提交到集群上去申请资源并最终完成执行。</p>
-<h4 id="TaskScheduler">TaskScheduler</h4><p>相比 DAGScheduler 而言，TaskScheduler 是低级别的调度接口，允许实现不同的 Task 调度器，除了自带的之外，还可以使用 Yarn 和 Mesos 调度器。每个 TaskScheduler 对象只服务于一个 SparkContext 的 Task 调度。TaskScheduler 从 DAGScheduler 的每个 Stage 接收一组 Task，并负责将它们发送到集群上，运行它们，如果出错还会重试，最后返回消息给 DAGScheduler。</p>
+<h3 id="DAG-调度"><a href="#DAG-调度" class="headerlink" title="DAG 调度"></a>DAG 调度</h3><p>SparkContext 在初始化时，创建了 DAG 调度与 Task 调度来负责 RDD Action 操作的调度执行。</p>
+<h4 id="DAGScheduler"><a href="#DAGScheduler" class="headerlink" title="DAGScheduler"></a>DAGScheduler</h4><p>DAGScheduler 负责 Spark 的最高级别的任务调度，调度的粒度是 Stage，它为每个 Job 的所有 Stage 计算一个有向无环图，控制它们的并发，并找到一个最佳路径来执行它们。具体的执行过程是将 Stage 下的 Task 集提交给 TaskScheduler 对象，由它来提交到集群上去申请资源并最终完成执行。</p>
+<h4 id="TaskScheduler"><a href="#TaskScheduler" class="headerlink" title="TaskScheduler"></a>TaskScheduler</h4><p>相比 DAGScheduler 而言，TaskScheduler 是低级别的调度接口，允许实现不同的 Task 调度器，除了自带的之外，还可以使用 Yarn 和 Mesos 调度器。每个 TaskScheduler 对象只服务于一个 SparkContext 的 Task 调度。TaskScheduler 从 DAGScheduler 的每个 Stage 接收一组 Task，并负责将它们发送到集群上，运行它们，如果出错还会重试，最后返回消息给 DAGScheduler。</p>
 
           
         
@@ -917,65 +1071,65 @@ val result = sqlContext.<span class="function"><span class="title">sql</span><sp
         
           
             <p>Spark 工作机制主要包括调度管理、内存管理、容错机制。</p>
-<h3 id="调度管理">调度管理</h3><p>Spark 调度管理按照场景可以分为2类，一类是Spark程序之间的调度，这是最主要的调度场景；另外一类是Spark程序内部的调度。</p>
-<h4 id="Driver_程序">Driver 程序</h4><p>在集群模式下，用户编写的 Spark 程序称为 Driver 程序。每个 Driver 程序包含一个代表集群环境的 SparkContenxt 对象并与之连接，程序的执行从 Driver 程序开始，中间过程会调用 RDD 操作，这些操作通过集群资源管理器来调度执行，一般在 Worker 节点上执行，所有操作执行结束后回到 Driver 程序中，在 Driver 程序中结束。</p>
-<h4 id="SparkContext_对象">SparkContext 对象</h4><p>每个驱动程序里都有一个 SparkContext 对象，担负着与集群沟通的职责，其工作过程如下：</p>
+<h3 id="调度管理"><a href="#调度管理" class="headerlink" title="调度管理"></a>调度管理</h3><p>Spark 调度管理按照场景可以分为2类，一类是Spark程序之间的调度，这是最主要的调度场景；另外一类是Spark程序内部的调度。</p>
+<h4 id="Driver-程序"><a href="#Driver-程序" class="headerlink" title="Driver 程序"></a>Driver 程序</h4><p>在集群模式下，用户编写的 Spark 程序称为 Driver 程序。每个 Driver 程序包含一个代表集群环境的 SparkContenxt 对象并与之连接，程序的执行从 Driver 程序开始，中间过程会调用 RDD 操作，这些操作通过集群资源管理器来调度执行，一般在 Worker 节点上执行，所有操作执行结束后回到 Driver 程序中，在 Driver 程序中结束。</p>
+<h4 id="SparkContext-对象"><a href="#SparkContext-对象" class="headerlink" title="SparkContext 对象"></a>SparkContext 对象</h4><p>每个驱动程序里都有一个 SparkContext 对象，担负着与集群沟通的职责，其工作过程如下：</p>
 <ol>
 <li>SaprkContext 对象联系集群管理器、分配CPU、内存等资源。</li>
 <li>集群管理器在工作节点上启动一个执行器。</li>
 <li>程序代码会被分发到相应的工作节点上。</li>
 <li>SparkContext 分发任务（Task）至各执行器执行。</li>
 </ol>
-<h4 id="集群管理器">集群管理器</h4><p>集群管理器负责集群的资源调度。Spark 支持 3 种集群部署方式，每种部署对应一种资源管理器。</p>
+<h4 id="集群管理器"><a href="#集群管理器" class="headerlink" title="集群管理器"></a>集群管理器</h4><p>集群管理器负责集群的资源调度。Spark 支持 3 种集群部署方式，每种部署对应一种资源管理器。</p>
 <ol>
 <li>Standalone 模式（资源管理器是Master结点）。最简单的一种集群模式，不依赖于其他系统，调度策略相对单一，只支持先出先进。</li>
 <li>Hadoop Yarn。</li>
 <li>Apache Mesos。</li>
 </ol>
-<h4 id="其他相关名称">其他相关名称</h4><ul>
+<h4 id="其他相关名称"><a href="#其他相关名称" class="headerlink" title="其他相关名称"></a>其他相关名称</h4><ul>
 <li>Job： 一次 RDD Action 对应一次 Job，会提交至资源管理器调度执行。</li>
 <li>Stage： Job 在执行过程中被分为多个阶段。介于 Job 和 Task 之间，是按 Shuffle 分隔的 Task 集合。</li>
 <li>执行器： 每个 Spark 程序在每个节点上启动一个进程，专属于一个 Spark 程序，与 Spark 程序有相同的生命周期，负责 Spark 在节点上启动的 Task，管理内存和磁盘。如果一个节点上有多个 Spark 程序在执行，那么相应的就会启动多个执行器。</li>
 <li>Task： 在执行器上执行的最小单元。比如 RDD Transformation 操作时对 RDD 内每个分区计算都会对应一个 Task。</li>
 </ul>
-<h4 id="Spark_程序之间的调度">Spark 程序之间的调度</h4><p>主要分为两种，</p>
+<h4 id="Spark-程序之间的调度"><a href="#Spark-程序之间的调度" class="headerlink" title="Spark 程序之间的调度"></a>Spark 程序之间的调度</h4><p>主要分为两种，</p>
 <ol>
 <li>静态资源分配</li>
 <li>动态资源分配</li>
 </ol>
-<h4 id="Spark_程序内部的调度">Spark 程序内部的调度</h4><p>当 Spark 为多个用户同时提供服务时，我们可以考虑配置 Spark 程序内部的调度。</p>
+<h4 id="Spark-程序内部的调度"><a href="#Spark-程序内部的调度" class="headerlink" title="Spark 程序内部的调度"></a>Spark 程序内部的调度</h4><p>当 Spark 为多个用户同时提供服务时，我们可以考虑配置 Spark 程序内部的调度。</p>
 <p>在 Spark 程序内部，不同线程提交的 Job 可以并行执行。Spark 的调度器是线程安全的，因此可以支持这种需要同时处理多个请求的服务型应用。</p>
 <p>默认情况下，Spark的调度器以 FIFO 的方式运行 Job，前面运行的 Job 优先获得所有资源。从 Spark 0.8 开始，可以开始采用“循环”（round robin）的方式为不同 Job 之间的 Task 分配资源，这样所有的 Job 可以获取差不多相同的资源。这种模式特别适用于多用户的场景。</p>
 <p>如果想要开启程序的公平调度，只需要在 SparkContext 中设置 Spark.scheduler.mode 的值为 FAIR：</p>
-<pre><code><span class="built_in">var</span> conf = <span class="literal">new</span> SparkConf()<span class="built_in">.</span>setMaster(<span class="attribute">...</span>)<span class="built_in">.</span>setAppName(<span class="attribute">...</span>)
-conf<span class="built_in">.</span><span class="built_in">set</span>(<span class="string">"spark.scheduler.mode"</span>, <span class="string">"FAIR"</span>)
-<span class="built_in">var</span> sc = <span class="literal">new</span> SparkContext(conf);
-</code></pre><h4 id="公平调度池">公平调度池</h4><p>公平调度支持对多个 Job 进行分组，这个分组称为调度池，每个调度池可以设置不同的调度选项，当我们想要为一些更重要的 Job 设置更高的优先级时，这个功能就非常有用了。我们可以为不同的用户设置不同的调度池。然后让各个调度池平等地共享资源，而不是按 Job 来共享资源。</p>
+<pre><code>var conf = new SparkConf().setMaster(...).setAppName(...)
+conf.set(&quot;spark.scheduler.mode&quot;, &quot;FAIR&quot;)
+var sc = new SparkContext(conf);
+</code></pre><h4 id="公平调度池"><a href="#公平调度池" class="headerlink" title="公平调度池"></a>公平调度池</h4><p>公平调度支持对多个 Job 进行分组，这个分组称为调度池，每个调度池可以设置不同的调度选项，当我们想要为一些更重要的 Job 设置更高的优先级时，这个功能就非常有用了。我们可以为不同的用户设置不同的调度池。然后让各个调度池平等地共享资源，而不是按 Job 来共享资源。</p>
 <p>指定让 Job 进入那个调度池的具体方法是提交任务的线程在 SparkContext 中设置 spark.scheduler.pool </p>
-<pre><code>sc.<span class="function"><span class="title">setLocalProperty</span><span class="params">(<span class="string">"spark.scheduler.pool"</span>, <span class="string">"pool1"</span>)</span></span>
+<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;, &quot;pool1&quot;)
 </code></pre><p>这样设置之后，这个线程提交的所有 Job 会使用这个调度池。设置按线程来进行，这样可以很方便地让一个线程下的所有 Job 都在同一个用户下。如果要清空当前线程的调度池设置，可以这样设置</p>
-<pre><code>sc.<span class="function"><span class="title">setLocalProperty</span><span class="params">(<span class="string">"spark.scheduler.pool"</span>,null)</span></span>
-</code></pre><h4 id="调度池的默认行为">调度池的默认行为</h4><p>默认情况下，所有调度池平均共享集群的资源，默认调度池也是。但在每个调度池内部，各个 Job 是按 FIFO 的顺序来执行的。</p>
-<h4 id="调度池的配置">调度池的配置</h4><ul>
+<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;,null)
+</code></pre><h4 id="调度池的默认行为"><a href="#调度池的默认行为" class="headerlink" title="调度池的默认行为"></a>调度池的默认行为</h4><p>默认情况下，所有调度池平均共享集群的资源，默认调度池也是。但在每个调度池内部，各个 Job 是按 FIFO 的顺序来执行的。</p>
+<h4 id="调度池的配置"><a href="#调度池的配置" class="headerlink" title="调度池的配置"></a>调度池的配置</h4><ul>
 <li>schedulingMode。（FIFO 或者 FAIR）</li>
 <li>weight。（用于控制调度池相对于其他调度池的权重）</li>
 <li>minShare。（最小资源值( core 的数量)）</li>
 </ul>
-<h3 id="内存管理">内存管理</h3><p>相比 Hadoop MapReduce，Spark 计算具有巨大的性能优势，其中很大一部分是因为 Spark  对于内存的充分利用，以及提供的缓存机制。</p>
-<h4 id="RDD_持久化">RDD 持久化</h4><p>如果一个 RDD 不止一次被用到，那么就可以持久化它，以大幅提升程序的性能。持久化的方法是调用 persist() 函数，除了持久化至内存中，还可以在 persist() 中指定 storage level 参数使用其他的类型。</p>
-<h4 id="共享变量">共享变量</h4><p>Spark 大部分操作都是 RDD 操作，通过传入函数给 RDD 操作函数来计算。这些函数在不同的节点上并发执行，内部的变量有不同的作用域，不能互相访问。Spark 提供 2 种共享变量–广播变量和计数器。</p>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>相比 Hadoop MapReduce，Spark 计算具有巨大的性能优势，其中很大一部分是因为 Spark  对于内存的充分利用，以及提供的缓存机制。</p>
+<h4 id="RDD-持久化"><a href="#RDD-持久化" class="headerlink" title="RDD 持久化"></a>RDD 持久化</h4><p>如果一个 RDD 不止一次被用到，那么就可以持久化它，以大幅提升程序的性能。持久化的方法是调用 persist() 函数，除了持久化至内存中，还可以在 persist() 中指定 storage level 参数使用其他的类型。</p>
+<h4 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h4><p>Spark 大部分操作都是 RDD 操作，通过传入函数给 RDD 操作函数来计算。这些函数在不同的节点上并发执行，内部的变量有不同的作用域，不能互相访问。Spark 提供 2 种共享变量–广播变量和计数器。</p>
 <ol>
 <li>广播变量</li>
 </ol>
 <p>一个只读对象，在所有节点上都有一份缓存，创建方法如下：</p>
-<pre><code>val broadcastVar = sc.broadcast(Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))
+<pre><code>val broadcastVar = sc.broadcast(Array(1, 2, 3))
 </code></pre><ol>
 <li>计数器</li>
 </ol>
 <p>计数器只能增加，可以用于计算或者求和。计数器变量的创建方法是:</p>
-<pre><code>SparkContext.<span class="function"><span class="title">accumulator</span><span class="params">(v, name)</span></span> 
+<pre><code>SparkContext.accumulator(v, name) 
 </code></pre><p>v 是初始值，name 是名称。注意，只有 Driver 程序可以读这个计算器变量，RDD 操作中读取计数器变量是无意义的。</p>
-<h3 id="容错机制">容错机制</h3><p>Spark  以前的集群容错处理模型，像 MapReduce，将计算转换为一个有向无环图（DAG）的任务集合，这样可以通过重复执行 DAG 里的一部分任务来完成容错恢复。但是由于主要的数据存储在分布式文件系统中，没有提供其他存储的概念，容错过程中需要在网络上进行数据复制，从而增加了大量的消耗。所以，分布式编程中经常需要做检查点，即将某个时机的中间数据写到存储（通常是分布式文件系统）中。</p>
+<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p>Spark  以前的集群容错处理模型，像 MapReduce，将计算转换为一个有向无环图（DAG）的任务集合，这样可以通过重复执行 DAG 里的一部分任务来完成容错恢复。但是由于主要的数据存储在分布式文件系统中，没有提供其他存储的概念，容错过程中需要在网络上进行数据复制，从而增加了大量的消耗。所以，分布式编程中经常需要做检查点，即将某个时机的中间数据写到存储（通常是分布式文件系统）中。</p>
 <p>RDD 也是一个 DAG，每一个 RDD 都会记住创建该数据集需要哪些操作，跟踪记录 RDD 的继承关系，这个关系在 Spark 里面叫 lineage。由于创建 RDD 的操作是相对粗粒度的变换，即单一的操作应用于许多数据元素，而不需存储真正的数据。当一个 RDD 的某个分区丢失时， RDD 有足够的信息记录其如何通过其他 RDD 进行计算，且只需重新计算该分区。</p>
 <p>RDD 之间的依赖分为两种。</p>
 <ul>
@@ -1123,7 +1277,7 @@ conf<span class="built_in">.</span><span class="built_in">set</span>(<span class
       
         
           
-            <h3 id="数据描述">数据描述</h3><p>German Credit Data， 我们来看看数据的格式,</p>
+            <h3 id="数据描述"><a href="#数据描述" class="headerlink" title="数据描述"></a>数据描述</h3><p>German Credit Data， 我们来看看数据的格式,</p>
 <p>A1 到 A15 为 15个不同类别的特征，A16 为 label 列，一共有 690条数据，下面列举其中一条当作例子：</p>
 <table>
 <thead>
@@ -1167,41 +1321,41 @@ conf<span class="built_in">.</span><span class="built_in">set</span>(<span class
 </tr>
 </tbody>
 </table>
-<h4 id="Attribute_Information:">Attribute Information:</h4><pre><code><span class="attribute">A1</span>: <span class="string">   b, a.</span>
-<span class="attribute">A2</span>: <span class="string">   continuous.</span>
-<span class="attribute">A3</span>: <span class="string">   continuous.</span>
-<span class="attribute">A4</span>: <span class="string">   u, y, l, t.</span>
-<span class="attribute">A5</span>: <span class="string">   g, p, gg.</span>
-<span class="attribute">A6</span>: <span class="string">   c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.</span>
-<span class="attribute">A7</span>: <span class="string">   v, h, bb, j, n, z, dd, ff, o.</span>
-<span class="attribute">A8</span>: <span class="string">   continuous.</span>
-<span class="attribute">A9</span>: <span class="string">   t, f.</span>
-<span class="attribute">A10</span>: <span class="string">   t, f.</span>
-<span class="attribute">A11</span>: <span class="string">   continuous.</span>
-<span class="attribute">A12</span>: <span class="string">   t, f.</span>
-<span class="attribute">A13</span>: <span class="string">   g, p, s.</span>
-<span class="attribute">A14</span>: <span class="string">   continuous.</span>
-<span class="attribute">A15</span>: <span class="string">   continuous.</span>
-<span class="attribute">A16</span>: <span class="string">+,-         (class attribute)</span>
-</code></pre><h4 id="Missing_Attribute_Values:">Missing Attribute Values:</h4><pre><code><span class="number">37</span> cases (<span class="number">5</span>%) have one or more missing values.  The missing
+<h4 id="Attribute-Information"><a href="#Attribute-Information" class="headerlink" title="Attribute Information:"></a>Attribute Information:</h4><pre><code>A1:    b, a.
+A2:    continuous.
+A3:    continuous.
+A4:    u, y, l, t.
+A5:    g, p, gg.
+A6:    c, d, cc, i, j, k, m, r, q, w, x, e, aa, ff.
+A7:    v, h, bb, j, n, z, dd, ff, o.
+A8:    continuous.
+A9:    t, f.
+A10:    t, f.
+A11:    continuous.
+A12:    t, f.
+A13:    g, p, s.
+A14:    continuous.
+A15:    continuous.
+A16: +,-         (class attribute)
+</code></pre><h4 id="Missing-Attribute-Values"><a href="#Missing-Attribute-Values" class="headerlink" title="Missing Attribute Values:"></a>Missing Attribute Values:</h4><pre><code>37 cases (5%) have one or more missing values.  The missing
 values from particular attributes are:
 
-A1:  <span class="number">12</span>
-A2:  <span class="number">12</span>
-A4:   <span class="number">6</span>
-A5:   <span class="number">6</span>
-A6:   <span class="number">9</span>
-A7:   <span class="number">9</span>
-A14: <span class="number">13</span>
-</code></pre><h4 id="Class_Distribution">Class Distribution</h4><pre><code>+: <span class="number">307</span> (<span class="number">44.5</span>%)
--: <span class="number">383</span> (<span class="number">55.5</span>%)
-</code></pre><h4 id="数据处理与数据分析">数据处理与数据分析</h4><p>下面展示一下数据处理流程，主要是处理了一下缺失值，然后根据特征按连续型和离散型进行分别处理，使用了 sklearn 里面的 LogisticRegression 包，下面的代码都有很详细的注释。</p>
+A1:  12
+A2:  12
+A4:   6
+A5:   6
+A6:   9
+A7:   9
+A14: 13
+</code></pre><h4 id="Class-Distribution"><a href="#Class-Distribution" class="headerlink" title="Class Distribution"></a>Class Distribution</h4><pre><code>+: 307 (44.5%)
+-: 383 (55.5%)
+</code></pre><h4 id="数据处理与数据分析"><a href="#数据处理与数据分析" class="headerlink" title="数据处理与数据分析"></a>数据处理与数据分析</h4><p>下面展示一下数据处理流程，主要是处理了一下缺失值，然后根据特征按连续型和离散型进行分别处理，使用了 sklearn 里面的 LogisticRegression 包，下面的代码都有很详细的注释。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">data = pd.read_csv(<span class="string">"./crx.data"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给数据增加列标签</span></span><br><span class="line">data.columns = [<span class="string">"f1"</span>, <span class="string">"f2"</span>, <span class="string">"f3"</span>, <span class="string">"f4"</span>, <span class="string">"f5"</span>, <span class="string">"f6"</span>, <span class="string">"f7"</span>, <span class="string">"f8"</span>, <span class="string">"f9"</span>, <span class="string">"f10"</span>, <span class="string">"f11"</span>, <span class="string">"f12"</span>, <span class="string">"f13"</span>, <span class="string">"f14"</span>, <span class="string">"f15"</span>, <span class="string">"label"</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 替换 label 映射</span></span><br><span class="line">label_mapping = &#123;</span><br><span class="line">    <span class="string">"+"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"-"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"label"</span>] = data[<span class="string">"label"</span>].map(label_mapping)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理缺省值的方法</span></span><br><span class="line">data = data.replace(<span class="string">"?"</span>, np.nan)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 object 类型的列转换为 float型</span></span><br><span class="line">data[<span class="string">"f2"</span>] = pd.to_numeric(data[<span class="string">"f2"</span>])</span><br><span class="line">data[<span class="string">"f14"</span>] = pd.to_numeric(data[<span class="string">"f14"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连续型特征如果有缺失值的话，用它们的平均值替代</span></span><br><span class="line">data[<span class="string">"f2"</span>] = data[<span class="string">"f2"</span>].fillna(data[<span class="string">"f2"</span>].mean())</span><br><span class="line">data[<span class="string">"f3"</span>] = data[<span class="string">"f3"</span>].fillna(data[<span class="string">"f3"</span>].mean())</span><br><span class="line">data[<span class="string">"f8"</span>] = data[<span class="string">"f8"</span>].fillna(data[<span class="string">"f8"</span>].mean())</span><br><span class="line">data[<span class="string">"f11"</span>] = data[<span class="string">"f11"</span>].fillna(data[<span class="string">"f11"</span>].mean())</span><br><span class="line">data[<span class="string">"f14"</span>] = data[<span class="string">"f14"</span>].fillna(data[<span class="string">"f14"</span>].mean())</span><br><span class="line">data[<span class="string">"f15"</span>] = data[<span class="string">"f15"</span>].fillna(data[<span class="string">"f15"</span>].mean())</span><br><span class="line"></span><br><span class="line"><span class="comment"># 离散型特征如果有缺失值的话，用另外一个不同的值替代</span></span><br><span class="line">data[<span class="string">"f1"</span>] = data[<span class="string">"f1"</span>].fillna(<span class="string">"c"</span>)</span><br><span class="line">data[<span class="string">"f4"</span>] = data[<span class="string">"f4"</span>].fillna(<span class="string">"s"</span>)</span><br><span class="line">data[<span class="string">"f5"</span>] = data[<span class="string">"f5"</span>].fillna(<span class="string">"gp"</span>)</span><br><span class="line">data[<span class="string">"f6"</span>] = data[<span class="string">"f6"</span>].fillna(<span class="string">"hh"</span>)</span><br><span class="line">data[<span class="string">"f7"</span>] = data[<span class="string">"f7"</span>].fillna(<span class="string">"ee"</span>)</span><br><span class="line">data[<span class="string">"f13"</span>] = data[<span class="string">"f13"</span>].fillna(<span class="string">"ps"</span>)</span><br><span class="line"></span><br><span class="line">tf_mapping = &#123;</span><br><span class="line">    <span class="string">"t"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">"f"</span>: <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="string">"f9"</span>] = data[<span class="string">"f9"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f10"</span>] = data[<span class="string">"f10"</span>].map(tf_mapping)</span><br><span class="line">data[<span class="string">"f12"</span>] = data[<span class="string">"f12"</span>].map(tf_mapping)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给离散的特征进行 one-hot 编码</span></span><br><span class="line">data = pd.get_dummies(data)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打乱顺序</span></span><br><span class="line">shuffled_rows = np.random.permutation(data.index)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分本地测试集和训练集</span></span><br><span class="line">highest_train_row = int(data.shape[<span class="number">0</span>] * <span class="number">0.70</span>)</span><br><span class="line">train = data.iloc[<span class="number">0</span>:highest_train_row]</span><br><span class="line">loc_test = data.iloc[highest_train_row:]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 去掉最后一列 label 之后的才是 feature</span></span><br><span class="line">features = train.drop([<span class="string">"label"</span>], axis = <span class="number">1</span>).columns</span><br><span class="line"></span><br><span class="line">model = LogisticRegression()</span><br><span class="line">X_train = train[features]</span><br><span class="line">y_train = train[<span class="string">"label"</span>] == <span class="number">1</span></span><br><span class="line"></span><br><span class="line">model.fit(X_train, y_train)</span><br><span class="line">X_test = loc_test[features]</span><br><span class="line"></span><br><span class="line">test_prob = model.predict(X_test)</span><br><span class="line">test_label = loc_test[<span class="string">'label'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地测试集上的准确率</span></span><br><span class="line">accuracy_test = (test_prob == loc_test[<span class="string">"label"</span>]).mean()</span><br><span class="line"><span class="keyword">print</span> accuracy_test</span><br></pre></td></tr></table></figure>
-<pre><code><span class="number">0.835748792271</span>
+<pre><code>0.835748792271
 </code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> cross_validation, metrics</span><br><span class="line"></span><br><span class="line"><span class="comment">#验证集上的auc值</span></span><br><span class="line">test_auc = metrics.roc_auc_score(test_label, test_prob)<span class="comment">#验证集上的auc值</span></span><br><span class="line"><span class="keyword">print</span> test_auc</span><br></pre></td></tr></table></figure>
-<pre><code><span class="number">0.835748792271</span>
+<pre><code>0.835748792271
 </code></pre><p>简单使用了一下逻辑回归，发现准确率是 0.835748792271，AUC 值是 0.835748792271，效果还不错，接下来对模型进行优化来进一步提高准确率。</p>
 
           
@@ -1333,172 +1487,172 @@ A14: <span class="number">13</span>
           
             <p>最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。</p>
 <p>使用 Maven 工程，我的 pom 文件如下所示：</p>
-<pre><code><span class="tag">&lt;<span class="title">dependencies</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.elasticsearch<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>elasticsearch<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.4.1<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-api<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">dependency</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">groupId</span>&gt;</span>org.apache.logging.log4j<span class="tag">&lt;/<span class="title">groupId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">artifactId</span>&gt;</span>log4j-core<span class="tag">&lt;/<span class="title">artifactId</span>&gt;</span>
-        <span class="tag">&lt;<span class="title">version</span>&gt;</span>2.6.2<span class="tag">&lt;/<span class="title">version</span>&gt;</span>
-    <span class="tag">&lt;/<span class="title">dependency</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">dependencies</span>&gt;</span>
-</code></pre><h3 id="连接机器">连接机器</h3><pre><code><span class="label">TransportClient</span> client = TransportClient.<span class="keyword">builder()
-</span>    .<span class="keyword">build()
-</span>    .<span class="keyword">addTransportAddress(new </span>InetSocketTransportAddress(InetAddress
-    .getByName(<span class="string">"localhost"</span>), <span class="number">9300</span>))<span class="comment">;       </span>
-</code></pre><h3 id="Index_API_创建_Index_并且插入_Document">Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
-<pre><code><span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
-json.put(<span class="string">"first_name"</span>,<span class="string">"Shuang"</span>);
-json.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
-json.put(<span class="string">"age"</span>, <span class="number">24</span>);
-json.put(<span class="string">"about"</span>, <span class="string">"I love coding"</span>);
+<pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.elasticsearch&lt;/groupId&gt;
+        &lt;artifactId&gt;elasticsearch&lt;/artifactId&gt;
+        &lt;version&gt;2.4.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h3 id="连接机器"><a href="#连接机器" class="headerlink" title="连接机器"></a>连接机器</h3><pre><code>TransportClient client = TransportClient.builder()
+    .build()
+    .addTransportAddress(new InetSocketTransportAddress(InetAddress
+    .getByName(&quot;localhost&quot;), 9300));       
+</code></pre><h3 id="Index-API-创建-Index-并且插入-Document"><a href="#Index-API-创建-Index-并且插入-Document" class="headerlink" title="Index API 创建 Index 并且插入 Document"></a>Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
+<pre><code>HashMap&lt;String, Object&gt; json = new HashMap&lt;String, Object&gt;();
+json.put(&quot;first_name&quot;,&quot;Shuang&quot;);
+json.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json.put(&quot;age&quot;, 24);
+json.put(&quot;about&quot;, &quot;I love coding&quot;);
 IndexResponse response = client
-    .prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
-    .setSource(json).<span class="built_in">get</span>();
+    .prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
+    .setSource(json).get();
 
-IndexResponse response = client.prepareIndex(<span class="string">"tseg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>)
+IndexResponse response = client.prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
    .setSource(jsonBuilder()
    .startObject()
-   .field(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
-   .field(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>)
-   .field(<span class="string">"age"</span>, <span class="number">24</span>)
-   .field(<span class="string">"about"</span>, <span class="string">"I love coding"</span>)
+   .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+   .field(&quot;first_name&quot;, &quot;Peng&quot;)
+   .field(&quot;age&quot;, 24)
+   .field(&quot;about&quot;, &quot;I love coding&quot;)
    .endObject())
-   .<span class="built_in">get</span>();
+   .get();
 </code></pre><p><strong>注意</strong>：Index API 只能用于创建 index，类似于关系型数据库里面的 create table，他不能对已有的数据库进行添加。追加操作可以用后面会提到的 Update 或者 Bulk 来完成。    </p>
-<h3 id="Get_API_获取_Document">Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>).<span class="literal">get</span>();
-<span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; res = response2.getSource();
-<span class="keyword">for</span> (<span class="built_in">Map</span>.Entry&lt;<span class="built_in">String</span>, <span class="built_in">Object</span>&gt; entry: res.entrySet()){
-     System.out.println(entry.getKey() + <span class="string">" : "</span> + entry.getValue());
+<h3 id="Get-API-获取-Document"><a href="#Get-API-获取-Document" class="headerlink" title="Get API 获取 Document"></a>Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;).get();
+Map&lt;String, Object&gt; res = response2.getSource();
+for (Map.Entry&lt;String, Object&gt; entry: res.entrySet()){
+     System.out.println(entry.getKey() + &quot; : &quot; + entry.getValue());
      }
-</code></pre><h3 id="Delete_API_删除_Index_或者_Document">Delete API 删除 Index 或者 Document</h3><pre><code><span class="comment">// 用来删除对应的 document </span>
+</code></pre><h3 id="Delete-API-删除-Index-或者-Document"><a href="#Delete-API-删除-Index-或者-Document" class="headerlink" title="Delete API 删除 Index 或者 Document"></a>Delete API 删除 Index 或者 Document</h3><pre><code>// 用来删除对应的 document 
 DeleteResponse response3 = 
-    <span class="keyword">client</span>.prepareDelete(<span class="string">"tesg"</span>,<span class="string">"students"</span>,<span class="string">"1"</span>).get();
-<span class="comment">// 用来删除对应的 index</span>
+    client.prepareDelete(&quot;tesg&quot;,&quot;students&quot;,&quot;1&quot;).get();
+// 用来删除对应的 index
 DeleteIndexResponse response4 = 
-    <span class="keyword">client</span>.admin().indices().prepareDelete(<span class="string">"facebook"</span>).execute().actionGet();
-</code></pre><h3 id="Update_API_更新操作">Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
+    client.admin().indices().prepareDelete(&quot;facebook&quot;).execute().actionGet();
+</code></pre><h3 id="Update-API-更新操作"><a href="#Update-API-更新操作" class="headerlink" title="Update API 更新操作"></a>Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
 <p>第一种</p>
-<pre><code>client.prepareUpdate(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
-    .setDoc(jsonBuilder<span class="literal">()</span>
-    .startObject<span class="literal">()</span>.field(<span class="string">"age"</span>, <span class="number">32</span>)
-    .endObject<span class="literal">()</span>)
-    .get<span class="literal">()</span>;
+<pre><code>client.prepareUpdate(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
+    .setDoc(jsonBuilder()
+    .startObject().field(&quot;age&quot;, 32)
+    .endObject())
+    .get();
 </code></pre><p>第二种</p>
-<pre><code>IndexRequest indexRequest = <span class="keyword">new</span> IndexRequest(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+<pre><code>IndexRequest indexRequest = new IndexRequest(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
     .source(jsonBuilder()
     .startObject()
-    .<span class="keyword">field</span>(<span class="string">"first_name"</span>, <span class="string">"Shuang"</span>)
-    .<span class="keyword">field</span>(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
-    .<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
-    .<span class="keyword">field</span>(<span class="string">"about"</span>, <span class="string">"I loving coding"</span>)
+    .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+    .field(&quot;last_name&quot;, &quot;Peng&quot;)
+    .field(&quot;age&quot;, 32)
+    .field(&quot;about&quot;, &quot;I loving coding&quot;)
     .endObject());
 
-UpdateRequest updateRequest = <span class="keyword">new</span> UpdateRequest(<span class="string">"tseg"</span>,<span class="string">"students"</span>, <span class="string">"1"</span>)
+UpdateRequest updateRequest = new UpdateRequest(&quot;tseg&quot;,&quot;students&quot;, &quot;1&quot;)
     .doc(jsonBuilder()
-    .startObject().<span class="keyword">field</span>(<span class="string">"age"</span>, <span class="number">32</span>)
+    .startObject().field(&quot;age&quot;, 32)
     .endObject())
     .upsert(indexRequest);
  client.update(updateRequest).get();
 </code></pre><p>不过这里提一下第二种方法，如果对应的 <strong>field</strong> 不存在的话，则更新操作自动变为插入操作，否则，就是正常的修改操作。</p>
-<h3 id="Multi_Get_API_多查找">Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
+<h3 id="Multi-Get-API-多查找"><a href="#Multi-Get-API-多查找" class="headerlink" title="Multi Get API 多查找"></a>Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
 <pre><code>MultiGetResponse multiGetItemResponses = client.prepareMultiGet()
-    .<span class="built_in">add</span>(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"3"</span>).<span class="built_in">get</span>();
+    .add(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;).get();
 
-<span class="keyword">for</span> (MultiGetItemResponse itemResponses : multiGetItemResponses) {
+for (MultiGetItemResponse itemResponses : multiGetItemResponses) {
     GetResponse response5 = itemResponses.getResponse();
-    <span class="keyword">if</span> (response5.isExists()) {
+    if (response5.isExists()) {
 
-<span class="comment">// 第一种用法</span>
-    Map&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; fields = response5.getSource();
-    System.out.<span class="built_in">println</span>(fields.<span class="built_in">get</span>(<span class="string">"first_name"</span>));
+// 第一种用法
+    Map&lt;String, Object&gt; fields = response5.getSource();
+    System.out.println(fields.get(&quot;first_name&quot;));
 
-<span class="comment">// 第二种用法</span>
-    <span class="keyword">String</span> json2 = response5.getSourceAsString();
-    System.out.<span class="built_in">println</span>(json2);
+// 第二种用法
+    String json2 = response5.getSourceAsString();
+    System.out.println(json2);
 }
-</code></pre><h3 id="Bulk_API_批量操作">Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
+</code></pre><h3 id="Bulk-API-批量操作"><a href="#Bulk-API-批量操作" class="headerlink" title="Bulk API 批量操作"></a>Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
 <pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"1"</span>)
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
            .setSource(jsonBuilder()
            .startObject()
-           .field(<span class="string">"first_name"</span>, <span class="string">"Allen"</span>)
-           .field(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>)
-           .field(<span class="string">"age"</span>, <span class="string">"22"</span>)
+           .field(&quot;first_name&quot;, &quot;Allen&quot;)
+           .field(&quot;last_name&quot;, &quot;Peng&quot;)
+           .field(&quot;age&quot;, &quot;22&quot;)
            .endObject()))
-           .<span class="built_in">get</span>();
+           .get();
 
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"tseg"</span>, <span class="string">"students"</span>, <span class="string">"2"</span>))
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;2&quot;))
             .setSource(jsonBuilder()
             .startObject()
-            .field(<span class="string">"first_name"</span>, <span class="string">"Hou"</span>)
-            .field(<span class="string">"last_name"</span>, <span class="string">"Xue"</span>)
-            .field(<span class="string">"age"</span>, <span class="string">"30"</span>)
+            .field(&quot;first_name&quot;, &quot;Hou&quot;)
+            .field(&quot;last_name&quot;, &quot;Xue&quot;)
+            .field(&quot;age&quot;, &quot;30&quot;)
             .endObject()))
-            .<span class="built_in">get</span>();
+            .get();
 
-<span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt; json2 = <span class="keyword">new</span> <span class="keyword">HashMap</span>&lt;<span class="keyword">String</span>, <span class="keyword">Object</span>&gt;();
-List&lt;<span class="keyword">String</span>&gt; list = <span class="keyword">new</span> ArrayList&lt;<span class="keyword">String</span>&gt;();
-list.<span class="built_in">add</span>(<span class="string">"music"</span>);
-list.<span class="built_in">add</span>(<span class="string">"football"</span>);
-json2.put(<span class="string">"first_name"</span>, <span class="string">"Peng"</span>);
-json2.put(<span class="string">"last_name"</span>, <span class="string">"Peng"</span>);
-json2.put(<span class="string">"interests"</span>, list);
+HashMap&lt;String, Object&gt; json2 = new HashMap&lt;String, Object&gt;();
+List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+list.add(&quot;music&quot;);
+list.add(&quot;football&quot;);
+json2.put(&quot;first_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;interests&quot;, list);
 BulkRequestBuilder bulkRequest2 = client.prepareBulk();
 
-<span class="comment">// 两种执行方法，个人倾向于第一种</span>
-bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, <span class="string">"info"</span>, 
-    <span class="string">"3"</span>).setSource(json2)).<span class="built_in">get</span>();
-<span class="comment">// 第二种方法</span>
-bulkRequest2.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"facebook"</span>, 
-    <span class="string">"info"</span>,<span class="string">"1"</span>).setSource(json2)).execute().actionGet();
+// 两种执行方法，个人倾向于第一种
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, &quot;info&quot;, 
+    &quot;3&quot;).setSource(json2)).get();
+// 第二种方法
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, 
+    &quot;info&quot;,&quot;1&quot;).setSource(json2)).execute().actionGet();
 </code></pre><p>还可以这样做：</p>
 <pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>)
-    .setSource(<span class="keyword">source</span>);
-bulkRequest.<span class="built_in">add</span>(client.prepareIndex(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>)
-    .setSource(<span class="keyword">source</span>);
-BulkResponse bulkResponse = bulkRequest.<span class="keyword">execute</span>().actionGet();
-</code></pre><h3 id="Bulk_Processor_API_可在批量操作完成之前和之后进行相应的操作">Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
+bulkRequest.add(client.prepareIndex(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;)
+    .setSource(source);
+bulkRequest.add(client.prepareIndex(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;)
+    .setSource(source);
+BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+</code></pre><h3 id="Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作"><a href="#Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作" class="headerlink" title="Bulk Processor API 可在批量操作完成之前和之后进行相应的操作"></a>Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
         client,  
-        <span class="keyword">new</span> BulkProcessor.Listener() {
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeBulk</span><span class="params">(<span class="keyword">long</span> executionId,
-                                  BulkRequest request)</span> </span>{ ... } 
+        new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId,
+                                  BulkRequest request) { ... } 
 
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+            @Override
+            public void afterBulk(long executionId,
                                   BulkRequest request,
-                                  BulkResponse response)</span> </span>{ ... } 
+                                  BulkResponse response) { ... } 
 
-            @<span class="function">Override
-            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterBulk</span><span class="params">(<span class="keyword">long</span> executionId,
+            @Override
+            public void afterBulk(long executionId,
                                   BulkRequest request,
-                                  Throwable failure)</span> </span>{ ... } 
+                                  Throwable failure) { ... } 
         })
-        .setBulkActions(<span class="number">10000</span>) 
-        .setBulkSize(<span class="keyword">new</span> ByteSizeValue(<span class="number">1</span>, ByteSizeUnit.GB)) 
-        .setFlushInterval(TimeValue.timeValueSeconds(<span class="number">5</span>)) 
-        .setConcurrentRequests(<span class="number">1</span>) 
+        .setBulkActions(10000) 
+        .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)) 
+        .setFlushInterval(TimeValue.timeValueSeconds(5)) 
+        .setConcurrentRequests(1) 
          .build();
 
-bulkProcessor.add(<span class="keyword">new</span> IndexRequest(<span class="string">"index1"</span>, <span class="string">"type1"</span>, <span class="string">"id1"</span>).source(source1));  
-bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="string">"index2"</span>, <span class="string">"type2"</span>, <span class="string">"id2"</span>);        
+bulkProcessor.add(new IndexRequest(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;).source(source1));  
+bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;);        
 </code></pre><ol>
 <li>beforeBulk 会在批量提交之前执行，可以从 BulkRequest 中获取请求信息request.requests() 或者请求数量 request.numberOfActions()。 </li>
 <li>第一个 afterBulk 会在批量成功后执行，可以跟 beforeBulk 配合计算批量所需时间。 </li>
 <li>第二个 afterBulk 会在批量失败后执行。 </li>
 <li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
 </ol>
-<h3 id="后记">后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
 
           
         
@@ -1639,20 +1793,20 @@ bulkProcessor.add(<span class="keyword">new</span> DeleteRequest(<span class="st
 </li>
 </ol>
 <p>在分布式集群中，对机器的添加删除，或者机器故障后自动脱离集群这些操作是分布式集群管理最基本的功能。如果采用常用的 <strong>hash(object)%N</strong> 算法，那么在有机器添加或者删除后，很多原有的数据就无法找到了，这样严重的违反了单调性原则。</p>
-<h4 id="环形Hash空间">环形Hash空间</h4><p>按照常用的hash算法来将对应的key哈希到一个具有2^32次方个桶的空间中，即0~(2^32)-1的数字空间中。现在我们可以将这些数字头尾相连，想象成一个闭合的环形。</p>
+<h4 id="环形Hash空间"><a href="#环形Hash空间" class="headerlink" title="环形Hash空间"></a>环形Hash空间</h4><p>按照常用的hash算法来将对应的key哈希到一个具有2^32次方个桶的空间中，即0~(2^32)-1的数字空间中。现在我们可以将这些数字头尾相连，想象成一个闭合的环形。</p>
 <p><img src="/img/h1.png" alt=""></p>
 <p><strong>把数据通过一定的hash算法处理后映射到环上</strong></p>
 <p>现在我们将object1、object2、object3、object4四个对象通过特定的Hash函数计算出对应的key值，然后散列到Hash环上。如下图：</p>
-<pre><code><span class="function"><span class="title">Hash</span><span class="params">(object1)</span></span> = key1；
-<span class="function"><span class="title">Hash</span><span class="params">(object2)</span></span> = key2；
-<span class="function"><span class="title">Hash</span><span class="params">(object3)</span></span> = key3；
-<span class="function"><span class="title">Hash</span><span class="params">(object4)</span></span> = key4；
+<pre><code>Hash(object1) = key1；
+Hash(object2) = key2；
+Hash(object3) = key3；
+Hash(object4) = key4；
 </code></pre><p><img src="/img/h2.JPG" alt=""></p>
 <p><strong>将机器通过hash算法映射到环上</strong></p>
 <p>在采用一致性哈希算法的分布式集群中将新的机器加入，其原理是通过使用与对象存储一样的Hash算法将机器也映射到环中（一般情况下对机器的hash计算是采用机器的IP或者机器唯一的别名作为输入值），然后以顺时针的方向计算，将所有对象存储到离自己最近的机器中。<br>假设现在有 Cache A，Cache B，Cache C 三台机器，通过 Hash 算法得到对应的 KEY 值，映射到环中，其示意图如下：</p>
-<pre><code>Hash<span class="list">(<span class="keyword">NODE1</span>)</span> = KEY1<span class="comment">;</span>
-Hash<span class="list">(<span class="keyword">NODE2</span>)</span> = KEY2<span class="comment">;</span>
-Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span class="comment">;</span>
+<pre><code>Hash(NODE1) = KEY1;
+Hash(NODE2) = KEY2;
+Hash(NODE3) = KEY3;
 </code></pre><p><img src="/img/h3.JPG" alt=""></p>
 <p>通过上图可以看出对象与机器处于同一哈希空间中，这样按顺时针转动 object1 存储到了Cache A 中，object3 存储到了 Cache B 中，object2、object4 存储到了 Cache C中。在这样的部署环境中，hash 环是不会变更的，因此，通过算出对象的hash值就能快速的定位到对应的机器中，这样就能找到对象真正的存储位置了。</p>
 <p><strong>机器的删除与添加</strong></p>
@@ -1666,7 +1820,7 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
 </li>
 </ol>
 <p>通过按顺时针迁移的规则，那么object2被迁移到了 Cache D 中，其它对象还保持这原有的存储位置。通过对节点的添加和删除的分析，一致性哈希算法在保持了单调性的同时，还是数据的迁移达到了最小，这样的算法对分布式集群来说是非常合适的，避免了大量数据迁移，减小了服务器的的压力。</p>
-<h4 id="参考资料">参考资料</h4><ul>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
 <li><p><a href="http://www.codeproject.com/Articles/56138/Consistent-hashing" target="_blank" rel="external">Consistent hashing</a></p>
 </li>
 <li><p><a href="http://blog.csdn.net/cywosp/article/details/23397179/#comments" target="_blank" rel="external">五分钟理解一致性哈希算法</a></p>
@@ -1800,23 +1954,23 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
       
         
           
-            <h3 id="辅助_IP_的_ICMP">辅助 IP 的 ICMP</h3><p>架构 IP 网络时需要特别注意：1. 确认网络是否正常工作；2. 遇到异常时进行问题诊断，而这一切需要 ICMP 来提供。</p>
+            <h3 id="辅助-IP-的-ICMP"><a href="#辅助-IP-的-ICMP" class="headerlink" title="辅助 IP 的 ICMP"></a>辅助 IP 的 ICMP</h3><p>架构 IP 网络时需要特别注意：1. 确认网络是否正常工作；2. 遇到异常时进行问题诊断，而这一切需要 ICMP 来提供。</p>
 <p>ICMP 的主要功能包括，确认 IP 包是否成功送达目标地址，通知在发送过程当中 IP 包被废弃的具体原因，改善网络设置等。</p>
 <p>在 IP 通信中如果某个 IP 包因为某种原因未能达到目标地址，那么这个具体的原因将由 ICMP 负责通知。主机 A 向主机 B 发送了数据包，由于某种原因，途中的路由器 2 未能发现主机 B 的存在，这时，路由器 2 就会向主机 A 发送一个 ICMP 包，说明发往主机 B 的包未能成功。</p>
 <p>ICMP 的消息大致可以分为两类：一类是通知出错原因的错误消息，另一类是用于诊断的查询消息。</p>
-<h3 id="主要的_ICMP_消息">主要的 ICMP 消息</h3><h4 id="ICMP_目标不可达消息（类型3）">ICMP 目标不可达消息（类型3）</h4><p>IP 路由器无法将 IP 数据包发送给目标地址时，会给发送端主机返回一个目标不可达的 ICMP 消息，并在这个消息中显示不可达的具体原因。</p>
+<h3 id="主要的-ICMP-消息"><a href="#主要的-ICMP-消息" class="headerlink" title="主要的 ICMP 消息"></a>主要的 ICMP 消息</h3><h4 id="ICMP-目标不可达消息（类型3）"><a href="#ICMP-目标不可达消息（类型3）" class="headerlink" title="ICMP 目标不可达消息（类型3）"></a>ICMP 目标不可达消息（类型3）</h4><p>IP 路由器无法将 IP 数据包发送给目标地址时，会给发送端主机返回一个目标不可达的 ICMP 消息，并在这个消息中显示不可达的具体原因。</p>
 <p>在实际通信中经常遇到的错误代码是 1，表示主机不可达，它是指路由表中没有该主机的信息，或该主机没有连接到网络的意思。其他的错误号都可以通过查阅得知具体的错误信息，这里不再赘述。</p>
-<h4 id="ICMP_重定向消息（类型5）">ICMP 重定向消息（类型5）</h4><p>如果路由器发现发送端主机使用了次优的路径发送数据，那么它会返回一个 ICMP 重定向（ICMP Redirect Message）的消息给这个主机。在这个消息中包含了最合适的路由信息和源数据。这主要发生在路由器持有更好的路由信息的情况下。路由器会通过这样的 ICMP 消息给发送端主机一个更合适的发送路由。</p>
-<h4 id="ICMP_超时消息（类型11）">ICMP 超时消息（类型11）</h4><p>IP 包中有一个字段叫做 TTL (生存周期），它的值随着每经过一次路由器就会减 1，直到减到 0 时该 IP 包会被丢弃。此时，IP 路由器将会发送一个 ICMP 超时的消息给发送端主机，并通知该包已被丢弃。</p>
+<h4 id="ICMP-重定向消息（类型5）"><a href="#ICMP-重定向消息（类型5）" class="headerlink" title="ICMP 重定向消息（类型5）"></a>ICMP 重定向消息（类型5）</h4><p>如果路由器发现发送端主机使用了次优的路径发送数据，那么它会返回一个 ICMP 重定向（ICMP Redirect Message）的消息给这个主机。在这个消息中包含了最合适的路由信息和源数据。这主要发生在路由器持有更好的路由信息的情况下。路由器会通过这样的 ICMP 消息给发送端主机一个更合适的发送路由。</p>
+<h4 id="ICMP-超时消息（类型11）"><a href="#ICMP-超时消息（类型11）" class="headerlink" title="ICMP 超时消息（类型11）"></a>ICMP 超时消息（类型11）</h4><p>IP 包中有一个字段叫做 TTL (生存周期），它的值随着每经过一次路由器就会减 1，直到减到 0 时该 IP 包会被丢弃。此时，IP 路由器将会发送一个 ICMP 超时的消息给发送端主机，并通知该包已被丢弃。</p>
 <p>设置 IP 包生存周期的主要目的，是为了在路由控制遇到问题发送循环状况时，避免 IP 包无休止地在网络上被转发。此外，有时可以用 TTL 控制包的到达范围，例如设置一个较小的 TTL 值。</p>
 <p>有一个重复利用 ICMP 超时消息的应用叫 traceroute。他可以显示由执行程序的主机到达特定主机之前经历多少路由器。它的原理就是利用 IP 包的生存期限从 1 开始按照顺序递增的同时发送 UDP 包，强制接收 ICMP 超时消息的一种方法。这样可以将所有路由器的 IP 地址逐一呈现。这个过去常用于进行问题诊断。</p>
-<h4 id="ICMP_回送消息（类型0、8）">ICMP 回送消息（类型0、8）</h4><p>用于进行通信的主机或路由器之间，判断所发送的数据包是否已经成功到达对端的一种消息。可以向对端主机发送回送请求的消息，也可以接收对端主机发回来的回送应答消息，网络上最常用的 ping 命令就是利用这个消息实现的。</p>
-<h3 id="ICMPv6">ICMPv6</h3><h4 id="ICMPv6_的作用">ICMPv6 的作用</h4><p>IPv4 中 ICMP 仅作为一个辅助作用支持 IPv4.即在 IPv4 中，即使没有 ICMP，仍然可以实现 IP 通信。然而，在 IPv6 中，ICMP 的作用被扩大，如果没有 ICMPv6，IPv6 就无法进行正常通信。</p>
+<h4 id="ICMP-回送消息（类型0、8）"><a href="#ICMP-回送消息（类型0、8）" class="headerlink" title="ICMP 回送消息（类型0、8）"></a>ICMP 回送消息（类型0、8）</h4><p>用于进行通信的主机或路由器之间，判断所发送的数据包是否已经成功到达对端的一种消息。可以向对端主机发送回送请求的消息，也可以接收对端主机发回来的回送应答消息，网络上最常用的 ping 命令就是利用这个消息实现的。</p>
+<h3 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h3><h4 id="ICMPv6-的作用"><a href="#ICMPv6-的作用" class="headerlink" title="ICMPv6 的作用"></a>ICMPv6 的作用</h4><p>IPv4 中 ICMP 仅作为一个辅助作用支持 IPv4.即在 IPv4 中，即使没有 ICMP，仍然可以实现 IP 通信。然而，在 IPv6 中，ICMP 的作用被扩大，如果没有 ICMPv6，IPv6 就无法进行正常通信。</p>
 <p>在 IPv6 中， 从 IP 地址定位 MAC 地址的协议从 ARP 转为 ICMP 的邻居探索消息。这种邻居探索消息融合了 IPv4 的 ARP、ICMP 重定向以及 ICMP 路由器选择消息等功能于一体，甚至还提供自动设置 IP 地址的功能。</p>
 <p>ICMPv6 中将 ICMP 大致分为两类：一类是错误消息，另一类是信息消息。类型 0 ~ 127 属于错误消息，128~255 属于信息消息。</p>
-<h4 id="邻居探索">邻居探索</h4><p>ICMPv6 中从类型 133 至类型 137 的消息叫做邻居探索消息。这种邻居探索消息对于 IPv6 通信起着举足轻重的作用。邻居请求消息用于查询 IPv6 的地址与 MAC 地址的对应关系，并由邻居宣告消息得知 MAC 地址。邻居请求消息利用 IPv6 的多播地址实现传输。</p>
-<h3 id="DHCP">DHCP</h3><p>如果为每一台主机设置 IP 地址会非常繁琐。所以，为了实现自动设置 IP 地址、同一管理 IP 地址分配，就产生了 DHCP 协议。有了 DHCP，计算机只要连接到网络，就可以进行 TCP/IP 通信。</p>
-<h4 id="DHCP_的工作机制">DHCP 的工作机制</h4><p>使用 DHCP 之前，首先要架设一台 DHCP 服务器。然后将 DHCP 所要分配的 IP 地址设置到服务器上。此外，还需要将相应的子网掩码、路由控制信息以及 DNS 服务器的地址等设置到服务器上。</p>
+<h4 id="邻居探索"><a href="#邻居探索" class="headerlink" title="邻居探索"></a>邻居探索</h4><p>ICMPv6 中从类型 133 至类型 137 的消息叫做邻居探索消息。这种邻居探索消息对于 IPv6 通信起着举足轻重的作用。邻居请求消息用于查询 IPv6 的地址与 MAC 地址的对应关系，并由邻居宣告消息得知 MAC 地址。邻居请求消息利用 IPv6 的多播地址实现传输。</p>
+<h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p>如果为每一台主机设置 IP 地址会非常繁琐。所以，为了实现自动设置 IP 地址、同一管理 IP 地址分配，就产生了 DHCP 协议。有了 DHCP，计算机只要连接到网络，就可以进行 TCP/IP 通信。</p>
+<h4 id="DHCP-的工作机制"><a href="#DHCP-的工作机制" class="headerlink" title="DHCP 的工作机制"></a>DHCP 的工作机制</h4><p>使用 DHCP 之前，首先要架设一台 DHCP 服务器。然后将 DHCP 所要分配的 IP 地址设置到服务器上。此外，还需要将相应的子网掩码、路由控制信息以及 DNS 服务器的地址等设置到服务器上。</p>
 <p>为了检查所要分配的 IP 地址以及已经分配了的 IP 地址是否可用，DHCP 服务器或 DHCP 客户端必须具备以下功能：</p>
 <ul>
 <li><p>DHCP 服务器</p>
@@ -1826,7 +1980,7 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
 <p>  针对从 DHCP 那里获得的 IP 地址发送 ARP 请求包，确认没有返回应答。</p>
 </li>
 </ul>
-<h3 id="NAT">NAT</h3><p>NAT 用于在本地网络中使用私有地址，在连接互联网时转而使用全局 IP 地址的技术。除转换 IP 地址外，还出现了可以转换 TCP、UDP 的端口号的 NAPT 技术，由此可以实现用一个全局 IP 地址与多个主机的通信。</p>
+<h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><p>NAT 用于在本地网络中使用私有地址，在连接互联网时转而使用全局 IP 地址的技术。除转换 IP 地址外，还出现了可以转换 TCP、UDP 的端口号的 NAPT 技术，由此可以实现用一个全局 IP 地址与多个主机的通信。</p>
 
           
         
@@ -1955,165 +2109,22 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
       
         
           
-            <h3 id="DNS">DNS</h3><p>我们平常在访问某个网站时不使用 IP 地址，而是用一串由字母和点号组成的字符串。而一般用户在使用 TCP/IP 进行通信时也不使用 IP 地址。能够这样的原因主要是因为有 DNS 功能的支持。DNS 可以将它们自动转换为具体的 IP 地址。</p>
-<h4 id="IP_地址不便记忆">IP 地址不便记忆</h4><p>TCP/IP 网络中要求每一个互连的计算机都具有其唯一的 IP 地址，并基于这个 IP 地址进行通信，但是 IP 地址并不容易记忆。</p>
+            <h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>我们平常在访问某个网站时不使用 IP 地址，而是用一串由字母和点号组成的字符串。而一般用户在使用 TCP/IP 进行通信时也不使用 IP 地址。能够这样的原因主要是因为有 DNS 功能的支持。DNS 可以将它们自动转换为具体的 IP 地址。</p>
+<h4 id="IP-地址不便记忆"><a href="#IP-地址不便记忆" class="headerlink" title="IP 地址不便记忆"></a>IP 地址不便记忆</h4><p>TCP/IP 网络中要求每一个互连的计算机都具有其唯一的 IP 地址，并基于这个 IP 地址进行通信，但是 IP 地址并不容易记忆。</p>
 <p>为此， TCP/IP 世界中从一开始就已经有了一个叫主机识别码的东西。它为每台计算机赋以唯一的主机名，在进行网络通信时可以直接使用主机名称而无需输入长串的 IP 地址。为了实现这种功能，主机往往会利用一个叫做 hosts 的数据库文件。</p>
-<h4 id="DNS_产生">DNS 产生</h4><p>DNS 系统可以有效管理主机名和 IP 地址之间对应关系。这个系统中主机的管理机构可以对数据进行变更和设定，即它可以维护一个用来表示组织内部主机名和 IP 地址之间对应关系的数据库。</p>
+<h4 id="DNS-产生"><a href="#DNS-产生" class="headerlink" title="DNS 产生"></a>DNS 产生</h4><p>DNS 系统可以有效管理主机名和 IP 地址之间对应关系。这个系统中主机的管理机构可以对数据进行变更和设定，即它可以维护一个用来表示组织内部主机名和 IP 地址之间对应关系的数据库。</p>
 <p>在应用中，当用户输入主机名（域名）时，DNS 会自动检索那个注册了主机名和 IP 地址的数据库，并迅速定位对应的 IP 地址。而且，如果主机名和 IP 地址需要进行变更时，也只需要在组织机构内部进行处理即可，而没必要再向其他机构进行申请或报告。</p>
-<h3 id="ARP">ARP</h3><p>只要确定了 IP 地址，就可以向这个目标地址发送 IP 数据报。然而，在底层数据链路层，进行实际通信时却有必要了解每个 IP 地址所对应的 MAC 地址。</p>
-<h4 id="ARP_概要">ARP 概要</h4><p>ARP 是一种解决地址问题的协议。以目标 IP 地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC 地址。如果目标主机不在同一个链路上时，可以通过 ARP 查找下一跳路由器的 MAC 地址。不过 ARP 只适用于 IPv4，不能用于 IPv6。IPv6 中可以用 ICMPv6 替代 ARP 发送邻居探索消息。</p>
+<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>只要确定了 IP 地址，就可以向这个目标地址发送 IP 数据报。然而，在底层数据链路层，进行实际通信时却有必要了解每个 IP 地址所对应的 MAC 地址。</p>
+<h4 id="ARP-概要"><a href="#ARP-概要" class="headerlink" title="ARP 概要"></a>ARP 概要</h4><p>ARP 是一种解决地址问题的协议。以目标 IP 地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC 地址。如果目标主机不在同一个链路上时，可以通过 ARP 查找下一跳路由器的 MAC 地址。不过 ARP 只适用于 IPv4，不能用于 IPv6。IPv6 中可以用 ICMPv6 替代 ARP 发送邻居探索消息。</p>
 <p>假定 主机 A 向同一链路上的主机 B 发送 IP 包，主机 A 的 IP 地址为 172.20.1.1，主机 B 的 IP 地址为 172.20.1.2，它们互不知道对方的 MAC 地址。</p>
 <p>主机 A 为了获得主机 B 的 MAC 地址，起初要通过广播发送一个 ARP 请求包。这个包中包含了想要了解其 MAC 地址的主机 IP 地址。也就是说，ARP 请求包中已经包含了主机 B 的 IP 地址 172.20.1.2。由于广播的包可以被同一个链路上所有的主机或路由器接收，因此 ARP 请求包中的目标 IP 地址与自己的 IP 地址一致，那么这个节点就将自己的 MAC 地址塞入 ARP 响应包返回给主机 A。</p>
 <p>从一个 IP 地址发送 ARP 请求包以了解其 MAC 地址，目标地址将自己的 MAC 地址填入其中的 ARP 响应包返回到 IP 地址。由此，可以通过 ARP 从 IP 地址获得 MAC 地址，实现链路内的 IP 通信。</p>
 <p>根据 ARP 可以动态地进地址解析，因此，在 TCP/IP 的网络构造和网络通信中无需事先知道 MAC 地址究竟是什么，只要有 IP 地址即可。如果每发送一个 IP 数据报都要进行一次 ARP 请求以此确定 MAC 地址，那将会造成不必要的网络流量，因此，通常是把获取到的 MAC 地址缓存一段时间。即把第一次通过 ARP 获取到的 MAC 地址作为 IP 对 MAC 的映射关系记忆到一个 ARP 缓存表中，下一次再向这个 IP 地址发送数据报时不需要再重新发送 ARP 请求，而是直接使用这个缓存表当中的 MAC 地址进行数据报的发送。每执行一次 ARP，其对应的缓存内容都会被清除。不过在清除之前都可以不需要执行 ARP 就可以获取想要的 MAC 地址。这样，在一定程度上防止了 ARP 包在网络上被大量广播的可能性。</p>
-<h4 id="IP_地址和_MAC_地址都需要吗？">IP 地址和 MAC 地址都需要吗？</h4><p>可能会有这么一个问题，数据链路上只要知道接收端的 MAC 地址就可可以发送数据了，还需要知道它的 IP 地址吗？</p>
+<h4 id="IP-地址和-MAC-地址都需要吗？"><a href="#IP-地址和-MAC-地址都需要吗？" class="headerlink" title="IP 地址和 MAC 地址都需要吗？"></a>IP 地址和 MAC 地址都需要吗？</h4><p>可能会有这么一个问题，数据链路上只要知道接收端的 MAC 地址就可可以发送数据了，还需要知道它的 IP 地址吗？</p>
 <p>答案是肯定的，如果我们考虑发送给其他数据链路中某一台主机时的情况。如果主机 A 和 主机 B 不在同一个链路，主机 A 想要发送 IP 数据报给主机 B 时必须得经过路由器 C。即使知道了主机 B 的 MAC 地址，由于路由器 C 会隔断两个网络，还是无法实现从主机 A 发送数据报给主机 B。此时，主机 A 必须得先将数据报发送给路由器 C 的 MAC 地址。</p>
 <p>在以太网上发送 IP 包时，“下次要经由哪个路由器发送数据报” 这一信息非常重要。而这里的“下一个路由器”就是相应的 MAC 地址。</p>
-<h4 id="RARP">RARP</h4><p>RARP 是将 ARP 反过来，从 MAC 地址定位 IP 地址的一种协议。我们平时可以通过个人电脑设置 IP 地址，也可以通过 DHCP 自动分配获取 IP 地址。然而，对于使用嵌入式设备，会遇到没有任何输入接口或无法通过 DHCP 动态获取 IP 地址的情况。在类似这种情况下，就可以使用 RARP。</p>
-<h4 id="代理_ARP">代理 ARP</h4><p>通常 ARP 包会被路由隔离，但是采用代理 ARP（Proxy ARP）的路由器可以将 ARP 请求转发给邻近的网段。由此，两个以上网段的节点之间可以像在同一个网段中一样进行通信。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/14/HBase架构学习-数据查找和传输/" itemprop="url">
-                  HBase架构学习: 数据查找和传输
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-14T15:06:44+08:00" content="2016-11-14">
-              2016-11-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/14/HBase架构学习-数据查找和传输/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/14/HBase架构学习-数据查找和传输/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/14/HBase架构学习-数据查找和传输/" class="leancloud_visitors" data-flag-title="HBase架构学习: 数据查找和传输">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在介绍 HBase 架构之前，首先来介绍典型的 RDBMS 和其他非关系型数据库底层存储结构之间的不同。其中传统关系型存储引擎广泛采用了 B 树和 B + 树；而 BigTable 的底层架构则采用了 LSM 树（Log-Structured Merge Tree）。</p>
-<h3 id="B_+_树">B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
-<p>除此之外，B + 树能够提供高效的范围扫描功能，这得益于它的叶节点相互连接并且按主键有序，扫描时避免了耗时的遍历树操作。这也是 B + 树被关系型数据库用作索引的原因之一。</p>
-<h3 id="LSM_树">LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
-<p>当系统经历过许多次数据修改，且内存空间被逐渐占满后，LSM 树会把有序的“键 - 记录”对写到磁盘中，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了。</p>
-<p>存储文件的组织与 B 树相似，不过其为磁盘顺序读取做了优化，所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成，即，系统将现有的页与内存刷写数据混合在一起进行管理，直到数据块达到它的容量。</p>
-<p>多次数据刷写之后会创建许多数据存储文件，后台线程就会自动将小文件聚合成大文件，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中。所有的数据存储文件都按键排序，所以没有必要再存储文件中为新的键预留位置。</p>
-<p>查询时先查找内存中的存储，然后再查找磁盘上的文件。这样在客户端看来数据存储文件的位置是透明的。</p>
-<p>删除是一种特殊的更改，当删除标记被存储之后，查找会跳过这些删除过的键。当页被重写时，有删除标记的键会被丢弃。</p>
-<p>此外，后台运维过程可以处理预先设定的删除请求。这些请求由 TTL 触发，例如当 TTL 设为 20 天后，合并进程会检查这些预设的时间戳，同时在重写数据块时丢弃过期的记录。</p>
-<p>B 树 和 LSM 树最主要的区别在于它们的结构如何利用硬件，特别是磁盘。</p>
-<p>比较 B + 树 和 LSM 树的意义在于理解它们的相对优势和不足。在没有太多的修改时，B + 树表现得很好，因为这些修改要求执行高代价的优化操作以保证查询能在有限时间内完成。在任意位置添加数据的规模越大、速度越快，这些页成为碎片的速度就越快。最后，用户写入的速度可能比优化后重写文件的处理速度更快。由于更新和删除以磁盘寻道的速率完成，这就强制用户就范于磁盘提供的较差的性能指标。</p>
-<p>LSM 树以磁盘传输速率工作并能较好地扩展以处理大量的数据。它们使用日志文件和内存存储来将随机写转换成顺序写，因此也能保证稳定的数据插入速率。由于读和写独立，因此在这两种操作之间没有冲突。</p>
-<p>由于存储数据的布局较优，查询一个键需要的磁盘寻道次数在一个可预测的范围内，并且读取与该键连续的任意数量的记录都不会引发任何额外的磁盘寻道。一般来说，基于 LSM 树的系统强调的是成本透明：假如有 5 个存储文件，一个访问需要最多 5 次磁盘寻道。反观关系型数据库，即使在存在索引的情况下，它也没有办法确定一次查询需要的寻道次数。</p>
-<p>所以， HBase 和 BigTable 一样，都是基于 LSM 树的系统。</p>
+<h4 id="RARP"><a href="#RARP" class="headerlink" title="RARP"></a>RARP</h4><p>RARP 是将 ARP 反过来，从 MAC 地址定位 IP 地址的一种协议。我们平时可以通过个人电脑设置 IP 地址，也可以通过 DHCP 自动分配获取 IP 地址。然而，对于使用嵌入式设备，会遇到没有任何输入接口或无法通过 DHCP 动态获取 IP 地址的情况。在类似这种情况下，就可以使用 RARP。</p>
+<h4 id="代理-ARP"><a href="#代理-ARP" class="headerlink" title="代理 ARP"></a>代理 ARP</h4><p>通常 ARP 包会被路由隔离，但是采用代理 ARP（Proxy ARP）的路由器可以将 ARP 请求转发给邻近的网段。由此，两个以上网段的节点之间可以像在同一个网段中一样进行通信。</p>
 
           
         
@@ -2187,7 +2198,7 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2195,7 +2206,7 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2204,7 +2215,7 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2415,6 +2426,26 @@ Hash<span class="list">(<span class="keyword">NODE3</span>)</span> = KEY3<span c
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

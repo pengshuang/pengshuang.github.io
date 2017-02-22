@@ -340,124 +340,124 @@
       
 
       
-        <h3 id="单行_Put">单行 Put</h3><pre><code>void <span class="function"><span class="title">put</span><span class="params">(Put put)</span></span> throws IOException
+        <h3 id="单行-Put"><a href="#单行-Put" class="headerlink" title="单行 Put"></a>单行 Put</h3><pre><code>void put(Put put) throws IOException
 </code></pre><p>这个方法以单个 Put 或存储在列表中的一组 Put 对象作为输入参数。</p>
 <p>创建 Put 实例时用户需要提供一个行健 row，在 HBase 中每行数据都有唯一的行健作为标识，跟 HBase 的大多数数据类型一样，它是一个 Java 的 byte[] 数组。用户可以按自己的需求来指定每行的行健。</p>
 <p>下面是一个简单的 HBase 插入数据的实例应用。</p>
-<pre><code>Configuration <span class="keyword">conf</span> = HBaseConfiguration.create();
-HTable table = <span class="keyword">new</span> HTable(<span class="keyword">conf</span>, <span class="string">"test1"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 //指定一行来创建一个 Put
-Put <span class="keyword">put</span> = <span class="keyword">new</span> Put(Bytes.toBytes(<span class="string">"row1"</span>));
-//向 Put 中添加一个名为 <span class="string">"colfam1:qual1"</span> 的列
-<span class="keyword">put</span>.<span class="built_in">add</span>(Bytes.toBytes(<span class="string">"colfam1"</span>), Bytes.toBytes(<span class="string">"qual1"</span>), 
-Bytes.toBytes(<span class="string">"val1"</span>));
+Put put = new Put(Bytes.toBytes(&quot;row1&quot;));
+//向 Put 中添加一个名为 &quot;colfam1:qual1&quot; 的列
+put.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 
+Bytes.toBytes(&quot;val1&quot;));
 //将这一行存储到 HBase 表中
-table.<span class="keyword">put</span>(<span class="keyword">put</span>);
+table.put(put);
 // 关闭表
-table.<span class="keyword">close</span>();
-</code></pre><h3 id="客户端的写缓存区">客户端的写缓存区</h3><p>每一个put操作实际上都是一个 RPC 操作，它将客户端数据传送到服务器然后返回。这只适合小数据量的操作，如果有个应用程序需要每秒存储上千行数据到 HBase 表中，就不太合适，</p>
+table.close();
+</code></pre><h3 id="客户端的写缓存区"><a href="#客户端的写缓存区" class="headerlink" title="客户端的写缓存区"></a>客户端的写缓存区</h3><p>每一个put操作实际上都是一个 RPC 操作，它将客户端数据传送到服务器然后返回。这只适合小数据量的操作，如果有个应用程序需要每秒存储上千行数据到 HBase 表中，就不太合适，</p>
 <p>HBase 的 api 配备了一个客户端的写缓冲区，缓冲区负责收集 put 操作，然后调用 RPC 操作一次性将 put 送往服务器。全局交换机控制着该缓冲区是否在使用。默认情况下，客户端缓冲区是禁用的。可以通过将 自动刷写（autoflush）设置为 false 来激活缓冲区。</p>
 <p>下面举一个客户端写缓冲区的例子，这样比较好理解一些：</p>
 <p>Configuration conf = HBaseConfiguration.create();</p>
-<pre><code>HTable <span class="built_in">table</span> = new HTable(conf, <span class="string">"test1"</span>);
+<pre><code>HTable table = new HTable(conf, &quot;test1&quot;);
 //检查自动刷写标识位的设置
-System.<span class="keyword">out</span>.println(<span class="string">"Auto flush: "</span> + <span class="built_in">table</span>.isAutoFlush());
+System.out.println(&quot;Auto flush: &quot; + table.isAutoFlush());
 //将一些行和列数据存入 HBase
-<span class="built_in">table</span>.<span class="built_in">set</span>AutoFlushTo(false);
+table.setAutoFlushTo(false);
 
-Put put1 = new Put(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row1"</span>));
-put1.add(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"qual1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"val1"</span>));
-<span class="built_in">table</span>.put(put1);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+table.put(put1);
 
-Put put2 = new Put(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row2"</span>));
-put2.add(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"qual1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"val2"</span>));
-<span class="built_in">table</span>.put(put2);
+Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val2&quot;));
+table.put(put2);
 
-Get get = new Get(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row1"</span>));
-//试图加载先前存储的行,结果会打印出 <span class="string">" Restful: keyvalues=NONE "</span>
-Result res1 = <span class="built_in">table</span>.get(get);
-System.<span class="keyword">out</span>.println(<span class="string">"Result: "</span> + res1);
+Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
+//试图加载先前存储的行,结果会打印出 &quot; Restful: keyvalues=NONE &quot;
+Result res1 = table.get(get);
+System.out.println(&quot;Result: &quot; + res1);
 // 强制刷写缓冲区,会导致产生一个 RPC 请求
-<span class="built_in">table</span>.flushCommits();
+table.flushCommits();
 // 现在,这一行被持久化了,可以被读取了
-Result res2 = <span class="built_in">table</span>.get(get);
-System.<span class="keyword">out</span>.println(<span class="string">"Result: "</span> + res2);
-</code></pre><h3 id="Put_列表">Put 列表</h3><p>客户端的 api 可以插入单个 Put 实例，同时也有批量处理操作的高级特性。请看下面的例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable table = <span class="literal">new</span> HTable(conf, <span class="string">"test1"</span>);
+Result res2 = table.get(get);
+System.out.println(&quot;Result: &quot; + res2);
+</code></pre><h3 id="Put-列表"><a href="#Put-列表" class="headerlink" title="Put 列表"></a>Put 列表</h3><p>客户端的 api 可以插入单个 Put 实例，同时也有批量处理操作的高级特性。请看下面的例子：</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 
-<span class="built_in">List</span>&lt;Put&gt; puts = <span class="literal">new</span> ArrayList&lt;Put&gt;();
+List&lt;Put&gt; puts = new ArrayList&lt;Put&gt;();
 
-Put put1 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-put1<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>));
-puts<span class="built_in">.</span>add(put1);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+puts.add(put1);
 
-Put put2 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row2"</span>));
-put2<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual2"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val2"</span>));
-puts<span class="built_in">.</span>add(put2);
+Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
+puts.add(put2);
 
-table<span class="built_in">.</span>put(puts);
+table.put(puts);
 </code></pre><p> 上面这个例子使用列表向 HBase 中添加数据。当使用基于列表的 put 调用时，用户需要特别注意：用户无法控制服务器执行 put 的顺序，这意味着服务器被调用的顺序也不受用户控制。如果要保证写入的顺序，需要小心地使用这个操作，最坏的情况，要减少每一批量的操作数，并显示地刷写客户端写缓冲区，强制把操作发送到远程服务器。</p>
-<h3 id="原子性操作_compare-and-set">原子性操作 compare-and-set</h3><p>有一种特别的 put 调用，其能保证自身操作的原子性：检查写。有了这种带有检查功能的方法，就能保证服务器端 put 操作的原子性。如果检查成功通过，就执行 put 操作，否则就彻底放弃修改操作。这种方法可用来检查现有相关值，并决定是否修改数据的操作。</p>
-<pre><code><span class="keyword">boolean</span> checkAndPut(<span class="keyword">Byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier, 
-    <span class="keyword">byte</span>[] value, Put put) <span class="keyword">throws</span> IOException
+<h3 id="原子性操作-compare-and-set"><a href="#原子性操作-compare-and-set" class="headerlink" title="原子性操作 compare-and-set"></a>原子性操作 compare-and-set</h3><p>有一种特别的 put 调用，其能保证自身操作的原子性：检查写。有了这种带有检查功能的方法，就能保证服务器端 put 操作的原子性。如果检查成功通过，就执行 put 操作，否则就彻底放弃修改操作。这种方法可用来检查现有相关值，并决定是否修改数据的操作。</p>
+<pre><code>boolean checkAndPut(Byte[] row, byte[] family, byte[] qualifier, 
+    byte[] value, Put put) throws IOException
 </code></pre><p>这种有原子性保证的操作经常被用于账户结余、状态转换或数据处理等场景。这些应用场景的共同点是，在读取数据的同时需要处理数据。一旦你想把一个处理好的结果写回 HBase，并保证没有其他客户端已经做了同样的事情，你就可以使用这个有原子性保证的操作，先比较原值，再做修改。</p>
 <p>有一种特别的检查通过 <strong>checkAndPut()</strong> 调用来完成，即只有在另外一个值不存在的情况下，才执行这个修改。要执行这种操作只需要将参数 value 设置为 <strong>null</strong> 即可，只要指定列不存在，就可以成功执行修改操作。</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable table = <span class="literal">new</span> HTable(conf, <span class="string">"test1"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 
-Put put1 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-put1<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>));
-<span class="comment">//检查指定列是否存在,按检查的结果决定是否执行 put 操作</span>
-<span class="built_in">boolean</span> res1 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">null</span>,put1);
-<span class="comment">//输出结果应为: "Put applied: true"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res1);
-<span class="comment">//再次向同一单元格写入数据</span>
-<span class="built_in">boolean</span> res2 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">null</span>,put1);
-<span class="comment">//因为那个列的值已经存在,此时的输出结果应为 "Put applied:false"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res2);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+//检查指定列是否存在,按检查的结果决定是否执行 put 操作
+boolean res1 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
+//输出结果应为: &quot;Put applied: true&quot;
+System.out.println(&quot;Put applied: &quot; + res1);
+//再次向同一单元格写入数据
+boolean res2 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
+//因为那个列的值已经存在,此时的输出结果应为 &quot;Put applied:false&quot;
+System.out.println(&quot;Put applied: &quot; + res2);
 
-Put put2 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-<span class="comment">//创建一个新的 Put 实例,这次使用一个不同的列限定符</span>
-put2<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual2"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val2"</span>));
-<span class="comment">//当上一次的put值存在时,写入新的值</span>
-<span class="built_in">boolean</span> res3 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>),put2);
-<span class="comment">//因为已经存在,所以输出的结果应当为 "Put applied: true"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res3);
-</code></pre><h3 id="单行_Get">单行 Get</h3><p>get 方法分为两类：一类是一次获取一行数据；另一类是一次获取多行数据。</p>
+Put put2 = new Put(Bytes.toBytes(&quot;row1&quot;));
+//创建一个新的 Put 实例,这次使用一个不同的列限定符
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
+//当上一次的put值存在时,写入新的值
+boolean res3 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),Bytes.toBytes(&quot;val1&quot;),put2);
+//因为已经存在,所以输出的结果应当为 &quot;Put applied: true&quot;
+System.out.println(&quot;Put applied: &quot; + res3);
+</code></pre><h3 id="单行-Get"><a href="#单行-Get" class="headerlink" title="单行 Get"></a>单行 Get</h3><p>get 方法分为两类：一类是一次获取一行数据；另一类是一次获取多行数据。</p>
 <p>与 Put 操作一样。用户有许多方法可用，可用通过多种标准筛选目标数据，也可以指定精确的坐标获取某个单元格的数据:</p>
-<pre><code>Get <span class="function"><span class="title">addFamily</span><span class="params">(byte[] family)</span></span>
-Get <span class="function"><span class="title">addColumn</span><span class="params">(bytep[] family, byte[] qualifier)</span></span>
-Get <span class="function"><span class="title">setTimeRange</span><span class="params">(long minStamp,long maxStamp)</span></span> throws IOException
-Get <span class="function"><span class="title">setTimeStamp</span><span class="params">(long timeStamp)</span></span>
-Get <span class="function"><span class="title">getMaxVersions</span><span class="params">()</span></span> 
-Get <span class="function"><span class="title">setMaxVersions</span><span class="params">(int maxVersions)</span></span> throws IOException
+<pre><code>Get addFamily(byte[] family)
+Get addColumn(bytep[] family, byte[] qualifier)
+Get setTimeRange(long minStamp,long maxStamp) throws IOException
+Get setTimeStamp(long timeStamp)
+Get getMaxVersions() 
+Get setMaxVersions(int maxVersions) throws IOException
 </code></pre><p>下面一个例子展示了从 HBase 中获取数据的整个过程</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> table = new <span class="type">HTable</span>(conf, <span class="string">"test1"</span>);
-// 使用一个指定的行健构建一个 <span class="type">Get</span> 实例
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row1"</span>));
-// 向 <span class="type">Get</span> 实例中添加一个列
-get.addColumn(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"qual1"</span>));
-// 从 <span class="type">HBase</span> 中获取指定列的行数据
-<span class="type">Result</span> <span class="literal">result</span> = table.get(get);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
+// 使用一个指定的行健构建一个 Get 实例
+Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
+// 向 Get 实例中添加一个列
+get.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
+// 从 HBase 中获取指定列的行数据
+Result result = table.get(get);
 // 从返回的结果中获取对应列的数据
-byte[] val = <span class="literal">result</span>.getValue(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"qual1"</span>));
+byte[] val = result.getValue(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
 // 将数据转换为字符串打印输出
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="string">"Value: "</span> + <span class="type">Bytes</span>.toString(val));
+System.out.println(&quot;Value: &quot; + Bytes.toString(val));
 </code></pre><p>get 方法调用后返回一个 Result 类的实例。这里着重介绍一下 Restful 类一些面向列的存取函数：</p>
-<pre><code><span class="function">List&lt;KeyValue&gt; <span class="title">getColumn</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
-<span class="function">KeyValue <span class="title">getColumnLatest</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
-<span class="function"><span class="keyword">boolean</span> <span class="title">containsColumn</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
+<pre><code>List&lt;KeyValue&gt; getColumn(byte[] family, byte[] qualifier);
+KeyValue getColumnLatest(byte[] family, byte[] qualifier);
+boolean containsColumn(byte[] family, byte[] qualifier);
 </code></pre><p>这个方法返回一个特定列的多个值，返回值中的版本数取决于用户调用 get()方法之前，创建 Get 实例时设置的最大版本数，默认是1.换句话说，getColumn() 返回的列表中包括 0 或 1 个条目，这一条目是该列最新版本的值，如果用户指定了一个比默认值 1 大的版本数，返回的列表中就可能会有多个条目。getColumnLatest() 方法返回对应列的最新版本值。containsColumn() 是一个检查返回值中是否有对应的列的方法。</p>
-<h3 id="Get_列表">Get 列表</h3><p>和 put() 方法对应，用户可以用一次请求获取多行数据。</p>
-<pre><code>Result[] <span class="function"><span class="title">get</span><span class="params">(List&lt;Get&gt; gets)</span></span> throws IOException
+<h3 id="Get-列表"><a href="#Get-列表" class="headerlink" title="Get 列表"></a>Get 列表</h3><p>和 put() 方法对应，用户可以用一次请求获取多行数据。</p>
+<pre><code>Result[] get(List&lt;Get&gt; gets) throws IOException
 </code></pre><p>和之前一样，用户需要创建一个列表，并把之前准备好的 Get 实例添加到其中。然后将这个列表传给 get()，会返回一个与列表大小相等的 Result 数组。</p>
-<h3 id="获取数据的相关方法">获取数据的相关方法</h3><p>还有一些方法可以用来获取或检查存储的数据，第一个是：</p>
-<pre><code><span class="keyword">boolean </span>exists(<span class="preprocessor">Get</span> <span class="preprocessor">get</span>) throws IOException
+<h3 id="获取数据的相关方法"><a href="#获取数据的相关方法" class="headerlink" title="获取数据的相关方法"></a>获取数据的相关方法</h3><p>还有一些方法可以用来获取或检查存储的数据，第一个是：</p>
+<pre><code>boolean exists(Get get) throws IOException
 </code></pre><p>可以和使用 HTable 的 get() 方法一样，先创建一个 Get 类的实例。exists()方法通过 RPC 验证请求的数据是否存在，但不会从远程服务器返回请求的数据，只返回一个布尔指。</p>
 <p>用户在检索数据时可能需要查找一个特定的行，或者某个请求行之前的一行。通过使用 <strong>getRowOrBefore(byte[] row, byte[] family)</strong> 方法来实现。可以是从 getRowOrBefore() 返回的 Result 实例中得到要查找的行键。这个行键要么与用户设定的行一致，要么刚好是设定行键之前的一行。如果没有匹配的结果，则返回 null。</p>
 
@@ -586,7 +586,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -594,7 +594,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -603,7 +603,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -674,7 +674,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单行_Put"><span class="nav-number">1.</span> <span class="nav-text">单行 Put</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端的写缓存区"><span class="nav-number">2.</span> <span class="nav-text">客户端的写缓存区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Put_列表"><span class="nav-number">3.</span> <span class="nav-text">Put 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原子性操作_compare-and-set"><span class="nav-number">4.</span> <span class="nav-text">原子性操作 compare-and-set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单行_Get"><span class="nav-number">5.</span> <span class="nav-text">单行 Get</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get_列表"><span class="nav-number">6.</span> <span class="nav-text">Get 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取数据的相关方法"><span class="nav-number">7.</span> <span class="nav-text">获取数据的相关方法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单行-Put"><span class="nav-number">1.</span> <span class="nav-text">单行 Put</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端的写缓存区"><span class="nav-number">2.</span> <span class="nav-text">客户端的写缓存区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Put-列表"><span class="nav-number">3.</span> <span class="nav-text">Put 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原子性操作-compare-and-set"><span class="nav-number">4.</span> <span class="nav-text">原子性操作 compare-and-set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单行-Get"><span class="nav-number">5.</span> <span class="nav-text">单行 Get</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-列表"><span class="nav-number">6.</span> <span class="nav-text">Get 列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取数据的相关方法"><span class="nav-number">7.</span> <span class="nav-text">获取数据的相关方法</span></a></li></ol></div>
             
           </div>
         </section>
@@ -829,6 +829,26 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

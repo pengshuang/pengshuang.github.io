@@ -84,25 +84,25 @@
 
 
 
-<meta name="description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+<meta name="description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &amp;apos;price.*&amp;apos; FROM stocks;
 上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
-2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
-      Taxes&quot;],round(salary * (1">
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&amp;quot;Federal 
+      Taxes&amp;quot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Hive编程指南》学习笔记：HiveQL数据操作">
 <meta property="og:url" content="http://pengshuang.space/2016/09/13/Hive编程指南笔记1/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+<meta property="og:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &amp;apos;price.*&amp;apos; FROM stocks;
 上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
-2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
-      Taxes&quot;],round(salary * (1">
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&amp;quot;Federal 
+      Taxes&amp;quot">
 <meta property="og:updated_time" content="2016-09-16T13:57:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Hive编程指南》学习笔记：HiveQL数据操作">
-<meta name="twitter:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
+<meta name="twitter:description" content="1. 使用正则表达式来指定列hive&amp;gt; SELECT symbol, &amp;apos;price.*&amp;apos; FROM stocks;
 上面的查询从表stocks中选择symbol列和所有以price作为前缀的列
-2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&quot;Federal 
-      Taxes&quot;],round(salary * (1">
+2. 使用列值进行计算hive&amp;gt; SELECT upper(name), salary, deductions[&amp;quot;Federal 
+      Taxes&amp;quot">
 
 
 
@@ -340,13 +340,13 @@
       
 
       
-        <h3 id="1-_使用正则表达式来指定列">1. 使用正则表达式来指定列</h3><pre><code>hive&gt; <span class="keyword">SELECT</span> symbol, <span class="string">'price.*'</span> <span class="keyword">FROM</span> stocks;
+        <h3 id="1-使用正则表达式来指定列"><a href="#1-使用正则表达式来指定列" class="headerlink" title="1. 使用正则表达式来指定列"></a>1. 使用正则表达式来指定列</h3><pre><code>hive&gt; SELECT symbol, &apos;price.*&apos; FROM stocks;
 </code></pre><p>上面的查询从表stocks中选择symbol列和所有以price作为前缀的列</p>
-<h3 id="2-_使用列值进行计算">2. 使用列值进行计算</h3><pre><code>hive&gt; SELECT upper(<span class="property">name</span>), salary, deductions[<span class="string">"Federal 
-      Taxes"</span>],<span class="command">round</span>(salary * (<span class="number">1</span> - deductions[<span class="string">"Federal Taxes"</span>])) 
+<h3 id="2-使用列值进行计算"><a href="#2-使用列值进行计算" class="headerlink" title="2. 使用列值进行计算"></a>2. 使用列值进行计算</h3><pre><code>hive&gt; SELECT upper(name), salary, deductions[&quot;Federal 
+      Taxes&quot;],round(salary * (1 - deductions[&quot;Federal Taxes&quot;])) 
       FROM employees;
 </code></pre><p>我们可以查询得到转换为大写的雇员姓名，雇员对应的薪水，需要缴纳的联邦税收比例以及扣除税收后再进行取整所得的税后薪资。</p>
-<h3 id="3-_HIVE相关函数(常用的）">3. HIVE相关函数(常用的）</h3><ul>
+<h3 id="3-HIVE相关函数-常用的）"><a href="#3-HIVE相关函数-常用的）" class="headerlink" title="3. HIVE相关函数(常用的）"></a>3. HIVE相关函数(常用的）</h3><ul>
 <li>数学函数</li>
 </ul>
 <table>
@@ -466,61 +466,61 @@
 <li>其他函数</li>
 </ul>
 <p>可有参考《Hive编程指南》一书</p>
-<h3 id="4-_CASE…WHEN…THEN_句式">4. CASE…WHEN…THEN 句式</h3><p>CASE…WHEN…THEN语句和if语句类似，用于处理单个列的查询结果。</p>
-<pre><code>hive&gt;<span class="keyword">SELECT</span> name, salary,
-     <span class="keyword">CASE</span> 
-         <span class="keyword">WHEN</span> salary &lt; <span class="number">50000.0</span> <span class="keyword">THEN</span> <span class="comment">'low'</span>
-         <span class="keyword">WHEN</span> salary &gt;= <span class="number">50000.0</span> <span class="keyword">AND</span> salary &lt; <span class="number">70000.0</span> <span class="keyword">THEN</span> <span class="comment">'middle'</span>
-         <span class="keyword">WHEN</span> salary &gt;= <span class="number">70000.0</span> <span class="keyword">AND</span> salary &lt; <span class="number">100000.0</span> <span class="keyword">THEN</span> <span class="comment">'high'</span>
-         <span class="keyword">ELSE</span> <span class="comment">'very high'</span>
-     <span class="keyword">END</span> <span class="keyword">AS</span> bracket <span class="keyword">FROM</span> employees;
+<h3 id="4-CASE…WHEN…THEN-句式"><a href="#4-CASE…WHEN…THEN-句式" class="headerlink" title="4. CASE…WHEN…THEN 句式"></a>4. CASE…WHEN…THEN 句式</h3><p>CASE…WHEN…THEN语句和if语句类似，用于处理单个列的查询结果。</p>
+<pre><code>hive&gt;SELECT name, salary,
+     CASE 
+         WHEN salary &lt; 50000.0 THEN &apos;low&apos;
+         WHEN salary &gt;= 50000.0 AND salary &lt; 70000.0 THEN &apos;middle&apos;
+         WHEN salary &gt;= 70000.0 AND salary &lt; 100000.0 THEN &apos;high&apos;
+         ELSE &apos;very high&apos;
+     END AS bracket FROM employees;
 </code></pre><p>输出结果：</p>
-<pre><code>John    <span class="number">100000.0</span>    very high
-Todd    <span class="number">70000.0</span>        high
-Bill    <span class="number">60000.0</span>      middle
-</code></pre><h3 id="5-_什么情况下可以避免MapReduce">5. 什么情况下可以避免MapReduce</h3><pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employees;</span>
+<pre><code>John    100000.0    very high
+Todd    70000.0        high
+Bill    60000.0      middle
+</code></pre><h3 id="5-什么情况下可以避免MapReduce"><a href="#5-什么情况下可以避免MapReduce" class="headerlink" title="5. 什么情况下可以避免MapReduce"></a>5. 什么情况下可以避免MapReduce</h3><pre><code>select * from employees;
 </code></pre><p>此外，如果属性hive.exec.mode.local.auto = true的值为true的话,Hive还会尝试使用本地模式执行其他的操作：</p>
-<pre><code><span class="operator"><span class="keyword">set</span> hive.exec.<span class="keyword">mode</span>.<span class="keyword">local</span>.<span class="keyword">auto</span> = <span class="literal">true</span></span>
+<pre><code>set hive.exec.mode.local.auto = true
 </code></pre><p>建议将其设置为True</p>
-<h3 id="6-_WHERE_查询语句优化">6. WHERE 查询语句优化</h3><pre><code><span class="atom">hive</span>&gt;  <span class="name">SELECT</span> <span class="atom">name</span>, <span class="atom">salary</span>, <span class="atom">deductions</span>[<span class="string">"Federal Taxes"</span>],
-       <span class="atom">salary</span> * (<span class="number">1</span>-<span class="atom">deductions</span>[<span class="string">"Fedral Taxes"</span>])
-       <span class="name">FROM</span> <span class="atom">employees</span>
-       <span class="name">WHERE</span> <span class="atom">round</span>(<span class="atom">salary</span> * (<span class="number">1</span>-<span class="atom">deductions</span>[<span class="string">"Federal Taxes"</span>])) &gt; <span class="number">70000</span>;
+<h3 id="6-WHERE-查询语句优化"><a href="#6-WHERE-查询语句优化" class="headerlink" title="6. WHERE 查询语句优化"></a>6. WHERE 查询语句优化</h3><pre><code>hive&gt;  SELECT name, salary, deductions[&quot;Federal Taxes&quot;],
+       salary * (1-deductions[&quot;Fedral Taxes&quot;])
+       FROM employees
+       WHERE round(salary * (1-deductions[&quot;Federal Taxes&quot;])) &gt; 70000;
 </code></pre><p>上面这个查询语句有些啰嗦，“1-deductions[“Fedral Taxes”]”重复出现了2次，下面对其进行优化，注意：WHERE语句中不能出现别名。</p>
 <p>改进：</p>
-<pre><code>hive&gt; <span class="keyword">SELECT</span> e.* <span class="keyword">FROM</span> 
-      (<span class="keyword">SELECT</span> name, salary, deductions[<span class="string">"Federal Taxes"</span>] <span class="keyword">as</span> ded, 
-      salary * (<span class="number">1</span>-deductions[<span class="string">"Fedral Taxes"</span>]) <span class="keyword">as</span> salary_minus_fed_taxes 
-      <span class="keyword">FROM</span> employees) e
-      <span class="keyword">WHERE</span> round(e.salary_minus_fed_taxes) &gt; <span class="number">70000</span>;
-</code></pre><h3 id="7-_JOIN_优化">7. JOIN 优化</h3><p>Hive假定查询中最后一个表是最大的那个表，在对每行记录进行连接操作时，它会尝试将其他表缓存起来，然后扫描最后那个表进行计算。因此，用户需要保证连续查询中的表的大小从左到右是依次增加的。</p>
+<pre><code>hive&gt; SELECT e.* FROM 
+      (SELECT name, salary, deductions[&quot;Federal Taxes&quot;] as ded, 
+      salary * (1-deductions[&quot;Fedral Taxes&quot;]) as salary_minus_fed_taxes 
+      FROM employees) e
+      WHERE round(e.salary_minus_fed_taxes) &gt; 70000;
+</code></pre><h3 id="7-JOIN-优化"><a href="#7-JOIN-优化" class="headerlink" title="7. JOIN 优化"></a>7. JOIN 优化</h3><p>Hive假定查询中最后一个表是最大的那个表，在对每行记录进行连接操作时，它会尝试将其他表缓存起来，然后扫描最后那个表进行计算。因此，用户需要保证连续查询中的表的大小从左到右是依次增加的。</p>
 <p>Hive中提供了一个“标记”机制来显式地告诉查询优化器哪张表是大表，使用方法如下：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> <span class="comment">/*+STREAMTABLE(s)*/</span>s.ymd,s.symbol,s.price_close,<span class="keyword">d</span>.dividend 
-<span class="keyword">FROM</span> stocks s <span class="keyword">JOIN</span> dividends <span class="keyword">d</span> 
-<span class="keyword">ON</span> s.ymd = <span class="keyword">d</span>.ymd <span class="keyword">AND</span> s.symbol = <span class="keyword">d</span>.symbol <span class="keyword">WHERE</span> s.symbol = <span class="string">'AAPL'</span>;</span>
+<pre><code>SELECT /*+STREAMTABLE(s)*/s.ymd,s.symbol,s.price_close,d.dividend 
+FROM stocks s JOIN dividends d 
+ON s.ymd = d.ymd AND s.symbol = d.symbol WHERE s.symbol = &apos;AAPL&apos;;
 </code></pre><p>Hive 会尝试将表stocks作为驱动表，即使其在查询中不是位于最后面的。</p>
 <ol>
 <li><p>随机抽样</p>
 <p> 我们可以使用rand()函数进行抽样，这个函数会返回一个随机值，前两个查询都返回了两个不相等的值，而第三个查询语句无返回结果。</p>
-<pre><code>hive&gt; <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> numbers TABLESAMPLE(BUCKET <span class="number">3</span> <span class="keyword">OUT</span> <span class="keyword">OF</span> <span class="number">10</span> <span class="keyword">ON</span> rand()) s;
+<pre><code>hive&gt; SELECT * FROM numbers TABLESAMPLE(BUCKET 3 OUT OF 10 ON rand()) s;
 </code></pre></li>
 <li><p>数据块抽样</p>
 <p> Hive提供了另外一种按照抽样百分比进行抽样的方式，这种事基于行数的，按照输入路径下的数据块百分比进行的抽样。</p>
 <p> 注意：这种抽样方式最小的抽样单元是一个HDFS数据块。因此，如果表的数据大小小于普通的块大小64MB的话，那么将返回所有行。</p>
-<pre><code>hive&gt; <span class="function">SELECT * FROM numbersflat <span class="title">TABLESAMPLE</span><span class="params">(<span class="number">0.1</span> PERCENT)</span> s</span>;
+<pre><code>hive&gt; SELECT * FROM numbersflat TABLESAMPLE(0.1 PERCENT) s;
 </code></pre></li>
 </ol>
-<h3 id="8-_UNION_ALL">8. UNION ALL</h3><p>UNION ALL 可以将2个或者多个表进行合并，每一个union子查询都必须具有相同的列，而且对应的每个字段的字段类型必须是一致的。例如：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> <span class="keyword">log</span>.ymd, <span class="keyword">log</span>.<span class="keyword">level</span>, <span class="keyword">log</span>.message
-    <span class="keyword">FROM</span> (
-        <span class="keyword">SELECT</span> l1.ymd, l1.<span class="keyword">level</span>, l1.message, <span class="string">'Log1'</span> <span class="keyword">AS</span> <span class="keyword">source</span>
-    <span class="keyword">FROM</span> log1 l1
-<span class="keyword">UNION</span> ALL
-    <span class="keyword">SELECT</span> l2.ymd, l2.<span class="keyword">level</span>, l2.message, <span class="string">'Log2'</span> <span class="keyword">AS</span>
-<span class="keyword">source</span>
-    <span class="keyword">FROM</span> log1 l2
-) <span class="keyword">log</span>
-<span class="keyword">SORT</span> <span class="keyword">BY</span> <span class="keyword">log</span>.ymd <span class="keyword">ASC</span></span>
+<h3 id="8-UNION-ALL"><a href="#8-UNION-ALL" class="headerlink" title="8. UNION ALL"></a>8. UNION ALL</h3><p>UNION ALL 可以将2个或者多个表进行合并，每一个union子查询都必须具有相同的列，而且对应的每个字段的字段类型必须是一致的。例如：</p>
+<pre><code>SELECT log.ymd, log.level, log.message
+    FROM (
+        SELECT l1.ymd, l1.level, l1.message, &apos;Log1&apos; AS source
+    FROM log1 l1
+UNION ALL
+    SELECT l2.ymd, l2.level, l2.message, &apos;Log2&apos; AS
+source
+    FROM log1 l2
+) log
+SORT BY log.ymd ASC
 </code></pre><p>这里是对同一个源表的数据进行合并，这其实相当于是一个SELECT加上一个WHERE，这个技术可以将一个长的复杂的WHERE语句分割成2个或者多个UNION子查询。</p>
 
       
@@ -656,7 +656,7 @@ Bill    <span class="number">60000.0</span>      middle
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -664,7 +664,7 @@ Bill    <span class="number">60000.0</span>      middle
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -673,7 +673,7 @@ Bill    <span class="number">60000.0</span>      middle
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -744,7 +744,7 @@ Bill    <span class="number">60000.0</span>      middle
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_使用正则表达式来指定列"><span class="nav-number">1.</span> <span class="nav-text">1. 使用正则表达式来指定列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_使用列值进行计算"><span class="nav-number">2.</span> <span class="nav-text">2. 使用列值进行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_HIVE相关函数(常用的）"><span class="nav-number">3.</span> <span class="nav-text">3. HIVE相关函数(常用的）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_CASE…WHEN…THEN_句式"><span class="nav-number">4.</span> <span class="nav-text">4. CASE…WHEN…THEN 句式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_什么情况下可以避免MapReduce"><span class="nav-number">5.</span> <span class="nav-text">5. 什么情况下可以避免MapReduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_WHERE_查询语句优化"><span class="nav-number">6.</span> <span class="nav-text">6. WHERE 查询语句优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-_JOIN_优化"><span class="nav-number">7.</span> <span class="nav-text">7. JOIN 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-_UNION_ALL"><span class="nav-number">8.</span> <span class="nav-text">8. UNION ALL</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-使用正则表达式来指定列"><span class="nav-number">1.</span> <span class="nav-text">1. 使用正则表达式来指定列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用列值进行计算"><span class="nav-number">2.</span> <span class="nav-text">2. 使用列值进行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HIVE相关函数-常用的）"><span class="nav-number">3.</span> <span class="nav-text">3. HIVE相关函数(常用的）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-CASE…WHEN…THEN-句式"><span class="nav-number">4.</span> <span class="nav-text">4. CASE…WHEN…THEN 句式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-什么情况下可以避免MapReduce"><span class="nav-number">5.</span> <span class="nav-text">5. 什么情况下可以避免MapReduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-WHERE-查询语句优化"><span class="nav-number">6.</span> <span class="nav-text">6. WHERE 查询语句优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-JOIN-优化"><span class="nav-number">7.</span> <span class="nav-text">7. JOIN 优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-UNION-ALL"><span class="nav-number">8.</span> <span class="nav-text">8. UNION ALL</span></a></li></ol></div>
             
           </div>
         </section>
@@ -899,6 +899,26 @@ Bill    <span class="number">60000.0</span>      middle
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

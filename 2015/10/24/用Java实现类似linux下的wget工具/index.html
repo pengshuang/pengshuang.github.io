@@ -342,117 +342,117 @@
 <p>获取<a href="https://www.google.co.jp/images/srpr/logo11w.png" target="_blank" rel="external">https://www.google.co.jp/images/srpr/logo11w.png</a> 这个HTTP_URL的logo11w.png图片，并将它保在/Users/pengshuang/Documents/workspace/succeez位置上。</p>
 </blockquote>
 <p>   下面附上java实现代码，主要过程我已经注释详细了,应该看懂没问题。</p>
-<pre><code><span class="keyword">import</span> java.io.File;
-<span class="keyword">import</span> java.io.FileOutputStream;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.io.InputStream;
-<span class="keyword">import</span> java.net.URL;
-<span class="keyword">import</span> java.util.Scanner;
+<pre><code>import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Scanner;
 
-<span class="keyword">public</span> class Wget {
-    <span class="comment">/*
+public class Wget {
+    /*
      * get url of the file you wanted get the path to save your file
-     */</span>
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) {
-        <span class="comment">// 创建一个scanner，获取URL和用户指定存放路径</span>
-        Scanner sc = <span class="keyword">new</span> Scanner(System.in);
-        System.out.<span class="built_in">println</span>(<span class="string">"Please input the file's Http_URL:"</span>);
-        <span class="keyword">String</span> url = sc.nextLine();
-        System.out.<span class="built_in">println</span>(<span class="string">"please input the path to save the file:"</span>);
-        <span class="keyword">String</span> path = sc.nextLine();
-        <span class="comment">// 调用downloadFromUrl来从URL上下载指定文件</span>
-        <span class="keyword">String</span> res = downloadFromUrl(url, path);
-        sc.close();<span class="comment">// 关闭scanner</span>
-        System.out.<span class="built_in">println</span>(res);
+     */
+    public static void main(String[] args) {
+        // 创建一个scanner，获取URL和用户指定存放路径
+        Scanner sc = new Scanner(System.in);
+        System.out.println(&quot;Please input the file&apos;s Http_URL:&quot;);
+        String url = sc.nextLine();
+        System.out.println(&quot;please input the path to save the file:&quot;);
+        String path = sc.nextLine();
+        // 调用downloadFromUrl来从URL上下载指定文件
+        String res = downloadFromUrl(url, path);
+        sc.close();// 关闭scanner
+        System.out.println(res);
 }
 
-<span class="comment">/*
+/*
  * download file from url returns success/failure message if succeed,returns
- * file's absolute path
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">String</span> downloadFromUrl(<span class="keyword">String</span> url, <span class="keyword">String</span> dir) {
-    <span class="keyword">try</span> {
-        <span class="comment">// 创建新的URL类型</span>
-        URL httpurl = <span class="keyword">new</span> URL(url);
-        <span class="comment">// 获取文件名</span>
-        <span class="keyword">String</span> fileName = getFileNameFromUrl(url);
-        <span class="comment">// 输出文件名</span>
-        System.out.<span class="built_in">println</span>(fileName);
-        <span class="comment">// 在文件名之前加上路径创建文件</span>
-        File f = <span class="keyword">new</span> File(dir + <span class="string">'/'</span> + fileName);
-        <span class="comment">// 将URL内容拷贝到文件</span>
+ * file&apos;s absolute path
+ */
+public static String downloadFromUrl(String url, String dir) {
+    try {
+        // 创建新的URL类型
+        URL httpurl = new URL(url);
+        // 获取文件名
+        String fileName = getFileNameFromUrl(url);
+        // 输出文件名
+        System.out.println(fileName);
+        // 在文件名之前加上路径创建文件
+        File f = new File(dir + &apos;/&apos; + fileName);
+        // 将URL内容拷贝到文件
         copyURLToFile(httpurl, f);
-        <span class="keyword">String</span> absolutepath = f.getAbsolutePath();
-        <span class="comment">// 输出成功信息以及存储路径名</span>
-        <span class="keyword">return</span> <span class="string">"Successfully saved to "</span> + absolutepath;
-    } <span class="keyword">catch</span> (Exception e) {
+        String absolutepath = f.getAbsolutePath();
+        // 输出成功信息以及存储路径名
+        return &quot;Successfully saved to &quot; + absolutepath;
+    } catch (Exception e) {
         e.printStackTrace();
-        <span class="comment">// 异常时输出错误信息</span>
-        <span class="keyword">return</span> <span class="string">"Error!"</span>;
+        // 异常时输出错误信息
+        return &quot;Error!&quot;;
     }
 }
 
-<span class="comment">/*
- * get filename from url such as get a string "logo11w.html" from
+/*
+ * get filename from url such as get a string &quot;logo11w.html&quot; from
  * https://www.google.co.jp/images/srpr/logo11w.png
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">String</span> getFileNameFromUrl(<span class="keyword">String</span> url) {
-    <span class="comment">// 初始化文件名</span>
-    <span class="keyword">String</span> name = <span class="string">""</span>;
-    <span class="comment">// 获取最后一个“/“前的字符数</span>
-    <span class="built_in">int</span> index = url.lastIndexOf(<span class="string">"/"</span>);
-    <span class="keyword">if</span> (index &gt; <span class="number">0</span>) {
-        <span class="comment">// 将最后一个”/“和之前的所有字符都剔除，剩余的字符串作为文件名</span>
-        name = url.substring(index + <span class="number">1</span>);
-        <span class="comment">// 将文件名首尾的空格字符删去，获取规范的文件名</span>
-        <span class="keyword">if</span> (name.<span class="built_in">trim</span>().length() &gt; <span class="number">0</span>) {
-            <span class="keyword">return</span> name;
+ */
+public static String getFileNameFromUrl(String url) {
+    // 初始化文件名
+    String name = &quot;&quot;;
+    // 获取最后一个“/“前的字符数
+    int index = url.lastIndexOf(&quot;/&quot;);
+    if (index &gt; 0) {
+        // 将最后一个”/“和之前的所有字符都剔除，剩余的字符串作为文件名
+        name = url.substring(index + 1);
+        // 将文件名首尾的空格字符删去，获取规范的文件名
+        if (name.trim().length() &gt; 0) {
+            return name;
         }
     }
-    <span class="keyword">return</span> name;
+    return name;
 }
 
-<span class="comment">/*
- * copy URL file's content to local file by get an InputStream from URL and
+/*
+ * copy URL file&apos;s content to local file by get an InputStream from URL and
  * an OutputStream to local file using a buffer to transport bytes
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> copyURLToFile(URL source, File dest) <span class="keyword">throws</span> IOException {
-    <span class="comment">// 如果目标文件不存在</span>
-    <span class="keyword">if</span> (!dest.exists()) {
-        <span class="comment">// 创建父目录，然后创建新文件</span>
+ */
+public static void copyURLToFile(URL source, File dest) throws IOException {
+    // 如果目标文件不存在
+    if (!dest.exists()) {
+        // 创建父目录，然后创建新文件
         dest.getParentFile().mkdirs();
         dest.createNewFile();
     }
-    <span class="comment">// 关键点就在此，通过URL类的openStream函数获得一个输入流</span>
+    // 关键点就在此，通过URL类的openStream函数获得一个输入流
     InputStream in = source.openStream();
 
-    <span class="keyword">try</span> {
-        <span class="comment">// 创建一个输出流</span>
-        FileOutputStream out = <span class="keyword">new</span> FileOutputStream(dest);
-        <span class="keyword">try</span> {
-            <span class="comment">/*
+    try {
+        // 创建一个输出流
+        FileOutputStream out = new FileOutputStream(dest);
+        try {
+            /*
              * 创建一个固定大小的buffer通过buffer将输入流内容写入输出流
-             */</span>
-            <span class="built_in">int</span> numread = <span class="number">0</span>;
-            <span class="built_in">int</span> buf_size = <span class="number">1024</span>;
-            <span class="built_in">byte</span>[] buffer = <span class="keyword">new</span> <span class="built_in">byte</span>[buf_size];
-            <span class="keyword">while</span> ((numread = in.read(buffer, <span class="number">0</span>, buf_size)) != -<span class="number">1</span>)
-                <span class="comment">// 如果缓冲区没满，继续写</span>
-                out.write(buffer, <span class="number">0</span>, numread);
-        } <span class="keyword">finally</span> {
-            <span class="keyword">try</span> {
-                <span class="keyword">if</span> (out != <span class="keyword">null</span>)
+             */
+            int numread = 0;
+            int buf_size = 1024;
+            byte[] buffer = new byte[buf_size];
+            while ((numread = in.read(buffer, 0, buf_size)) != -1)
+                // 如果缓冲区没满，继续写
+                out.write(buffer, 0, numread);
+        } finally {
+            try {
+                if (out != null)
                     out.close();
-            } <span class="keyword">catch</span> (IOException oe) {
-                System.out.<span class="built_in">println</span>(<span class="string">"Output file is null"</span>);
+            } catch (IOException oe) {
+                System.out.println(&quot;Output file is null&quot;);
             }
         }
-    } <span class="keyword">finally</span> {
-        <span class="keyword">try</span> {
-            <span class="keyword">if</span> (in != <span class="keyword">null</span>)
+    } finally {
+        try {
+            if (in != null)
                 in.close();
-        } <span class="keyword">catch</span> (IOException ie) {
-            System.out.<span class="built_in">println</span>(<span class="string">"Input file is null"</span>);
+        } catch (IOException ie) {
+            System.out.println(&quot;Input file is null&quot;);
             }
         }
     }
@@ -590,7 +590,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -598,7 +598,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -607,7 +607,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -833,6 +833,26 @@
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

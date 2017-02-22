@@ -346,45 +346,45 @@ locate 命令locate 其实相当于">
       
 
       
-        <h3 id="find_命令">find 命令</h3><pre><code>$ find <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span> <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span> <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>
+        <h3 id="find-命令"><a href="#find-命令" class="headerlink" title="find 命令"></a>find 命令</h3><pre><code>$ find &lt;指定目录&gt; &lt;指定条件&gt; &lt;指定动作&gt;
 
-- <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span>: 所要搜索的目录及其所有子目录
-- <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span>: 所要搜索的文件的特征 (eg: -name -type)
-- <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>: 对搜索结果进行特定的处理 (eg: -ls, -print,)
-</code></pre><h3 id="locate_命令">locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
+- &lt;指定目录&gt;: 所要搜索的目录及其所有子目录
+- &lt;指定条件&gt;: 所要搜索的文件的特征 (eg: -name -type)
+- &lt;指定动作&gt;: 对搜索结果进行特定的处理 (eg: -ls, -print,)
+</code></pre><h3 id="locate-命令"><a href="#locate-命令" class="headerlink" title="locate 命令"></a>locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
 <p>为了避免这种情况，可以在使用locate之前，先使用<strong>updatedb</strong>命令，手动更新数据库。</p>
-<pre><code>$ locate /etc/<span class="keyword">sh</span>
-搜索etc目录下所有以<span class="keyword">sh</span>开头的文件。
+<pre><code>$ locate /etc/sh
+搜索etc目录下所有以sh开头的文件。
 
-$ locate ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件。
+$ locate ~/m
+搜索用户目录下，所有以 m 开头的文件。
 
-$ locate -i ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件，同时忽略大小写。
-</code></pre><h3 id="whereis_命令">whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
-<h3 id="ping_多个_ip">ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
+$ locate -i ~/m
+搜索用户目录下，所有以 m 开头的文件，同时忽略大小写。
+</code></pre><h3 id="whereis-命令"><a href="#whereis-命令" class="headerlink" title="whereis 命令"></a>whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
+<h3 id="ping-多个-ip"><a href="#ping-多个-ip" class="headerlink" title="ping 多个 ip"></a>ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
 <p>Linux 自带的 ping 命令本身不可以 ping 多个 ip，但可以用 shell 来实现同时 ping 多个 ip。</p>
 <ol>
 <li><p>建一个空的输出文件 </p>
-<pre><code>touch /output<span class="class">.txt</span> 
+<pre><code>touch /output.txt 
 </code></pre></li>
 <li><p>新建一个脚本。</p>
-<pre><code><span class="keyword">vim</span> ping.<span class="keyword">sh</span>
+<pre><code>vim ping.sh
 </code></pre></li>
 <li><p>脚本内容</p>
-<pre><code><span class="shebang">#!/bin/bash</span>
-A = <span class="string">'cat /ip.txt'</span>
-<span class="keyword">for</span> B <span class="keyword">in</span> <span class="variable">$A</span> 
-<span class="keyword">do</span>
-ping -c <span class="number">3</span> <span class="variable">$B</span> &gt;&gt;/output
-<span class="keyword">done</span>
+<pre><code>#!/bin/bash
+A = &apos;cat /ip.txt&apos;
+for B in $A 
+do
+ping -c 3 $B &gt;&gt;/output
+done
 wq
 </code></pre></li>
 <li><p>执行脚本</p>
-<pre><code>./ <span class="built_in">ping</span>.sh
+<pre><code>./ ping.sh
 </code></pre></li>
 <li><p>查看结果</p>
-<pre><code><span class="tag">cat</span> <span class="tag">output</span><span class="class">.txt</span>
+<pre><code>cat output.txt
 </code></pre></li>
 </ol>
 
@@ -519,7 +519,7 @@ wq
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -527,7 +527,7 @@ wq
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -536,7 +536,7 @@ wq
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -607,7 +607,7 @@ wq
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#find_命令"><span class="nav-number">1.</span> <span class="nav-text">find 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locate_命令"><span class="nav-number">2.</span> <span class="nav-text">locate 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whereis_命令"><span class="nav-number">3.</span> <span class="nav-text">whereis 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ping_多个_ip"><span class="nav-number">4.</span> <span class="nav-text">ping 多个 ip</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#find-命令"><span class="nav-number">1.</span> <span class="nav-text">find 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#locate-命令"><span class="nav-number">2.</span> <span class="nav-text">locate 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#whereis-命令"><span class="nav-number">3.</span> <span class="nav-text">whereis 命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ping-多个-ip"><span class="nav-number">4.</span> <span class="nav-text">ping 多个 ip</span></a></li></ol></div>
             
           </div>
         </section>
@@ -762,6 +762,26 @@ wq
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

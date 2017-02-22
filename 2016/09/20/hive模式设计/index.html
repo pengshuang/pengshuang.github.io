@@ -343,94 +343,94 @@ hive&amp;gt; ALTER TABLE supply add P">
       
 
       
-        <h3 id="1-_按天划分的表">1. 按天划分的表</h3><pre><code>hive&gt; CREATE TABLE supply (id <span class="built_in">int</span>, part <span class="built_in">string</span>, quantity <span class="built_in">int</span>)
-    &gt; PARTITIONED BY (<span class="built_in">int</span> <span class="built_in">day</span>);
+        <h3 id="1-按天划分的表"><a href="#1-按天划分的表" class="headerlink" title="1. 按天划分的表"></a>1. 按天划分的表</h3><pre><code>hive&gt; CREATE TABLE supply (id int, part string, quantity int)
+    &gt; PARTITIONED BY (int day);
 
-hive&gt; ALTER TABLE supply add PARTITION (<span class="built_in">day</span>=<span class="number">20110102</span>)
-hive&gt; ALTER TABLE supply add PARTITION (<span class="built_in">day</span>=<span class="number">20110103</span>)
+hive&gt; ALTER TABLE supply add PARTITION (day=20110102)
+hive&gt; ALTER TABLE supply add PARTITION (day=20110103)
 ...
 
 hive&gt; .... load data ....
 
-hive&gt; <span class="keyword">SELECT</span> part, quantity FROM supply
-    &gt; WHERE <span class="built_in">day</span> &gt;= <span class="number">20110102</span> <span class="keyword">AND</span> <span class="built_in">day</span> &lt; <span class="number">20110103</span> <span class="keyword">AND</span> quantity &lt; <span class="number">4</span>;
-</code></pre><h3 id="2-_关于分区">2. 关于分区</h3><p>在Hive中，通过创建分区可以优化一些查询，但如果创建的分区很多很多的话，反而会对其他一些重要的查询不利，因为HDFS用于设计存储数百万的大文件，而非数十亿的小文件。使用过多的分区可能导致的一个问题就是会创建大量的非必须的Hadoop文件和文件夹。</p>
+hive&gt; SELECT part, quantity FROM supply
+    &gt; WHERE day &gt;= 20110102 AND day &lt; 20110103 AND quantity &lt; 4;
+</code></pre><h3 id="2-关于分区"><a href="#2-关于分区" class="headerlink" title="2. 关于分区"></a>2. 关于分区</h3><p>在Hive中，通过创建分区可以优化一些查询，但如果创建的分区很多很多的话，反而会对其他一些重要的查询不利，因为HDFS用于设计存储数百万的大文件，而非数十亿的小文件。使用过多的分区可能导致的一个问题就是会创建大量的非必须的Hadoop文件和文件夹。</p>
 <p>MapReduce 会将一个任务（job）转换为多个任务（task）。默认情况下，每个task都是一个新的JVM实例，都需要开启和销毁的开销。对于小文件来说，每个文件都会对应一个task。在一些情况下，JVM开启和销毁的时间中销毁可能会比实际处理数据的时间消耗更长！</p>
 <p>因此，一个理想的分区方案不应该导致产生太多的分区和文件夹目录，并且每个目录下的文件应该足够得大，应该是文件系统中块大小的若干倍。</p>
 <p>按时间范围进行分区的一个好的策略就是按照不同的时间粒度来确定合适大小的数据积累量，而且安装这个时间粒度。随着时间的推移，分区数量的增长是“均匀的”，而且每个分区下包含的文件大小至少是文件系统中块的大小的若干倍。这个平衡可以保持使分区足够大，从而优化一般情况下查询的数据吞吐量。同时有必要考虑这中粒度级别在未来是否是适用的，特别是查询中WHERE子句选择较小粒度的范围的情况：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url <span class="built_in">string</span>, time <span class="built_in">long</span>, state <span class="built_in">string</span>, 
-city <span class="built_in">string</span> )
-    &gt; PARTITIONED <span class="keyword">BY</span> (day int);
-hive&gt; <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> weblogs <span class="keyword">WHERE</span> day=<span class="number">20110102</span>;
+<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, state string, 
+city string )
+    &gt; PARTITIONED BY (day int);
+hive&gt; SELECT * FROM weblogs WHERE day=20110102;
 </code></pre><p>也可以使用2个级别的分区，并且适用不同的维度:</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url <span class="built_in">string</span>, time <span class="built_in">long</span>, city <span class="built_in">string</span> )
-    &gt; PARTITIONED <span class="keyword">BY</span> (day int, state <span class="built_in">string</span>);
-hive&gt; <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> weblogs <span class="keyword">WHERE</span> day=<span class="number">20110102</span>;
-</code></pre><h3 id="3-_唯一键和标准化">3. 唯一键和标准化</h3><p>关系型数据库通常使用唯一键、索引和标准化来存储数据集，通常是全部或者大部分存储到内存的。然而，Hive没有主键或基于序列密钥生成的自增键的概念。</p>
+<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, city string )
+    &gt; PARTITIONED BY (day int, state string);
+hive&gt; SELECT * FROM weblogs WHERE day=20110102;
+</code></pre><h3 id="3-唯一键和标准化"><a href="#3-唯一键和标准化" class="headerlink" title="3. 唯一键和标准化"></a>3. 唯一键和标准化</h3><p>关系型数据库通常使用唯一键、索引和标准化来存储数据集，通常是全部或者大部分存储到内存的。然而，Hive没有主键或基于序列密钥生成的自增键的概念。</p>
 <p>避免标准化的主要原因是为了最小化磁盘寻道，比如那些通常需要外键关系的情况。非标准化数据允许被扫描或写入到大的，连续的磁盘存储区域，从而优化磁盘驱动器的I/O性能。然而，非标准化数据可能导致数据重复，有导致数据不一致的风险。</p>
-<h3 id="4-_同一份数据多种处理">4. 同一份数据多种处理</h3><p>Hive 本身提供一个独特的语法，它可以从一个数据源产生多个数据聚合，而无需每次聚合都要重新扫描一次。对于大的数据输入集来说，这个优化可以节约非常可观的时间。</p>
+<h3 id="4-同一份数据多种处理"><a href="#4-同一份数据多种处理" class="headerlink" title="4. 同一份数据多种处理"></a>4. 同一份数据多种处理</h3><p>Hive 本身提供一个独特的语法，它可以从一个数据源产生多个数据聚合，而无需每次聚合都要重新扫描一次。对于大的数据输入集来说，这个优化可以节约非常可观的时间。</p>
 <p>常用的方法：</p>
 <pre><code>hive&gt; FROM history
-    &gt; INSERT OVERWRITE sales <span class="keyword">SELECT</span> * <span class="keyword">WHERE</span> action=<span class="string">"purchased'
-    &gt; INSERT OVERWRITE credits SELECT * WHERE actions="</span>returned<span class="string">';</span>
-</code></pre><h3 id="5-_对于每个表的分区">5. 对于每个表的分区</h3><p>很多的ETL处理过程会涉及到多个处理步骤，而每个处理步骤可能会产生一个或多个临时表，这些表仅供下一个job使用。下面的这个例子即在中间表内部使用分区，这样的话就不会再计算某一天的数据时会发生前一天的数据被 <strong>INSERT OVERWRITE</strong> 语句覆盖掉的情况。</p>
-<pre><code>$ hive -hiveconf dt=<span class="number">2011</span>-<span class="number">01</span>-<span class="number">01</span>
-hive&gt; <span class="type">INSERT</span> <span class="type">OVERWRITE</span> table distinct_ip_logs
-    &gt; <span class="type">PARTITION</span> (hit_date=${dt})
-    &gt; <span class="type">SELECT</span> <span class="keyword">distinct</span>(ip) <span class="keyword">as</span> ip <span class="keyword">from</span> weblogs
-    &gt; <span class="type">WHERE</span> hit_date = '${hiveconf:dt}';
+    &gt; INSERT OVERWRITE sales SELECT * WHERE action=&quot;purchased&apos;
+    &gt; INSERT OVERWRITE credits SELECT * WHERE actions=&quot;returned&apos;;
+</code></pre><h3 id="5-对于每个表的分区"><a href="#5-对于每个表的分区" class="headerlink" title="5. 对于每个表的分区"></a>5. 对于每个表的分区</h3><p>很多的ETL处理过程会涉及到多个处理步骤，而每个处理步骤可能会产生一个或多个临时表，这些表仅供下一个job使用。下面的这个例子即在中间表内部使用分区，这样的话就不会再计算某一天的数据时会发生前一天的数据被 <strong>INSERT OVERWRITE</strong> 语句覆盖掉的情况。</p>
+<pre><code>$ hive -hiveconf dt=2011-01-01
+hive&gt; INSERT OVERWRITE table distinct_ip_logs
+    &gt; PARTITION (hit_date=${dt})
+    &gt; SELECT distinct(ip) as ip from weblogs
+    &gt; WHERE hit_date = &apos;${hiveconf:dt}&apos;;
 
-hive&gt; <span class="type">CREATE</span> <span class="type">TABLE</span> state_city_for_day (state <span class="type">string</span>, city <span class="type">string</span>)
-    &gt; <span class="type">PARTITIONED</span> <span class="type">BY</span> (hit_date <span class="type">string</span>)
+hive&gt; CREATE TABLE state_city_for_day (state string, city string)
+    &gt; PARTITIONED BY (hit_date string)
 
-hive&gt; <span class="type">INSERT</span> <span class="type">OVERWRITE</span> table state_city_for_day <span class="type">PARTITION</span>(${hivecong:df})
-    &gt; <span class="type">SELECT</span> <span class="keyword">distinct</span>(state, city) <span class="type">FROM</span> distinct_ip_in_logs
-    &gt; <span class="type">JOIN</span> geodata <span class="type">ON</span> (distinct_ip_in_logs.ip = geodata.ip)
-    &gt; <span class="type">WHERE</span> (hit_date = '${hiveconf:dt}');
+hive&gt; INSERT OVERWRITE table state_city_for_day PARTITION(${hivecong:df})
+    &gt; SELECT distinct(state, city) FROM distinct_ip_in_logs
+    &gt; JOIN geodata ON (distinct_ip_in_logs.ip = geodata.ip)
+    &gt; WHERE (hit_date = &apos;${hiveconf:dt}&apos;);
 </code></pre><p>这种方法有个缺点，就是用户将需要管理中间表并删除旧分区。</p>
-<h3 id="6-_分桶表数据存储">6. 分桶表数据存储</h3><p>分区提供一个隔离数据和优化查询的便利的方式。但是并非所有的数据集都可以形成合理的分区，特别是之前所提过的要确定合适的划分大小。</p>
+<h3 id="6-分桶表数据存储"><a href="#6-分桶表数据存储" class="headerlink" title="6. 分桶表数据存储"></a>6. 分桶表数据存储</h3><p>分区提供一个隔离数据和优化查询的便利的方式。但是并非所有的数据集都可以形成合理的分区，特别是之前所提过的要确定合适的划分大小。</p>
 <p>分桶是将数据集分解成更容易管理的若干部分。我们假设有个表的一级分区是dt，代表日期，二级分区是<strong>user_id</strong>，那么这种划分方式可能导致太多的小分区。但是，如果我们对表进行分桶，并使用<strong>user_id</strong>字段作为分桶字段，则字段值会根据用户指定的值进行哈希分发到桶中。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内，假设用户数要比桶数多得多，那么每个桶内就将会包含多个用户的记录：</p>
-<pre><code>hive&gt; CREATE TABLE weblog (user_id INT, url <span class="built_in">STRING</span>, source_ip <span class="built_in">STRING</span>)
-    &gt; PARTITIONED <span class="keyword">BY</span> (dt <span class="built_in">STRING</span>)
-    &gt; CLUSTERED <span class="keyword">BY</span> (user_id) <span class="keyword">INTO</span> <span class="number">96</span> BUCKETS;
+<pre><code>hive&gt; CREATE TABLE weblog (user_id INT, url STRING, source_ip STRING)
+    &gt; PARTITIONED BY (dt STRING)
+    &gt; CLUSTERED BY (user_id) INTO 96 BUCKETS;
 </code></pre><p>在使用 <strong>INSERT … TABLE</strong> 语句时，我们需要设置一个属性来强制Hive为目标表的分桶初始化过程设置一个正确的reducer个数。然后我们再执行一个查询来填充分区。例如：</p>
-<pre><code>hive&gt; <span class="keyword">SET</span> hive.enforce.bucketing = <span class="literal">true</span>
+<pre><code>hive&gt; SET hive.enforce.bucketing = true
 
-hive&gt; <span class="keyword">FROM</span> raw_logs
+hive&gt; FROM raw_logs
     &gt; INSERT OVERWRITE TABLE weblog
-    &gt; PARTITION (dt=<span class="string">"2015-01-01"</span>)
-    &gt; <span class="keyword">SELECT</span> user_id, url, source_ip <span class="keyword">WHERE</span> dt=<span class="string">"2015-01-01"</span>;
+    &gt; PARTITION (dt=&quot;2015-01-01&quot;)
+    &gt; SELECT user_id, url, source_ip WHERE dt=&quot;2015-01-01&quot;;
 </code></pre><p>如果我们没有使用 <strong>hive.enforce.bucketing</strong> 属性，那么我们就需要自己设置和分桶个数想匹配的 <strong>reducer</strong> 个数。例如，使用 <strong>set.mapred.reduce.tasks=96</strong>，然后在 <strong>INSERT</strong> 语句中，需要在 <strong>SELECT</strong> 语句后增加 <strong>CLUSTER BY</strong> 语句。</p>
 <p>分桶有几个优点，因为桶的数量是固定的，所以它没有数据波动，故对于抽样再合适不过。</p>
-<h3 id="7-_为表增加列">7. 为表增加列</h3><p>Hive允许在原始数据文件之上定义一个模式，而不像很多的数据库那样，要求必须以特定的格式转换和插入数据。这样的分离方式的好处是，当为数据文件增加新的字段时，可以容易地适应表定义的模式。</p>
+<h3 id="7-为表增加列"><a href="#7-为表增加列" class="headerlink" title="7. 为表增加列"></a>7. 为表增加列</h3><p>Hive允许在原始数据文件之上定义一个模式，而不像很多的数据库那样，要求必须以特定的格式转换和插入数据。这样的分离方式的好处是，当为数据文件增加新的字段时，可以容易地适应表定义的模式。</p>
 <p>下面来举个例子：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (version LONG, url <span class="built_in">STRING</span>)
-    &gt; PARTITIONED <span class="keyword">BY</span> (hit_date int)
-    &gt; ROW FORMAT DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">'\t'</span>;
+<pre><code>hive&gt; CREATE TABLE weblogs (version LONG, url STRING)
+    &gt; PARTITIONED BY (hit_date int)
+    &gt; ROW FORMAT DELIMITED FIELDS TERMINATED BY &apos;\t&apos;;
 
-hive&gt; <span class="subst">!</span> cat log1<span class="built_in">.</span>txt
-<span class="number">1</span>    /login
-<span class="number">1</span>    /logout
+hive&gt; ! cat log1.txt
+1    /login
+1    /logout
 
-hive&gt; LOAD <span class="built_in">DATA</span> <span class="built_in">LOCAL</span> INPATH <span class="string">'log1.txt'</span> int weblogs partition(<span class="number">20150101</span>);
+hive&gt; LOAD DATA LOCAL INPATH &apos;log1.txt&apos; int weblogs partition(20150101);
 
-hive&gt; <span class="keyword">SELECT</span> * FROM weblogs;
-<span class="number">1</span>    /mystuff    <span class="number">20150101</span>
-<span class="number">1</span>    /toys        <span class="number">20150101</span>
+hive&gt; SELECT * FROM weblogs;
+1    /mystuff    20150101
+1    /toys        20150101
 </code></pre><p>随着时间的推移，可能会为底层数据增加一个新字段。下面是为数据新增 <strong>user_id</strong>字段的过程。</p>
 <pre><code>hive&gt; ! cat log2.txt
-<span class="number">2</span>    /cars    bob
-<span class="number">2</span>    /stuff    terry
+2    /cars    bob
+2    /stuff    terry
 
-hive&gt; ALTER TABLE weblogs ADD COLUMNS (user_id <span class="built_in">string</span>)<span class="comment">;</span>
+hive&gt; ALTER TABLE weblogs ADD COLUMNS (user_id string);
 
-hive&gt; LOAD DATA <span class="keyword">LOCAL</span> INPATH <span class="string">'log2.txt'</span> <span class="built_in">int</span> weblogs partition(<span class="number">20150102</span>)<span class="comment">;</span>
+hive&gt; LOAD DATA LOCAL INPATH &apos;log2.txt&apos; int weblogs partition(20150102);
 
-hive&gt; <span class="keyword">SELECT</span> * from weblogs
-<span class="number">1</span>    /mystuff    <span class="number">20150101</span>     <span class="literal">NULL</span>
-<span class="number">1</span>    /toys        <span class="number">20150101</span>    <span class="literal">NULL</span>
-<span class="number">2</span>    /cars        <span class="number">20150102</span>     bob
-<span class="number">2</span>    /stuff        <span class="number">20150102</span>    terry
+hive&gt; SELECT * from weblogs
+1    /mystuff    20150101     NULL
+1    /toys        20150101    NULL
+2    /cars        20150102     bob
+2    /stuff        20150102    terry
 </code></pre><p>但是这种方式，无法在已有字段的开始或中间增加新字段。</p>
 
       
@@ -566,7 +566,7 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -574,7 +574,7 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -583,7 +583,7 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -654,7 +654,7 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_按天划分的表"><span class="nav-number">1.</span> <span class="nav-text">1. 按天划分的表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_关于分区"><span class="nav-number">2.</span> <span class="nav-text">2. 关于分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_唯一键和标准化"><span class="nav-number">3.</span> <span class="nav-text">3. 唯一键和标准化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_同一份数据多种处理"><span class="nav-number">4.</span> <span class="nav-text">4. 同一份数据多种处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-_对于每个表的分区"><span class="nav-number">5.</span> <span class="nav-text">5. 对于每个表的分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-_分桶表数据存储"><span class="nav-number">6.</span> <span class="nav-text">6. 分桶表数据存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-_为表增加列"><span class="nav-number">7.</span> <span class="nav-text">7. 为表增加列</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-按天划分的表"><span class="nav-number">1.</span> <span class="nav-text">1. 按天划分的表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-关于分区"><span class="nav-number">2.</span> <span class="nav-text">2. 关于分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-唯一键和标准化"><span class="nav-number">3.</span> <span class="nav-text">3. 唯一键和标准化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-同一份数据多种处理"><span class="nav-number">4.</span> <span class="nav-text">4. 同一份数据多种处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-对于每个表的分区"><span class="nav-number">5.</span> <span class="nav-text">5. 对于每个表的分区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-分桶表数据存储"><span class="nav-number">6.</span> <span class="nav-text">6. 分桶表数据存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-为表增加列"><span class="nav-number">7.</span> <span class="nav-text">7. 为表增加列</span></a></li></ol></div>
             
           </div>
         </section>
@@ -809,6 +809,26 @@ hive&gt; <span class="keyword">SELECT</span> * from weblogs
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

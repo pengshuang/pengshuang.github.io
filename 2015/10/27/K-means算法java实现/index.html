@@ -364,154 +364,154 @@ import java.io.IOException">
 <p><img src="/img/kmeans/1.png" alt=""></p>
 <p>第一列是属性名称，其他列代表相应属性值。</p>
 <p>代码如下：</p>
-<pre><code><span class="keyword">package</span> org.tseg.kmeans;
+<pre><code>package org.tseg.kmeans;
 
-<span class="keyword">import</span> java.io.<span class="keyword">BufferedReader</span>;
-<span class="keyword">import</span> java.io.FileInputStream;
-<span class="keyword">import</span> java.io.IOException;
-<span class="keyword">import</span> java.io.InputStreamReader;
-<span class="keyword">import</span> java.util.ArrayList;
-<span class="keyword">import</span> java.util.List;
-<span class="keyword">import</span> java.util.Vector;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
-<span class="keyword">public</span> class MyKmeans {
+public class MyKmeans {
 
-<span class="keyword">static</span> Vector&lt;Point&gt; exprValues = <span class="keyword">new</span> Vector&lt;Point&gt;();
-<span class="keyword">static</span> List&lt;Vector&lt;Point&gt;&gt; list = <span class="keyword">new</span> ArrayList&lt;Vector&lt;Point&gt;&gt;(); <span class="comment">// 每次迭代保存结果，一个vector代表一个簇</span>
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Integer K = <span class="number">2</span>; <span class="comment">// 选K=2，也就是估算有两个簇。</span>
-<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Double converge = <span class="number">0.001</span>; <span class="comment">// 当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001</span>
+static Vector&lt;Point&gt; exprValues = new Vector&lt;Point&gt;();
+static List&lt;Vector&lt;Point&gt;&gt; list = new ArrayList&lt;Vector&lt;Point&gt;&gt;(); // 每次迭代保存结果，一个vector代表一个簇
+private final static Integer K = 2; // 选K=2，也就是估算有两个簇。
+private final static Double converge = 0.001; // 当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001
 
-<span class="comment">// 读取数据</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">void</span> readF1() <span class="keyword">throws</span> IOException {
-    <span class="comment">// 读取我们的测试文件</span>
-    <span class="keyword">String</span> filePath = <span class="string">"src/simple_k-means.txt"</span>;
-    <span class="keyword">BufferedReader</span> br = <span class="keyword">new</span> <span class="keyword">BufferedReader</span>(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(filePath)));
-    <span class="comment">// 按行来读取文件，每行之间按空格隔开</span>
-    <span class="keyword">for</span> (<span class="keyword">String</span> <span class="built_in">line</span> = br.readLine(); <span class="built_in">line</span> != <span class="keyword">null</span>; <span class="built_in">line</span> = br.readLine()) {
-        <span class="keyword">if</span> (<span class="built_in">line</span>.length() == <span class="number">0</span> || <span class="string">""</span>.equals(<span class="built_in">line</span>))
-            <span class="keyword">continue</span>;
-        <span class="keyword">String</span>[] <span class="built_in">str</span> = <span class="built_in">line</span>.<span class="built_in">split</span>(<span class="string">" "</span>);
-        Point p0 = <span class="keyword">new</span> Point();
-        <span class="comment">// 存放相应的X，Y坐标</span>
-        p0.setname(<span class="keyword">String</span>.valueOf(<span class="built_in">str</span>[<span class="number">0</span>]));
-        p0.setX(Double.valueOf(<span class="built_in">str</span>[<span class="number">1</span>]));
-        p0.setY(Double.valueOf(<span class="built_in">str</span>[<span class="number">2</span>]));
-        <span class="comment">//</span>
-        exprValues.<span class="built_in">add</span>(p0);
+// 读取数据
+public static final void readF1() throws IOException {
+    // 读取我们的测试文件
+    String filePath = &quot;src/simple_k-means.txt&quot;;
+    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+    // 按行来读取文件，每行之间按空格隔开
+    for (String line = br.readLine(); line != null; line = br.readLine()) {
+        if (line.length() == 0 || &quot;&quot;.equals(line))
+            continue;
+        String[] str = line.split(&quot; &quot;);
+        Point p0 = new Point();
+        // 存放相应的X，Y坐标
+        p0.setname(String.valueOf(str[0]));
+        p0.setX(Double.valueOf(str[1]));
+        p0.setY(Double.valueOf(str[2]));
+        //
+        exprValues.add(p0);
     }
     br.close();
 }
 
-<span class="comment">// 采用欧氏距离</span>
-<span class="keyword">public</span> <span class="keyword">static</span> Double DistanceMeasure(Point p1, Point p2) {
+// 采用欧氏距离
+public static Double DistanceMeasure(Point p1, Point p2) {
 
-    Double tmp = StrictMath.<span class="built_in">pow</span>(p2.getX() - p1.getX(), <span class="number">2</span>) + StrictMath.<span class="built_in">pow</span>(p2.getY() - p1.getY(), <span class="number">2</span>);
-    <span class="keyword">return</span> Math.<span class="built_in">sqrt</span>(tmp);
+    Double tmp = StrictMath.pow(p2.getX() - p1.getX(), 2) + StrictMath.pow(p2.getY() - p1.getY(), 2);
+    return Math.sqrt(tmp);
 }
 
-<span class="comment">// 计算新的簇心</span>
-<span class="keyword">public</span> <span class="keyword">static</span> Double CalCentroid() {
-    System.out.<span class="built_in">println</span>(<span class="string">"------------------------------------------------"</span>);
+// 计算新的簇心
+public static Double CalCentroid() {
+    System.out.println(&quot;------------------------------------------------&quot;);
     Double movedist = Double.MAX_VALUE;
-    <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; list.<span class="built_in">size</span>(); i++) {
-        Vector&lt;Point&gt; subli = list.<span class="built_in">get</span>(i);
-        Point po = <span class="keyword">new</span> Point();
-        Double sumX = <span class="number">0.0</span>;
-        Double sumY = <span class="number">0.0</span>;
-        Double Clusterlen = Double.valueOf(subli.<span class="built_in">size</span>());
-        <span class="keyword">for</span> (<span class="built_in">int</span> j = <span class="number">0</span>; j &lt; Clusterlen; j++) {
-            Point nextp = subli.<span class="built_in">get</span>(j);
+    for (int i = 0; i &lt; list.size(); i++) {
+        Vector&lt;Point&gt; subli = list.get(i);
+        Point po = new Point();
+        Double sumX = 0.0;
+        Double sumY = 0.0;
+        Double Clusterlen = Double.valueOf(subli.size());
+        for (int j = 0; j &lt; Clusterlen; j++) {
+            Point nextp = subli.get(j);
             sumX = sumX + nextp.getX();
             sumY = sumY + nextp.getY();
         }
         po.setX(sumX / Clusterlen);
         po.setY(sumY / Clusterlen);
-        <span class="comment">// 新的点与旧点之间的距离</span>
-        Double <span class="built_in">dist</span> = DistanceMeasure(subli.<span class="built_in">get</span>(<span class="number">0</span>), po);
-        <span class="comment">// 在多个簇心移动的过程中，返回移动距离最小的值</span>
-        <span class="keyword">if</span> (<span class="built_in">dist</span> &lt; movedist)
-            movedist = <span class="built_in">dist</span>;
-        list.<span class="built_in">get</span>(i).<span class="built_in">clear</span>();
-        list.<span class="built_in">get</span>(i).<span class="built_in">add</span>(po);
-        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + i + <span class="string">"的簇心为："</span> + po.getX() + <span class="string">","</span> + po.getY());
+        // 新的点与旧点之间的距离
+        Double dist = DistanceMeasure(subli.get(0), po);
+        // 在多个簇心移动的过程中，返回移动距离最小的值
+        if (dist &lt; movedist)
+            movedist = dist;
+        list.get(i).clear();
+        list.get(i).add(po);
+        System.out.println(&quot;C&quot; + i + &quot;的簇心为：&quot; + po.getX() + &quot;,&quot; + po.getY());
     }
-    <span class="keyword">return</span> movedist;
+    return movedist;
 }
-<span class="comment">// 本次的簇心</span>
-<span class="comment">// 下一次移动的簇心</span>
+// 本次的簇心
+// 下一次移动的簇心
 
-<span class="keyword">private</span> <span class="keyword">static</span> Double move = Double.MAX_VALUE;<span class="comment">// 移动距离</span>
-<span class="comment">// 不断地迭代，直到收敛</span>
+private static Double move = Double.MAX_VALUE;// 移动距离
+// 不断地迭代，直到收敛
 
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> RecursionKluster() {
-    <span class="keyword">for</span> (<span class="built_in">int</span> times = <span class="number">2</span>; move &gt; converge; times++) {
-        System.out.<span class="built_in">println</span>(<span class="string">"第"</span> + times + <span class="string">"次迭代"</span>);
-        <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
-        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">1</span>; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
-            Point p = <span class="keyword">new</span> Point();
-            p = exprValues.<span class="built_in">get</span>(i);
-            <span class="built_in">int</span> index = -<span class="number">1</span>;
+public static void RecursionKluster() {
+    for (int times = 2; move &gt; converge; times++) {
+        System.out.println(&quot;第&quot; + times + &quot;次迭代&quot;);
+        // 默认每一个list里的Vector第0个元素是质心
+        for (int i = 1; i &lt; exprValues.size(); i++) {
+            Point p = new Point();
+            p = exprValues.get(i);
+            int index = -1;
 
-            <span class="keyword">double</span> neardist = Double.MAX_VALUE;
-            <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-                Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
-                <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
-                <span class="keyword">if</span> (currentdist &lt; neardist) {
+            double neardist = Double.MAX_VALUE;
+            for (int k = 0; k &lt; K; k++) {
+                Point centre = list.get(k).get(0);
+                double currentdist = DistanceMeasure(p, centre);
+                if (currentdist &lt; neardist) {
                     neardist = currentdist;
                     index = k;
                 }
             }
-            System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
-            list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
+            System.out.println(&quot;C&quot; + index + &quot;:的点为：&quot; + p.getname() + &quot;:&quot; + p.getX() + &quot;,&quot; + p.getY());
+            list.get(index).add(p);
         }
-        <span class="comment">// 重新计算簇心,并返回移动的距离，最小的那个距离</span>
+        // 重新计算簇心,并返回移动的距离，最小的那个距离
 
         move = CalCentroid();
-        System.out.<span class="built_in">println</span>(<span class="string">"各个簇心移动中最小的距离为，move="</span> + move);
+        System.out.println(&quot;各个簇心移动中最小的距离为，move=&quot; + move);
     }
 }
 
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> Kluster() {
+public static void Kluster() {
 
-    <span class="comment">// K为簇的个数</span>
-    <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-        Vector&lt;Point&gt; vect = <span class="keyword">new</span> Vector&lt;Point&gt;();
-        Point p = <span class="keyword">new</span> Point();
-        <span class="comment">// p依次取得每个簇</span>
-        p = exprValues.<span class="built_in">get</span>(k);
-        vect.<span class="built_in">add</span>(p);
-        list.<span class="built_in">add</span>(vect);
+    // K为簇的个数
+    for (int k = 0; k &lt; K; k++) {
+        Vector&lt;Point&gt; vect = new Vector&lt;Point&gt;();
+        Point p = new Point();
+        // p依次取得每个簇
+        p = exprValues.get(k);
+        vect.add(p);
+        list.add(vect);
     }
-    System.out.<span class="built_in">println</span>(<span class="string">"第1次迭代"</span>);
-    <span class="comment">// 默认每一个list里的Vector第0个元素是质心</span>
-    <span class="keyword">for</span> (<span class="built_in">int</span> i = K; i &lt; exprValues.<span class="built_in">size</span>(); i++) {
-        Point p = <span class="keyword">new</span> Point();
-        p = exprValues.<span class="built_in">get</span>(i);
-        <span class="built_in">int</span> index = -<span class="number">1</span>;
+    System.out.println(&quot;第1次迭代&quot;);
+    // 默认每一个list里的Vector第0个元素是质心
+    for (int i = K; i &lt; exprValues.size(); i++) {
+        Point p = new Point();
+        p = exprValues.get(i);
+        int index = -1;
 
-        <span class="keyword">double</span> neardist = Double.MAX_VALUE;
-        <span class="keyword">for</span> (<span class="built_in">int</span> k = <span class="number">0</span>; k &lt; K; k++) {
-            Point centre = list.<span class="built_in">get</span>(k).<span class="built_in">get</span>(<span class="number">0</span>);
-            <span class="keyword">double</span> currentdist = DistanceMeasure(p, centre);
-            <span class="keyword">if</span> (currentdist &lt; neardist) {
+        double neardist = Double.MAX_VALUE;
+        for (int k = 0; k &lt; K; k++) {
+            Point centre = list.get(k).get(0);
+            double currentdist = DistanceMeasure(p, centre);
+            if (currentdist &lt; neardist) {
                 neardist = currentdist;
                 index = k;
             }
         }
-        System.out.<span class="built_in">println</span>(<span class="string">"C"</span> + index + <span class="string">":的点为："</span> + p.getname() + <span class="string">":"</span> + p.getX() + <span class="string">","</span> + p.getY());
-        list.<span class="built_in">get</span>(index).<span class="built_in">add</span>(p);
+        System.out.println(&quot;C&quot; + index + &quot;:的点为：&quot; + p.getname() + &quot;:&quot; + p.getX() + &quot;,&quot; + p.getY());
+        list.get(index).add(p);
     }
 }
 
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> main(<span class="keyword">String</span>[] args) <span class="keyword">throws</span> IOException {
+public static void main(String[] args) throws IOException {
 
-    <span class="comment">// 读取数据</span>
+    // 读取数据
     readF1();
-    <span class="comment">// 第一次迭代</span>
+    // 第一次迭代
     Kluster();
-    <span class="comment">// 第一次迭代后计算簇心</span>
+    // 第一次迭代后计算簇心
     CalCentroid();
-    <span class="comment">// 不断迭代，直到收敛</span>
+    // 不断迭代，直到收敛
     RecursionKluster();
     }
 }
@@ -648,7 +648,7 @@ import java.io.IOException">
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -656,7 +656,7 @@ import java.io.IOException">
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -665,7 +665,7 @@ import java.io.IOException">
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -891,6 +891,26 @@ import java.io.IOException">
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

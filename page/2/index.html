@@ -258,6 +258,149 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/14/HBase架构学习-数据查找和传输/" itemprop="url">
+                  HBase架构学习: 数据查找和传输
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-14T15:06:44+08:00" content="2016-11-14">
+              2016-11-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/14/HBase架构学习-数据查找和传输/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/14/HBase架构学习-数据查找和传输/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/14/HBase架构学习-数据查找和传输/" class="leancloud_visitors" data-flag-title="HBase架构学习: 数据查找和传输">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在介绍 HBase 架构之前，首先来介绍典型的 RDBMS 和其他非关系型数据库底层存储结构之间的不同。其中传统关系型存储引擎广泛采用了 B 树和 B + 树；而 BigTable 的底层架构则采用了 LSM 树（Log-Structured Merge Tree）。</p>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B + 树"></a>B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
+<p>除此之外，B + 树能够提供高效的范围扫描功能，这得益于它的叶节点相互连接并且按主键有序，扫描时避免了耗时的遍历树操作。这也是 B + 树被关系型数据库用作索引的原因之一。</p>
+<h3 id="LSM-树"><a href="#LSM-树" class="headerlink" title="LSM 树"></a>LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
+<p>当系统经历过许多次数据修改，且内存空间被逐渐占满后，LSM 树会把有序的“键 - 记录”对写到磁盘中，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了。</p>
+<p>存储文件的组织与 B 树相似，不过其为磁盘顺序读取做了优化，所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成，即，系统将现有的页与内存刷写数据混合在一起进行管理，直到数据块达到它的容量。</p>
+<p>多次数据刷写之后会创建许多数据存储文件，后台线程就会自动将小文件聚合成大文件，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中。所有的数据存储文件都按键排序，所以没有必要再存储文件中为新的键预留位置。</p>
+<p>查询时先查找内存中的存储，然后再查找磁盘上的文件。这样在客户端看来数据存储文件的位置是透明的。</p>
+<p>删除是一种特殊的更改，当删除标记被存储之后，查找会跳过这些删除过的键。当页被重写时，有删除标记的键会被丢弃。</p>
+<p>此外，后台运维过程可以处理预先设定的删除请求。这些请求由 TTL 触发，例如当 TTL 设为 20 天后，合并进程会检查这些预设的时间戳，同时在重写数据块时丢弃过期的记录。</p>
+<p>B 树 和 LSM 树最主要的区别在于它们的结构如何利用硬件，特别是磁盘。</p>
+<p>比较 B + 树 和 LSM 树的意义在于理解它们的相对优势和不足。在没有太多的修改时，B + 树表现得很好，因为这些修改要求执行高代价的优化操作以保证查询能在有限时间内完成。在任意位置添加数据的规模越大、速度越快，这些页成为碎片的速度就越快。最后，用户写入的速度可能比优化后重写文件的处理速度更快。由于更新和删除以磁盘寻道的速率完成，这就强制用户就范于磁盘提供的较差的性能指标。</p>
+<p>LSM 树以磁盘传输速率工作并能较好地扩展以处理大量的数据。它们使用日志文件和内存存储来将随机写转换成顺序写，因此也能保证稳定的数据插入速率。由于读和写独立，因此在这两种操作之间没有冲突。</p>
+<p>由于存储数据的布局较优，查询一个键需要的磁盘寻道次数在一个可预测的范围内，并且读取与该键连续的任意数量的记录都不会引发任何额外的磁盘寻道。一般来说，基于 LSM 树的系统强调的是成本透明：假如有 5 个存储文件，一个访问需要最多 5 次磁盘寻道。反观关系型数据库，即使在存在索引的情况下，它也没有办法确定一次查询需要的寻道次数。</p>
+<p>所以， HBase 和 BigTable 一样，都是基于 LSM 树的系统。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/12/HBase学习-计数器/" itemprop="url">
                   HBase学习: 计数器
                 </a>
@@ -337,47 +480,47 @@
       
         
           
-            <h3 id="计数器简介">计数器简介</h3><p>许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。</p>
-<h3 id="单计数器">单计数器</h3><p>第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：</p>
-<pre><code><span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
-    qualifier, <span class="keyword">long</span> amount) <span class="keyword">throws</span> IOException
-<span class="keyword">long</span> incrementColumnValue(<span class="keyword">byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] 
-    qualifier, <span class="keyword">long</span> amount, <span class="keyword">boolean</span> writeToWAL) <span class="keyword">throws</span> IOException
+            <h3 id="计数器简介"><a href="#计数器简介" class="headerlink" title="计数器简介"></a>计数器简介</h3><p>许多收集统计信息的应用有点击流或在线广告意见，这些应用需要被收集到日志文件中用于后续的分析。用户可以使用计数器做实时统计，从而放弃延时较高的批量操作。</p>
+<h3 id="单计数器"><a href="#单计数器" class="headerlink" title="单计数器"></a>单计数器</h3><p>第一种增加操作只能操作一个计数器：用户需要自己设定列，方法由 HTable 提供，如下所示：</p>
+<pre><code>long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qualifier, long amount) throws IOException
+long incrementColumnValue(byte[] row, byte[] family, byte[] 
+    qualifier, long amount, boolean writeToWAL) throws IOException
 </code></pre><p>这两种方法都需要提供列的坐标和增加值，除此之外这两种方法只在参数 writeToWAL 上有差别，这个参数的作用与 Put.setWriteToWAL() 方法一致。忽略该参数会直接使用默认值 True。下面举一个使用单计数器的列子。</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable hTable = <span class="literal">new</span> HTable(conf, <span class="string">"temp2"</span>);
-<span class="comment">// 计数器值加一</span>
-long cnt1 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-long cnt2 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-<span class="comment">// 得到计数器的当前值</span>
-long current = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">0</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+// 计数器值加一
+long cnt1 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+long cnt2 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+// 得到计数器的当前值
+long current = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 0);
 
-long cnt3 = hTable<span class="built_in">.</span>incrementColumnValue(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), -<span class="number">1</span>);
+long cnt3 = hTable.incrementColumnValue(Bytes.toBytes(&quot;20160101&quot;),
+        Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), -1);
 </code></pre><p>对应的输出结果为：</p>
-<pre><code>cnt1: <span class="number">1</span>, cnt2: <span class="number">2</span>, current: <span class="number">2</span>, cnt: <span class="number">3</span>
-</code></pre><h3 id="多计数器">多计数器</h3><p>另一个计数器值的途径是使用 HTable() 的方法 increment()。工作模式与 CRUD 操作类似。使用以下方法完成该功能：</p>
-<pre><code>Result <span class="function"><span class="title">increment</span><span class="params">(Increment increment)</span></span> throws IOException 
+<pre><code>cnt1: 1, cnt2: 2, current: 2, cnt: 3
+</code></pre><h3 id="多计数器"><a href="#多计数器" class="headerlink" title="多计数器"></a>多计数器</h3><p>另一个计数器值的途径是使用 HTable() 的方法 increment()。工作模式与 CRUD 操作类似。使用以下方法完成该功能：</p>
+<pre><code>Result increment(Increment increment) throws IOException 
 </code></pre><p>用户需要创建一个 Increment 实例，同时需要填充一些相应的的细节到该实例中，比如：</p>
-<pre><code><span class="function"><span class="title">Increment</span><span class="params">()</span></span>
-<span class="function"><span class="title">Increment</span><span class="params">(byte[] row)</span></span>
-<span class="function"><span class="title">Increment</span><span class="params">(byte[] row, RowLock rowLock)</span></span>
+<pre><code>Increment()
+Increment(byte[] row)
+Increment(byte[] row, RowLock rowLock)
 </code></pre><p>用户构造 Increment 实例时需要传入行键，此行应当包含此实例需要通过 increment() 方法修改的所有计数器。</p>
 <p>可选参数 rowLock 设置了用户自定义锁实例，这样可以使本次操作完全在用户的控制下完成，例如，当用户需要多次修改同一行时，可以保证其间此行不被其他写程序修改。</p>
 <p>一旦用户使用行键创建了一个 Increment 实例，就需要向其中加入实际的计数器，也就是说，用户需要增加列，使用方法如下：</p>
-<pre><code>Increment addColumn(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier, <span class="keyword">long</span> amount)
+<pre><code>Increment addColumn(byte[] family, byte[] qualifier, long amount)
 </code></pre><p>Increment 类的特别功能是可以增加一个时间范围：</p>
-<pre><code>Increment setTimeRange(<span class="keyword">long</span> minStamp, <span class="keyword">long</span> maxStamp) <span class="keyword">throws</span> IOException
+<pre><code>Increment setTimeRange(long minStamp, long maxStamp) throws IOException
 </code></pre><p>用户限制时间的范围，可以用来屏蔽比较老的计数器，使它们看上去不存在，一次增加操作会认为较老的计数器不存在，并把它们重置为 1。</p>
 <p>下面这个例子表示增加了一行中多个计数器的计数。</p>
-<pre><code> Increment increment1 = <span class="literal">new</span> Increment(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"20160101"</span>));
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"clicks"</span>), <span class="number">1</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"daily"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">1</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"click"</span>), <span class="number">10</span>);
-increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"weekly"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"hits"</span>), <span class="number">10</span>);
+<pre><code> Increment increment1 = new Increment(Bytes.toBytes(&quot;20160101&quot;));
+increment1.addColumn(Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;clicks&quot;), 1);
+increment1.addColumn(Bytes.toBytes(&quot;daily&quot;), Bytes.toBytes(&quot;hits&quot;), 1);
+increment1.addColumn(Bytes.toBytes(&quot;weekly&quot;), Bytes.toBytes(&quot;click&quot;), 10);
+increment1.addColumn(Bytes.toBytes(&quot;weekly&quot;), Bytes.toBytes(&quot;hits&quot;), 10);
 </code></pre>
           
         
@@ -506,20 +649,20 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
       
         
           
-            <h3 id="ZooKeeper_的设计目标">ZooKeeper 的设计目标</h3><p>ZooKeeper致力于提供一个高性能、高可用，且具有严格的顺序访问控制能力（主要是写操作的严格顺序性）的分布式协调服务。高性能使得 ZooKeeper 能够应用于那些对系统吞吐有明确要求的大型分布式系统中，高可用使得分布式的单点问题得到了很好的解决，而严格的顺序访问控制使得客户端能够基于 ZooKeeper 实现一些复杂的同步原语。下面介绍一下 ZooKeeper 的四个设计目标。</p>
-<h4 id="目标一：简单的数据模型">目标一：简单的数据模型</h4><p>ZooKeeper 使得分布式程序能够通过一个共享的、树型结构的名字空间来进行相互协调。这里的树型结构的名字空间，是指 ZooKeeper 服务器内的一个数据模型，其由一系列被称为 ZNode 的数据节点组成，总的来说，其数据模型类似于一个文件系统，而 ZNode 之间的层级关系，就像文件系统的目录结构一样。不过，ZooKeeper 将全量数据存储在内存中，以此来实现提高服务器吞吐、减少延迟的目的。</p>
-<h4 id="目标二：可以构建集群">目标二：可以构建集群</h4><p>一个 ZooKeeper 集群通常由一组机器组成，一般 3 ~ 5 台机器就可以组成一个可用的 ZooKeeper 集群了。</p>
+            <h3 id="ZooKeeper-的设计目标"><a href="#ZooKeeper-的设计目标" class="headerlink" title="ZooKeeper 的设计目标"></a>ZooKeeper 的设计目标</h3><p>ZooKeeper致力于提供一个高性能、高可用，且具有严格的顺序访问控制能力（主要是写操作的严格顺序性）的分布式协调服务。高性能使得 ZooKeeper 能够应用于那些对系统吞吐有明确要求的大型分布式系统中，高可用使得分布式的单点问题得到了很好的解决，而严格的顺序访问控制使得客户端能够基于 ZooKeeper 实现一些复杂的同步原语。下面介绍一下 ZooKeeper 的四个设计目标。</p>
+<h4 id="目标一：简单的数据模型"><a href="#目标一：简单的数据模型" class="headerlink" title="目标一：简单的数据模型"></a>目标一：简单的数据模型</h4><p>ZooKeeper 使得分布式程序能够通过一个共享的、树型结构的名字空间来进行相互协调。这里的树型结构的名字空间，是指 ZooKeeper 服务器内的一个数据模型，其由一系列被称为 ZNode 的数据节点组成，总的来说，其数据模型类似于一个文件系统，而 ZNode 之间的层级关系，就像文件系统的目录结构一样。不过，ZooKeeper 将全量数据存储在内存中，以此来实现提高服务器吞吐、减少延迟的目的。</p>
+<h4 id="目标二：可以构建集群"><a href="#目标二：可以构建集群" class="headerlink" title="目标二：可以构建集群"></a>目标二：可以构建集群</h4><p>一个 ZooKeeper 集群通常由一组机器组成，一般 3 ~ 5 台机器就可以组成一个可用的 ZooKeeper 集群了。</p>
 <p>组成 ZooKeeper 集群的每台机器都会在内存中维护当前的服务器状态，并且每台机器之间都互相保持通信。只要集群中有超过半数的机器能够正常工作，那么整个集群就能够正常对外服务。</p>
 <p>ZooKeeper 的客户端程序会选择和集群中任意一台机器共同创建一个 TCP 连接，而一旦客户端和某台 ZooKeeper 服务器之间的连接断开之后，客户端会自动连接到集群中的其他机器。</p>
-<h4 id="目标三：顺序访问">目标三：顺序访问</h4><p>对于来自客户端的每个更新请求，ZooKeeper 都会分配一个全局唯一的递增编号，这个编号反映了所有事务操作的先后顺序，应用程序可以使用 ZooKeeper 的这个特性来实现更高层次的同步原语。</p>
-<h4 id="目标四：高性能">目标四：高性能</h4><p>由于 ZooKeeper 将全量数据存储在内存中，并直接服务于客户端的所有非事务请求，因此它尤其适用于以读操作为主的应用场景。</p>
-<h3 id="ZooKeeper_基本概念">ZooKeeper 基本概念</h3><h4 id="集群角色">集群角色</h4><p>通常在分布式系统中，构成一个集群的每一台机器都有自己的角色，最典型的集群模式是 Master/Slave 模式。在这种模式下，我们把能够处理所有写操作的机器称为 Master 机器，把所有通过异步复制方式获取最新数据，并提供读服务的机器称为 Slave 机器。</p>
+<h4 id="目标三：顺序访问"><a href="#目标三：顺序访问" class="headerlink" title="目标三：顺序访问"></a>目标三：顺序访问</h4><p>对于来自客户端的每个更新请求，ZooKeeper 都会分配一个全局唯一的递增编号，这个编号反映了所有事务操作的先后顺序，应用程序可以使用 ZooKeeper 的这个特性来实现更高层次的同步原语。</p>
+<h4 id="目标四：高性能"><a href="#目标四：高性能" class="headerlink" title="目标四：高性能"></a>目标四：高性能</h4><p>由于 ZooKeeper 将全量数据存储在内存中，并直接服务于客户端的所有非事务请求，因此它尤其适用于以读操作为主的应用场景。</p>
+<h3 id="ZooKeeper-基本概念"><a href="#ZooKeeper-基本概念" class="headerlink" title="ZooKeeper 基本概念"></a>ZooKeeper 基本概念</h3><h4 id="集群角色"><a href="#集群角色" class="headerlink" title="集群角色"></a>集群角色</h4><p>通常在分布式系统中，构成一个集群的每一台机器都有自己的角色，最典型的集群模式是 Master/Slave 模式。在这种模式下，我们把能够处理所有写操作的机器称为 Master 机器，把所有通过异步复制方式获取最新数据，并提供读服务的机器称为 Slave 机器。</p>
 <p>而在 ZooKeeper 中，没有 Master/Slave，取而代之的是Leader、Follower 和 Observer 三种角色。ZooKeeper 集群中的所有机器通过一个 Leader 选举过程来选定一台称为“Leader”的机器。Leader 服务器为客户端提供读和写服务。而 Follower 和 Observer 都能够提供读服务，它们唯一的区别在于，Observer 机器不参与 Leader 的选举，也不参与写操作的“过半写成功”策略，因此 Observer 可以在不影响写性能的情况下提升集群的读性能。</p>
-<h4 id="会话">会话</h4><p>Session 是指客户端会话，在 ZooKeeper 中，一个客户端连接是指客户端和服务器之间的一个 TCP 长连接。ZooKeeper 对外的端口是 2181，客户端启动的时候，首先会与服务器建立一个 TCP 连接，从第一次连接建立开始，客户端的会话周期也开始了，通过这个连接，客户端可以通过心跳检测与服务器保持有效的会话，也能够向 ZooKeeper 服务器发送请求并接受响应，同时还能够通过该连接接收来自服务器的 Watch 事件通知。Session 的 sessionTimeout 值用来设置一个客户端会话的超时时间。当由于服务器压力太大、网络故障或是客户端主动断开连接等各种原因导致客户端连接断开时，只要在 sessionTimeout </p>
-<h4 id="数据节点(Znode)">数据节点(Znode)</h4><p>在 ZooKeeper 中， 节点分为两类，第一类同样是指构成集群的集群，称为机器节点；第二类则是指数据模型中的数据单元，我们称为数据节点—Znode。ZooKeeper 将所有数据存储在内存中，数据模型是一棵树，由斜杠进行分割的路径就是一个 ZNode，例如 /foo/path1。每个 Znode 上都会保存自己的数据内容，同时还会保存一系列属性信息。</p>
+<h4 id="会话"><a href="#会话" class="headerlink" title="会话"></a>会话</h4><p>Session 是指客户端会话，在 ZooKeeper 中，一个客户端连接是指客户端和服务器之间的一个 TCP 长连接。ZooKeeper 对外的端口是 2181，客户端启动的时候，首先会与服务器建立一个 TCP 连接，从第一次连接建立开始，客户端的会话周期也开始了，通过这个连接，客户端可以通过心跳检测与服务器保持有效的会话，也能够向 ZooKeeper 服务器发送请求并接受响应，同时还能够通过该连接接收来自服务器的 Watch 事件通知。Session 的 sessionTimeout 值用来设置一个客户端会话的超时时间。当由于服务器压力太大、网络故障或是客户端主动断开连接等各种原因导致客户端连接断开时，只要在 sessionTimeout </p>
+<h4 id="数据节点-Znode"><a href="#数据节点-Znode" class="headerlink" title="数据节点(Znode)"></a>数据节点(Znode)</h4><p>在 ZooKeeper 中， 节点分为两类，第一类同样是指构成集群的集群，称为机器节点；第二类则是指数据模型中的数据单元，我们称为数据节点—Znode。ZooKeeper 将所有数据存储在内存中，数据模型是一棵树，由斜杠进行分割的路径就是一个 ZNode，例如 /foo/path1。每个 Znode 上都会保存自己的数据内容，同时还会保存一系列属性信息。</p>
 <p>在 ZooKeeper 中，Znode 节点可以分为持久节点和临时节点两类。持久节点一旦被创建了，除非主动移除，否则一直保存在 ZooKeeper 上；临时节点的生命周期和客户端会话绑定，一旦客户端会话失效，那么这个客户端创建的所有临时节点都会被移除。</p>
-<h4 id="Watcher">Watcher</h4><p>Watcher(事件监听器)，是 ZooKeeper 中的一个重要特性。ZooKeeper 允许用户在指定节点上注册一些 Watcher，并且在一些特定事件触发的时候，ZooKeeper 服务端会将事件通知到感兴趣的客户端上去，该机制是 ZooKeeper 实现分布式协调服务的重要特性。</p>
-<h4 id="ACL">ACL</h4><p>ZooKeeper 采用 ACL 策略来进行权限控制，类似于 UNIX 文件系统的权限控制。ZooKeeper 定义了如下 5 种权限。</p>
+<h4 id="Watcher"><a href="#Watcher" class="headerlink" title="Watcher"></a>Watcher</h4><p>Watcher(事件监听器)，是 ZooKeeper 中的一个重要特性。ZooKeeper 允许用户在指定节点上注册一些 Watcher，并且在一些特定事件触发的时候，ZooKeeper 服务端会将事件通知到感兴趣的客户端上去，该机制是 ZooKeeper 实现分布式协调服务的重要特性。</p>
+<h4 id="ACL"><a href="#ACL" class="headerlink" title="ACL"></a>ACL</h4><p>ZooKeeper 采用 ACL 策略来进行权限控制，类似于 UNIX 文件系统的权限控制。ZooKeeper 定义了如下 5 种权限。</p>
 <ul>
 <li>CREATE</li>
 <li>READ</li>
@@ -527,27 +670,27 @@ increment1<span class="built_in">.</span>addColumn(<span class="built_in">Bytes<
 <li>DELETE</li>
 <li>ADMIN</li>
 </ul>
-<h3 id="ZooKeeper_的_ZAB_协议">ZooKeeper 的 ZAB 协议</h3><p>事实上，ZooKeeper 并没有完全采用 Paxos 算法，而是使用了一种称为 ZooKeeper Atomic Broadcast（ZAB）的协议作为其数据一致性的核心算法。</p>
+<h3 id="ZooKeeper-的-ZAB-协议"><a href="#ZooKeeper-的-ZAB-协议" class="headerlink" title="ZooKeeper 的 ZAB 协议"></a>ZooKeeper 的 ZAB 协议</h3><p>事实上，ZooKeeper 并没有完全采用 Paxos 算法，而是使用了一种称为 ZooKeeper Atomic Broadcast（ZAB）的协议作为其数据一致性的核心算法。</p>
 <p>ZAB 协议是一种支持崩溃恢复的原子广播协议。在 ZooKeeper 中，主要通过 ZAB 协议来实现分布式数据一致性，基于该协议，ZooKeeper 实现了一种主备模式的系统架构来保持集群中各副本之间数据的一致性。ZAB 协议的这个主备模型架构保证了同一时刻集群中只能够有一个主进程来广播服务器的状态变更，因此可以很好的处理大量客户端的并发请求。另一方面，考虑到在分布式环境中，顺序执行的一些状态变更前后会存在一定的依赖关系，因此 ZAB 协议必须保证一个全局的变更序列被顺序应用。最后考虑到主进程可能会存在崩溃的可能，所以，ZAB 协议还需要做到在当前主进程出现上述异常情况的时候，依旧能够正常工作。</p>
 <p>ZAB 的核心是定义了对于那些会改变 ZooKeeper 服务器数据状态的事务请求的处理方式：</p>
-<pre><code>所以的事务请求必须由一个全局的唯一的服务器来协调处理，它被称为 <span class="built_in">Leader</span>，其他的被
-称为 Follower。<span class="built_in">Leader</span> 负责将一个客户端事务请求转换成一个事务 Proposal (提
-议)，并将该 Proposal 分发给集群中所有的 Follower。之后 <span class="built_in">Leader</span> 服务器需要等
+<pre><code>所以的事务请求必须由一个全局的唯一的服务器来协调处理，它被称为 Leader，其他的被
+称为 Follower。Leader 负责将一个客户端事务请求转换成一个事务 Proposal (提
+议)，并将该 Proposal 分发给集群中所有的 Follower。之后 Leader 服务器需要等
 待所有 Follower 服务器反馈，一旦得到超过半数的 Follower 进行正确的反馈之后，
-那么 <span class="built_in">Leader</span> 再次向所有的 Follower 发送 Commit 消息，要求其将前一个 
+那么 Leader 再次向所有的 Follower 发送 Commit 消息，要求其将前一个 
 Proposal 进行提交。
 </code></pre><p>ZAB 协议包括两种基本的模式，分别是崩溃恢复和消息广播。当整个服务框架在启动的过程中，或是当 Leader 服务器出现网络中断、崩溃退出与重启等异常情况时，ZAB 协议就会进入恢复模式并选举产生新的 Leader 服务器。当选举产生了新的 Leader 服务器，同时集群中已经有过半的机器与该 Leader 服务器完成了状态同步之后，ZAB 协议就会退出恢复模式。其中，所谓的状态同步是指数据同步，用来保证集群中存在过半的机器能够和 Leader 服务器的数据状态保持一致。</p>
 <p>当集群中已经有过半的 Follower 服务器完成了和 Leader 服务器的状态同步，那么整个服务框架就可以进入消息广播模式了。当一台同样遵守 ZAB 协议的服务器启动后加入到集群中时，如果此时集群中已经存在一个 Leader 服务器在负责进行消息广播，那么新加入的服务器就会自觉地进入数据恢复模式：找到 Leader 所在的服务器，并与其进行数据同步，然后一起参与到消息广播流程中去。ZooKeeper 的设计只允许唯一的一个 Leader 服务器来进行事务请求的处理。Leader 服务器在接收到客户端的事务请求后，会生成对应的事务提案并发起一轮广播协议；而如果集群中的其他机器接收到客户端的事务请求，那么这些非 Leader 服务器会首先将这个事务请求转发给 Leader 服务器。</p>
 <p>当 Leader 服务器出现崩溃退出或机器重启，亦或集群中已经不存在过半的服务器与该 Leader 服务器保持正常通信时，那么在重新开始新一轮的原子广播事务操作之前，所有进程首先会使用崩溃恢复协议来使彼此达到一个一致的状态，于是整个 ZAB 流程就会从消息广播模式进入到崩溃恢复模式。</p>
 <p>一个机器要称为新的 Leader，必须获得过半进程的支持，同时由于每个进程都有可能会崩溃，因此，在 ZAB 协议运行过程中，前后会出现多个 Leader，并且每个进程也有可能或多次成为 Leader，并且每个进程也有可能会多次成为 Leader。进入崩溃恢复模式后，只要集群中存在过半的服务器能够彼此进行正常通信，那么就可以产生一个新的 Leader 并再次进入消息广播模式。</p>
 <p>接下来重点介绍 ZAB 协议中的消息广播和崩溃恢复过程。</p>
-<h3 id="消息广播">消息广播</h3><p>ZAB 协议的消息广播过程使用的是一个原子广播协议，类似一个二阶段提交过程。针对客户端的事务请求，Leader 服务器会为其生成对应的事务 Proposal，并将其发送给集群中其余所有的机器，然后再分别收集各自的选票，最后进行事务提交。不过在 ZAB 协议的二阶段提交过程中，所有的 Follower 服务器要么正常反馈 Leader 提出的事务 Proposal，要么就抛弃 Leader 服务器。同时，ZAB 协议将二阶段提交中的中断逻辑移除意味着可以在过半 Follower 服务器已经反馈 Ack 之后就开始提交事务 Proposal 了，而不需要等待集群中所有的 Follower 服务器都反馈响应。整个消息广播协议使基于具有 FIFO 特性的 TCP 协议来进行网络通信的，因此能够很容易地保证消息广播过程中的消息接收与发送的顺序。</p>
+<h3 id="消息广播"><a href="#消息广播" class="headerlink" title="消息广播"></a>消息广播</h3><p>ZAB 协议的消息广播过程使用的是一个原子广播协议，类似一个二阶段提交过程。针对客户端的事务请求，Leader 服务器会为其生成对应的事务 Proposal，并将其发送给集群中其余所有的机器，然后再分别收集各自的选票，最后进行事务提交。不过在 ZAB 协议的二阶段提交过程中，所有的 Follower 服务器要么正常反馈 Leader 提出的事务 Proposal，要么就抛弃 Leader 服务器。同时，ZAB 协议将二阶段提交中的中断逻辑移除意味着可以在过半 Follower 服务器已经反馈 Ack 之后就开始提交事务 Proposal 了，而不需要等待集群中所有的 Follower 服务器都反馈响应。整个消息广播协议使基于具有 FIFO 特性的 TCP 协议来进行网络通信的，因此能够很容易地保证消息广播过程中的消息接收与发送的顺序。</p>
 <p>在整个消息广播过程中，Leader 服务器会为每个事务请求生成对应的 Proposal 来进行广播，并且在广播事务 Proposal 之前，Leader 服务器会首先为这个事务 Proposal 分配一个全局单调递增的唯一 ID，我们称之为事务 ID(即 ZXID)。由于 ZAB 协议需要保证每一个消息严格的因果关系，因此必须将每一个事务 Proposal 按照其 ZXID 的先后顺序来进行排序与处理。</p>
 <p>具体的，在消息广播过程中，Leader 服务器会为每一个 Follower 服务器都各自分配一个单独的队列，然后将需要广播的事务 Proposal 依次放入这些队列中去，并且根据 FIFO 策略进行消息发送。每一个 Follower 服务器在接收到这个事务 Proposal 之后，都会首先将其以事务日志的形式写入到本地磁盘中去，并且在成功写入后反馈给 Leader 服务器一个 Ack 响应。当 Leader 服务器接收到超过半数 Follower 的 Ack 响应后，就会广播一个 Commit 消息给所有的 Follower 服务器以通知其进行事务提交，同时 Leader 自身也会完成对事务的提交，而每一个 Follower 服务器在接收到 Commit 消息后，也会完成对事务的提交。</p>
-<h3 id="崩溃恢复">崩溃恢复</h3><p>ZAB 协议的这个基于原子广播协议的消息传播过程，在正常情况下运行非常良好，但是一旦 Leader 服务器出现崩溃，或者说由于网络原因导致 Leader 服务器失去了与过半 Follower 的联系，那么就会进入崩溃恢复模式。在 ZAB 协议中，为了保证程序的正常运行，整个恢复过程结束后需要选举出一个新的 Leader 服务器。因此，ZAB 协议需要一个高效且可靠的 Leader 选举算法，从而确保能够快速地选举新的 Leader。同时，Leader 选举算法不仅需要让 Leader 自己知道其自身已经被选举为 Leader，同时还需要让集群中的所有其他机器也能够快速地感知到选举产生的新的 Leader 服务器。</p>
-<h3 id="数据同步">数据同步</h3><p>完成 Leader 选举之后，在正式开始工作（即接收客户端的事务请求，然后提出新的提案）之前，Leader 服务器会首先确认事务日志中的所有 Proposal 是否已经被集群中过半的机器提交了，即是否完成数据同步。ZAB 协议的数据同步过程如下：</p>
+<h3 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h3><p>ZAB 协议的这个基于原子广播协议的消息传播过程，在正常情况下运行非常良好，但是一旦 Leader 服务器出现崩溃，或者说由于网络原因导致 Leader 服务器失去了与过半 Follower 的联系，那么就会进入崩溃恢复模式。在 ZAB 协议中，为了保证程序的正常运行，整个恢复过程结束后需要选举出一个新的 Leader 服务器。因此，ZAB 协议需要一个高效且可靠的 Leader 选举算法，从而确保能够快速地选举新的 Leader。同时，Leader 选举算法不仅需要让 Leader 自己知道其自身已经被选举为 Leader，同时还需要让集群中的所有其他机器也能够快速地感知到选举产生的新的 Leader 服务器。</p>
+<h3 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h3><p>完成 Leader 选举之后，在正式开始工作（即接收客户端的事务请求，然后提出新的提案）之前，Leader 服务器会首先确认事务日志中的所有 Proposal 是否已经被集群中过半的机器提交了，即是否完成数据同步。ZAB 协议的数据同步过程如下：</p>
 <p>所有正常运行的服务器，要么成为 Leader，要么成为 Follower 并和 Leader 保持同步。Leader 服务器需要确保所有的 Follower 服务器能够接收到每一条事务 Proposal，并且能够正确地将所有已经提交了的事务 Proposal 应用到内存数据库中去。具体的，Leader 服务器会为每一个 Follower 服务器都准备一个队列，并将那些没有被各 Follower 服务器同步的事务以 Proposal 消息的形式逐个发送给 Follower 服务器，并在每一个 Proposal 消息后面紧接着再发送一个 Commit 消息，以表示该事务已经被提交。等到 Follower 服务器将所有其尚未同步的事务 Proposal 都从 Leader 服务器上同步过来并成功应用到本地数据库中，Leader 服务器就会将该 Follower 服务器加入到真正的可用 Follower 列表中，并开始之后的其他流程。</p>
-<h3 id="ZAB_与_Paxos_算法的联系与区别">ZAB 与 Paxos 算法的联系与区别</h3><p>ZAB 协议并不是 Paxos 算法的一个典型实现，但两者之间也存在很多联系：</p>
+<h3 id="ZAB-与-Paxos-算法的联系与区别"><a href="#ZAB-与-Paxos-算法的联系与区别" class="headerlink" title="ZAB 与 Paxos 算法的联系与区别"></a>ZAB 与 Paxos 算法的联系与区别</h3><p>ZAB 协议并不是 Paxos 算法的一个典型实现，但两者之间也存在很多联系：</p>
 <ul>
 <li>两者都存在一个类似于 Leader 进程的角色，由其负责协调多个 Follower 进程的运行。</li>
 <li>Leader 进程都会等待超过半数的 Follower 做出正确的反馈后，才会将一个提案进行提交。</li>
@@ -683,103 +826,103 @@ Proposal 进行提交。
         
           
             <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
-<h3 id="单列值过滤器">单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
-<pre><code><span class="function">SingleColumnValueFilter</span>(byte<span class="attr_selector">[]</span> family, byte<span class="attr_selector">[]</span> qualifier,
-    CompareOp compareOp, byte<span class="attr_selector">[]</span> value)
-<span class="function">SingleColumnValueFilter</span>(byte<span class="attr_selector">[]</span> family, byte<span class="attr_selector">[]</span> qualifier,
+<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
+<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
+    CompareOp compareOp, byte[] value)
+SingleColumnValueFilter(byte[] family, byte[] qualifier,
     CompareOp compareOp, ByteArrayComparable comparator)
 </code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
 <p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
-<pre><code>boolean <span class="function"><span class="title">getFilterIfMissing</span><span class="params">()</span></span>
-void <span class="function"><span class="title">setFilterIfMissing</span><span class="params">(boolean filterIfMissing)</span></span>
-boolean <span class="function"><span class="title">getLatestVersionOnly</span><span class="params">()</span></span>
-void <span class="function"><span class="title">setLatestVersionOnly</span><span class="params">(boolean latestVersionOnly)</span></span>
+<pre><code>boolean getFilterIfMissing()
+void setFilterIfMissing(boolean filterIfMissing)
+boolean getLatestVersionOnly()
+void setLatestVersionOnly(boolean latestVersionOnly)
 </code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
 <p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">SingleColumnValueFilter</span> filter = new <span class="type">SingleColumnValueFilter</span>(
-        <span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-        <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>),
-        <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NOT_EQUAL</span>,
-        new <span class="type">SubstringComparator</span>(<span class="string">"val-5"</span>));
-filter.setFilterIfMissing(<span class="literal">true</span>);
+SingleColumnValueFilter filter = new SingleColumnValueFilter(
+        Bytes.toBytes(&quot;colfam1&quot;),
+        Bytes.toBytes(&quot;col-5&quot;),
+        CompareFilter.CompareOp.NOT_EQUAL,
+        new SubstringComparator(&quot;val-5&quot;));
+filter.setFilterIfMissing(true);
 
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>: scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result: scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-6"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
-</code></pre><h3 id="单列排除过滤器">单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
-<h3 id="前缀过滤器">前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
-<pre><code>Public <span class="function"><span class="title">PrefixFilter</span><span class="params">(byte[] prefix)</span></span>
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
+<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
+<pre><code>Public PrefixFilter(byte[] prefix)
 </code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">PrefixFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-1"</span>));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result : scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
-</code></pre><h3 id="包含结束的过滤器">包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
-<span class="type">Filter</span> filter = new <span class="type">InclusiveStopFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
 
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
-scan.setStartRow(<span class="type">Bytes</span>.toBytes(<span class="string">"row-3"</span>));
+Scan scan = new Scan();
+scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result:scanner){
+    System.out.println(result);
 }
 scanner.close();
-</code></pre><h3 id="时间戳过滤器">时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
-<pre><code><span class="function"><span class="title">TimestampFilter</span><span class="params">(List&lt;Long&gt; timestamps)</span></span>
+</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
+<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
 </code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">List</span>&lt;<span class="type">Long</span>&gt; ts = new <span class="type">ArrayList</span>&lt;<span class="type">Long</span>&gt;();
+List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
 // 向列表中添加时间戳
-ts.add(new <span class="type">Long</span>(<span class="number">5</span>));
-ts.add(new <span class="type">Long</span>(<span class="number">10</span>));
-ts.add(new <span class="type">Long</span>(<span class="number">15</span>));
-<span class="type">Filter</span> filter = new <span class="type">TimestampsFilter</span>(ts);
+ts.add(new Long(5));
+ts.add(new Long(10));
+ts.add(new Long(15));
+Filter filter = new TimestampsFilter(ts);
 
-<span class="type">Scan</span> scan1 = new <span class="type">Scan</span>();
+Scan scan1 = new Scan();
 // 向scan实例中添加过滤器
 scan1.setFilter(filter);
-<span class="type">ResultScanner</span> scanner1 = hTable.getScanner(scan1);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner1){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner1 = hTable.getScanner(scan1);
+for(Result result:scanner1){
+    System.out.println(result);
 }
 scanner1.close();
 
-<span class="type">Scan</span> scan2 = new <span class="type">Scan</span>();
+Scan scan2 = new Scan();
 scan2.setFilter(filter);
 // 添加时间范围限制
-scan2.setTimeRange(<span class="number">8</span>,<span class="number">12</span>);
-<span class="type">ResultScanner</span> scanner2 = hTable.getScanner(scan2);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>:scanner2){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+scan2.setTimeRange(8,12);
+ResultScanner scanner2 = hTable.getScanner(scan2);
+for(Result result:scanner2){
+    System.out.println(result);
 }
 scanner2.close();
 </code></pre>
@@ -911,159 +1054,159 @@ scanner2.close();
         
           
             <p>HBase 提供的第一种过滤器实现就是<strong>比较过滤器</strong>。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。</p>
-<pre><code>CompareFilter<span class="list">(<span class="keyword">CompareOp</span> valueCompareOp,
-    WritableByteArrayCompareable valueComparator)</span>
+<pre><code>CompareFilter(CompareOp valueCompareOp,
+    WritableByteArrayCompareable valueComparator)
 </code></pre><p>用户需要提供比较运算符和比较类来让过滤器工作。</p>
 <p>HBase 中过滤器本来的目的是为了筛掉无用的信息，被过滤掉的信息不会被传递到客户端，过滤器不能用来指定用户需要哪些信息，而是在读取数据的过程中不返回用户不想要的信息。</p>
 <p>相反，所有基于 CompareFilter 的过滤处理过程与上述描述正好相反，它们返回匹配的值</p>
-<h3 id="行过滤器">行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
+<h3 id="行过滤器"><a href="#行过滤器" class="headerlink" title="行过滤器"></a>行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = <span class="built_in">new</span> HTable(conf, <span class="string">"temp2"</span>);
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-Scan scan = <span class="built_in">new</span> Scan();
-scan.addColumn(Bytes.toBytes(<span class="string">"colfam1"</span>), Bytes.toBytes(<span class="string">"col-0"</span>));
-<span class="comment">// 指定比较运算符和比较器</span>
-Filter filter1 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
-        <span class="built_in">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"row-22"</span>)));
+Scan scan = new Scan();
+scan.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;col-0&quot;));
+// 指定比较运算符和比较器
+Filter filter1 = new RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;row-22&quot;)));
 scan.setFilter(filter1);
 ResultScanner scanner1 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner1){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner1){
+    System.out.println(res);
 }
-scanner1.<span class="built_in">close</span>();
+scanner1.close();
 
-<span class="comment">// 用正则表达式来匹配行键</span>
-Filter filter2 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="built_in">new</span> RegexStringComparator(<span class="string">".*-.5"</span>));
+// 用正则表达式来匹配行键
+Filter filter2 = new RowFilter(CompareFilter.CompareOp.EQUAL,
+        new RegexStringComparator(&quot;.*-.5&quot;));
 scan.setFilter(filter2);
 ResultScanner scanner2 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner2){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner2){
+    System.out.println(res);
 }
-scanner2.<span class="built_in">close</span>();
+scanner2.close();
 
-<span class="comment">// 子串匹配方法</span>
-Filter filter3 = <span class="built_in">new</span> RowFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="built_in">new</span> SubstringComparator(<span class="string">"-5"</span>));
+// 子串匹配方法
+Filter filter3 = new RowFilter(CompareFilter.CompareOp.EQUAL,
+        new SubstringComparator(&quot;-5&quot;));
 scan.setFilter(filter3);
 ResultScanner scanner3 = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner3){
-    System.out.<span class="built_in">println</span>(res);
+for(Result res: scanner3){
+    System.out.println(res);
 }
-scanner3.<span class="built_in">close</span>();
-</code></pre><h3 id="列族过滤器">列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
+scanner3.close();
+</code></pre><h3 id="列族过滤器"><a href="#列族过滤器" class="headerlink" title="列族过滤器"></a>列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = <span class="keyword">new</span> HTable(conf, <span class="string">"temp2"</span>);
-<span class="comment">// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族</span>
-Filter filter1 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.LESS,
-        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
-Scan scan = <span class="keyword">new</span> Scan();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族
+Filter filter1 = new FamilyFilter(CompareFilter.CompareOp.LESS,
+        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
+Scan scan = new Scan();
 scan.setFilter(filter1);
-<span class="comment">// 使用扫描器扫描</span>
+// 使用扫描器扫描
 ResultScanner scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(Result res: scanner){
-    System.<span class="keyword">out</span>.println(res);
+for(Result res: scanner){
+    System.out.println(res);
 }
 scanner.close();
 
-Get get1 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
-<span class="comment">// 使用和之前相同的过滤器获取同一行的数据</span>
+Get get1 = new Get(Bytes.toBytes(&quot;row-5&quot;));
+// 使用和之前相同的过滤器获取同一行的数据
 get1.setFilter(filter1);
-Result result1 = hTable.<span class="keyword">get</span>(get1);
-System.<span class="keyword">out</span>.println(<span class="string">"Result of get(): "</span> + result1);
+Result result1 = hTable.get(get1);
+System.out.println(&quot;Result of get(): &quot; + result1);
 
- <span class="comment">// 在一个列族上创建一个过滤器，同时获取另一行的数据</span>
-Filter filter2 = <span class="keyword">new</span> FamilyFilter(CompareFilter.CompareOp.EQUAL,
-        <span class="keyword">new</span> BinaryComparator(Bytes.toBytes(<span class="string">"colfam3"</span>)));
-Get get2 = <span class="keyword">new</span> Get(Bytes.toBytes(<span class="string">"row-5"</span>));
-get2.addFamily(Bytes.toBytes(<span class="string">"colfam1"</span>));
+ // 在一个列族上创建一个过滤器，同时获取另一行的数据
+Filter filter2 = new FamilyFilter(CompareFilter.CompareOp.EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
+Get get2 = new Get(Bytes.toBytes(&quot;row-5&quot;));
+get2.addFamily(Bytes.toBytes(&quot;colfam1&quot;));
 get2.setFilter(filter2);
-<span class="comment">// 使用新的过滤器获取同一行数据，此时返回的结果为 None </span>
-Result result2 = hTable.<span class="keyword">get</span>(get2);
-System.<span class="keyword">out</span>.print(<span class="string">"Result of get(): "</span> + result2);
-</code></pre><h4 id="列名过滤器">列名过滤器</h4><p>通过列名筛选特定的列。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+// 使用新的过滤器获取同一行数据，此时返回的结果为 None 
+Result result2 = hTable.get(get2);
+System.out.print(&quot;Result of get(): &quot; + result2);
+</code></pre><h4 id="列名过滤器"><a href="#列名过滤器" class="headerlink" title="列名过滤器"></a>列名过滤器</h4><p>通过列名筛选特定的列。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">QualifierFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">LESS_OR_EQUAL</span>,
-        new <span class="type">BinaryComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"col-2"</span>)));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new QualifierFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
+        new BinaryComparator(Bytes.toBytes(&quot;col-2&quot;)));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span>: scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result: scanner){
+    System.out.println(result);
 }
 scanner.close();
 
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
 get.setFilter(filter);
-<span class="type">Result</span> result2 = hTable.get(get);
-<span class="type">System</span>.<span class="keyword">out</span>.print(result2);
-</code></pre><h4 id="值过滤器">值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
+Result result2 = hTable.get(get);
+System.out.print(result2);
+</code></pre><h4 id="值过滤器"><a href="#值过滤器" class="headerlink" title="值过滤器"></a>值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
 
-<span class="type">Filter</span> filter = new <span class="type">ValueFilter</span>(<span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-        new <span class="type">SubstringComparator</span>(<span class="string">".4"</span>));
-<span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+Filter filter = new ValueFilter(CompareFilter.CompareOp.EQUAL,
+        new SubstringComparator(&quot;.4&quot;));
+Scan scan = new Scan();
 scan.setFilter(filter);
-<span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-<span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result : scanner){
+    System.out.println(result);
 }
 scanner.close();
-</code></pre><h3 id="参考列过滤器">参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
+</code></pre><h3 id="参考列过滤器"><a href="#参考列过滤器" class="headerlink" title="参考列过滤器"></a>参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
 <p>下面是它们的构造方法：</p>
-<pre><code><span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier)
-<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
-    <span class="keyword">boolean </span>dropDependentColumn)
-<span class="label">DependentColumnFilter</span>(<span class="keyword">byte[] </span>family, <span class="keyword">byte[] </span>qualifier,
-    <span class="keyword">boolean </span>dropDependentColumn, CompareOp valueCompareOp,
-    <span class="keyword">ByteArrayComparable </span>valueComparator)
+<pre><code>DependentColumnFilter(byte[] family, byte[] qualifier)
+DependentColumnFilter(byte[] family, byte[] qualifier,
+    boolean dropDependentColumn)
+DependentColumnFilter(byte[] family, byte[] qualifier,
+    boolean dropDependentColumn, CompareOp valueCompareOp,
+    ByteArrayComparable valueComparator)
 </code></pre><p>由于参考过滤器也是继承自 CompareFilter，所以它也可以帮助用户筛选列，不过这个过滤器是基于这些列值进行筛选的。用户可以把他理解为一个 ValueFilter 和 一个时间戳过滤器的组合。用户可以传入比较运算符和基准值来启用 ValueFilter 的功能。</p>
 <p>下面这个例子展示了参考过滤器的用法：</p>
-<pre><code>public class <span class="type">Filter5</span> {
-    private <span class="keyword">static</span> <span class="type">void</span> filter(boolean drop,
-                               <span class="type">CompareFilter</span>.<span class="type">CompareOp</span> operator,
-                               <span class="type">ByteArrayComparable</span> comparator)
-    throws <span class="type">IOException</span> {
-        <span class="type">Filter</span> filter;
-        <span class="keyword">if</span>(comparator != null){
-            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop, operator, comparator);
-        } <span class="keyword">else</span> {
-            filter = new <span class="type">DependentColumnFilter</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>),
-                    <span class="type">Bytes</span>.toBytes(<span class="string">"col-5"</span>), drop);
+<pre><code>public class Filter5 {
+    private static void filter(boolean drop,
+                               CompareFilter.CompareOp operator,
+                               ByteArrayComparable comparator)
+    throws IOException {
+        Filter filter;
+        if(comparator != null){
+            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
+                    Bytes.toBytes(&quot;col-5&quot;), drop, operator, comparator);
+        } else {
+            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
+                    Bytes.toBytes(&quot;col-5&quot;), drop);
         }
 
-    <span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-    <span class="type">HTable</span> hTable = new <span class="type">HTable</span>(conf, <span class="string">"temp2"</span>);
-    <span class="type">Scan</span> scan = new <span class="type">Scan</span>();
+    Configuration conf = HBaseConfiguration.create();
+    HTable hTable = new HTable(conf, &quot;temp2&quot;);
+    Scan scan = new Scan();
     scan.setFilter(filter);
-    <span class="type">ResultScanner</span> scanner = hTable.getScanner(scan);
-    <span class="keyword">for</span>(<span class="type">Result</span> <span class="literal">result</span> : scanner){
-        <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+    ResultScanner scanner = hTable.getScanner(scan);
+    for(Result result : scanner){
+        System.out.println(result);
     }
     scanner.close();
 
-    <span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row-5"</span>));
+    Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
     get.setFilter(filter);
-    <span class="type">Result</span> <span class="literal">result</span> = hTable.get(get);
-    <span class="type">System</span>.<span class="keyword">out</span>.println(<span class="literal">result</span>);
+    Result result = hTable.get(get);
+    System.out.println(result);
 
 }
-public <span class="keyword">static</span> <span class="type">void</span> main(<span class="type">String</span>[] args) throws <span class="type">IOException</span>
+public static void main(String[] args) throws IOException
 {
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">NO_OP</span>, null);
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">BinaryPrefixComparator</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"val-5"</span>)));
-    filter(<span class="literal">true</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
-    filter(<span class="literal">false</span>, <span class="type">CompareFilter</span>.<span class="type">CompareOp</span>.<span class="type">EQUAL</span>,
-            new <span class="type">RegexStringComparator</span>(<span class="string">".*\\.5"</span>));
+    filter(true, CompareFilter.CompareOp.NO_OP, null);
+    filter(false, CompareFilter.CompareOp.NO_OP, null);
+    filter(true, CompareFilter.CompareOp.EQUAL,
+            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
+    filter(false, CompareFilter.CompareOp.EQUAL,
+            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
+    filter(true, CompareFilter.CompareOp.EQUAL,
+            new RegexStringComparator(&quot;.*\\.5&quot;));
+    filter(false, CompareFilter.CompareOp.EQUAL,
+            new RegexStringComparator(&quot;.*\\.5&quot;));
     }
 }
 </code></pre>
@@ -1194,69 +1337,69 @@ public <span class="keyword">static</span> <span class="type">void</span> main(<
       
         
           
-            <h3 id="基本概念">基本概念</h3><p>扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。</p>
+            <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。</p>
 <p>Scan 类拥有以下构造器：</p>
-<pre><code><span class="function"><span class="title">Scan</span><span class="params">()</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, Filter filter)</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow)</span></span>
-<span class="function"><span class="title">Scan</span><span class="params">(byte[] startRow, byte[] stopRow)</span></span>
+<pre><code>Scan()
+Scan(byte[] startRow, Filter filter)
+Scan(byte[] startRow)
+Scan(byte[] startRow, byte[] stopRow)
 </code></pre><p>我们可以选择性地提供 startRow 参数，来定义扫描读取 HBase 表的起始行键，即行键不是必须指定的。同时可选 stopRow 来限定读取到何时停止。</p>
 <p>创建 Scan 实例之后，用户可能还要给它增加更多限制条件。可以使用多种方法限制所要读取的数据：</p>
-<pre><code>Scan <span class="function"><span class="title">addFamily</span><span class="params">(byte[] family)</span></span>
-Scan <span class="function"><span class="title">addColumn</span><span class="params">(byte[] family, byte[] qualifier)</span></span>
+<pre><code>Scan addFamily(byte[] family)
+Scan addColumn(byte[] family, byte[] qualifier)
 </code></pre><p>一旦设置好了 Scan 实例，就可以调用 Htable 的 getScanner() 方法，获得用于检索数据的 ResultScanner 实例。</p>
 <p>扫描操作不会通过一次 RPC 请求返回所有匹配的行，而是以行为单位进行返回，很明显，行的数目很大，可能有上千条甚至更多，同时在一次请求中发送大量数据，会占用大量的系统资源并消耗很长时间。</p>
 <p>ResultScanner 把扫描操作转换为类似的 get 操作，它将每一行数据封装成一个 Result 实例，并将所有的 Result 实例放入一个迭代器中，ResultScanner 的一些方法如下：</p>
-<pre><code>Result <span class="function"><span class="title">next</span><span class="params">()</span></span> throws IOException
-Result <span class="function"><span class="title">next</span><span class="params">(int nbRows)</span></span> throws IOException
-void <span class="function"><span class="title">close</span><span class="params">()</span></span>
+<pre><code>Result next() throws IOException
+Result next(int nbRows) throws IOException
+void close()
 </code></pre><p>有 2 种类型的 next() 调用供用户选择。调用 close() 方法会释放所有由扫描控制的资源。</p>
 <p>next() 调用返回一个单独的 Result 实例，这个实例代表了下一个可用的行。此外，用户可以使用 next(int nbRows) 一次获取多行数据，它返回一个数组，数组中包含的 Result 实例最多可达 nbRows 个，每个实例代表唯一的一行。下面展示了一个关于扫描的简单例子。</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable <span class="built_in">table</span> = new HTable(conf, <span class="string">"test"</span>);
+HTable table = new HTable(conf, &quot;test&quot;);
 
 Scan scan1 = new Scan();
-ResultScanner scanner1 = <span class="built_in">table</span>.getScanner(scan1);
-<span class="keyword">for</span> (Result res: scanner1) {
-    System.<span class="keyword">out</span>.println(res);
+ResultScanner scanner1 = table.getScanner(scan1);
+for (Result res: scanner1) {
+    System.out.println(res);
 }
 scanner1.close();
 
 Scan scan2 = new Scan();
-scan2.addFamily(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>));
-ResultScanner scanner2 = <span class="built_in">table</span>.getScanner(scan2);
-<span class="keyword">for</span> (Result res: scanner2) {
-    System.<span class="keyword">out</span>.println(res);
+scan2.addFamily(Bytes.toBytes(&quot;colfam1&quot;));
+ResultScanner scanner2 = table.getScanner(scan2);
+for (Result res: scanner2) {
+    System.out.println(res);
 }
 scanner2.close();
 
 Scan scan3 = new Scan();
 // 使用 builder 模式将详细限制条件添加到 Scan 中
-scan3.addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-5"</span>))
-        .addColumn(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam2"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"col-33"</span>))
-        .<span class="built_in">set</span>StartRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-10"</span>)).<span class="built_in">set</span>StopRow(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row-20"</span>));
-ResultScanner scanner3 = <span class="built_in">table</span>.getScanner(scan3);
-<span class="keyword">for</span>(Result res: scanner3) {
-    System.<span class="keyword">out</span>.println(res);
+scan3.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;col-5&quot;))
+        .addColumn(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;col-33&quot;))
+        .setStartRow(Bytes.toBytes(&quot;row-10&quot;)).setStopRow(Bytes.toBytes(&quot;row-20&quot;));
+ResultScanner scanner3 = table.getScanner(scan3);
+for(Result res: scanner3) {
+    System.out.println(res);
 }
 scanner3.close();
 </code></pre><p><strong>注意</strong>：要确保尽早释放扫描器实例，一个打开的扫描器会占用不少服务端资源，累积多了会占用大量的堆空间。当使用完 ResultScanner 之后应调用它的 close() 方法，同时应当把 close() 方法放到 try/finally 块中，以保证其在迭代获取数据过程中出现异常和错误时，仍然能执行 close()。</p>
-<h3 id="缓存与批量处理">缓存与批量处理</h3><p>当我想要一次 RPC 请求可以获取多行数据时，可以使用<strong>扫描器缓存</strong>，默认情况下，这个缓存是关闭的。</p>
+<h3 id="缓存与批量处理"><a href="#缓存与批量处理" class="headerlink" title="缓存与批量处理"></a>缓存与批量处理</h3><p>当我想要一次 RPC 请求可以获取多行数据时，可以使用<strong>扫描器缓存</strong>，默认情况下，这个缓存是关闭的。</p>
 <p>可以在连个层面上打开它：在表的层面，这个表所有扫描实例的缓存都会生效：也可以在扫描层面，这样便只会影响当前的扫描实例。用户可以使用以下的 HTable 方法设置表级的扫描器缓存：</p>
-<pre><code>void <span class="function"><span class="title">setScannerCaching</span><span class="params">(int scannerCaching)</span></span>
-int <span class="function"><span class="title">getScannerCaching</span><span class="params">()</span></span>
+<pre><code>void setScannerCaching(int scannerCaching)
+int getScannerCaching()
 </code></pre><p>用户可以修改整个 HBase 集群的默认值1，只要把下面的配置项添加到 hbase-site.xml 中即可。</p>
-<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.client.scanner.caching<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>10<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-<span class="tag">&lt;/<span class="title">property</span>&gt;</span>
+<pre><code>&lt;property&gt;
+    &lt;name&gt;hbase.client.scanner.caching&lt;/name&gt;
+    &lt;value&gt;10&lt;/value&gt;
+&lt;/property&gt;
 </code></pre><p>可以使用下列 Scan 类的方法设置扫描级别的缓存：</p>
-<pre><code>void <span class="function"><span class="title">setCaching</span><span class="params">(int caching)</span></span>
-int <span class="function"><span class="title">getCaching</span><span class="params">()</span></span>
+<pre><code>void setCaching(int caching)
+int getCaching()
 </code></pre><p><strong>注意</strong>：扫描层面的配置高于表层面的配置，这两种方法能控制每次RPC调用取回的行数。</p>
 <p>我们之前介绍的了如何使用客户端的扫描器缓存来从远程 region 服务器向客户端整批传输数据，不过还有一件事需要注意：数据量非常大的行，这些行有可能超过客户端进程的内存容量。HBase 和它的客户端 API 对这个问题有一个解决方法：批量。用户可以使用以下方法控制批量获取操作：</p>
-<pre><code>void <span class="function"><span class="title">setBatch</span><span class="params">(int batch)</span></span>
-int <span class="function"><span class="title">getBatch</span><span class="params">()</span></span>
+<pre><code>void setBatch(int batch)
+int getBatch()
 </code></pre><p>缓存是面向行一级的操作，而批量则是面向列一级的操作。批量可以让用户选择每一次 ResultScanner 实例的 next() 操作要取回多少列。例如，在扫描中设置 setBatch(5)，则一次 next() 返回的 Result 实例会包括 5 列。</p>
 <p>通过组合使用扫描器缓存和批量大小，可以让用户方便地控制一个范围内的行键时所需要的 RPC 调用次数。</p>
 
@@ -1387,73 +1530,73 @@ int <span class="function"><span class="title">getBatch</span><span class="param
       
         
           
-            <h3 id="单行删除">单行删除</h3><p>delete() 方法 </p>
-<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(<span class="keyword">Delete</span> <span class="keyword">delete</span>) <span class="keyword">throws</span> IOException
+            <h3 id="单行删除"><a href="#单行删除" class="headerlink" title="单行删除"></a>单行删除</h3><p>delete() 方法 </p>
+<pre><code>void delete(Delete delete) throws IOException
 </code></pre><p>和 get 及 post 方法一样，用户必须先创建一个 Delete 实例，然后再添加想要删除的数据的详细信息。</p>
 <p>下面是一个使用 delete() 函数的例子</p>
 <pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, "test1");
-<span class="operator"><span class="keyword">Delete</span> <span class="keyword">delete</span> = <span class="keyword">new</span> <span class="keyword">Delete</span>(<span class="keyword">Bytes</span>.toBytes(<span class="string">"row1"</span>));</span>
+HTable table = new HTable(conf, &quot;test1&quot;);
+Delete delete = new Delete(Bytes.toBytes(&quot;row1&quot;));
 // 设置时间戳
-<span class="operator"><span class="keyword">delete</span>.setTimestamp(<span class="number">1</span>);</span>
+delete.setTimestamp(1);
 // 删除一列中的特定版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumn(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>), <span class="number">1</span>);</span>
+delete.deleteColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 1);
 // 删除一列中的全部版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual1"</span>));</span>
+delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual1&quot;));
 // 删除一列中的给定版本和所有更旧的版本
-<span class="operator"><span class="keyword">delete</span>.deleteColumns(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam2"</span>), <span class="keyword">Bytes</span>.toBytes(<span class="string">"qual3"</span>),<span class="number">15</span>);</span>
+delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual3&quot;),15);
 // 删除整个列族,包括所有的列和版本
-<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>));</span>
+delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;));
 // 删除给定列族中的所有列的给定版本和所有更旧的版本
-<span class="operator"><span class="keyword">delete</span>.deleteFamily(<span class="keyword">Bytes</span>.toBytes(<span class="string">"colfam3"</span>), <span class="number">3</span>);</span>
-table.delete(<span class="operator"><span class="keyword">delete</span>);</span>
+delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;), 3);
+table.delete(delete);
 table.close(); 
-</code></pre><h3 id="多行删除">多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
-<pre><code><span class="keyword">void</span> <span class="keyword">delete</span>(List&lt;<span class="keyword">Delete</span>&gt; deletes) <span class="keyword">throw</span> IOException
+</code></pre><h3 id="多行删除"><a href="#多行删除" class="headerlink" title="多行删除"></a>多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
+<pre><code>void delete(List&lt;Delete&gt; deletes) throw IOException
 </code></pre><p>这里不再赘述。</p>
-<h3 id="批量处理操作">批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
-<pre><code>void <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions, Object[] results)</span></span> throws 
+<h3 id="批量处理操作"><a href="#批量处理操作" class="headerlink" title="批量处理操作"></a>批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
+<pre><code>void batch(List&lt;Row&gt; actions, Object[] results) throws 
     IOException, InterruptedException
-Object[] <span class="function"><span class="title">batch</span><span class="params">(List&lt;Row&gt; actions)</span></span> throws
+Object[] batch(List&lt;Row&gt; actions) throws
     IOException, InterruptedException
 </code></pre><p>上面的 API 提供了批量处理操作。用户可能注意到这里引入了一个新的名为 Row 的类，它是 Put、Get 和 Delete 的祖先，或者是父类。</p>
 <p>使用同样的父类允许在列表中实现多态，即放入以上 3 种不同的子类。这种调用跟之前介绍的基于列表的调用方法一样简单易用。下面展示了一个简单的例子。</p>
-<pre><code>Configuration <span class="keyword">conf</span> = HBaseConfiguration.create();
-HTable table = <span class="keyword">new</span> HTable(<span class="keyword">conf</span>, <span class="string">"test"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test&quot;);
 
-byte[] ROW1 = Bytes.toBytes(<span class="string">"row1"</span>);
-byte[] ROW2 = Bytes.toBytes(<span class="string">"row2"</span>);
+byte[] ROW1 = Bytes.toBytes(&quot;row1&quot;);
+byte[] ROW2 = Bytes.toBytes(&quot;row2&quot;);
 
-byte[] COLFAM1 = Bytes.toBytes(<span class="string">"colfam1"</span>);
+byte[] COLFAM1 = Bytes.toBytes(&quot;colfam1&quot;);
 
-byte[] QUAL1 = Bytes.toBytes(<span class="string">"qual1"</span>);
+byte[] QUAL1 = Bytes.toBytes(&quot;qual1&quot;);
 
-List&lt;Row&gt; batch = <span class="keyword">new</span> ArrayList&lt;Row&gt;();
+List&lt;Row&gt; batch = new ArrayList&lt;Row&gt;();
 
-Put <span class="keyword">put</span> = <span class="keyword">new</span> Put(ROW1);
-<span class="keyword">put</span>.<span class="built_in">add</span>(COLFAM1, QUAL2,Bytes.toBytes(<span class="string">"val5"</span>));
-batch.<span class="built_in">add</span>(<span class="keyword">put</span>);
+Put put = new Put(ROW1);
+put.add(COLFAM1, QUAL2,Bytes.toBytes(&quot;val5&quot;));
+batch.add(put);
 
-Get get1 = <span class="keyword">new</span> Get(ROW2);
+Get get1 = new Get(ROW2);
 get1.addColumn(COLFAM1,QUAL2);
-batch.<span class="built_in">add</span>(get1);
+batch.add(get1);
 
-Delete <span class="built_in">delete</span> = <span class="keyword">new</span> Delete(ROW1);
-<span class="built_in">delete</span>.deleteColumns(COLFAM1,QUAL2);
-batch.<span class="built_in">add</span>(<span class="built_in">delete</span>);
+Delete delete = new Delete(ROW1);
+delete.deleteColumns(COLFAM1,QUAL2);
+batch.add(delete);
 
 table.batch(batch, results);
 </code></pre><p><strong>注意</strong>：不可以将针对同一行的 Put 和 Delete 操作放在同一个批量处理请求中。</p>
-<h3 id="行锁">行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
+<h3 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
 <p>处理服务器端隐式加锁之外，客户端也可以显示地对当行数据的多次操作进行加锁，通过以下调用实现：</p>
-<pre><code>RowLock <span class="function"><span class="title">lockRow</span><span class="params">(byte[] row)</span></span> throws IOException
-void <span class="function"><span class="title">unlockRow</span><span class="params">(RowLock r1)</span></span> throws IOException
+<pre><code>RowLock lockRow(byte[] row) throws IOException
+void unlockRow(RowLock r1) throws IOException
 </code></pre><p>第一个调用 lockRow() 需要一个行健作为参数，返回一个 RowLock 的实例，这个实例可以供后续的 Put 或者 Delete 的构造函数使用。一旦不再需要锁时，必须通过 unLockRow() 调用来释放它。</p>
 <p>默认的锁超时时间是一分钟，但是可以在 <strong>hbase-site.xml</strong> 文件中添加一下配置项。</p>
-<pre><code><span class="tag">&lt;<span class="title">property</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">name</span>&gt;</span>hbase.regionserver.lease.period<span class="tag">&lt;/<span class="title">name</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">value</span>&gt;</span>1200000<span class="tag">&lt;/<span class="title">value</span>&gt;</span>
-<span class="tag">&lt;<span class="title">property</span>&gt;</span>
+<pre><code>&lt;property&gt;
+    &lt;name&gt;hbase.regionserver.lease.period&lt;/name&gt;
+    &lt;value&gt;1200000&lt;/value&gt;
+&lt;property&gt;
 </code></pre><p><strong>注意</strong>：Get 方法是不需要锁的。</p>
 
           
@@ -1583,124 +1726,124 @@ void <span class="function"><span class="title">unlockRow</span><span class="par
       
         
           
-            <h3 id="单行_Put">单行 Put</h3><pre><code>void <span class="function"><span class="title">put</span><span class="params">(Put put)</span></span> throws IOException
+            <h3 id="单行-Put"><a href="#单行-Put" class="headerlink" title="单行 Put"></a>单行 Put</h3><pre><code>void put(Put put) throws IOException
 </code></pre><p>这个方法以单个 Put 或存储在列表中的一组 Put 对象作为输入参数。</p>
 <p>创建 Put 实例时用户需要提供一个行健 row，在 HBase 中每行数据都有唯一的行健作为标识，跟 HBase 的大多数数据类型一样，它是一个 Java 的 byte[] 数组。用户可以按自己的需求来指定每行的行健。</p>
 <p>下面是一个简单的 HBase 插入数据的实例应用。</p>
-<pre><code>Configuration <span class="keyword">conf</span> = HBaseConfiguration.create();
-HTable table = <span class="keyword">new</span> HTable(<span class="keyword">conf</span>, <span class="string">"test1"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 //指定一行来创建一个 Put
-Put <span class="keyword">put</span> = <span class="keyword">new</span> Put(Bytes.toBytes(<span class="string">"row1"</span>));
-//向 Put 中添加一个名为 <span class="string">"colfam1:qual1"</span> 的列
-<span class="keyword">put</span>.<span class="built_in">add</span>(Bytes.toBytes(<span class="string">"colfam1"</span>), Bytes.toBytes(<span class="string">"qual1"</span>), 
-Bytes.toBytes(<span class="string">"val1"</span>));
+Put put = new Put(Bytes.toBytes(&quot;row1&quot;));
+//向 Put 中添加一个名为 &quot;colfam1:qual1&quot; 的列
+put.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 
+Bytes.toBytes(&quot;val1&quot;));
 //将这一行存储到 HBase 表中
-table.<span class="keyword">put</span>(<span class="keyword">put</span>);
+table.put(put);
 // 关闭表
-table.<span class="keyword">close</span>();
-</code></pre><h3 id="客户端的写缓存区">客户端的写缓存区</h3><p>每一个put操作实际上都是一个 RPC 操作，它将客户端数据传送到服务器然后返回。这只适合小数据量的操作，如果有个应用程序需要每秒存储上千行数据到 HBase 表中，就不太合适，</p>
+table.close();
+</code></pre><h3 id="客户端的写缓存区"><a href="#客户端的写缓存区" class="headerlink" title="客户端的写缓存区"></a>客户端的写缓存区</h3><p>每一个put操作实际上都是一个 RPC 操作，它将客户端数据传送到服务器然后返回。这只适合小数据量的操作，如果有个应用程序需要每秒存储上千行数据到 HBase 表中，就不太合适，</p>
 <p>HBase 的 api 配备了一个客户端的写缓冲区，缓冲区负责收集 put 操作，然后调用 RPC 操作一次性将 put 送往服务器。全局交换机控制着该缓冲区是否在使用。默认情况下，客户端缓冲区是禁用的。可以通过将 自动刷写（autoflush）设置为 false 来激活缓冲区。</p>
 <p>下面举一个客户端写缓冲区的例子，这样比较好理解一些：</p>
 <p>Configuration conf = HBaseConfiguration.create();</p>
-<pre><code>HTable <span class="built_in">table</span> = new HTable(conf, <span class="string">"test1"</span>);
+<pre><code>HTable table = new HTable(conf, &quot;test1&quot;);
 //检查自动刷写标识位的设置
-System.<span class="keyword">out</span>.println(<span class="string">"Auto flush: "</span> + <span class="built_in">table</span>.isAutoFlush());
+System.out.println(&quot;Auto flush: &quot; + table.isAutoFlush());
 //将一些行和列数据存入 HBase
-<span class="built_in">table</span>.<span class="built_in">set</span>AutoFlushTo(false);
+table.setAutoFlushTo(false);
 
-Put put1 = new Put(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row1"</span>));
-put1.add(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"qual1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"val1"</span>));
-<span class="built_in">table</span>.put(put1);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+table.put(put1);
 
-Put put2 = new Put(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row2"</span>));
-put2.add(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"colfam1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"qual1"</span>), Bytes.<span class="keyword">to</span>Bytes(<span class="string">"val2"</span>));
-<span class="built_in">table</span>.put(put2);
+Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val2&quot;));
+table.put(put2);
 
-Get get = new Get(Bytes.<span class="keyword">to</span>Bytes(<span class="string">"row1"</span>));
-//试图加载先前存储的行,结果会打印出 <span class="string">" Restful: keyvalues=NONE "</span>
-Result res1 = <span class="built_in">table</span>.get(get);
-System.<span class="keyword">out</span>.println(<span class="string">"Result: "</span> + res1);
+Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
+//试图加载先前存储的行,结果会打印出 &quot; Restful: keyvalues=NONE &quot;
+Result res1 = table.get(get);
+System.out.println(&quot;Result: &quot; + res1);
 // 强制刷写缓冲区,会导致产生一个 RPC 请求
-<span class="built_in">table</span>.flushCommits();
+table.flushCommits();
 // 现在,这一行被持久化了,可以被读取了
-Result res2 = <span class="built_in">table</span>.get(get);
-System.<span class="keyword">out</span>.println(<span class="string">"Result: "</span> + res2);
-</code></pre><h3 id="Put_列表">Put 列表</h3><p>客户端的 api 可以插入单个 Put 实例，同时也有批量处理操作的高级特性。请看下面的例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable table = <span class="literal">new</span> HTable(conf, <span class="string">"test1"</span>);
+Result res2 = table.get(get);
+System.out.println(&quot;Result: &quot; + res2);
+</code></pre><h3 id="Put-列表"><a href="#Put-列表" class="headerlink" title="Put 列表"></a>Put 列表</h3><p>客户端的 api 可以插入单个 Put 实例，同时也有批量处理操作的高级特性。请看下面的例子：</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 
-<span class="built_in">List</span>&lt;Put&gt; puts = <span class="literal">new</span> ArrayList&lt;Put&gt;();
+List&lt;Put&gt; puts = new ArrayList&lt;Put&gt;();
 
-Put put1 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-put1<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>));
-puts<span class="built_in">.</span>add(put1);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+puts.add(put1);
 
-Put put2 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row2"</span>));
-put2<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual2"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val2"</span>));
-puts<span class="built_in">.</span>add(put2);
+Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
+puts.add(put2);
 
-table<span class="built_in">.</span>put(puts);
+table.put(puts);
 </code></pre><p> 上面这个例子使用列表向 HBase 中添加数据。当使用基于列表的 put 调用时，用户需要特别注意：用户无法控制服务器执行 put 的顺序，这意味着服务器被调用的顺序也不受用户控制。如果要保证写入的顺序，需要小心地使用这个操作，最坏的情况，要减少每一批量的操作数，并显示地刷写客户端写缓冲区，强制把操作发送到远程服务器。</p>
-<h3 id="原子性操作_compare-and-set">原子性操作 compare-and-set</h3><p>有一种特别的 put 调用，其能保证自身操作的原子性：检查写。有了这种带有检查功能的方法，就能保证服务器端 put 操作的原子性。如果检查成功通过，就执行 put 操作，否则就彻底放弃修改操作。这种方法可用来检查现有相关值，并决定是否修改数据的操作。</p>
-<pre><code><span class="keyword">boolean</span> checkAndPut(<span class="keyword">Byte</span>[] row, <span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier, 
-    <span class="keyword">byte</span>[] value, Put put) <span class="keyword">throws</span> IOException
+<h3 id="原子性操作-compare-and-set"><a href="#原子性操作-compare-and-set" class="headerlink" title="原子性操作 compare-and-set"></a>原子性操作 compare-and-set</h3><p>有一种特别的 put 调用，其能保证自身操作的原子性：检查写。有了这种带有检查功能的方法，就能保证服务器端 put 操作的原子性。如果检查成功通过，就执行 put 操作，否则就彻底放弃修改操作。这种方法可用来检查现有相关值，并决定是否修改数据的操作。</p>
+<pre><code>boolean checkAndPut(Byte[] row, byte[] family, byte[] qualifier, 
+    byte[] value, Put put) throws IOException
 </code></pre><p>这种有原子性保证的操作经常被用于账户结余、状态转换或数据处理等场景。这些应用场景的共同点是，在读取数据的同时需要处理数据。一旦你想把一个处理好的结果写回 HBase，并保证没有其他客户端已经做了同样的事情，你就可以使用这个有原子性保证的操作，先比较原值，再做修改。</p>
 <p>有一种特别的检查通过 <strong>checkAndPut()</strong> 调用来完成，即只有在另外一个值不存在的情况下，才执行这个修改。要执行这种操作只需要将参数 value 设置为 <strong>null</strong> 即可，只要指定列不存在，就可以成功执行修改操作。</p>
-<pre><code>Configuration conf = HBaseConfiguration<span class="built_in">.</span>create();
-HTable table = <span class="literal">new</span> HTable(conf, <span class="string">"test1"</span>);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
 
-Put put1 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-put1<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>));
-<span class="comment">//检查指定列是否存在,按检查的结果决定是否执行 put 操作</span>
-<span class="built_in">boolean</span> res1 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">null</span>,put1);
-<span class="comment">//输出结果应为: "Put applied: true"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res1);
-<span class="comment">//再次向同一单元格写入数据</span>
-<span class="built_in">boolean</span> res2 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">null</span>,put1);
-<span class="comment">//因为那个列的值已经存在,此时的输出结果应为 "Put applied:false"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res2);
+Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
+put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
+//检查指定列是否存在,按检查的结果决定是否执行 put 操作
+boolean res1 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
+//输出结果应为: &quot;Put applied: true&quot;
+System.out.println(&quot;Put applied: &quot; + res1);
+//再次向同一单元格写入数据
+boolean res2 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
+//因为那个列的值已经存在,此时的输出结果应为 &quot;Put applied:false&quot;
+System.out.println(&quot;Put applied: &quot; + res2);
 
-Put put2 = <span class="literal">new</span> Put(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>));
-<span class="comment">//创建一个新的 Put 实例,这次使用一个不同的列限定符</span>
-put2<span class="built_in">.</span>add(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual2"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val2"</span>));
-<span class="comment">//当上一次的put值存在时,写入新的值</span>
-<span class="built_in">boolean</span> res3 = table<span class="built_in">.</span>checkAndPut(<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"row1"</span>),
-        <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"colfam1"</span>), <span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"qual1"</span>),<span class="built_in">Bytes</span><span class="built_in">.</span>toBytes(<span class="string">"val1"</span>),put2);
-<span class="comment">//因为已经存在,所以输出的结果应当为 "Put applied: true"</span>
-System<span class="built_in">.</span>out<span class="built_in">.</span>println(<span class="string">"Put applied: "</span> + res3);
-</code></pre><h3 id="单行_Get">单行 Get</h3><p>get 方法分为两类：一类是一次获取一行数据；另一类是一次获取多行数据。</p>
+Put put2 = new Put(Bytes.toBytes(&quot;row1&quot;));
+//创建一个新的 Put 实例,这次使用一个不同的列限定符
+put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
+//当上一次的put值存在时,写入新的值
+boolean res3 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
+        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),Bytes.toBytes(&quot;val1&quot;),put2);
+//因为已经存在,所以输出的结果应当为 &quot;Put applied: true&quot;
+System.out.println(&quot;Put applied: &quot; + res3);
+</code></pre><h3 id="单行-Get"><a href="#单行-Get" class="headerlink" title="单行 Get"></a>单行 Get</h3><p>get 方法分为两类：一类是一次获取一行数据；另一类是一次获取多行数据。</p>
 <p>与 Put 操作一样。用户有许多方法可用，可用通过多种标准筛选目标数据，也可以指定精确的坐标获取某个单元格的数据:</p>
-<pre><code>Get <span class="function"><span class="title">addFamily</span><span class="params">(byte[] family)</span></span>
-Get <span class="function"><span class="title">addColumn</span><span class="params">(bytep[] family, byte[] qualifier)</span></span>
-Get <span class="function"><span class="title">setTimeRange</span><span class="params">(long minStamp,long maxStamp)</span></span> throws IOException
-Get <span class="function"><span class="title">setTimeStamp</span><span class="params">(long timeStamp)</span></span>
-Get <span class="function"><span class="title">getMaxVersions</span><span class="params">()</span></span> 
-Get <span class="function"><span class="title">setMaxVersions</span><span class="params">(int maxVersions)</span></span> throws IOException
+<pre><code>Get addFamily(byte[] family)
+Get addColumn(bytep[] family, byte[] qualifier)
+Get setTimeRange(long minStamp,long maxStamp) throws IOException
+Get setTimeStamp(long timeStamp)
+Get getMaxVersions() 
+Get setMaxVersions(int maxVersions) throws IOException
 </code></pre><p>下面一个例子展示了从 HBase 中获取数据的整个过程</p>
-<pre><code><span class="type">Configuration</span> conf = <span class="type">HBaseConfiguration</span>.create();
-<span class="type">HTable</span> table = new <span class="type">HTable</span>(conf, <span class="string">"test1"</span>);
-// 使用一个指定的行健构建一个 <span class="type">Get</span> 实例
-<span class="type">Get</span> get = new <span class="type">Get</span>(<span class="type">Bytes</span>.toBytes(<span class="string">"row1"</span>));
-// 向 <span class="type">Get</span> 实例中添加一个列
-get.addColumn(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"qual1"</span>));
-// 从 <span class="type">HBase</span> 中获取指定列的行数据
-<span class="type">Result</span> <span class="literal">result</span> = table.get(get);
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable table = new HTable(conf, &quot;test1&quot;);
+// 使用一个指定的行健构建一个 Get 实例
+Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
+// 向 Get 实例中添加一个列
+get.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
+// 从 HBase 中获取指定列的行数据
+Result result = table.get(get);
 // 从返回的结果中获取对应列的数据
-byte[] val = <span class="literal">result</span>.getValue(<span class="type">Bytes</span>.toBytes(<span class="string">"colfam1"</span>), <span class="type">Bytes</span>.toBytes(<span class="string">"qual1"</span>));
+byte[] val = result.getValue(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
 // 将数据转换为字符串打印输出
-<span class="type">System</span>.<span class="keyword">out</span>.println(<span class="string">"Value: "</span> + <span class="type">Bytes</span>.toString(val));
+System.out.println(&quot;Value: &quot; + Bytes.toString(val));
 </code></pre><p>get 方法调用后返回一个 Result 类的实例。这里着重介绍一下 Restful 类一些面向列的存取函数：</p>
-<pre><code><span class="function">List&lt;KeyValue&gt; <span class="title">getColumn</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
-<span class="function">KeyValue <span class="title">getColumnLatest</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
-<span class="function"><span class="keyword">boolean</span> <span class="title">containsColumn</span><span class="params">(<span class="keyword">byte</span>[] family, <span class="keyword">byte</span>[] qualifier)</span></span>;
+<pre><code>List&lt;KeyValue&gt; getColumn(byte[] family, byte[] qualifier);
+KeyValue getColumnLatest(byte[] family, byte[] qualifier);
+boolean containsColumn(byte[] family, byte[] qualifier);
 </code></pre><p>这个方法返回一个特定列的多个值，返回值中的版本数取决于用户调用 get()方法之前，创建 Get 实例时设置的最大版本数，默认是1.换句话说，getColumn() 返回的列表中包括 0 或 1 个条目，这一条目是该列最新版本的值，如果用户指定了一个比默认值 1 大的版本数，返回的列表中就可能会有多个条目。getColumnLatest() 方法返回对应列的最新版本值。containsColumn() 是一个检查返回值中是否有对应的列的方法。</p>
-<h3 id="Get_列表">Get 列表</h3><p>和 put() 方法对应，用户可以用一次请求获取多行数据。</p>
-<pre><code>Result[] <span class="function"><span class="title">get</span><span class="params">(List&lt;Get&gt; gets)</span></span> throws IOException
+<h3 id="Get-列表"><a href="#Get-列表" class="headerlink" title="Get 列表"></a>Get 列表</h3><p>和 put() 方法对应，用户可以用一次请求获取多行数据。</p>
+<pre><code>Result[] get(List&lt;Get&gt; gets) throws IOException
 </code></pre><p>和之前一样，用户需要创建一个列表，并把之前准备好的 Get 实例添加到其中。然后将这个列表传给 get()，会返回一个与列表大小相等的 Result 数组。</p>
-<h3 id="获取数据的相关方法">获取数据的相关方法</h3><p>还有一些方法可以用来获取或检查存储的数据，第一个是：</p>
-<pre><code><span class="keyword">boolean </span>exists(<span class="preprocessor">Get</span> <span class="preprocessor">get</span>) throws IOException
+<h3 id="获取数据的相关方法"><a href="#获取数据的相关方法" class="headerlink" title="获取数据的相关方法"></a>获取数据的相关方法</h3><p>还有一些方法可以用来获取或检查存储的数据，第一个是：</p>
+<pre><code>boolean exists(Get get) throws IOException
 </code></pre><p>可以和使用 HTable 的 get() 方法一样，先创建一个 Get 类的实例。exists()方法通过 RPC 验证请求的数据是否存在，但不会从远程服务器返回请求的数据，只返回一个布尔指。</p>
 <p>用户在检索数据时可能需要查找一个特定的行，或者某个请求行之前的一行。通过使用 <strong>getRowOrBefore(byte[] row, byte[] family)</strong> 方法来实现。可以是从 getRowOrBefore() 返回的 Result 实例中得到要查找的行键。这个行键要么与用户设定的行一致，要么刚好是设定行键之前的一行。如果没有匹配的结果，则返回 null。</p>
 
@@ -1812,7 +1955,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
       
         
           
-            <h3 id="Chubby_中_Paxos_协议实现">Chubby 中 Paxos 协议实现</h3><p>Chubby 服务端的基本架构大致分为三层：</p>
+            <h3 id="Chubby-中-Paxos-协议实现"><a href="#Chubby-中-Paxos-协议实现" class="headerlink" title="Chubby 中 Paxos 协议实现"></a>Chubby 中 Paxos 协议实现</h3><p>Chubby 服务端的基本架构大致分为三层：</p>
 <ul>
 <li>最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。</li>
 <li>日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。</li>
@@ -1831,7 +1974,7 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
 <li>然后 Master 就可以对所有未决 Instance 和所有未来 Instance 分别执行 “Propose -&gt; Accept” 阶段的处理。如果当前 Master 能够一直稳定运行的话，那么在接下来的算法运行过程中，就不再需要进行 “Prepare -&gt; Promise” 的处理了。但是，一旦 Master 发现 Acceptor 返回了一个 Reject 消息，说明集群中存在另一个 Master，并且试图使用更大的提案编号发送了 Prepare 消息。碰到这种情况，当前 Master 就需要重新分配新的提案编号并再次进行 “Prepare -&gt; Promise” 阶段的逻辑处理。</li>
 </ul>
 <p>利用上述改进的 Paxos 算法，在 Master 稳定运行的情况下，只需要使用同一个编号来依次执行每一个 Instance 的 “Promise -&gt; Accept” 阶段逻辑处理。在每个 Instance 的运行过程中，一旦接收到多数派的 Accept 反馈后，就可以将对应的提案值写入本地事务日志并广播 COMMIT 消息给集群中的其他副本节点，其他副本节点在接收到这个 COMMIT 消息之后也会将提案值写入到事务日志中去。如果某个副本节点因为宕机或者网络原因没有接收到 COMMIT 消息，可以主动向集群中的其他副本节点进行查询。因此，我们可以看到，在 Chubby 的 Paxos 算法实现中，只要维持集群中存在多数派的机器能够正常运行，即使其他机器在任意时刻发生宕机，也能保证已经提交的提案的安全性。</p>
-<h3 id="Hypertable">Hypertable</h3><p>Hypertable 以 Google 的 Bigtable 相关论文为基础指导，采用与 HBase 非常相似的分布式模型，其目的是构建一个针对分布式海量数据的高并发数据库。</p>
+<h3 id="Hypertable"><a href="#Hypertable" class="headerlink" title="Hypertable"></a>Hypertable</h3><p>Hypertable 以 Google 的 Bigtable 相关论文为基础指导，采用与 HBase 非常相似的分布式模型，其目的是构建一个针对分布式海量数据的高并发数据库。</p>
 <p>Hypertable 的核心组件包括 Hyperspace、RangeServer、Master 和 DFS Broker 四部分。其中 Hyperspace 是 Hypertable 中最重要的组件之一，其提供了对分布式锁服务的支持以及对元数据的管理，是保证 Hypertable 数据一致性的核心。Hyperspace 类似于 Chubby，它存储一些元数据信息，同时提供分布式锁服务，另外还负责提供高效、可靠的主机选举服务。</p>
 <p>RangeServer 是实际对外提供服务的组件单元，负责数据的读取和写入。在 Hypertable的设计中，对每一张表都按照主键进行切分，形成多个 Range，每个 Range 由一个 RangeServer 负责管理。在 Hypertable 中，通常会部署多个 RangeServer，每个 RangeServer 都负责管理部分数据，由 Master 来负责进行 RangeServer 的集群管理。</p>
 <p>Master 是元数据管理中心，管理包括创建表、删除表或是其他表空间变更在内的所有元数据操作，同时负责检测 RangeServer 的工作状态，一旦某一个 RangeServer 宕机或是重启，能够自动进行 Range 的重新分配，从而实现对 RangeServer 集群的管理和负责均衡。</p>
@@ -1965,31 +2108,31 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
         
           
             <p>Google Chubby 是一个很有名的分布式锁服务，GFS 和 Big Table 等大型系统都用它解决分布式协作、元数据存储和 Master 选举等一系列与分布式锁服务相关的问题。Chubby 的底层一致性实现就是以 Paxos 算法为基础。</p>
-<h3 id="概述">概述</h3><p>Chubby 是一个面向松耦合分布式系统的锁服务，通常用于为一个由大量小型计算机构成的松耦合分布式系统提供可用的分布式锁服务。一个分布式锁服务的目的是允许它的客户端进程同步彼此的操作，并对当前所处环境的基本状态信息达成一致。针对这个目的，Chubby 提供了粗粒度的分布式锁服务，开发人员不需要使用复杂的同学协议，而是直接调用 Chubby 的锁服务接口即可实现分布式系统中多个进程粗粒度的同步控制，从而保证分布式数据的一致性。</p>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Chubby 是一个面向松耦合分布式系统的锁服务，通常用于为一个由大量小型计算机构成的松耦合分布式系统提供可用的分布式锁服务。一个分布式锁服务的目的是允许它的客户端进程同步彼此的操作，并对当前所处环境的基本状态信息达成一致。针对这个目的，Chubby 提供了粗粒度的分布式锁服务，开发人员不需要使用复杂的同学协议，而是直接调用 Chubby 的锁服务接口即可实现分布式系统中多个进程粗粒度的同步控制，从而保证分布式数据的一致性。</p>
 <p>Chubby 的客户端接口设计类似于 Unix 文件系统结构，应用程序通过 Chubby 的客户端接口，不仅能够对 Chubby 服务器上的整个文件进行读写操作，还能够添加对文件节点的锁控制，并且能够订阅 Chubby 服务端发出的一系列文件变动的事件通知。</p>
-<h3 id="应用场景">应用场景</h3><p>Chubby 最典型的应用是 机器中服务器的 Master 选举。例如 GFS 中使用 Chubby 锁服务来实现对 GFS Master 服务器的选举。而在 Bigtable 中，Chubby 同样被用于 Master 选举，并且借助 Chubby，Master 能够非常方便地感知到其所控制的那些服务器。同时，通过 Chubby，Bigtable 的客户端还能够方便地定位到当前 Bigtable 集群的 Master 服务器。此外，在 GFS 和 Bigtable 中，都使用 Chubby 来进行系统运行时元数据的存储。</p>
-<h3 id="Chubby_技术架构">Chubby 技术架构</h3><h4 id="系统结构">系统结构</h4><p>Chubby 的整个系统结构主要由服务端和客户端两部分组成，客户端通过 RPC 调用与服务端进行通信。</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>Chubby 最典型的应用是 机器中服务器的 Master 选举。例如 GFS 中使用 Chubby 锁服务来实现对 GFS Master 服务器的选举。而在 Bigtable 中，Chubby 同样被用于 Master 选举，并且借助 Chubby，Master 能够非常方便地感知到其所控制的那些服务器。同时，通过 Chubby，Bigtable 的客户端还能够方便地定位到当前 Bigtable 集群的 Master 服务器。此外，在 GFS 和 Bigtable 中，都使用 Chubby 来进行系统运行时元数据的存储。</p>
+<h3 id="Chubby-技术架构"><a href="#Chubby-技术架构" class="headerlink" title="Chubby 技术架构"></a>Chubby 技术架构</h3><h4 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h4><p>Chubby 的整个系统结构主要由服务端和客户端两部分组成，客户端通过 RPC 调用与服务端进行通信。</p>
 <p>一个典型的 Chubby 集群，或称为 Chubby cell，通常由 5 台服务器组成。这些副本服务器采用 Paxos 协议，通过投票的方式来选举产生一个获得过半投票的服务器作为 Master。一旦某台服务器成为了 Master， Chubby 就会保证在一段时间内不会再有其他服务器成为 Master —- 这段时期成为 Master 租期。在运行过程中，Master 服务器会通过不断续租的方式来延长 Master 租期，而如果 Master 服务器出现故障，那么余下的服务器就会进行新一轮的 Master 选举，最终产生新的 Master 服务器，开始新的租期。</p>
 <p>集群中的每个服务器都维护这一份服务端数据库的副本，但在实际运行过程中，只有 Master 可以对数据库进行写操作，而其他服务器都是使用 Paxos 协议从 Master 服务器上同步数据库数据的更新。</p>
 <p>Chubby 客户端通过向记录有 Chubby 服务端机器列表的 DNS 来请求获取所有的 Chubby 服务器列表，然后逐个发起请求获取所有的 Chubby 服务器列表，然后逐个发起请求询问该服务器是否是 Master。在这个询问过程中，那些非 Master 的服务器，则会将当前 Master 所在的服务器标识反馈给客户端，这样客户端就能够非常快地定位到 Master 服务器了。</p>
 <p>一旦客户端定位到 Master 服务器之后，只要该 Master 正常运行，那么客户端就会将所有的请求都发送到该 Master 服务器上。针对写请求，Chubby Master 会采用一致性协议将其广播给集群中所有的副本服务器，并且在过半的服务器接受了该写请求之后，再响应给客户端正确的应答。而对于读请求，则不需要在集群内部进行广播处理，直接由 Master 服务器单独处理即可。</p>
 <p>在 Chubby 运行过程中，服务器难免会发生故障，如果当前的 Master 服务器崩溃了，那么集群中的其他服务器会在 Master 租期到期后，重新开始新一轮 Master 选举。而如果是任意一台非 Master 服务器崩溃，那么整个集群是不会停止工作的，这个崩溃的服务器会在恢复之后自动加入 Chubby 集群中。</p>
 <p>如果集群中的一个服务器发送崩溃并在几小时后仍然无法恢复正常，那么就需要加入新的机器，并同时更新 DNS 列表。</p>
-<h3 id="目录与文件">目录与文件</h3><p>Chubby 的数据结构可以看作是一个由文件和目录组成的树，其中每一个节点都可以表示为一个使用斜杠分割的字符串，典型的节点路径如下：</p>
-<pre><code><span class="regexp">/ls/</span>foo<span class="regexp">/wombat/</span>pouch
+<h3 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h3><p>Chubby 的数据结构可以看作是一个由文件和目录组成的树，其中每一个节点都可以表示为一个使用斜杠分割的字符串，典型的节点路径如下：</p>
+<pre><code>/ls/foo/wombat/pouch
 </code></pre><p>其中 ls 是所有 Chubby 节点所共有的前缀，代表着锁服务；foo 则指定了 Chubby 机器的名字；剩余部分 /wombat/pouch 则是一个真正包含业务含义的节点名字，由 Chubby 服务器内部解析并定位到数据节点。</p>
-<h3 id="锁与锁序列器">锁与锁序列器</h3><p>在分布式系统中，锁是一个非常复杂的问题，由于网络通信的不确定性，导致在分布式系统中锁机制变得非常复杂，消息的延迟或是乱序都有可能会引起锁的失效。一个典型的分布式锁错乱案例是，一个客户端 C1 获取到了互斥锁 L，并且在锁 L 的保护下发出请求 R，但请求 R 迟迟没有到达服务端（可能出现网络延时或反复重发等），这时应用程序会认为该客户端进程已经失败，于是便会为另一个客户端 C2 分配锁 L，然后再重新发起之前的请求 R，并成功地应用到了服务器上。此时，如果客户端 C1 发起的请求 R 经过一波三折也到达了服务端，此时，它可能会在不受任何锁控制的情况下被服务端处理，从而覆盖客户端 C2 的操作，于是导致系统数据出现不一致。解决此类问题的方案主要包括虚拟时间和虚拟同步。</p>
+<h3 id="锁与锁序列器"><a href="#锁与锁序列器" class="headerlink" title="锁与锁序列器"></a>锁与锁序列器</h3><p>在分布式系统中，锁是一个非常复杂的问题，由于网络通信的不确定性，导致在分布式系统中锁机制变得非常复杂，消息的延迟或是乱序都有可能会引起锁的失效。一个典型的分布式锁错乱案例是，一个客户端 C1 获取到了互斥锁 L，并且在锁 L 的保护下发出请求 R，但请求 R 迟迟没有到达服务端（可能出现网络延时或反复重发等），这时应用程序会认为该客户端进程已经失败，于是便会为另一个客户端 C2 分配锁 L，然后再重新发起之前的请求 R，并成功地应用到了服务器上。此时，如果客户端 C1 发起的请求 R 经过一波三折也到达了服务端，此时，它可能会在不受任何锁控制的情况下被服务端处理，从而覆盖客户端 C2 的操作，于是导致系统数据出现不一致。解决此类问题的方案主要包括虚拟时间和虚拟同步。</p>
 <p>在 Chubby 中，任意一个数据节点都可以充当一个读写锁来使用：一种是单个客户端以排他（写）模式持有这个锁，另一种则是任意数目的客户端以共享（读）模式持有这个锁同时，在 Chubby 的锁机制中需要注意，Chubby 舍弃了严格的强制锁，客户端可以在没有获取任何锁的情况下访问 Chubby 的文件，即，持有锁 F 既不是访问文件 F 的必要条件，也不会阻止其他客户端访问文件 F。</p>
 <p>在 Chubby 中，主要采用锁延迟和锁序列两种策略来解决上面我们提到的由于消息延迟和重排序引起的分布式锁问题。其中锁延迟是一种比较简单的策略，使用 Chubby 的应用几乎不需要进行任何的代码修改。具体的，如果一个客户端以正常的方式主动释放了一个锁，那么 Chubby 服务端将会允许其他客户端能够立即获取到该锁。而如果一个锁是因为客户端的异常情况（如客户端无响应）而被释放的话，那么 Chubby 服务器会为该锁保留一定的时间，称之为“锁延迟”，在这段时间内，其他客户端无法获取这个锁。锁延迟措施能够很好地防止一些客户端由于网络闪断等原因而与服务器暂时断开的场景出现。另外一种方式称为锁序列器，当然该策略需要 Chubby 的上层应用配合在代码中加入相应的修改逻辑。任何时候，锁的持有者都可以向 Chubby 请求一个锁序列器，包括锁的名字、锁模式，以及锁序号。当客户端应用程序在进行一些需要锁机制保护的操作时，可以将该锁序列一并发送给服务端。Chubby 服务端接收到这样的请求后，会首先检测该序列器是否有效，以及检查客户端是否处于恰当的锁模式；如果没有通过检查，那么服务端就会拒绝该客户端请求。</p>
-<h3 id="Chubby_中的事件通知机制">Chubby 中的事件通知机制</h3><p>为了避免大量客户端轮询 Chubby 服务端状态所带来的压力，Chubby 提供了事件通知机制。Chubby 的客户端可以向服务端注册事件通知，当触发这些事件的时候，服务端就会向客户端发送对应的事件通知。在 Chubby 的事件通知机制中，消息通知都是通过异步的方式发送给客户端的，常用的 Chubby 事件如下：</p>
-<h4 id="文件内容变更">文件内容变更</h4><p>BigTable 集群使用 Chubby 锁来确定集群中的哪台 BigTable 机器是 Master；获得锁的 BigTable Master 会将自身信息写入 Chubby 上对应的文件中。 BigTable机器中的其他客户端可以通过监视这个 Chubby 文件的变化来确定新的 BigTable Master 机器。</p>
-<h4 id="节点删除">节点删除</h4><p>当 Chubby 上指定节点被删除的时候，会产生“节点删除”事件，通常是临时节点，可以利用该特性来间接判断该临时节点对应的客户端会话是否有效。</p>
-<h4 id="子结点新增、删除">子结点新增、删除</h4><p>当 Chubby 上指定节点的子节点新增或是减少时，会产生”子节点新增、删除“事件。</p>
-<h4 id="Master_服务器转移">Master 服务器转移</h4><p>当 Chubby 服务器发生 Master 转移时，会以事件的形式通知客户端。</p>
-<h3 id="Chubby_中的缓存">Chubby 中的缓存</h3><p>为了提高 Chubby 的性能，同时也是为了减少客户端和服务端之间频繁的读请求对服务端的压力，Chubby 除了提供事件通知机制之外，还在客户端中实现了缓存，会在客户端对文件内容和元数据信息进行缓存。使用缓存机制在提高系统整体性能的同时，也为系统带来了一定的复杂性，最大的问题是如何保证缓存的一致性。</p>
+<h3 id="Chubby-中的事件通知机制"><a href="#Chubby-中的事件通知机制" class="headerlink" title="Chubby 中的事件通知机制"></a>Chubby 中的事件通知机制</h3><p>为了避免大量客户端轮询 Chubby 服务端状态所带来的压力，Chubby 提供了事件通知机制。Chubby 的客户端可以向服务端注册事件通知，当触发这些事件的时候，服务端就会向客户端发送对应的事件通知。在 Chubby 的事件通知机制中，消息通知都是通过异步的方式发送给客户端的，常用的 Chubby 事件如下：</p>
+<h4 id="文件内容变更"><a href="#文件内容变更" class="headerlink" title="文件内容变更"></a>文件内容变更</h4><p>BigTable 集群使用 Chubby 锁来确定集群中的哪台 BigTable 机器是 Master；获得锁的 BigTable Master 会将自身信息写入 Chubby 上对应的文件中。 BigTable机器中的其他客户端可以通过监视这个 Chubby 文件的变化来确定新的 BigTable Master 机器。</p>
+<h4 id="节点删除"><a href="#节点删除" class="headerlink" title="节点删除"></a>节点删除</h4><p>当 Chubby 上指定节点被删除的时候，会产生“节点删除”事件，通常是临时节点，可以利用该特性来间接判断该临时节点对应的客户端会话是否有效。</p>
+<h4 id="子结点新增、删除"><a href="#子结点新增、删除" class="headerlink" title="子结点新增、删除"></a>子结点新增、删除</h4><p>当 Chubby 上指定节点的子节点新增或是减少时，会产生”子节点新增、删除“事件。</p>
+<h4 id="Master-服务器转移"><a href="#Master-服务器转移" class="headerlink" title="Master 服务器转移"></a>Master 服务器转移</h4><p>当 Chubby 服务器发生 Master 转移时，会以事件的形式通知客户端。</p>
+<h3 id="Chubby-中的缓存"><a href="#Chubby-中的缓存" class="headerlink" title="Chubby 中的缓存"></a>Chubby 中的缓存</h3><p>为了提高 Chubby 的性能，同时也是为了减少客户端和服务端之间频繁的读请求对服务端的压力，Chubby 除了提供事件通知机制之外，还在客户端中实现了缓存，会在客户端对文件内容和元数据信息进行缓存。使用缓存机制在提高系统整体性能的同时，也为系统带来了一定的复杂性，最大的问题是如何保证缓存的一致性。</p>
 <p>Chubby 保证缓存一致性的主要方法是使用了缓存的生命周期这一概念。具体的，每个客户端的缓存都有一个租期，一旦该租期到期，客户端就需要向服务端续订租期以继续维持缓存的有效性。当文件数据或元数据信息被修改时，Chubby服务端首先会阻塞该修改操作，然后由 Master 向所有可能缓存了该数据的客户端发送缓存过期信号，以使其缓存失效，等到 Master 在接收到所有相关客户端针对该过期信号的应答后（1. 客户端明确要求更新缓存；2. 客户端允许缓存租期过期。），再继续进行之前的修改操作。</p>
-<h3 id="会话和会话激活">会话和会话激活</h3><p>Chubby 客户端和服务端之间通过创建一个 TCP 连接来进行所有的网络通信操作，我们将这一连接称为会话（Session）。会话有生命周期，并且存在一个超时时间，在超时时间内，Chubby客户端和服务端之间可以通过心跳检测来保持会话的活性。</p>
-<h3 id="Chubby_Master_故障恢复">Chubby Master 故障恢复</h3><p>Chubby 的 Master 服务器上会运行着会话租期计时器，用来管理所有会话的生命周期。如果在运行过程中 Master 出现了故障，那么该计时器会停止，直到新的 Master 选举产生后，计时器才会继续计时，</p>
+<h3 id="会话和会话激活"><a href="#会话和会话激活" class="headerlink" title="会话和会话激活"></a>会话和会话激活</h3><p>Chubby 客户端和服务端之间通过创建一个 TCP 连接来进行所有的网络通信操作，我们将这一连接称为会话（Session）。会话有生命周期，并且存在一个超时时间，在超时时间内，Chubby客户端和服务端之间可以通过心跳检测来保持会话的活性。</p>
+<h3 id="Chubby-Master-故障恢复"><a href="#Chubby-Master-故障恢复" class="headerlink" title="Chubby Master 故障恢复"></a>Chubby Master 故障恢复</h3><p>Chubby 的 Master 服务器上会运行着会话租期计时器，用来管理所有会话的生命周期。如果在运行过程中 Master 出现了故障，那么该计时器会停止，直到新的 Master 选举产生后，计时器才会继续计时，</p>
 <p>新的 Master 会设法将上一个 Master 服务器的内存状态构造出来。具体的，由于本地数据库记录了每个客户端的会话信息，以及其持有的锁和临时文件等信息，因此 Chubby 会通过读取本地磁盘上的数据来恢复一部分状态。总的来讲，一个新的 Chubby Master 服务器选举产生以后会进行如下几个主要处理：</p>
 <ol>
 <li>新的 Master 选举产生之后，首先需要确定 Master 周期。Master 周期用来唯一标识一个 Chubby 集群的 Master 统治轮次，以便区分不同的 Master。一旦新的 Master 周期确定下来之后，Master 就会拒绝所有携带其他 Master 周期编号的客户端请求，同时告知其最新的 Master 周期编号。</li>
@@ -2000,175 +2143,6 @@ byte[] val = <span class="literal">result</span>.getValue(<span class="type">Byt
 <li>此时，Master会一致等待客户端的应答，直到每一个会话都应答了这个切换事件。</li>
 <li>在 Master 接收到了所有客户端的应答之后，就能够开始处理所有的请求操作。</li>
 <li>如果客户端使用了一个在故障切换之前创建的句柄，Master 会重新为其创建这个句柄的内存对象，并执行调用。而如果该句柄在之前的 Master 周期中已经被关闭了，那么它就不能在这个 Master 周期内再次被重建了。这样就确保了即使由于网络原因使得 Master 接收到那些延迟或重发的网络数据包，也不会错误地重建一个已经关闭的句柄。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/25/Linux常用命令-find-和-ping/" itemprop="url">
-                  Linux常用命令: find 和 ping
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-25T19:52:43+08:00" content="2016-10-25">
-              2016-10-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/25/Linux常用命令-find-和-ping/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/25/Linux常用命令-find-和-ping/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/25/Linux常用命令-find-和-ping/" class="leancloud_visitors" data-flag-title="Linux常用命令: find 和 ping">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="find_命令">find 命令</h3><pre><code>$ find <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span> <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span> <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>
-
-- <span class="tag">&lt;<span class="title">指定目录</span>&gt;</span>: 所要搜索的目录及其所有子目录
-- <span class="tag">&lt;<span class="title">指定条件</span>&gt;</span>: 所要搜索的文件的特征 (eg: -name -type)
-- <span class="tag">&lt;<span class="title">指定动作</span>&gt;</span>: 对搜索结果进行特定的处理 (eg: -ls, -print,)
-</code></pre><h3 id="locate_命令">locate 命令</h3><p>locate 其实相当于 “find -name”，但是要比后者快得多，原因在于它不搜索具体目录，而是搜索一个数据库（/var/lib/locatedb），这个数据库中含有本地所有文件信息。Linux系统自动创建这个数据库，并且每天自动更新一次，<strong>所以使用locate命令查不到最新变动过的文件。</strong></p>
-<p>为了避免这种情况，可以在使用locate之前，先使用<strong>updatedb</strong>命令，手动更新数据库。</p>
-<pre><code>$ locate /etc/<span class="keyword">sh</span>
-搜索etc目录下所有以<span class="keyword">sh</span>开头的文件。
-
-$ locate ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件。
-
-$ locate -i ~/<span class="literal">m</span>
-搜索用户目录下，所有以 <span class="keyword">m</span> 开头的文件，同时忽略大小写。
-</code></pre><h3 id="whereis_命令">whereis 命令</h3><p>whereis 命令只能用于程序名的搜索，而且只搜索二进制文件（参数-b）、man说明文件（参数-m）和源代码文件（参数-s）。如果省略参数，则返回所有信息。</p>
-<h3 id="ping_多个_ip">ping 多个 ip</h3><p>假设有一个日志文件，里面是每行的记录如下：172.0.0.1 <strong><em>**</em></strong>，也就是每行都有一个ip，例如在一个分布式系统里面，有很多机器的ip，那么我们要知道哪些机器宕机了，那么只需要ping一下这个ip即可，但是我们不能一个一个的ping啊，Linux 有没有什么命令可以解决。</p>
-<p>Linux 自带的 ping 命令本身不可以 ping 多个 ip，但可以用 shell 来实现同时 ping 多个 ip。</p>
-<ol>
-<li><p>建一个空的输出文件 </p>
-<pre><code>touch /output<span class="class">.txt</span> 
-</code></pre></li>
-<li><p>新建一个脚本。</p>
-<pre><code><span class="keyword">vim</span> ping.<span class="keyword">sh</span>
-</code></pre></li>
-<li><p>脚本内容</p>
-<pre><code><span class="shebang">#!/bin/bash</span>
-A = <span class="string">'cat /ip.txt'</span>
-<span class="keyword">for</span> B <span class="keyword">in</span> <span class="variable">$A</span> 
-<span class="keyword">do</span>
-ping -c <span class="number">3</span> <span class="variable">$B</span> &gt;&gt;/output
-<span class="keyword">done</span>
-wq
-</code></pre></li>
-<li><p>执行脚本</p>
-<pre><code>./ <span class="built_in">ping</span>.sh
-</code></pre></li>
-<li><p>查看结果</p>
-<pre><code><span class="tag">cat</span> <span class="tag">output</span><span class="class">.txt</span>
-</code></pre></li>
 </ol>
 
           
@@ -2243,7 +2217,7 @@ wq
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2251,7 +2225,7 @@ wq
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2260,7 +2234,7 @@ wq
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -2471,6 +2445,26 @@ wq
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

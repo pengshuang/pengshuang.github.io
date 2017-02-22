@@ -333,74 +333,74 @@
       
 
       
-        <h3 id="1-_简介">1. 简介</h3><p>GraphX是Spark用于解决图和并行图计算问题的新组件。通过RDD（Resilient Distributed Datasets，弹性分布式数据集）的扩展，GraphX在其中引入了一个新的图抽象，即顶点和边带有特性的有向多重图。Graph提供了一些基本运算符和优化了的Pregel API，来支持图计算。另外，Graph包含了大量的图算法和构造器来简化图的分析任务，并且这个数量还在增加。</p>
-<h3 id="2-_GraphX使用">2. GraphX使用</h3><p>第一步，引入Spark和GraphX相关的包：</p>
-<pre><code>import org<span class="class">.apache</span><span class="class">.spark</span>._
-import org<span class="class">.apache</span><span class="class">.spark</span><span class="class">.graphx</span>._
+        <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><p>GraphX是Spark用于解决图和并行图计算问题的新组件。通过RDD（Resilient Distributed Datasets，弹性分布式数据集）的扩展，GraphX在其中引入了一个新的图抽象，即顶点和边带有特性的有向多重图。Graph提供了一些基本运算符和优化了的Pregel API，来支持图计算。另外，Graph包含了大量的图算法和构造器来简化图的分析任务，并且这个数量还在增加。</p>
+<h3 id="2-GraphX使用"><a href="#2-GraphX使用" class="headerlink" title="2. GraphX使用"></a>2. GraphX使用</h3><p>第一步，引入Spark和GraphX相关的包：</p>
+<pre><code>import org.apache.spark._
+import org.apache.spark.graphx._
 
-<span class="comment">// 此处仍然需要用到RDD来让一些例子正常运行</span>
-import org<span class="class">.apache</span><span class="class">.spark</span><span class="class">.rdd</span><span class="class">.RDD</span>
+// 此处仍然需要用到RDD来让一些例子正常运行
+import org.apache.spark.rdd.RDD
 </code></pre><p>如果你没有使用Spark Shell（例如在外部的IDE中编辑项目），那么你还需要引入SparkContext。具体方法请参阅Spark官方文档，此处不再赘述。</p>
-<h3 id="3-_属性图">3. 属性图</h3><p>属性图是一个有向多重图，它的每个顶点和每条边都附有用户定义的对象。作为有向图，有向多重图可能有多个平行的边来共享相同的源顶点和目标顶点。作为多重图，它支持并行边，这个特性简化了许多涉及多重关系的建模场景。每个顶点的主键是一个长度为64 bit的唯一标识符<strong>（VertexID）</strong>。<strong>GraphX</strong>没有为顶点添加任何顺序的约束。类似地，每一条边有对应的源顶点和目标顶点的标识符。</p>
+<h3 id="3-属性图"><a href="#3-属性图" class="headerlink" title="3. 属性图"></a>3. 属性图</h3><p>属性图是一个有向多重图，它的每个顶点和每条边都附有用户定义的对象。作为有向图，有向多重图可能有多个平行的边来共享相同的源顶点和目标顶点。作为多重图，它支持并行边，这个特性简化了许多涉及多重关系的建模场景。每个顶点的主键是一个长度为64 bit的唯一标识符<strong>（VertexID）</strong>。<strong>GraphX</strong>没有为顶点添加任何顺序的约束。类似地，每一条边有对应的源顶点和目标顶点的标识符。</p>
 <p>因此，属性图的参数是通过顶点（VD）和边的类型（ED）来决定的。</p>
 <p>在某些情况下，你可能希望在同一个图里面，顶点能够有不同的属性类型。这个想法可以通过继承实现。举个例子，我们可以对用户和产品进行建模，将其作为一个二分图，然后进行如下的定义（请在Spark Shell中输入语句）：</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">VertexProperty</span></span>()
-case <span class="class"><span class="keyword">class</span> <span class="title">UserProperty</span></span>(<span class="variable"><span class="keyword">val</span> name</span>: String) extends VertexProperty
-case <span class="class"><span class="keyword">class</span> <span class="title">ProductProperty</span></span>(<span class="variable"><span class="keyword">val</span> name</span>: String, <span class="variable"><span class="keyword">val</span> price</span>: <span class="typename">Double</span>) extends VertexProperty
+<pre><code>class VertexProperty()
+case class UserProperty(val name: String) extends VertexProperty
+case class ProductProperty(val name: String, val price: Double) extends VertexProperty
 
-<span class="comment">// 图可能会有这个类型:</span>
-<span class="variable"><span class="keyword">var</span> graph</span>: Graph[VertexProperty, String] = <span class="literal">null</span>
+// 图可能会有这个类型:
+var graph: Graph[VertexProperty, String] = null
 </code></pre><p>类似于RDD，属性图是不可变的、分布式的，并且具有容错性。对于图而言，它的值或者结构上的改变，是通过产生带有预期改变的新图来完成的。主要注意的是，原始图的主要部分（即不受影响的结构、属性和索引等）在新图中被重用，以减少固有功能的数据结构成本。通过使用大量的启发式顶点分区，图在不同的执行器里被划分。就像RDD一样，图的每个分区可以在发生故障时被不同的机器重建。</p>
 <p>属性图在逻辑上对应于一对类型化集合（RDD），该集合编码了每个顶点和每条边属性。因而，图类包含了可以访问图的顶点和边的成员，它的定义如下（该定义仅作了解，无需自己手动定义该类）：</p>
-<pre><code><span class="class"><span class="keyword">class</span> <span class="title">Graph</span>[<span class="title">VD</span>, <span class="typename">ED] {</span></span>
-  <span class="variable"><span class="keyword">val</span> vertices</span>: VertexRDD[VD]
-  <span class="variable"><span class="keyword">val</span> edges</span>: EdgeRDD[ED]
+<pre><code>class Graph[VD, ED] {
+  val vertices: VertexRDD[VD]
+  val edges: EdgeRDD[ED]
 }
 </code></pre><p><strong>VertexRDD[VD]</strong>类和<strong>EdgeRDD[ED]</strong>类分别继承和优化了<strong>RDD[(VertexID, VD)]</strong>类和<strong>RDD[Edge[ED]]</strong>类。两者都提供基于图计算和内部优化构建的额外功能。在此你可将其简单地理解为以<strong>RDD[(VertexID, VD)]</strong>和<strong>RDD[Edge[ED]]</strong>形式定义的<strong>RDD</strong>。</p>
-<h3 id="4-_一个属性图的例子">4. 一个属性图的例子</h3><p>现在假设我们要构建一个由许多来自GraphX项目组的协作者组成的属性图。顶点的属性可能包含用户名和职业。我们应该用一个可以描述协作者间的关系的字符串来注释图的边。</p>
+<h3 id="4-一个属性图的例子"><a href="#4-一个属性图的例子" class="headerlink" title="4. 一个属性图的例子"></a>4. 一个属性图的例子</h3><p>现在假设我们要构建一个由许多来自GraphX项目组的协作者组成的属性图。顶点的属性可能包含用户名和职业。我们应该用一个可以描述协作者间的关系的字符串来注释图的边。</p>
 <p>这段话可以用下图来表示（图片来自GraphX官方文档）：</p>
 <p><img src="/img/graphx.png" alt=""></p>
 <p>由这些因素构成的图将有下面的类型定义（该定义仅作了解即可，无需输入该语句）：</p>
-<pre><code>val userGraph: <span class="keyword">Graph</span>[(<span class="keyword">String</span>, <span class="keyword">String</span>), <span class="keyword">String</span>]
+<pre><code>val userGraph: Graph[(String, String), String]
 </code></pre><p>有很多办法可以由原始文件、RDD或者综合生成器来构建一个属性图。可能最常用的方法还是使用一个<strong>Graph Object</strong>。下面的代码展示了如何通过一个RDD的集合来构建图，你可以尝试在<strong>Spark Shell</strong>中输入下面的代码来完成构建。</p>
-<pre><code><span class="comment">// 在Spark Shell中，这里的SparkContext已经默认给出了。可略过此步。</span>
+<pre><code>// 在Spark Shell中，这里的SparkContext已经默认给出了。可略过此步。
 val sc: SparkContext
 
-<span class="comment">// 创建一个RDD用于表示顶点</span>
+// 创建一个RDD用于表示顶点
 val users: RDD[(VertexId, (String, String))] =
-  sc.<span class="function"><span class="title">parallelize</span><span class="params">(Array((<span class="number">3</span>L, (<span class="string">"rxin"</span>, <span class="string">"student"</span>)</span></span>), (<span class="number">7</span>L, (<span class="string">"jgonzal"</span>, <span class="string">"postdoc"</span>)),
-                       (<span class="number">5</span>L, (<span class="string">"franklin"</span>, <span class="string">"prof"</span>)), (<span class="number">2</span>L, (<span class="string">"istoica"</span>, <span class="string">"prof"</span>))))
-<span class="comment">// 创建一个RDD用于表示边</span>
+  sc.parallelize(Array((3L, (&quot;rxin&quot;, &quot;student&quot;)), (7L, (&quot;jgonzal&quot;, &quot;postdoc&quot;)),
+                       (5L, (&quot;franklin&quot;, &quot;prof&quot;)), (2L, (&quot;istoica&quot;, &quot;prof&quot;))))
+// 创建一个RDD用于表示边
 val relationships: RDD[Edge[String]] =
-  sc.<span class="function"><span class="title">parallelize</span><span class="params">(Array(Edge(<span class="number">3</span>L, <span class="number">7</span>L, <span class="string">"collab"</span>)</span></span>,    <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">5</span>L, <span class="number">3</span>L, <span class="string">"advisor"</span>)</span></span>,
-                       <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">2</span>L, <span class="number">5</span>L, <span class="string">"colleague"</span>)</span></span>, <span class="function"><span class="title">Edge</span><span class="params">(<span class="number">5</span>L, <span class="number">7</span>L, <span class="string">"pi"</span>)</span></span>))
+  sc.parallelize(Array(Edge(3L, 7L, &quot;collab&quot;),    Edge(5L, 3L, &quot;advisor&quot;),
+                       Edge(2L, 5L, &quot;colleague&quot;), Edge(5L, 7L, &quot;pi&quot;)))
 
-<span class="comment">// 定义默认的用户，用于建立与缺失的用户之间的关系</span>
-val defaultUser = (<span class="string">"John Doe"</span>, <span class="string">"Missing"</span>)
+// 定义默认的用户，用于建立与缺失的用户之间的关系
+val defaultUser = (&quot;John Doe&quot;, &quot;Missing&quot;)
 
-<span class="comment">// 构造图对象，即初始化过程</span>
-val graph = <span class="function"><span class="title">Graph</span><span class="params">(users, relationships, defaultUser)</span></span>
+// 构造图对象，即初始化过程
+val graph = Graph(users, relationships, defaultUser)
 </code></pre><p>在这个例子中，我们用到了名为<strong>Edge</strong>的<strong>case</strong>类。<strong>Edge</strong>类有<strong>srcId</strong>和<strong>dstId</strong>，它们对应于源顶点和目标庆典的标识符。另外，<strong>Edge</strong>类有一个名为<strong>attr</strong>的成员，用于存储边的属性。</p>
 <p>我们也可以使用<strong>graph.vertices</strong>和<strong>graph.edges</strong>函数来解构一个图，将其转化为各个顶点和边的视图。用法如下，请尝试在Shell中输入这些语句：</p>
-<pre><code><span class="comment">// 统计是博士后的用户数量</span>
-<span class="keyword">graph</span>.vertices.filter { case (id, (name, pos)) =&gt; pos == <span class="string">"postdoc"</span> }.<span class="keyword">count</span>
+<pre><code>// 统计是博士后的用户数量
+graph.vertices.filter { case (id, (name, pos)) =&gt; pos == &quot;postdoc&quot; }.count
 
-<span class="comment">// 统计符合 src &gt; dst 条件的边的数量 </span>
-<span class="keyword">graph</span>.edges.filter(<span class="keyword">e</span> =&gt; <span class="keyword">e</span>.srcId &gt; <span class="keyword">e</span>.dstId).<span class="keyword">count</span>
+// 统计符合 src &gt; dst 条件的边的数量 
+graph.edges.filter(e =&gt; e.srcId &gt; e.dstId).count
 </code></pre><p>注意，<strong>graph.vertices</strong>函数的返回值类型是 <strong>VertexRDD[(String, String)]</strong>，它继承了 <strong>RDD[(VertexID, (String, String))]</strong>，所以我们可以用<strong>Scala</strong>的<strong>case</strong>表达式来解构这个元组。另外，<strong>graph.edges</strong>函数的返回值类型是<strong>EdgeRDD</strong>，它包含了<strong>Edge[String]</strong>对象。我们同样可以使用<strong>case</strong>类的类型构造器，请尝试在<strong>Shell</strong>中输入下面的代码：</p>
-<pre><code><span class="keyword">graph</span>.edges.filter { case Edge(src, dst, <span class="keyword">prop</span>) =&gt; src &gt; dst }.<span class="keyword">count</span>
+<pre><code>graph.edges.filter { case Edge(src, dst, prop) =&gt; src &gt; dst }.count
 </code></pre><p>对于属性类的顶点和边视图，GraphX还提供了三重视图<strong>（Triplet View）</strong>。这个三重视图从逻辑上联合了顶点和边的属性，产生了一个<strong>RDD[EdgeTriplet[VD, ED]]</strong>，它包含了<strong>DegeTriplet</strong>类的实例。这个<strong>join</strong>联合操作可以由下面的<strong>SQL</strong>表达式解释：</p>
-<pre><code><span class="operator"><span class="keyword">SELECT</span> src.<span class="keyword">id</span>, dst.<span class="keyword">id</span>, src.<span class="keyword">attr</span>, <span class="keyword">e</span>.<span class="keyword">attr</span>, dst.<span class="keyword">attr</span>
-<span class="keyword">FROM</span> edges <span class="keyword">AS</span> <span class="keyword">e</span> <span class="keyword">LEFT</span> <span class="keyword">JOIN</span> vertices <span class="keyword">AS</span> src, vertices <span class="keyword">AS</span> dst
-<span class="keyword">ON</span> <span class="keyword">e</span>.srcId = src.<span class="keyword">Id</span> <span class="keyword">AND</span> <span class="keyword">e</span>.dstId = dst.<span class="keyword">Id</span></span>
+<pre><code>SELECT src.id, dst.id, src.attr, e.attr, dst.attr
+FROM edges AS e LEFT JOIN vertices AS src, vertices AS dst
+ON e.srcId = src.Id AND e.dstId = dst.Id
 </code></pre><p>如果看不懂这段SQL代码，没关系，下图也能帮助你理解该操作的含义：</p>
 <p><img src="/img/graphx2.png" alt=""></p>
 <p><strong>EdgeTriplet</strong>类继承了<strong>Edge</strong>类，并且添加了<strong>srcAttr</strong>和<strong>dstAttr</strong>两个成员。这两个成员分别包含了源属性和目标属性。我们可以用一个图的三重视图来渲染一个描述用户间关系的字符串集合，就像下面这样：</p>
-<pre><code><span class="comment">// 使用 triplets view 来创建一个事实（facts）的RDD</span>
+<pre><code>// 使用 triplets view 来创建一个事实（facts）的RDD
 val facts: RDD[String] =
-  graph<span class="class">.triplets</span><span class="class">.map</span>(triplet =&gt;
-    triplet<span class="class">.srcAttr</span>._1 + <span class="string">" is the "</span> + triplet<span class="class">.attr</span> + <span class="string">" of "</span> + triplet<span class="class">.dstAttr</span>._1)
-facts<span class="class">.collect</span><span class="class">.foreach</span>(<span class="function"><span class="title">println</span><span class="params">(_)</span></span>)
+  graph.triplets.map(triplet =&gt;
+    triplet.srcAttr._1 + &quot; is the &quot; + triplet.attr + &quot; of &quot; + triplet.dstAttr._1)
+facts.collect.foreach(println(_))
 </code></pre>
       
     </div>
@@ -533,7 +533,7 @@ facts<span class="class">.collect</span><span class="class">.foreach</span>(<spa
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -541,7 +541,7 @@ facts<span class="class">.collect</span><span class="class">.foreach</span>(<spa
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -550,7 +550,7 @@ facts<span class="class">.collect</span><span class="class">.foreach</span>(<spa
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -621,7 +621,7 @@ facts<span class="class">.collect</span><span class="class">.foreach</span>(<spa
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_简介"><span class="nav-number">1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_GraphX使用"><span class="nav-number">2.</span> <span class="nav-text">2. GraphX使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_属性图"><span class="nav-number">3.</span> <span class="nav-text">3. 属性图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-_一个属性图的例子"><span class="nav-number">4.</span> <span class="nav-text">4. 一个属性图的例子</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-GraphX使用"><span class="nav-number">2.</span> <span class="nav-text">2. GraphX使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-属性图"><span class="nav-number">3.</span> <span class="nav-text">3. 属性图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-一个属性图的例子"><span class="nav-number">4.</span> <span class="nav-text">4. 一个属性图的例子</span></a></li></ol></div>
             
           </div>
         </section>
@@ -776,6 +776,26 @@ facts<span class="class">.collect</span><span class="class">.foreach</span>(<spa
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 

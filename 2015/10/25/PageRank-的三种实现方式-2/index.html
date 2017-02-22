@@ -370,115 +370,115 @@ D网页有链接指向B,C
 <li>D网页有链接指向B,C</li>
 </ol>
 <p>我们来计算一下A，B，C，D这四个点的PageRank值。<br>和以前一样，我会把讲解写在代码的注释里面。代码如下：</p>
-<pre><code>    <span class="keyword">public</span> <span class="keyword">class</span> PageRank {
-    <span class="comment">/*
+<pre><code>    public class PageRank {
+    /*
      * 用来表示网页之间的关系，A[0][1]=1 表示A有链接B
      * 把网页之间的关系构造成一个二元矩阵
-     */</span>
-    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[][] linkMatrix(){
-        <span class="keyword">int</span> []A =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
-        A[<span class="number">0</span>]=<span class="number">0</span>;A[<span class="number">1</span>]=<span class="number">1</span>;A[<span class="number">2</span>]=<span class="number">1</span>;A[<span class="number">3</span>]=<span class="number">1</span>;
-        <span class="keyword">int</span> []B =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
-        B[<span class="number">0</span>]=<span class="number">1</span>;B[<span class="number">1</span>]=<span class="number">0</span>;B[<span class="number">2</span>]=<span class="number">0</span>;B[<span class="number">3</span>]=<span class="number">1</span>;
-        <span class="keyword">int</span> []C =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
-        C[<span class="number">0</span>]=<span class="number">1</span>;C[<span class="number">1</span>]=<span class="number">0</span>;C[<span class="number">2</span>]=<span class="number">0</span>;C[<span class="number">3</span>]=<span class="number">0</span>;
-        <span class="keyword">int</span> []D =<span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">4</span>];
-        D[<span class="number">0</span>]=<span class="number">0</span>;D[<span class="number">1</span>]=<span class="number">0</span>;D[<span class="number">2</span>]=<span class="number">1</span>;D[<span class="number">3</span>]=<span class="number">0</span>;
-        <span class="keyword">int</span> [][] linkMatrix=<span class="keyword">new</span> <span class="keyword">int</span>[][]{A,B,C,D};
-        <span class="keyword">return</span> linkMatrix;
+     */
+    public static int[][] linkMatrix(){
+        int []A =new int[4];
+        A[0]=0;A[1]=1;A[2]=1;A[3]=1;
+        int []B =new int[4];
+        B[0]=1;B[1]=0;B[2]=0;B[3]=1;
+        int []C =new int[4];
+        C[0]=1;C[1]=0;C[2]=0;C[3]=0;
+        int []D =new int[4];
+        D[0]=0;D[1]=0;D[2]=1;D[3]=0;
+        int [][] linkMatrix=new int[][]{A,B,C,D};
+        return linkMatrix;
     }
 
-<span class="comment">/*
+/*
  * S矩阵sMatrix[i][j]表示i点对j点的贡献值，例如sMatrix[1][0]=1/3,表示B点对A点的贡献值是1/3.
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span>[][]generateSMatrix(<span class="keyword">int</span>[][]linkMatrix){
-    <span class="keyword">double</span>[][] sMatrix=<span class="keyword">new</span> <span class="keyword">double</span>[linkMatrix.length][linkMatrix[<span class="number">0</span>].length];
-    <span class="keyword">int</span> [] linkSum=<span class="keyword">new</span> <span class="keyword">int</span>[linkMatrix.length];
-    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;linkMatrix.length;i++){
-         <span class="keyword">int</span> sum=<span class="number">0</span>;
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;linkMatrix[i].length;j++){
+ */
+public static double[][]generateSMatrix(int[][]linkMatrix){
+    double[][] sMatrix=new double[linkMatrix.length][linkMatrix[0].length];
+    int [] linkSum=new int[linkMatrix.length];
+    for(int i=0;i&lt;linkMatrix.length;i++){
+         int sum=0;
+         for(int j=0;j&lt;linkMatrix[i].length;j++){
             sum+=linkMatrix[i][j];
          }
          linkSum[i]=sum;
      }
-    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
-             sMatrix[j][i]=linkMatrix[i][j]/((<span class="keyword">double</span>)linkSum[i]);
+    for(int i=0;i&lt;sMatrix.length;i++){
+         for(int j=0;j&lt;sMatrix[i].length;j++){
+             sMatrix[j][i]=linkMatrix[i][j]/((double)linkSum[i]);
          }
     } 
-    <span class="keyword">return</span> sMatrix;
+    return sMatrix;
 }
-<span class="comment">/*
+/*
  * alpha 代表阻塞系数，一般0.85,此方法可以得到每个节点PageRank值的分量
  * 例如，gMatrix[0][0]，gMatrix[0][1],gMatrix[0][2],gMatrix[0][3] 这四个的和 就是网页A（编号0）的PageRank值
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> [][]generateGMatrix(<span class="keyword">double</span> alpha,<span class="keyword">double</span>[][]sMatrix){
-    <span class="keyword">double</span> [][]gMatrix=<span class="keyword">new</span> <span class="keyword">double</span>[sMatrix.length][sMatrix.length];
-    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
-             gMatrix[i][j]=sMatrix[i][j]*alpha+(<span class="number">1</span>-alpha)/sMatrix.length;
+ */
+public static double [][]generateGMatrix(double alpha,double[][]sMatrix){
+    double [][]gMatrix=new double[sMatrix.length][sMatrix.length];
+    for(int i=0;i&lt;sMatrix.length;i++){
+         for(int j=0;j&lt;sMatrix[i].length;j++){
+             gMatrix[i][j]=sMatrix[i][j]*alpha+(1-alpha)/sMatrix.length;
          }
     } 
-    <span class="keyword">return</span> gMatrix;
+    return gMatrix;
 }
 
-<span class="comment">/*
+/*
  * 将上一步得到的PageRank分量累加起来，即得到这一轮迭代后每个网页的PageRank值
  * 与初试设定的PageRank值（每个节点都是1）进行比较，它们之间的差值不大于quanlity时，迭代才收敛
- */</span>
-<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span>[] generatePageRank(<span class="keyword">double</span> quanlity,<span class="keyword">double</span>[]qVecotor,<span class="keyword">double</span>[][]gMatrix){
-    <span class="keyword">double</span>[] nextQVecotor=<span class="keyword">new</span> <span class="keyword">double</span>[qVecotor.length];
-    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;gMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;gMatrix[i].length;j++){
+ */
+public static double[] generatePageRank(double quanlity,double[]qVecotor,double[][]gMatrix){
+    double[] nextQVecotor=new double[qVecotor.length];
+    for(int i=0;i&lt;gMatrix.length;i++){
+         for(int j=0;j&lt;gMatrix[i].length;j++){
              nextQVecotor[i]+=gMatrix[i][j]*qVecotor[j];
          }
     } 
-    boolean pass=<span class="literal">true</span>;
-    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nextQVecotor.length;i++){
-        <span class="keyword">if</span>(Math.<span class="built_in">abs</span>(nextQVecotor[i]-qVecotor[i])&gt;quanlity){
-            pass=<span class="literal">false</span>;
+    boolean pass=true;
+    for(int i=0;i&lt;nextQVecotor.length;i++){
+        if(Math.abs(nextQVecotor[i]-qVecotor[i])&gt;quanlity){
+            pass=false;
         }
     }
-    <span class="keyword">if</span>(pass){
-        <span class="keyword">return</span> nextQVecotor;
-    }<span class="keyword">else</span>{
-        <span class="keyword">return</span> generatePageRank(quanlity,nextQVecotor,gMatrix);
+    if(pass){
+        return nextQVecotor;
+    }else{
+        return generatePageRank(quanlity,nextQVecotor,gMatrix);
     }
 }
 
-<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{
-     <span class="keyword">int</span>[][] linkMatrix=linkMatrix();
-     System.out.println(<span class="string">"连接矩阵"</span>);
-     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;linkMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;linkMatrix[i].length;j++){
-             System.out.print(linkMatrix[i][j]+<span class="string">"   "</span>);
+public static void main(String[] args) {
+     int[][] linkMatrix=linkMatrix();
+     System.out.println(&quot;连接矩阵&quot;);
+     for(int i=0;i&lt;linkMatrix.length;i++){
+         for(int j=0;j&lt;linkMatrix[i].length;j++){
+             System.out.print(linkMatrix[i][j]+&quot;   &quot;);
          }
          System.out.println();
      }
-     System.out.println(<span class="string">"节点贡献矩阵"</span>);
-     <span class="keyword">double</span>[][]sMatrix=generateSMatrix(linkMatrix);
-     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;sMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;sMatrix[i].length;j++){
-             System.out.print(sMatrix[i][j]+<span class="string">"   "</span>);
+     System.out.println(&quot;节点贡献矩阵&quot;);
+     double[][]sMatrix=generateSMatrix(linkMatrix);
+     for(int i=0;i&lt;sMatrix.length;i++){
+         for(int j=0;j&lt;sMatrix[i].length;j++){
+             System.out.print(sMatrix[i][j]+&quot;   &quot;);
          }
          System.out.println();
      }
-     System.out.println(<span class="string">"PageRank分量矩阵"</span>);
-     <span class="keyword">double</span> [][]gMatrix=generateGMatrix(<span class="number">0.8</span>,sMatrix);
-     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;gMatrix.length;i++){
-         <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;gMatrix[i].length;j++){
-             System.out.print(gMatrix[i][j]+<span class="string">"   "</span>);
+     System.out.println(&quot;PageRank分量矩阵&quot;);
+     double [][]gMatrix=generateGMatrix(0.8,sMatrix);
+     for(int i=0;i&lt;gMatrix.length;i++){
+         for(int j=0;j&lt;gMatrix[i].length;j++){
+             System.out.print(gMatrix[i][j]+&quot;   &quot;);
          }
          System.out.println();
      }
-     <span class="comment">//用来判断迭代收敛的系数</span>
-     <span class="keyword">double</span> quantity=<span class="number">0.00000001</span>;
-     <span class="comment">//初试的时候设定每个网页的权重（即PageRank值）都是1</span>
-     <span class="keyword">double</span>[] qVecotor=<span class="keyword">new</span> <span class="keyword">double</span>[]{<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>};
-     <span class="keyword">double</span> [] finallyQVecotor=generatePageRank(quantity,qVecotor,gMatrix);
-     System.out.println(<span class="string">"PageRank矩阵"</span>);
-     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;finallyQVecotor.length;i++){
-         System.out.print(finallyQVecotor[i]+<span class="string">"  "</span>);
+     //用来判断迭代收敛的系数
+     double quantity=0.00000001;
+     //初试的时候设定每个网页的权重（即PageRank值）都是1
+     double[] qVecotor=new double[]{1,1,1,1};
+     double [] finallyQVecotor=generatePageRank(quantity,qVecotor,gMatrix);
+     System.out.println(&quot;PageRank矩阵&quot;);
+     for(int i=0;i&lt;finallyQVecotor.length;i++){
+         System.out.print(finallyQVecotor[i]+&quot;  &quot;);
          }
     }
 }
@@ -617,7 +617,7 @@ D网页有链接指向B,C
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">59</span>
+              <span class="site-state-item-count">60</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -625,7 +625,7 @@ D网页有链接指向B,C
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -634,7 +634,7 @@ D网页有链接指向B,C
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -860,6 +860,26 @@ D网页有链接指向B,C
   
 
   
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 
   
 
