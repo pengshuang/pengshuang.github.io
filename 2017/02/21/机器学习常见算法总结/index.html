@@ -102,7 +102,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。
 工作原理
 假设现在有样本 \(x">
-<meta property="og:updated_time" content="2017-02-23T07:54:42.000Z">
+<meta property="og:updated_time" content="2017-02-23T08:14:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习常见算法总结">
 <meta name="twitter:description" content="朴素贝叶斯事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A
@@ -388,12 +388,13 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1 - y_i) \ast log(1 - h_w(x_i)))$$</p>
 <p>这里除以 N 是因为求的是最小均方误差，这样就变成了求 min(J(w))，</p>
 <p>其更新 w 的过程为:</p>
-<p>$$<br>w := w - \alpha \ast \bigtriangledown J(w) \</p>
-<p>w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)<br>$$</p>
+<p>$$w := w - \alpha \ast \bigtriangledown J(w)$$</p>
+<p>$$w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)$$</p>
 <p>其中 \(\alpha\) 为步长，直到 \(J(w)\) 不能再小时停止。</p>
 <p>批量梯度下降法的最大问题是会陷入局部最优，并且每次在对当前样本计算 cost 的时候都需要遍历全部样本，这样计算速度会很慢，计算的时候可以转为矩阵乘法去更新整个 w 值。</p>
 <p>有好多方法也采用随机梯度下降，它在计算 cost 的时候只计算当前代价，最终 cost 是在全部样本迭代一次求和得出，还有他在更新当前的参数 w 的时候并不是依次遍历样本，而是从所有样本中随机选择一条进行计算，这种方法收敛速度快，也可以避免局部最优，还容易并行。</p>
-<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right ); j \epsilon 1…N  $$</p>
+<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right )$$</p>
+<p>$$j \epsilon 1…N$$</p>
 <p>SGD 可以改进的地方是使用动态的步长。</p>
 <h3 id="其他的优化方法"><a href="#其他的优化方法" class="headerlink" title="其他的优化方法"></a>其他的优化方法</h3><ul>
 <li>拟牛顿法</li>
@@ -406,18 +407,16 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <li>正则化 (L1, L2)</li>
 </ol>
 <p>添加 L2 正则化之后的损失函数为：</p>
-<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i <em> log(h_w(x_i)) + (1 - y_i) </em> log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
-<p>同时 w 的更新变为</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1- y_i) \ast log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
+<p>同时 w 的更新变为:</p>
 <p>$$w := w - \alpha \ast ( h_w(x_j) - y_j) \ast x_i ) - 2\alpha \ast w_j$$</p>
-<p>这里 \(w_0\) 不受正则化影响</p>
-<h3 id="关于-LR-的多分类-Softmax"><a href="#关于-LR-的多分类-Softmax" class="headerlink" title="关于 LR 的多分类: Softmax"></a>关于 LR 的多分类: Softmax</h3><p>假设离散型随机变量 Y 的取值范围是 {1, 2,…,k}，则多分类的 LR 为</p>
-<p>$$P(Y = a|x) = \frac{exp(w<em>a \ast x)}{\sum</em>{i=1}^{k} (w_i \ast x)}; 1 &lt; a &lt; k$$</p>
-<p>这里会输出当前样本下属于哪一类的概率，并且满足全部概率加起来 = 1</p>
+<p>这里 \(w_0\) 不受正则化影响。</p>
 <p>优缺点：</p>
 <ol>
 <li>实现简单，计算量小</li>
 <li>容易欠拟合</li>
 </ol>
+<h2 id="KNN-算法"><a href="#KNN-算法" class="headerlink" title="KNN 算法"></a>KNN 算法</h2><p>给一个训练数据集和一个新的实例，在训练数据集中找出与这个新实例最近的k个训练实例，然后统计最近的k个训练实例中所属类别计数最多的那个类，就是新实例的类</p>
 
       
     </div>
@@ -628,7 +627,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯"><span class="nav-number">1.</span> <span class="nav-text">朴素贝叶斯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作原理"><span class="nav-number">1.1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作流程"><span class="nav-number">1.2.</span> <span class="nav-text">工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-准备阶段"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 准备阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-训练阶段"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 训练阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-应用阶段"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 应用阶段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性特征"><span class="nav-number">1.3.</span> <span class="nav-text">属性特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉普拉斯校准"><span class="nav-number">1.4.</span> <span class="nav-text">拉普拉斯校准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">1.5.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归"><span class="nav-number">2.</span> <span class="nav-text">逻辑回归和线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降法"><span class="nav-number">2.1.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他的优化方法"><span class="nav-number">2.2.</span> <span class="nav-text">其他的优化方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免过拟合"><span class="nav-number">2.3.</span> <span class="nav-text">如何避免过拟合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-LR-的多分类-Softmax"><span class="nav-number">2.4.</span> <span class="nav-text">关于 LR 的多分类: Softmax</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#朴素贝叶斯"><span class="nav-number">1.</span> <span class="nav-text">朴素贝叶斯</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作原理"><span class="nav-number">1.1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作流程"><span class="nav-number">1.2.</span> <span class="nav-text">工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-准备阶段"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 准备阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-训练阶段"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 训练阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-应用阶段"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 应用阶段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#属性特征"><span class="nav-number">1.3.</span> <span class="nav-text">属性特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉普拉斯校准"><span class="nav-number">1.4.</span> <span class="nav-text">拉普拉斯校准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">1.5.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归和线性回归"><span class="nav-number">2.</span> <span class="nav-text">逻辑回归和线性回归</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降法"><span class="nav-number">2.1.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他的优化方法"><span class="nav-number">2.2.</span> <span class="nav-text">其他的优化方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免过拟合"><span class="nav-number">2.3.</span> <span class="nav-text">如何避免过拟合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-算法"><span class="nav-number">3.</span> <span class="nav-text">KNN 算法</span></a></li></ol></div>
             
           </div>
         </section>

@@ -376,12 +376,13 @@
 <p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1 - y_i) \ast log(1 - h_w(x_i)))$$</p>
 <p>这里除以 N 是因为求的是最小均方误差，这样就变成了求 min(J(w))，</p>
 <p>其更新 w 的过程为:</p>
-<p>$$<br>w := w - \alpha \ast \bigtriangledown J(w) \</p>
-<p>w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)<br>$$</p>
+<p>$$w := w - \alpha \ast \bigtriangledown J(w)$$</p>
+<p>$$w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)$$</p>
 <p>其中 \(\alpha\) 为步长，直到 \(J(w)\) 不能再小时停止。</p>
 <p>批量梯度下降法的最大问题是会陷入局部最优，并且每次在对当前样本计算 cost 的时候都需要遍历全部样本，这样计算速度会很慢，计算的时候可以转为矩阵乘法去更新整个 w 值。</p>
 <p>有好多方法也采用随机梯度下降，它在计算 cost 的时候只计算当前代价，最终 cost 是在全部样本迭代一次求和得出，还有他在更新当前的参数 w 的时候并不是依次遍历样本，而是从所有样本中随机选择一条进行计算，这种方法收敛速度快，也可以避免局部最优，还容易并行。</p>
-<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right ); j \epsilon 1…N  $$</p>
+<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right )$$</p>
+<p>$$j \epsilon 1…N$$</p>
 <p>SGD 可以改进的地方是使用动态的步长。</p>
 <h3 id="其他的优化方法"><a href="#其他的优化方法" class="headerlink" title="其他的优化方法"></a>其他的优化方法</h3><ul>
 <li>拟牛顿法</li>
@@ -394,18 +395,16 @@
 <li>正则化 (L1, L2)</li>
 </ol>
 <p>添加 L2 正则化之后的损失函数为：</p>
-<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i <em> log(h_w(x_i)) + (1 - y_i) </em> log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
-<p>同时 w 的更新变为</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1- y_i) \ast log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
+<p>同时 w 的更新变为:</p>
 <p>$$w := w - \alpha \ast ( h_w(x_j) - y_j) \ast x_i ) - 2\alpha \ast w_j$$</p>
-<p>这里 \(w_0\) 不受正则化影响</p>
-<h3 id="关于-LR-的多分类-Softmax"><a href="#关于-LR-的多分类-Softmax" class="headerlink" title="关于 LR 的多分类: Softmax"></a>关于 LR 的多分类: Softmax</h3><p>假设离散型随机变量 Y 的取值范围是 {1, 2,…,k}，则多分类的 LR 为</p>
-<p>$$P(Y = a|x) = \frac{exp(w<em>a \ast x)}{\sum</em>{i=1}^{k} (w_i \ast x)}; 1 &lt; a &lt; k$$</p>
-<p>这里会输出当前样本下属于哪一类的概率，并且满足全部概率加起来 = 1</p>
+<p>这里 \(w_0\) 不受正则化影响。</p>
 <p>优缺点：</p>
 <ol>
 <li>实现简单，计算量小</li>
 <li>容易欠拟合</li>
 </ol>
+<h2 id="KNN-算法"><a href="#KNN-算法" class="headerlink" title="KNN 算法"></a>KNN 算法</h2><p>给一个训练数据集和一个新的实例，在训练数据集中找出与这个新实例最近的k个训练实例，然后统计最近的k个训练实例中所属类别计数最多的那个类，就是新实例的类</p>
 
           
         
