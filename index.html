@@ -339,30 +339,73 @@
           
             <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-<h3 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h3><p>事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A</p>
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A</p>
 <p>$$P(A\cap B) = P(B) * P(A|B)$$</p>
 <p>所以，</p>
 <p>$$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$</p>
 <p>对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。</p>
-<h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><ol>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
 <li>假设现在有样本 \(x = (a_1,a_2,…,a_n)\) 这个待分类项(并认为 x 里面的特征独立)。</li>
 <li>再假设现在有分类目标 \(Y = (y_n,y_n,…,y_n)\)</li>
 <li>那么 \(max(P(y_1|x),P(y_2|x),P(y_3|x),…,P(y_n|x))\) 就是最终的分类类别。</li>
 <li>而 \(Y = (y_n,y_n,…,y_n)\) 就是最终的分类类别。</li>
 </ol>
-<h4 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h4><h5 id="1-准备阶段"><a href="#1-准备阶段" class="headerlink" title="1. 准备阶段"></a>1. 准备阶段</h5><p>确定特征属性，并对每个特征属性进行适当划分，然后由人工对一部分待分类项进行分类，形成训练样本。</p>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><h4 id="1-准备阶段"><a href="#1-准备阶段" class="headerlink" title="1. 准备阶段"></a>1. 准备阶段</h4><p>确定特征属性，并对每个特征属性进行适当划分，然后由人工对一部分待分类项进行分类，形成训练样本。</p>
 <h4 id="2-训练阶段"><a href="#2-训练阶段" class="headerlink" title="2. 训练阶段"></a>2. 训练阶段</h4><p>计算每个类别在训练样本中的出现频率及每个特征属性划分对每个类别的条件概率估计。</p>
 <h4 id="3-应用阶段"><a href="#3-应用阶段" class="headerlink" title="3. 应用阶段"></a>3. 应用阶段</h4><p>使用分类器进行分类，输入时分类器和待分类样本，输出是样本属于的分类类别。</p>
-<h4 id="属性特征"><a href="#属性特征" class="headerlink" title="属性特征"></a>属性特征</h4><ol>
+<h3 id="属性特征"><a href="#属性特征" class="headerlink" title="属性特征"></a>属性特征</h3><ol>
 <li>特征为离散值时直接统计即可。</li>
 <li>特征为连续值的时候假定特征符合高斯分布：\(g(x,n,u)\)</li>
 </ol>
-<h4 id="拉普拉斯校准"><a href="#拉普拉斯校准" class="headerlink" title="拉普拉斯校准"></a>拉普拉斯校准</h4><p>当某个类别下某个特征划分没有出现时，会有 \(P(a|y) = 0\)，就是导致分类器质量降低，所以此时引入 拉普拉斯校验，就是对每类别下所有划分的计数加 1。</p>
-<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><ol>
+<h3 id="拉普拉斯校准"><a href="#拉普拉斯校准" class="headerlink" title="拉普拉斯校准"></a>拉普拉斯校准</h3><p>当某个类别下某个特征划分没有出现时，会有 \(P(a|y) = 0\)，就是导致分类器质量降低，所以此时引入 拉普拉斯校验，就是对每类别下所有划分的计数加 1。</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
 <li>对小规模的数据表现很好，适合多分类任务，适合增量式训练。</li>
-<li>对输入数据的表达形式很敏感。</li>
+<li>对输入数据的表达形式很敏感。(离散、连续、极大值，极小值）。</li>
 </ol>
-<p>未完待续</p>
+<h2 id="逻辑回归和线性回归"><a href="#逻辑回归和线性回归" class="headerlink" title="逻辑回归和线性回归"></a>逻辑回归和线性回归</h2><p>LR回归是一个线性的二分类模型，主要是计算在某个样本特征下事件发生的概率，比如根据用户的浏览购买情况作为特征来计算它是否会购买这个商品，抑或是它是否会点击这个商品。然后LR的最终值是根据一个线性和函数再通过一个 <strong>sigmoid</strong> 函数来求得，这个线性和函数权重与特征值的累加以及加上偏置求出来的，所以在训练LR时也就是在训练线性和函数的各个权重值w。</p>
+<p>$$h_w(x) = \frac{1}{1 + e^{-(w^Tx + b)}}$$</p>
+<p>关于这个权重值 w 一般使用最大似然法来估计，假设现在有样本 \(x_i, y_i\)，其中 xi 表示样本的特征，\(y_i \epsilon 0, 1\)表示样本的分类真实值，\(y_i = 1\) 的概率是 \(p_i\)，则 \(y_i = 0\) 的概率是 \(1 − p_i\)，那么观测概率为:</p>
+<p>$$p(y_i) = p_i^{y_i} * (1 - p_i)^{1 - yi}$$</p>
+<p>则最大似然估计为：</p>
+<p>$$\prod (h_w(x_i)^y_i * (1 - h_w(x_i))^{1 - y_i}))$$</p>
+<p>对这个似然函数取对数之后就会得到表达式：</p>
+<p>$$L(w) = \sum_{i}^{N} \left ( y_i \ast logh_w(x_i) + (1 - y_i) \ast log(1 - h_w(x_i))\right )$$</p>
+<p>对这个 L(w) 求极大值就可以得到 w 的估计值。</p>
+<p>实际计算中，常改为求极小值，在前面加个负号即可。故求解问题就变成了这个最大似然函数的最优化问题，这里通常会采取随机梯度下降和拟牛顿迭代法来进行优化。</p>
+<h3 id="梯度下降法"><a href="#梯度下降法" class="headerlink" title="梯度下降法"></a>梯度下降法</h3><p>LR 的损失函数为：</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1 - y_i) \ast log(1 - h_w(x_i)))$$</p>
+<p>这里除以 N 是因为求的是最小均方误差，这样就变成了求 min(J(w))，</p>
+<p>其更新 w 的过程为:</p>
+<p>$$<br>w := w - \alpha \ast \bigtriangledown J(w) \</p>
+<p>w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)<br>$$</p>
+<p>其中 \(\alpha\) 为步长，直到 \(J(w)\) 不能再小时停止。</p>
+<p>批量梯度下降法的最大问题是会陷入局部最优，并且每次在对当前样本计算 cost 的时候都需要遍历全部样本，这样计算速度会很慢，计算的时候可以转为矩阵乘法去更新整个 w 值。</p>
+<p>有好多方法也采用随机梯度下降，它在计算 cost 的时候只计算当前代价，最终 cost 是在全部样本迭代一次求和得出，还有他在更新当前的参数 w 的时候并不是依次遍历样本，而是从所有样本中随机选择一条进行计算，这种方法收敛速度快，也可以避免局部最优，还容易并行。</p>
+<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right ); j \epsilon 1…N  $$</p>
+<p>SGD 可以改进的地方是使用动态的步长。</p>
+<h3 id="其他的优化方法"><a href="#其他的优化方法" class="headerlink" title="其他的优化方法"></a>其他的优化方法</h3><ul>
+<li>拟牛顿法</li>
+<li>BFDS</li>
+<li>L-BFGS</li>
+</ul>
+<p>优缺点： 无需选择学习率，更快，但也更复杂</p>
+<h3 id="如何避免过拟合"><a href="#如何避免过拟合" class="headerlink" title="如何避免过拟合"></a>如何避免过拟合</h3><ol>
+<li>减少 feature 的个数</li>
+<li>正则化 (L1, L2)</li>
+</ol>
+<p>添加 L2 正则化之后的损失函数为：</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i <em> log(h_w(x_i)) + (1 - y_i) </em> log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
+<p>同时 w 的更新变为</p>
+<p>$$w := w - \alpha \ast ( h_w(x_j) - y_j) \ast x_i ) - 2\alpha \ast w_j$$</p>
+<p>这里 \(w_0\) 不受正则化影响</p>
+<h3 id="关于-LR-的多分类-Softmax"><a href="#关于-LR-的多分类-Softmax" class="headerlink" title="关于 LR 的多分类: Softmax"></a>关于 LR 的多分类: Softmax</h3><p>假设离散型随机变量 Y 的取值范围是 {1, 2,…,k}，则多分类的 LR 为</p>
+<p>$$P(Y = a|x) = \frac{exp(w<em>a \ast x)}{\sum</em>{i=1}^{k} (w_i \ast x)}; 1 &lt; a &lt; k$$</p>
+<p>这里会输出当前样本下属于哪一类的概率，并且满足全部概率加起来 = 1</p>
+<p>优缺点：</p>
+<ol>
+<li>实现简单，计算量小</li>
+<li>容易欠拟合</li>
+</ol>
 
           
         
@@ -2215,7 +2258,7 @@ Hash(NODE3) = KEY3;
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
