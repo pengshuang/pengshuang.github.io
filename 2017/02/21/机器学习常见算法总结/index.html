@@ -102,7 +102,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。
 工作原理
 假设现在有样本 \(x">
-<meta property="og:updated_time" content="2017-02-24T07:54:45.000Z">
+<meta property="og:updated_time" content="2017-02-24T08:09:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习常见算法总结">
 <meta name="twitter:description" content="朴素贝叶斯事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A
@@ -465,32 +465,32 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <p>$$argmin_{w,b}  \frac{1}{2} \ast ||w||^2  \gamma$$</p>
 <p>$$st. y_i(w^Tx_i + b) \geq 1$$</p>
 <p>这样就把原始问题转换为了一个凸的二次规划，可以将其转换为拉格朗日函数，然后使用对偶算法来求解。</p>
-<h3 id="对偶求解"><a href="#对偶求解" class="headerlink" title="对偶求解"></a>对偶求解</h3><p>引进拉格朗日乘子 \(\alpha = {\alpha_1, \alpha_2,…}\)，定义拉格朗日函数：</p>
-<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx<em>i + b)) + \sum\</em>{i = 1}^{N} (\alpha+i)$$</p>
+<h3 id="对偶求解"><a href="#对偶求解" class="headerlink" title="对偶求解"></a>对偶求解</h3><p>引进拉格朗日乘子 \(a = {a_1, a_2,…}\)，定义拉格朗日函数：</p>
+<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha+i)$$</p>
 <p>根据对偶性质，原始问题就是对偶问题的极大极小</p>
 <p>$$max min L(w, b, a)$$</p>
 <p>先求 L 对 w，b 的极小，再求对 \(\alpha\) 的极大。第一步，相当于对 \(w, b) 求偏导并且令其等于 0</p>
-<p>$$\bigtriangledown_{w} L(w, b, a) = w - \sum_{i = 1}^{N} a_iy_ix_i$$</p>
-<p>$$\bigtriangledown_{b} L(w, b, a) = \sum_{i = 1}^{N} a_iy_i$$</p>
+<p>$$\bigtriangledown_w L(w, b, a) = w - \sum_{i = 1}^{N} a_iy_ix_i$$</p>
+<p>$$\bigtriangledown_b L(w, b, a) = \sum_{i = 1}^{N} a_iy_i$$</p>
 <p>带入后即得，</p>
-<p>$$minL(w, b, a) = -\frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot  x<em>j) + \sum\</em>{i = 1}^{N} a_i$$</p>
+<p>$$minL(w, b, a) = - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot  x_j) + \sum_{i = 1}^{N} a_i$$</p>
 <p>对上式求极大，即是对偶问题：</p>
-<p>$$max - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot x<em>j) + \sum\</em>{i = 1}^{N} a_i$$</p>
+<p>$$max - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot x_j) + \sum_{i = 1}^{N} a_i$$</p>
 <p>$$st. \sum_{i = 1}^{N}(\alpha_i y_i) = 0$$</p>
 <p>$$a \geq 0, i = 1, 2, 3…$$</p>
 <p>将求最大转为求最小，得到等价的式子为：</p>
-<p>$$min \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} (a_ia_jy_iy_j(x_i \cdot x_j) - \sum a_i$$</p>
+<p>$$min \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} (a_ia_jy_iy_j(x_i \cdot x_j) - sum_{i = 1}^{N} a_i$$</p>
 <p>$$st. \sum_{i = 1}^{N}(\alpha_i y_i) = 0$$</p>
 <p>$$a \geq 0, i = 1, 2, 3…$$</p>
 <p>假如求解出来的 \(\alpha^* (\alpha_1^\ast,…\alpha_n^\ast)\)</p>
 <p>则得到最优的 w，b 分别为</p>
-<p>$$w^\ast = \sum_{i = 1}^{N}(\alpha_i^\ast y_ix_i)$$</p>
-<p>$$b^\ast = y<em>i - \sum\</em>{i = 1}^{N}(\alpha_i^\ast y_i (x_i \cdot x_j))$$</p>
+<p>$$w^ \ast = \sum_{i = 1}^{N}(\alpha_i^\ast y_ix_i)$$</p>
+<p>$$b^ \ast = y_i - \sum_{i = 1}^{N}(\alpha_i^\ast y_i (x_i \cdot x_j))$$</p>
 <p>所以，最终的决策分类面为：</p>
 <p>$$f(x) = sign(\sum_{i = 1}^{N} a_i^\ast y_i(x \cdot x_i) + b^*)$$</p>
 <p>即，分类决策函数只依赖于输入 x 与训练样本输入的内积。</p>
 <h4 id="SVM-软间距最大化"><a href="#SVM-软间距最大化" class="headerlink" title="SVM 软间距最大化"></a>SVM 软间距最大化</h4><p>软间距最大化引用了松弛变量 \(\xi \)，将原问题的求解转换为：</p>
-<p>$$argmin<em>{w,b} \frac{1}{2} \ast ||w||^2  + C \sum\</em>{i = 1}^{N} \xi_i$$</p>
+<p>$$argmin_{w,b} \frac{1}{2} \ast ||w||^2  + C \sum_{i = 1}^{N} \xi_i$$</p>
 <p>$$y_i(w^Tx_i + b) \geq 1 - \xi_i$$</p>
 <p>$$\xi_i \geq 0, i = 1,2,…N$$</p>
 <h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>优化目标为：</p>
