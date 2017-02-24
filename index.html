@@ -458,10 +458,10 @@
 <p>根据对偶性质，原始问题就是对偶问题的极大极小</p>
 <p>$$max min L(w, b, a)$$</p>
 <p>先求 L 对 w，b 的极小，再求对 \(\alpha\) 的极大。第一步，相当于对 \(w, b) 求偏导并且令其等于 0</p>
-<p>$$\bigtriangledown<em>{w} L(w, b, a) = w - \sum\</em>{i = 1}^{N} a_iy_ix_i$$</p>
-<p>$$\bigtriangledown<em>{b} L(w, b, a) = \sum\</em>{i = 1}^{N} a_iy_i$$</p>
+<p>$$\bigtriangledown_{w} L(w, b, a) = w - \sum_{i = 1}^{N} a_iy_ix_i$$</p>
+<p>$$\bigtriangledown_{b} L(w, b, a) = \sum_{i = 1}^{N} a_iy_i$$</p>
 <p>带入后即得，</p>
-<p>$$minL(w, b, a) = -\frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot  x_j) + \sum a_i$$</p>
+<p>$$minL(w, b, a) = -\frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot  x<em>j) + \sum\</em>{i = 1}^{N} a_i$$</p>
 <p>对上式求极大，即是对偶问题：</p>
 <p>$$max - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot x<em>j) + \sum\</em>{i = 1}^{N} a_i$$</p>
 <p>$$st. \sum_{i = 1}^{N}(\alpha_i y_i) = 0$$</p>
@@ -488,6 +488,41 @@
 <li>对偶问题往往更加容易求解。</li>
 <li>可以很自然的引入核函数。</li>
 </ol>
+<h3 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h3><p>将输入特征x（线性不可分）映射到高维特征 R 空间，可以在 R 空间上让 SVM 进行线性可以变，这就是核函数的作用。常见的核函数有：</p>
+<ul>
+<li>多项式核函数: \( K(x, z)=(x \ast z + 1)^p\)</li>
+<li>高斯核函数: \( K(x, z) = exp(\frac{-(x - z)^2}{\sigma ^2})\) </li>
+</ul>
+<h3 id="SVM优缺点"><a href="#SVM优缺点" class="headerlink" title="SVM优缺点"></a>SVM优缺点</h3><h4 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h4><ol>
+<li>使用核函数可以向高维空间进行映射</li>
+<li>使用核函数可以解决非线性的分类</li>
+<li>分类思想很简单，就是将样本与决策面的间隔最大化</li>
+<li>分类效果较好</li>
+</ol>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ol>
+<li>对大规模数据训练比较困难</li>
+<li>无法直接支持多分类，但是可以使用间接的方法来做</li>
+</ol>
+<h3 id="SMO"><a href="#SMO" class="headerlink" title="SMO"></a>SMO</h3><p>SMO是用于快速求解SVM的。它选择凸二次规划的两个变量，其他的变量保持不变，然后根据这两个变量构建一个二次规划问题，这个二次规划关于这两个变量解会更加的接近原始二次规划的解，通过这样的子问题划分可以大大增加整个算法的计算速度，关于这两个变量：</p>
+<ol>
+<li>其中一个是严重违反KKT条件的一个变量。</li>
+<li>另一个变量是根据自由约束确定，好像是求剩余变量的最大化来确定的。</li>
+</ol>
+<h3 id="SVM多分类问题"><a href="#SVM多分类问题" class="headerlink" title="SVM多分类问题"></a>SVM多分类问题</h3><ul>
+<li>直接法</li>
+</ul>
+<p>直接在目标函数上进行修改，将多个分类面的参数求解合并到一个最优化问题中，通过求解该优化就可以实现多分类（计算复杂度很高，实现起来较为困难）</p>
+<ul>
+<li>间接法</li>
+</ul>
+<ol>
+<li>一对多</li>
+</ol>
+<p>其中某个类为一类，其余 n-1 个类为另一个类，比如 A,B,C,D 四个类，第一次 A 为一个类，{B,C,D} 为一个类训练一个分类器，第二次B为一个类，{A,C,D}为另一个类，按这方式共需要训练4个分类器，最后在测试的时候将测试样本经过这4个分类器f1(x)f1(x),f2(x)f2(x)，f3(x)f3(x) 和 f4(x)f4(x)，取其最大值为分类器(这种方式由于是1对M分类，会存在偏置，很不实用)</p>
+<ol>
+<li>一对一(libsvm实现的方式)</li>
+</ol>
+<p>任意两个类都训练一个分类器，那么n个类就需要 n*(n-1)/2 个 SVM 分类器。<br>还是以A,B,C,D为例，那么需要 {A,B},{A,C},{A,D},{B,C},{B,D},{C,D} 为目标共 6 个分类器，然后在预测的将测试样本通过这6个分类器之后进行投票选择最终结果。（这种方法虽好，但是需要 n*(n-1)/2 个分类器代价太大）</p>
 
           
         
