@@ -454,7 +454,7 @@
 <p>$$st. y_i(w^Tx_i + b) \geq 1$$</p>
 <p>这样就把原始问题转换为了一个凸的二次规划，可以将其转换为拉格朗日函数，然后使用对偶算法来求解。</p>
 <h3 id="对偶求解"><a href="#对偶求解" class="headerlink" title="对偶求解"></a>对偶求解</h3><p>引进拉格朗日乘子 \(a = {a_1, a_2,…}\)，定义拉格朗日函数：</p>
-<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha+i)$$</p>
+<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha_i)$$</p>
 <p>根据对偶性质，原始问题就是对偶问题的极大极小</p>
 <p>$$max min L(w, b, a)$$</p>
 <p>先求 L 对 w，b 的极小，再求对 \(\alpha\) 的极大。第一步，相当于对 \(w, b) 求偏导并且令其等于 0</p>

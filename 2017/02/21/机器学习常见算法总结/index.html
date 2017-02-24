@@ -102,7 +102,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。
 工作原理
 假设现在有样本 \(x">
-<meta property="og:updated_time" content="2017-02-24T08:12:16.000Z">
+<meta property="og:updated_time" content="2017-02-24T14:03:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习常见算法总结">
 <meta name="twitter:description" content="朴素贝叶斯事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A
@@ -466,7 +466,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <p>$$st. y_i(w^Tx_i + b) \geq 1$$</p>
 <p>这样就把原始问题转换为了一个凸的二次规划，可以将其转换为拉格朗日函数，然后使用对偶算法来求解。</p>
 <h3 id="对偶求解"><a href="#对偶求解" class="headerlink" title="对偶求解"></a>对偶求解</h3><p>引进拉格朗日乘子 \(a = {a_1, a_2,…}\)，定义拉格朗日函数：</p>
-<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha+i)$$</p>
+<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha_i)$$</p>
 <p>根据对偶性质，原始问题就是对偶问题的极大极小</p>
 <p>$$max min L(w, b, a)$$</p>
 <p>先求 L 对 w，b 的极小，再求对 \(\alpha\) 的极大。第一步，相当于对 \(w, b) 求偏导并且令其等于 0</p>
