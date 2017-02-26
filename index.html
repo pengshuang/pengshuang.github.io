@@ -543,6 +543,41 @@
 <p>代入可以得到</p>
 <p>$$C_t(T) = \sum(\sum (N_{tk} \ast log(N_{tk}/N_t))) + \lambda |T|$$</p>
 <p>其中 \(\lambda |T| \) 为正则化项， \(\lambda \) 是用于调节比率，决策树的生成只考虑了信息增益。 </p>
+<h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h3><p>它是ID3的一个改进算法，使用信息增益率来进行属性的选择</p>
+<p>$$splitInformation(D | A) = - \sum_{i} (\frac{D_i}{D} \ast log2(\frac{D_i}{D}))$$</p>
+<p>$$GainRatio(D,A) = \frac{Gain(D,A)}{splitInformation(D, A)}$$</p>
+<h4 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h4><p>准确率高，但是子构造树的过程中需要进行多次的扫描和排序，所以它的运算效率较低。</p>
+<h3 id="Cart"><a href="#Cart" class="headerlink" title="Cart"></a>Cart</h3><p>分类回归树(Classification And Regression Tree)是一个决策二叉树，在通过递归的方式建立，每个节点在分裂的时候都是希望通过最好的方式将剩余的样本划分成两类，这里的分类指标：</p>
+<ul>
+<li>分类树：基尼指数最小化(gini_index）</li>
+<li>回归树：平方误差最小化</li>
+</ul>
+<h4 id="分类树："><a href="#分类树：" class="headerlink" title="分类树："></a>分类树：</h4><ol>
+<li>首先是根据当前特征计算他们的基尼增益</li>
+<li>选择基尼增益最小的特征作为划分特征</li>
+<li>从该特征中查找基尼指数最小的分类类别作为最优划分点</li>
+<li>将当前样本划分成两类，一类是划分特征的类别等于最优划分点，另一类就是不等于</li>
+<li>针对这两类递归进行上述的划分工作，直达所有叶子指向同一样本目标或者叶子个数小于一定的阈值</li>
+</ol>
+<p><strong>gini</strong> 用来度量分布不均匀性（或者说不纯），总体的类别越杂乱，GINI指数就越大（跟熵的概念很相似）</p>
+<p>$$gini(a_i) = 1 - \sum_i(p_i^2)$$</p>
+<p>\(p_i\) ：当前数据集中第 i 类样本的比例；</p>
+<p><strong>gini</strong> 越小，表示样本越均匀，越大越不均匀。</p>
+<p>基尼增益：</p>
+<p>$$giniGain = \sum_i (\frac{N_i}{N} \ast gini(a_i))$$</p>
+<p>\(\frac{N_i}{N}\) 表示当前类别占所有类别的概率<br>最终Cart选择GiniGain最小的特征作为划分特征。</p>
+<h4 id="回归树"><a href="#回归树" class="headerlink" title="回归树"></a>回归树</h4><p>回归树是以平方误差最小化的准则划分为两块区域。</p>
+<ol>
+<li>遍历特征计算最优的划分点s，使其最小化的平方误差是：\(min(min(\sum_i^{R1}((y_i−c_1)^2)) + min(\sum_i^{R2}((y_i−c_2)^2)))\)<br>计算根据s划分到左侧和右侧子树的目标值与预测值之差的平方和最小，这里的预测值是两个子树上输入 \(x_i\) 样本对应 \(y_i\) 的均值。</li>
+<li>找到最小的划分特征 j 以及其最优的划分点 s，根据特征 j 以及划分点 s 将现有的样本划分为两个区域，一个是在特征 j 上小于等于 s，另一个在在特征 j 上大于 s</li>
+<li>进入两个子区域按上述方法继续划分，直到到达停止条件</li>
+</ol>
+<h3 id="停止条件"><a href="#停止条件" class="headerlink" title="停止条件"></a>停止条件</h3><ol>
+<li>直到每个叶子节点都只有一种类型的记录时停止。（这种方式很容易过拟合）</li>
+<li>另一种时当叶子节点的记录树小于一定的阈值或者节点的信息增益小于一定的阈值时停止。</li>
+</ol>
+<h3 id="决策树的分类与回归"><a href="#决策树的分类与回归" class="headerlink" title="决策树的分类与回归"></a>决策树的分类与回归</h3><h4 id="分类树"><a href="#分类树" class="headerlink" title="分类树"></a>分类树</h4><p>输出叶子节点中所属类别最多的那一类。</p>
+<h4 id="回归树-1"><a href="#回归树-1" class="headerlink" title="回归树"></a>回归树</h4><p>输出叶子节点中各个样本值的平均值。</p>
 
           
         
