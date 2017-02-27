@@ -578,6 +578,61 @@
 </ol>
 <h3 id="决策树的分类与回归"><a href="#决策树的分类与回归" class="headerlink" title="决策树的分类与回归"></a>决策树的分类与回归</h3><h4 id="分类树"><a href="#分类树" class="headerlink" title="分类树"></a>分类树</h4><p>输出叶子节点中所属类别最多的那一类。</p>
 <h4 id="回归树-1"><a href="#回归树-1" class="headerlink" title="回归树"></a>回归树</h4><p>输出叶子节点中各个样本值的平均值。</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>随机森林是有很多随机得决策树构成，它们之间没有关联。得到RF以后，在预测时分别对每一个决策树进行判断，最后使用Bagging的思想进行结果的输出（也就是投票的思想）</p>
+<h3 id="学习过程"><a href="#学习过程" class="headerlink" title="学习过程"></a>学习过程</h3><ol>
+<li>现在有 N 个训练样本，每个样本的特征为 M 个，需要建 K 颗树。</li>
+<li>从 N 个训练样本中有放回的取 N 个样本作为一组训练集（其余未取到的样本作为预测分类，评估其误差）。</li>
+<li>从 M 个特征中取m个特征左右子集特征。 (m &lt;&lt; M)</li>
+<li>对采样的数据使用完全分裂的方式来建立决策树，这样的决策树每个节点要么无法分裂，要么所有的样本都指向同一个分类。</li>
+<li>重复2的过程K次，即可建立森林。</li>
+</ol>
+<h3 id="预测过程"><a href="#预测过程" class="headerlink" title="预测过程"></a>预测过程</h3><ol>
+<li>将预测样本输入到K颗树分别进行预测。</li>
+<li>如果是分类问题，直接使用投票的方式选择分类频次最高的类别。</li>
+<li>如果是回归问题，使用分类之后的均值作为结果。</li>
+</ol>
+<h3 id="参数问题"><a href="#参数问题" class="headerlink" title="参数问题"></a>参数问题</h3><ol>
+<li>这里的一般取 m = sqrt(M)</li>
+<li>关于树的个数K，一般都需要成百上千，但是也有具体的样本有关（比如特征数量）</li>
+<li>树的最大深度，（太深可能可能导致过拟合）</li>
+<li>节点上的最小样本数、最小信息增益</li>
+</ol>
+<h3 id="泛化误差估计"><a href="#泛化误差估计" class="headerlink" title="泛化误差估计"></a>泛化误差估计</h3><p>使用 <strong>oob（out-of-bag）</strong> 进行泛化误差的估计，将各个树的未采样样本作为预测样本（大约有36.8%），使用已经建立好的森林对各个预测样本进行预测，预测完之后最后统计误分得个数占总预测样本的比率作为 RF 的 oob 误分率。</p>
+<h3 id="学习算法"><a href="#学习算法" class="headerlink" title="学习算法"></a>学习算法</h3><ul>
+<li>ID3 算法：处理离散值的量</li>
+<li>C45 算法：处理连续值的量</li>
+<li>Cart 算法：离散和连续 两者都合适。</li>
+</ul>
+<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>能够处理大量特征的分类，并且还不用做特征选择</li>
+<li>在训练完成之后能给出哪些feature的比较重要</li>
+<li>训练速度很快</li>
+<li>很容易并行</li>
+<li>实现相对来说较为简单</li>
+</ol>
+<h2 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h2><p>GBDT的精髓在于训练的时候都是以上一颗树的残差为目标，这个残差就是上一个树的预测值与真实值的差值。</p>
+<p><strong>比如，当前样本年龄是18岁，那么第一颗会去按18岁来训练，但是训练完之后预测的年龄为12岁，差值为6，<br>所以第二颗树的会以6岁来进行训练，假如训练完之后预测出来的结果为6，那么两棵树累加起来就是真实年龄了，<br>但是假如第二颗树预测出来的结果是5，那么剩余的残差1就会交给第三个树去训练。</strong></p>
+<p>Boosting 的好处就是每一步的参加就是变相了增加了分错 instance 的权重，而对已经对的 instance 趋向于0，这样后面的树就可以更加关注错分的 instance 的训练了。</p>
+<h3 id="Shrinkage"><a href="#Shrinkage" class="headerlink" title="Shrinkage"></a>Shrinkage</h3><p>Shrinkage 认为，每次走一小步逐步逼近的结果要比每次迈一大步逼近结果更加容易避免过拟合。</p>
+<p>$$y_i = y_{i-1} + step \ast y_i$$</p>
+<h3 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h3><ul>
+<li>树的个数 100 ~ 10000</li>
+<li>叶子的深度 3 ~ 8</li>
+<li>学习速率 0.01 ~ 1</li>
+<li>叶子上最大节点树 20</li>
+<li>训练采样比例 0.5 ~ 1 </li>
+<li>训练特征采样比例 sqrt(num)</li>
+</ul>
+<h3 id="优缺点：-1"><a href="#优缺点：-1" class="headerlink" title="优缺点："></a>优缺点：</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ol>
+<li>精度高</li>
+<li>能处理非线性数据</li>
+<li>能处理多特征类型</li>
+<li>适合低维稠密数据</li>
+</ol>
+<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h4><ol>
+<li>并行麻烦（因为上下两颗树有联系）</li>
+<li>多分类的时候 复杂度很大</li>
+</ol>
 
           
         
