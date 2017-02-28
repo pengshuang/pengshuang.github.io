@@ -258,6 +258,339 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/25/IP地址基础知识/" itemprop="url">
+                  IP协议学习(二):IP地址基础知识
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-25T21:15:14+08:00" content="2016-09-25">
+              2016-09-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/25/IP地址基础知识/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/25/IP地址基础知识/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/25/IP地址基础知识/" class="leancloud_visitors" data-flag-title="IP协议学习(二):IP地址基础知识">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。</p>
+<h3 id="1-IP地址的定义"><a href="#1-IP地址的定义" class="headerlink" title="1. IP地址的定义"></a>1. IP地址的定义</h3><p>IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。</p>
+<p>IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，网络标识在数据链路的每个段配置不同的值。网络标识必须保证相互连接的每个段的地址不相重复。而相同段内相连的主机必须有相同的网络地址。IP地址的 “主机标识” 则不允许在同一个网段内重复出现。</p>
+<p>通过下图也可以看出，IP包被转发到途中某个路由器时，正是利用目标IP地址的网络标识进行路由。因为即使不看主机标识，只要一见到网络标识就能判断出是否为该网段内的主机。网络标识和主机标识通常通过子网掩码（网络前缀）区分。</p>
+<p><img src="/img/IPnet.png" alt=""></p>
+<h3 id="2-IP地址的分类"><a href="#2-IP地址的分类" class="headerlink" title="2. IP地址的分类"></a>2. IP地址的分类</h3><p><img src="/img/IPaddress.png" alt=""></p>
+<p>IP地址分为四个级别，分为A类，B类，C类，D类。它根据IP地址中从第1位到第4位的比特列对网络标识和主机标识进行区分。</p>
+<h4 id="A类地址"><a href="#A类地址" class="headerlink" title="A类地址"></a>A类地址</h4><p>A类IP地址是首位以 “0” 开头的地址。从第1位到第8位是它的网络标识。用十进制表示的话，0.0.0.0 ~ 127.0.0.0 是A类的网络地址。A类地址的后24位相当于主机标识。因此，一个网段内可容纳的主机地址上限为16，777，214个。</p>
+<h4 id="B类地址"><a href="#B类地址" class="headerlink" title="B类地址"></a>B类地址</h4><p>B类IP地址是前两位为 “10” 的地址。从第1位到第16位是它的网络标识。用十进制表示的话，128.0.0.1 ~ 191.255.0.0是B类的网络地址。B类网络地址的后16位相当于主机标识。因此，一个网段内可容纳的主机上限为65，534个。</p>
+<h4 id="C类地址"><a href="#C类地址" class="headerlink" title="C类地址"></a>C类地址</h4><p>C类IP地址是前三位为 “110” 的地址。从第1位到第24位是它的网络标识。用十进制表示的话，192.168.0.0 ~ 239.255.255.0 是C类的网络地址。C类地址的后8位相当于主机标识。因此，一个网段内可容纳的主机地址上限为254个。</p>
+<h4 id="D类地址"><a href="#D类地址" class="headerlink" title="D类地址"></a>D类地址</h4><p>D类IP地址是前四位为 “1110” 地址。从第1位到第32位是它的网络标识。用十进制表示的话，224.0.0.0 ~ 239.255.255.255 是D类的网络地址。D类地址没有主机标识，常被用于多播。</p>
+<p><strong>注意</strong></p>
+<p>主机地址全部为0只有在表示对应的网络地址或IP地址不可获知的情况下才使用。而全部为1的主机地址通常作为广播地址。</p>
+<h3 id="3-广播地址"><a href="#3-广播地址" class="headerlink" title="3. 广播地址"></a>3. 广播地址</h3><p>广播地址用于在同一个链路中相互连接的主机之间发生数据。IP地址中的主机地址部分全部设置为1，就成了广播地址。</p>
+<p>广播地址分为本地广播和直接广播两种。在本网络内的广播为本地广播，这个广播地址的IP包会被路由器屏蔽；在不同网络之间的广播叫做之间广播。</p>
+<h3 id="4-IP多播"><a href="#4-IP多播" class="headerlink" title="4. IP多播"></a>4. IP多播</h3><h4 id="同时发送提供效率"><a href="#同时发送提供效率" class="headerlink" title="同时发送提供效率"></a>同时发送提供效率</h4><p>多播用于将包发送给特点组内的所有主机。由于其之间使用IP协议，因此也不存在可靠传输。</p>
+<h4 id="IP多播与地址"><a href="#IP多播与地址" class="headerlink" title="IP多播与地址"></a>IP多播与地址</h4><p>多播使用D类地址。因此，如果从首位开始到第4位是“1110”，就可以认为是多播地址。而剩下的28位可以成为多播的组编号。</p>
+<h3 id="5-子网掩码"><a href="#5-子网掩码" class="headerlink" title="5. 子网掩码"></a>5. 子网掩码</h3><p><img src="/img/mask.png" alt=""></p>
+<p>引入了子网以后，一个IP地址就有了两种识别码。一是IP地址本身，另一个是表示网络内部的子网掩码。子网掩码用二进制的方式表示的话，也是一个32位的数字。它对应IP地址网络标识部分的位全部为“1”，对应IP地址主机标识的部分则全部为“0”。由此，一个IP地址可以不再受限于自己的类别，而是可以用这样的子网掩码自由的定位自己的网络标识长度。当然，子网掩码必须是IP地址的首位开始连续的“1”。表示方法如下：</p>
+<p>IP地址：    172.20.100.52/26</p>
+<p>子网掩码：    255.255.255.192</p>
+<p>网络地址：  172.20.100.0</p>
+<p>广播地址：    172.20.100.63</p>
+<p><strong>子网掩码可以灵活的指定网络标识的长度</strong></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="url">
+                  谷歌三篇论文学习(一): MapReduce
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-21T15:05:34+08:00" content="2016-09-21">
+              2016-09-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/论文/" itemprop="url" rel="index">
+                    <span itemprop="name">论文</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/21/谷歌三篇论文学习-MapReduce/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/21/谷歌三篇论文学习-MapReduce/" class="leancloud_visitors" data-flag-title="谷歌三篇论文学习(一): MapReduce">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h3><p><strong>MapReduce</strong>  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 <strong>Map</strong> 函数处理一个基于 <strong>key/value pair</strong> 的数据集合，输出中间的基于 <strong>key/value pair</strong> 的数据集合；然后再创建一个 <strong>Reduce</strong> 函数来用来合并所有的具有相同中间<strong>key</strong>值的中间<strong>values</strong>值。现实世界中有很多满足上述处理模型的例子。</p>
+<p><strong>MapReduce</strong> 编程模型的原理是:利用一个输入 <strong>key/value pair</strong> 集合来产生一个输出的 <strong>key/value pair</strong> 集合。 <strong>MapReduce</strong>  库的用户用两个函数表达这个计算: <strong>Map</strong> 和 <strong>Reduce</strong>。</p>
+<p>用户自定义的 <strong>Map</strong> 函数接受一个输入的 <strong>key/value pair</strong> 值,然后产生一个中间 <strong>key/value pair</strong> 值的集合。 <strong>MapReduce</strong> 库把所有具有相同中间 key 值的中间 <strong>value</strong> 值集合在一起后传递给 <strong>Reduce</strong> 函数。</p>
+<p>用户自定义的 <strong>Reduce</strong> 函数接受一个中间 <strong>key</strong> 的值和相关的一个 <strong>value</strong> 值的集合。 <strong>Reduce</strong> 函数合并这些 <strong>value</strong> 值，形成一个较小的 <strong>value</strong> 值的集合。一般的，每次 <strong>Reduce</strong> 函数调用只产生 0 或 1 个输出 <strong>value</strong> 值。通 常我们通过一个迭代器把中间 <strong>value</strong> 值提供给 <strong>Reduce</strong> 函数，这样我们就可以处理无法全部放入内存中的大量的 <strong>value</strong> 值的集合。</p>
+<pre><code>map(String key, String value):
+    // key: document name
+    // value: document contents 
+    for each word w in value:
+        EmitIntermediate(w, 1);
+
+reduce(String key, Iterator values): 
+    // key: a word
+    // values: a list of counts 
+    int result = 0;
+    for each v in values:
+        result += ParseInt(v); 
+    Emit(AsString(result));
+</code></pre><p><strong>Map</strong> 函数输出文档中的每个词、以及这个词的出现次数（在这个简单的例子里就是1）。<strong>Reduce</strong> 函数把Map函数产生的每一个特定的词的计数累加起来。</p>
+<h3 id="MapReduce编程模型应用"><a href="#MapReduce编程模型应用" class="headerlink" title="MapReduce编程模型应用"></a>MapReduce编程模型应用</h3><p>分布式的Grep：Map函数输出匹配模式的一行，Reduce函数是一个恒等函数，即把中间数据复制到输出。</p>
+<p>计算URL访问频率：Map函数处理日志中web页面请求的记录，然后输出(URL,1)。Reduce 函数把相同的value值都累加起来，产生(URL，记录总数)结果。</p>
+<p>倒转网络链接图：Map函数在源页面(source)中搜索所有的链接目标(target)并输出为(target, source)。Reduce 函数把给定链接目标(target)的链接组合成一个列表，输出(target, list(source))。</p>
+<p>其他的一些应用场景有，每个主机的检索词向量，倒排索引以及分布式排序。</p>
+<h3 id="MapReduce实现"><a href="#MapReduce实现" class="headerlink" title="MapReduce实现"></a>MapReduce实现</h3><p>上图展示了<strong>MapReduce</strong> 实现中操作的全部流程。当用户调用 <strong>MapReduce</strong> 函数时，将发生下面的一 系列动作(下面的序号和图中的序号一一对应):</p>
+<ol>
+<li><p>用户程序首先调用的 <strong>MapReduce</strong> 库将输入文件分成 M 个数据片度,每个数据片段的大小一般从 16MB 到 64MB(可以通过可选的参数来控制每个数据片段的大小)。然后用户程序在集群中创建大量的程序副本。</p>
+</li>
+<li><p>这些程序副本中的有一个特殊的程序——<strong>master</strong>。副本中其它的程序都是 <strong>worker</strong> 程序，由 <strong>master</strong> 分配 任务。有 M 个 <strong>Map</strong> 任务和 R 个 <strong>Reduce</strong> 任务将被分配，<strong>master</strong> 将一个 <strong>Map</strong> 任务或 <strong>Reduce</strong> 任务分配给一个空闲的 <strong>worker</strong>。</p>
+</li>
+<li><p>被分配了 <strong>Map</strong> 任务的 <strong>worker</strong> 程序读取相关的输入数据片段，从输入的数据片段中解析出 <strong>key/value pair</strong>，然后把 <strong>key/value pair</strong> 传递给用户自定义的 <strong>Map</strong> 函数，由 <strong>Map</strong> 函数生成并输出的中间 <strong>key/value pair</strong>，并缓存在内存中。</p>
+</li>
+<li><p>缓存中的 <strong>key/value pair</strong> 通过分区函数分成 R 个区域,之后周期性的写入到本地磁盘上。缓存的 <strong>key/value pair</strong> 在本地磁盘上的存储位置将被回传给 <strong>master</strong>，由 <strong>master</strong> 负责把这些存储位置再传送给 <strong>Reduce worker</strong>。</p>
+</li>
+<li><p>当 <strong>Reduce worker</strong> 程序接收到 <strong>master</strong> 程序发来的数据存储位置信息后，使用 RPC 从 <strong>Map worker</strong> 所在主机的磁盘上读取这些缓存数据。当 <strong>Reduce worker</strong> 读取了所有的中间数据后，通过对 <strong>key</strong> 进行排序后使得具有相同 <strong>key</strong> 值的数据聚合在一起。由于许多不同的 <strong>key</strong> 值会映射到相同的 <strong>Reduce</strong> 任务上，因此必须进行排序。如果中间数据太大无法在内存中完成排序,那么就要在外部进行排序。</p>
+</li>
+<li><p><strong>Reduce worker</strong> 程序遍历排序后的中间数据,对于每一个唯一的中间 <strong>key</strong> 值，<strong>Reduce worker</strong> 程序将这 个 <strong>key</strong> 值和它相关的中间 <strong>value</strong> 值的集合传递给用户自定义的 <strong>Reduce</strong> 函数。<strong>Reduce</strong> 函数的输出被追加到所属分区的输出文件。</p>
+</li>
+<li><p>当所有的 <strong>Map</strong> 和 <strong>Reduce</strong> 任务都完成之后，<strong>master</strong> 唤醒用户程序。在这个时候,在用户程序里的对 <strong>MapReduce</strong> 调用才返回。</p>
+</li>
+</ol>
+<p>在成功完成任务之后，<strong>Mapreduce</strong> 的输出存放在R个输出文件中（对应每个 <strong>Reduce</strong> 任务产生一个输出文件，文件名由用户指定）。一般情况下，用户不需要将这R个输出文件合并成一个文件——他们经常把这些文件作为另外一个 <strong>Mapreduce</strong> 的输入， 或者在另外一个可以处理多个分割文件的分布式应用中使用。</p>
+<h3 id="Master的数据结构"><a href="#Master的数据结构" class="headerlink" title="Master的数据结构"></a>Master的数据结构</h3><p><strong>Master</strong> 持有一些数据结构，它存储每一个Map和Reduce任务（空闲、工作中或完成），以及Worker机器（非空闲任务的机器）的标识。</p>
+<p><strong>Master</strong> 就像一个数据管道，中间文件存储区域的位置信息通过这个管道从Map传递到Reduce。因此，对于每个已经完成的Map任务，<strong>Master</strong> 存储了Map任务产生的R个中间文件存储区域的大小和位置。当Map任务完成时，<strong>Master</strong>接收到位置和大小的更新信息，这些信息被逐步递增的推送给那些正在工作的Reduce任务。</p>
+<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p><strong>Master</strong> 周期性的 ping 每个 <strong>worker</strong>。如果在一个约定的时间范围内没有收到 <strong>worker</strong> 返回的消息，<strong>Master</strong> 将把这个任务标记为失效。所有由这个失效的 <strong>worker</strong> 完成的 <strong>Map</strong> 任务被重设为初始的空闲状态，之后这些任务就可以被安排给其他的 <strong>worker</strong>。 同样的，<strong>worker</strong> 失效时正在运行的 <strong>Map</strong> 或 <strong>Reduce</strong> 任务也将被重新置为空闲状态，等待重新调度。</p>
+<p>当 <strong>worker</strong> 故障时，由于已经完成的 <strong>Map</strong> 任务的输出存储在这台机器上，<strong>Map</strong> 任务的输出已不接访问了，因此需要重新执行。而已经完成的 Reduce 任务的输出存储在全局文件系统上， 因此不需要再次执行。</p>
+<p>当一个 <strong>Map</strong> 任务首先被 <strong>worker A</strong> 执行，之后由于 <strong>worker A</strong> 失效了又被调度到 <strong>worker B</strong> 执行，这个“重新执行”的动作会被通知给所有执行 <strong>Reduce</strong> 任务的 <strong>worker</strong>。任何还没有从 <strong>worker A</strong> 读取数据的 <strong>Reduce</strong> 任务 将从 <strong>worker B</strong> 读取数据。</p>
+<p><strong>MapReduce</strong> 可以处理大规模 <strong>worker</strong> 失效的情况。比如，在一个 <strong>MapReduce</strong> 操作执行期间，在正在运行的集群上进行网络维护引起80台机器在几分钟内不可访问了，<strong>MapReduce master</strong> 只需要简单的再次执行那些不可访问的 <strong>worker</strong> 完成的工作，之后继续执行未完成的任务，直到最终完成这个 <strong>MapReduce</strong>  操作。</p>
+<h3 id="失效方面的处理机制"><a href="#失效方面的处理机制" class="headerlink" title="失效方面的处理机制"></a>失效方面的处理机制</h3><p>当用户提供的 <strong>Map</strong> 和 <strong>Reduce</strong> 操作是输入确定性函数(即相同的输入产生相同的输出)时，我们的分布式实现在任何情况下的输出都和所有程序没有出现任何错误、顺序的执行产生的输出是一样的。</p>
+<p>我们依赖对 <strong>Map</strong> 和 <strong>Reduce</strong> 任务的输出是原子提交的来完成这个特性。每个工作中的任务把它的输出写到私有的临时文件中。每个 <strong>Reduce</strong> 任务生成一个这样的文件，而每个 <strong>Map</strong> 任务则生成 R 个这样的文件(一个 <strong>Reduce</strong> 任务对应一个文件)。当一个 <strong>Map</strong> 任务完成的时，<strong>worker</strong> 发送一个包含 R 个临时文件名的完成消息给 <strong>master</strong>。如果 <strong>master</strong> 从一个已经完成的 <strong>Map</strong> 任务再次接收到到一个完成消息，<strong>master</strong> 将忽略这个消息；否则，<strong>Master</strong> 将这 R 个文件的名字记录在数据结构里。</p>
+<p>当 <strong>Reduce</strong> 任务完成时，<strong>Reduce worker</strong> 进程以原子的方式把临时文件重命名为最终的输出文件。如果同 一个 <strong>Reduce</strong> 任务在多台机器上执行,针对同一个最终的输出文件将有多个重命名操作执行。我们依赖底层文 件系统提供的重命名操作的原子性来保证最终的文件系统状态仅仅包含一个 <strong>Reduce</strong> 任务产生的数据。</p>
+<h3 id="分区函数"><a href="#分区函数" class="headerlink" title="分区函数"></a>分区函数</h3><p><strong>MapReduce</strong> 的使用者通常会指定 <strong>Reduce</strong> 任务和 <strong>Reduce</strong> 任务输出文件的数量(R)。我们在中间 key 上使用分区函数来对数据进行分区，之后再输入到后续任务执行进程。一个缺省的分区函数是使用 <strong>hash</strong> 方法(比如，hash(key) mod R)进行分区。hash方法能产生非常平衡的分区。然而，有的时候，其它的一些分区函数对 <strong>key</strong> 值进行的分区将非常有用。比如，输出的 <strong>key</strong> 值是 <strong>URLs</strong>，我们希望每个主机的所有条目保持在同一个输出文件中。为了支持类似的情况，<strong>MapReduce</strong> 库的用户需要􏰁供专门的分区函数。例如，使用“hash(Hostname(urlkey)) mod R”作为分区函数就可以把所有来自同一个主机的 <strong>URLs</strong> 保存在同一个输出文件中。</p>
+<h3 id="顺序保证"><a href="#顺序保证" class="headerlink" title="顺序保证"></a>顺序保证</h3><p>我们确保在给定的分区中，中间 <strong>key/value pair</strong> 数据的处理顺序是按照 <strong>key</strong> 值增量顺序处理的。这样的顺序保证对每个分区生成一个有序的输出文件，这对于需要对输出文件按 <strong>key</strong> 值随机存取的应用非常有意义，对在排序输出的数据集也很有帮助。</p>
+<h3 id="Combiner-函数"><a href="#Combiner-函数" class="headerlink" title="Combiner 函数"></a>Combiner 函数</h3><p>在某些情况下，<strong>Map</strong> 函数产生的中间 <strong>key</strong> 值的重复数据会占很大的比重，并且，用户自定义的 <strong>Reduce</strong> 函数满足结合律和交换律。之前举例过的词频统计中，每个 <strong> Map </strong> 任务将产生成千上万个这样的任务<the, 1="">。所有的这些记录将通过网络被发送到一个单独的 <strong>Reduce</strong> 任务，然后这个 <strong>Reduce</strong> 任务把所有这些记录累加起来产生一个数字。我们允许用户指定一个可选的 <strong>combiner</strong> 函数，<strong>combiner</strong> 函数首先在本地将这些记录进行一次合并，然后将合并的结果再通过网络发送出去。</the,></p>
+<p><strong>Combiner</strong> 函数在每台执行 <strong>Map</strong> 任务的机器上都会被执行一次。 一般情况下，<strong>Combiner</strong> 和 <strong>Reduce</strong> 函数是一样的。<strong>Combiner</strong> 函数和 <strong>Reduce</strong>函数之间唯一的区别是 <strong>MapReduce</strong> 库怎样控制函数的输出。<strong>Reduce</strong> 函数的输出被保存在最终的输出文件里，而 <strong>Combiner</strong> 函数的输出被写到中间文件里，然后被发送给 <strong>Reduce</strong> 任务。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/20/IP协议/" itemprop="url">
                   IP协议学习(一):IP基础知识
                 </a>
@@ -1676,429 +2009,11 @@ SORT BY log.ymd ASC
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/31/进程和线程的区别/" itemprop="url">
-                  进程和线程的区别(总结)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-31T21:29:42+08:00" content="2016-08-31">
-              2016-08-31
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/31/进程和线程的区别/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/31/进程和线程的区别/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/31/进程和线程的区别/" class="leancloud_visitors" data-flag-title="进程和线程的区别(总结)">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>进程与线程的区别，应该是互联网公司招聘系统工程师经常会问的一个问题，我查阅了一些相关资料，总结如下：</p>
-<h3 id="进程是什么？"><a href="#进程是什么？" class="headerlink" title="进程是什么？"></a>进程是什么？</h3><p>程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行，而这种执行的程序就称之为进程。程序和进程的区别就在于：程序是指令的集合，它是进程运行的静态描述文本；进程是程序的一次执行活动，属于动态概念。</p>
-<p>在多道编程中，我们允许多个程序同时加载到内存中，在操作系统的调度下，可以实现并发地执行。这是这样的设计，大大提高了CPU的利用率。进程的出现让每个用户感觉到自己独享CPU，因此，进程就是为了在CPU上实现多道编程而提出的。</p>
-<h3 id="有了进程为什么还要线程？"><a href="#有了进程为什么还要线程？" class="headerlink" title="有了进程为什么还要线程？"></a>有了进程为什么还要线程？</h3><p>进程有很多优点，它提供了多道编程，让我们感觉我们每个人都拥有自己的CPU和其他资源，可以提高计算机的利用率。很多人就不理解了，既然进程这么优秀，为什么还要线程呢？其实，仔细观察就会发现进程还是有很多缺陷的，主要体现在两点上：</p>
-<p>进程只能在一个时间干一件事，如果想同时干两件事或多件事，进程就无能为力了。<br>进程在执行的过程中如果阻塞，例如等待输入，整个进程就会挂起，即使进程中有些工作不依赖于输入的数据，也将无法执行。<br>如果这两个缺点理解比较困难的话，举个现实的例子也许你就清楚了：如果把我们上课的过程看成一个进程的话，那么我们要做的是耳朵听老师讲课，手上还要记笔记，脑子还要思考问题，这样才能高效的完成听课的任务。而如果只提供进程这个机制的话，上面这三件事将不能同时执行，同一时间只能做一件事，听的时候就不能记笔记，也不能用脑子思考，这是其一；如果老师在黑板上写演算过程，我们开始记笔记，而老师突然有一步推不下去了，阻塞住了，他在那边思考着，而我们呢，也不能干其他事，即使你想趁此时思考一下刚才没听懂的一个问题都不行，这是其二。</p>
-<p>现在你应该明白了进程的缺陷了，而解决的办法很简单，我们完全可以让听、写、思三个独立的过程，并行起来，这样很明显可以提高听课的效率。而实际的操作系统中，也同样引入了这种类似的机制——线程。</p>
-<h3 id="线程的优点"><a href="#线程的优点" class="headerlink" title="线程的优点"></a>线程的优点</h3><p>因为要并发，我们发明了进程，又进一步发明了线程。只不过进程和线程的并发层次不同：进程属于在处理器这一层上提供的抽象；线程则属于在进程这个层次上再提供了一层并发的抽象。如果我们进入计算机体系结构里，就会发现，流水线提供的也是一种并发，不过是指令级的并发。这样，流水线、线程、进程就从低到高在三个层次上提供我们所迫切需要的并发！</p>
-<p>除了提高进程的并发度，线程还有个好处，就是可以有效地利用多处理器和多核计算机。现在的处理器有个趋势就是朝着多核方向发展，在没有线程之前，多核并不能让一个进程的执行速度提高，原因还是上面所有的两点限制。但如果讲一个进程分解为若干个线程，则可以让不同的线程运行在不同的核上，从而提高了进程的执行速度。</p>
-<p>例如：我们经常使用微软的Word进行文字排版，实际上就打开了多个线程。这些线程一个负责显示，一个接受键盘的输入，一个进行存盘等等。这些线程一起运行，让我们感觉到我们输入和屏幕显示同时发生，而不是输入一些字符，过一段时间才能看到显示出来。在我们不经意间，还进行了自动存盘操作。这就是线程给我们带来的方便之处。</p>
-<h3 id="进程与线程的区别"><a href="#进程与线程的区别" class="headerlink" title="进程与线程的区别"></a>进程与线程的区别</h3><ol>
-<li><p>进程是具有一定独立功能的程序关于某个数据集合上的一次运行活动,进程是系统进行资源分配和调度的一个独立单位。</p>
-</li>
-<li><p>线程是进程的一个实体, 是CPU调度和分派的基本单位,它是比进程更小的能独立运行的基本单位.线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源。</p>
-</li>
-<li><p>一个线程可以创建和撤销另一个线程，同一个进程中的多个线程之间可以并发执行。</p>
-</li>
-</ol>
-<p>进程和线程的主要差别在于它们是不同的操作系统资源管理方式。进程有独立的地址空间，一个进程崩溃后，在保护模式下不会对其它进程产生影响，而线程只是一个进程中的不同执行路径。线程有自己的堆栈和局部变量，但线程之间没有单独的地址空间，一个线程死掉就等于整个进程死掉，所以多进程的程序要比多线程的程序 健壮，但在进程切换时，耗费资源较大，效率要差一些。但对于一些要求同时进行并且又要共享某些变量的并发操作，只能用线程，不能用进程。</p>
-<h3 id="进程与线程在操作系统设计中的体现"><a href="#进程与线程在操作系统设计中的体现" class="headerlink" title="进程与线程在操作系统设计中的体现"></a>进程与线程在操作系统设计中的体现</h3><p>操作系统的设计，因此可以归结为三点：</p>
-<ol>
-<li><p>以多进程形式，允许多个任务同时运行；</p>
-</li>
-<li><p>以多线程形式，允许单个任务分成不同的部分运行；</p>
-</li>
-<li><p>提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</p>
-</li>
-</ol>
-<p>参考资料：</p>
-<ol>
-<li><p><a href="http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html" target="_blank" rel="external">进程与线程的一个简单解释</a></p>
-</li>
-<li><p><a href="http://blog.csdn.net/zengjibing/article/details/3923357" target="_blank" rel="external">进程和线程的区别</a></p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/30/Python中的heapq模块学习/" itemprop="url">
-                  Python中的heapq模块学习
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-30T09:05:52+08:00" content="2016-08-30">
-              2016-08-30
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/编程语言/" itemprop="url" rel="index">
-                    <span itemprop="name">编程语言</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/30/Python中的heapq模块学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/30/Python中的heapq模块学习/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/30/Python中的heapq模块学习/" class="leancloud_visitors" data-flag-title="Python中的heapq模块学习">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天在leetcode上刷题的时候，偶然看到一个人的解法用到了python里面的heap模块，特此学习记录一下。</p>
-<pre><code># coding: utf-8
-from heapq import *
-
-&apos;&apos;&apos;
-heappush(heap, item): 将item压入堆数组heap中。
-必须先进行此步操作,后面的heappop才有效。
-
-heappop(heap): 从堆数组heap中取出最小的值,并返回。
-&apos;&apos;&apos;
-def heapsort(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    return [heappop(h) for i in range(len(h))]
-
-
-# 输出: [1, 2, 3, 3, 7]
-print heapsort([1, 3, 7, 3, 2])
-
-
-&apos;&apos;&apos;
-heappushpop(heap, item)
-增加item的同时删除最小值,并且返回该堆的最小值
-&apos;&apos;&apos;
-def example(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    a = heappop(h)
-    # 增加4的同时删除最小值,并且返回该最小值
-    b = heappushpop(h, 4)
-    print a
-    print b
-    print h
-
-# 输出: 1
-# 输出: 2
-# 输出: [4, 5, 9]
-example([1, 2, 9, 5])
-
-&apos;&apos;&apos;
-heapify(x)
-x必须是list，此函数将list变成堆，实时操作。从而能够在任何情况下使用堆的函数。
-&apos;&apos;&apos;
-def example2(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    heapify(h)
-    print h
-
-# 输出: [1, 6, 3]
-example2([3, 6, 1])
-
-&apos;&apos;&apos;
-heapreplace(heap, item)
-先进行删除,后压入栈
-&apos;&apos;&apos;
-def example3():
-    a = []
-    heappush(a, 3)
-    # 输出: [3]
-    print a
-    # 先执行删除（heappop(a)-&gt;3),再执行加入（heappush(a,4))
-    heapreplace(a, 4)
-    # 输出: [4]
-    print a
-
-&apos;&apos;&apos;
-归并排序
-merge(*iterables)
-&apos;&apos;&apos;
-def example4():
-    a = [2,4,6]
-    b = [1,3,5]
-    c = merge(a, b)
-    # 输出: [1, 2, 3, 4, 5, 6]
-    print list(c)
-
-&apos;&apos;&apos;
-nlargest(n, iterable[, key]), nsmallest(n, iterable[, key])
-获取列表中最大、最小的几个值。
-&apos;&apos;&apos;
-def example5():
-    a = [1, 3, 4, 2]
-    # 输出: [4, 3]
-    print nlargest(2, a)
-    # 输出: [1, 2]
-    print nsmallest(2, a)
-</code></pre><h3 id="leetcode上面的题目："><a href="#leetcode上面的题目：" class="headerlink" title="leetcode上面的题目："></a>leetcode上面的题目：</h3><p>Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.</p>
-<p>Note that it is the kth smallest element in the sorted order, not the kth distinct element.</p>
-<p><strong>Example:</strong></p>
-<pre><code>matrix = [
-   [ 1,  5,  9],
-   [10, 11, 13],
-   [12, 13, 15]
-],
-k = 8,
-
-return 13.
-</code></pre><p>我之前不用heap的解法（耗时200ms)…当时对heap模块不了解</p>
-<pre><code>class Solution(object):
-    def kthSmallest(self, matrix, k):
-        &quot;&quot;&quot;
-        :type matrix: List[List[int]]
-        :type k: int
-        :rtype: int
-        &quot;&quot;&quot;
-        arr = []
-        for item in matrix:
-            for son in item:
-                arr.append(son)
-        arr = sorted(arr)
-        return arr[k-1]
-</code></pre><p>后来看了discussion里面的做法，恍然大悟…(这个方法耗时180ms）</p>
-<pre><code>class Solution2(object):
-    def kthSmallest(self, matrix, k):
-        result, heap = None, []
-        heapq.heappush(heap, (matrix[0][0], 0, 0))
-        while k &gt; 0:
-            result, i, j = heapq.heappop(heap)
-            if i == 0 and j + 1 &lt; len(matrix):
-                heapq.heappush(heap, (matrix[i][j+1], i, j+1))
-            if i + 1 &lt; len(matrix):
-                heapq.heappush(heap, (matrix[i+1][j], i+1, j))
-            k -= 1
-        return result
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2139,7 +2054,7 @@ return 13.
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-count">62</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

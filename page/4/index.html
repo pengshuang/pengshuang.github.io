@@ -258,6 +258,339 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/21/数据库系统实现-多维数据的树结构/" itemprop="url">
+                  数据库系统实现: 多维数据的树结构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-21T15:40:23+08:00" content="2016-10-21">
+              2016-10-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/21/数据库系统实现-多维数据的树结构/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/21/数据库系统实现-多维数据的树结构/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/21/数据库系统实现-多维数据的树结构/" class="leancloud_visitors" data-flag-title="数据库系统实现: 多维数据的树结构">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>多维数据常用的几种树结构有：</p>
+<ol>
+<li>多建索引</li>
+<li>kd - 树</li>
+<li>四叉树</li>
+<li>R - 树</li>
+</ol>
+<p>前三种用于点集。 R - 树通常用来表示区域的集合，它也可以用来表示点集合。</p>
+<h3 id="多键索引"><a href="#多键索引" class="headerlink" title="多键索引"></a>多键索引</h3><p>假若我们有几个属性来表示我们的数据点的维，并且我们想在这些点上支持范围查询或最近邻查询。用来访问这些点的一个简单的树模式是索引的索引，即它的每一层的结点都是一个属性的索引。</p>
+<p>在多键索引中，有些第二级或更高级索引可能会很小。因此把几个简单表压缩到一个块中来实现这些索引可能是合适的。</p>
+<h3 id="多键索引的性能"><a href="#多键索引的性能" class="headerlink" title="多键索引的性能"></a>多键索引的性能</h3><p>我们这里考虑两种属性的情形。</p>
+<h4 id="部分匹配查询"><a href="#部分匹配查询" class="headerlink" title="部分匹配查询"></a>部分匹配查询</h4><p>如果第一个属性被指定，那访问是很有效的。我们使用根索引找到一个子索引，该子索引引导我们到想要的点上。与此相反，如果第一个属性没有给出一个指定值，那我们必须搜索每一个子索引，潜在地这是一个耗时的处理过程。</p>
+<h4 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h4><p>如果单个索引本身在它们各自的属性上支持范围查询—比如说，B - 树索引或者索引顺序文件，多键索引对范围查询就会运作得很好。为了回答一个范围查询，我们使用根索引和第一个属性的范围找出可能包含答案点的索引子索引。然后我们使用第二个属性的指定范围搜索每个子索引。</p>
+<h4 id="最近邻查询"><a href="#最近邻查询" class="headerlink" title="最近邻查询"></a>最近邻查询</h4><p>这类查询可以通过一系列范围查询来完成。</p>
+<h3 id="kd-树"><a href="#kd-树" class="headerlink" title="kd - 树"></a>kd - 树</h3><p>kd - 树 (k维搜索树) 是把二叉搜索树推广到多维数据的一种主存数据结构。我们将介绍这种思想，然后讨论怎样使这种思想适合存储的块模型。 kd - 树是一个二叉树，它的内部结点有一个相关联的属性 a 和一个值 V，它将数据点集划分成两个部分：a 值小于V的部分和a值大于等于V的部分。由于所有维的属性在层间交替出现，所以树的不同层上的属性是不同的。一个典型的 kd - 树如下图所示。</p>
+<p><img src="/img/kdtree.png" alt=""> </p>
+<p>在一般的 kd - 树中，数据点被存放在结点内，就像在二叉搜索树中一样。不过我们开始引入这个思想时做了两个修改，以便获得块模式的有限益处：</p>
+<ol>
+<li>内部结点只有一个属性，该属性的一个划分值和指向左、右子树的指针。</li>
+<li>叶结点是块，块空间中存放着尽可能多的记录。</li>
+</ol>
+<h3 id="kd-树的操作"><a href="#kd-树的操作" class="headerlink" title="kd - 树的操作"></a>kd - 树的操作</h3><p>查找一个所有维都给定值的元组的处理如同在二叉树中一样。我们在每个内部结点上决定哪个走向并且被引向我们所需的单个叶结点的块。</p>
+<p>为了实现一个插入，我们先做一个查找。最后我们找到一个叶结点，如果叶结点的块中还有空间，我们就把新的数据点放在那里；如果没有空间，我们把块分裂成两个，并根据分裂叶结点所在层的相应属性划分叶结点中的内容。最后，我们创建一个新的内部结点：它的子结点为分裂得到的两个新块，并且给该内部结点一个与分裂相对应的划分值。</p>
+<p>下图展示了一个 kd - 树插入的例子：如果我们要插入一个年龄为35且薪水为500K的点</p>
+<p><img src="/img/kdtree2.png" alt=""></p>
+<h4 id="部分匹配查询-1"><a href="#部分匹配查询-1" class="headerlink" title="部分匹配查询"></a>部分匹配查询</h4><p>如果我们给定某些属性的值，那么当我们处于属性值已知的层的结点上时，我们可以往一个方向走；当我们处于属性值未知的结点上时，我们必须考察它的两个子结点。如果我们要找出图3-39的树中索引年龄为50的点，我们必须考察根的两个子结点，因为根是按薪水来分裂的。可是，在根的左子结点上，我们只需要往左走；在根的右子结点上，我们也只需考察它的右子树。假如，假定树是完全平衡的，索引有两维，如果只给定其中一维的值，那我们将不得不交替使用这两种方式来考察各层结点。(访问结点数)最终达到叶结点数的平方根。</p>
+<h4 id="范围查询-1"><a href="#范围查询-1" class="headerlink" title="范围查询"></a>范围查询</h4><p>有时一个范围运行我们移动到结点的某个唯一的子结点，但如果范围跨越了结点的划分值，那我们就必须考察两个子结点。</p>
+<h3 id="使-kd-树适合辅助存储器"><a href="#使-kd-树适合辅助存储器" class="headerlink" title="使 kd - 树适合辅助存储器"></a>使 kd - 树适合辅助存储器</h3><p>假定我们用一个有 n 个叶结点的 kd - 树存放文件，那么从根到叶结点的路径的平均长度将大约是log2n，如同任何二叉树一样。如果我们每块存放一个结点，那么当我们遍历一条路径时，我们必须为每个结点做一次磁盘 I/O。例如，如果n = 1000，那我们大约需要10次磁盘 I/O，远远超过通常 B -树的2到3次磁盘 I/O—即使是一个十分大的文件。另外，由于 kd - 树内部结点的信息相对地少，块的大部分空间将被浪费掉。下面的两种方法有助于解决长路径和未用空间这一孪生问题。</p>
+<ol>
+<li><p>内部结点的多分支。 kd - 树的内部结点里可以有多个键 -指针对，它看起来更像 B -树结点。如果我们在结点里有n个键，我们能够把属性a的值分裂成 n + 1个范围。如果有 n + 1个指针，我们能够沿着适当的指针到只包含属性 a 值的那个范围内的点的子树。</p>
+</li>
+<li><p>聚集内部结点到块。我们可以把多个内部结点压缩到一个块中。为了减少遍历路径访问的块数量，我们最好远离一个结点一个块的方式二将若干层的所有子结点存入一个块。在这种方式下，一旦我们检索到该结点的块，我们必定会使用该块中的其他某些结点，节省了磁盘I/O。</p>
+</li>
+</ol>
+<h3 id="四叉树"><a href="#四叉树" class="headerlink" title="四叉树"></a>四叉树</h3><p>在一个四叉树中，每个内部结点对应于二维空间中的一个正方形区域，或是k维空间的k维立方体。像之前介绍的其他数据结构一样，我们主要考虑二维的情形。如果一个正方形中的点数不比一个块中能存放的数多，那么我们就把这个正方形看作树的叶结点，并且它由存放它的点的块表示；如果矩形中还有太多的点以至于一个块存放不下，那么把这个正方形看作内部结点，它的子结点对应于它的4个象限。</p>
+<h3 id="R-树"><a href="#R-树" class="headerlink" title="R-树"></a>R-树</h3><p>R-树 (区域树) 是一种利用 B -树的某些本质特征来处理多维数据的数据结构。B - 树的结点有一个键的集合，这些键把线分成片段，沿着那条线的每个点仅属于一个片段，B - 树因此使我们很容易地找到点。如果我们把沿线各处的点表示成 B - 树结点，我们就能够确认定点所属的唯一子结点，在那里可以找到该点。</p>
+<p>而R - 树表示由二维或更高维区域组成的数据，我们把它称为<em>数据区</em>。R - 树的一个内部结点对应于某个<em>内部区域</em>，或称“区域”，它不是普通的数据区。原则上，区域可以是任何形状，虽然实际上它经常为矩形或其他简单形状。R - 树的结点的键位置上含有子区域，它表示结点的子结点的内容。允许子区域有部分重叠，尽管我们希望重叠较小。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/20/数据库系统实现-散列表/" itemprop="url">
+                  数据库系统实现: 散列表
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-20T16:03:50+08:00" content="2016-10-20">
+              2016-10-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/20/数据库系统实现-散列表/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/20/数据库系统实现-散列表/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/20/数据库系统实现-散列表/" class="leancloud_visitors" data-flag-title="数据库系统实现: 散列表">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>有许多涉及散列表的数据结构可用作索引。假定一个<em>散列函数 h</em>， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为<em>h(K)</em>的桶表中来存储它。</p>
+<h3 id="辅助散列表"><a href="#辅助散列表" class="headerlink" title="辅助散列表"></a>辅助散列表</h3><p>有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要的方面与主存中的散列表存在区别。首先，<strong>桶数组由存储块组成而不是由指向链表头的指针组成</strong>。通过散列函数 <em>h</em> 散列到某个桶中的记录被放到该桶的存储块中，如果桶中有太多的记录，那么可以给该桶加溢出块的链以存放更多的记录。</p>
+<p>我们将假定，只要给一个 <em>i</em>，桶 <em>i</em> 的第一个存储块的位置就可以被找到。例如，主存中可以有一个指向存储块的指针数组，数组项以桶号为序号。另一种可能是把每个桶第一个存储块存放在磁盘上某固定的、连续的位置，这样我们就可以根据整数i计算出桶 <em>i</em> 的位置。</p>
+<h3 id="散列表的插入"><a href="#散列表的插入" class="headerlink" title="散列表的插入"></a>散列表的插入</h3><p>当一个查找键为K的新纪录需要被插入时，我们计算<em>h(K)</em>。如果桶号为<em>h(K)</em>的桶还有空间，我们就把该记录放到此桶的存储块中或在其存储块没有空间时存储到块链上的某个溢出块中。如果桶的所有存储块都没有空间，我们就增加一个新的溢出块到该桶的链上，并把新记录存入该块。</p>
+<h3 id="散列表的删除"><a href="#散列表的删除" class="headerlink" title="散列表的删除"></a>散列表的删除</h3><p>删除查找键值为K的记录与插入操作的方式相同。我们找到桶号为<em>h(K)</em>的桶且从中搜索查找键为K的记录，继而将找到的记录删除。如果我们可以将记录在块中移动，那么删除记录后，我们可选择合并同一链上的存储块。</p>
+<h3 id="散列表索引的效率"><a href="#散列表索引的效率" class="headerlink" title="散列表索引的效率"></a>散列表索引的效率</h3><p>理想的情况是有足够的桶，绝大多数桶都只由单个块组成。如果这样，那么一般的查询只需一次磁盘I/O，且文件的插入和删除也只需两次磁盘I/O。这样的结果比直接用稀疏索引、稠密索引或<strong>B - 树</strong>好的多（尽管散列表不能像<strong>B - 树</strong>那样支持范围查询）</p>
+<p>但是如果文件不断增长，那么最终就会出现一般的桶的链表中都有许多块的情况。如果这样，我们就需要在块的长链表中查找，每个块至少需要一次磁盘I/O。因此，我们就必须设法减少每个桶的块数。所要进而就要引入<strong>动态散列表</strong>，他们允许B改变，使B近似于记录总数除以块中能容纳的记录数所得到的商。即每个桶大约有一个存储块。</p>
+<h3 id="可扩展散列表"><a href="#可扩展散列表" class="headerlink" title="可扩展散列表"></a>可扩展散列表</h3><p>可扩展散列表是动态散列表的一种，相比静态散列表，它主要增加了：</p>
+<ol>
+<li>为桶引入了一个间接层，即用一个指向块的指针数组来表示桶，而不是用数据块本身组成的数组来表示桶。</li>
+<li>指针数组能增长，它的长度总是2的幂，因而数组没增长一次，桶的数目就翻倍。</li>
+<li>不过，并非每个桶都有一个数据块；如果某些桶中的所有记录可以放到一个块中，那么这些桶可能共享一个块。</li>
+<li>散列函数<em>h</em>为每个键计算一个K位二进制序列，该K足够大，比如32。但是，桶的数目总是使用从序列第一位或最后一位算起的若干位，此位数小于K，比如说是第 <em>i</em> 位。也就是说，当 <em>i</em> 是使用的位数时，桶数组将有2的i次方个项。</li>
+</ol>
+<p>下图为一个小的可扩展散列表，</p>
+<p><img src="/img/hash1.png" alt=""> </p>
+<p>为简单起见，我们假设 K = 4，即散列函数 h 只产生4位二进制序列。当前使用的只有其中一位。正如桶上标记的，i = 1。因此桶数组只有2个项，一个对应 0，一个对应 1。</p>
+<p>桶数组中的项指向两个块。第一块存放当前所有查找键被散列成以 0 开头的二进制序列的记录；第二个块存放所有查找键被散列成以 1 开头的二进制序列的记录。其中每个存储块的”小方块”中都出现了数字 1 ， 这个数字表明由散列函数得到的位序列中有多少位用于确定记录在该块中的成员资格。随着散列表的增长，不同块中需要考虑的位数可能不同。也就是说，桶数组的大小由我们正在使用的最大二进制位数来决定，但有些块可能使用较少的位数。</p>
+<h3 id="可扩展散列表的插入"><a href="#可扩展散列表的插入" class="headerlink" title="可扩展散列表的插入"></a>可扩展散列表的插入</h3><p>可扩展散列表的插入开始时类似静态散列表的插入。为了插入键值为K的记录，我们计算出 <em>h(k)</em>，取出这一二进制位序列的前 <em>i</em> 位，并找到桶数组中序号为 <em>i</em> 的项。注意，因为 <em>i</em> 作为数据结构的一部分保存，我们能确定 <em>i</em>。</p>
+<p>我们根据同数组中该项的指针找到某个存储块 B。如果B 中还有存放新记录的空间，我们就把心记录存入，而插入也就完成了。如果B 中没有空间，那么视数字 <em>j</em> 的不同有两种可能，数组 <em>j</em>表明散列值中有多少位用于确定存储块B的成员资格， <em>j</em>的值即那个在每个存储块的小方块中可以找到的那个值。</p>
+<p>插入的步骤如下：</p>
+<p>如果 j &lt; i，那么不必对桶数组做什么变化。我们：</p>
+<p>a) 将块B分裂成两个存储块。</p>
+<p>b) 根据记录散列值的第( j+1) 位，将B中记录分配到这两个存储块中，该位为 0 的记录保留在B中，而该位为 1 的记录则放入到新块中。</p>
+<p>c) 把( j+1) 存入这两个存储块的小方块中，以表明用于确定成员资格的二进制位数字。</p>
+<p>d) 调整桶数组中的指针，使原来指向块 B的项指向块B 或新块， 这由项的第( j+1)位决定。</p>
+<p>如果  j = i，那么我们必须先将 i 加 1。我们使桶数组长度翻一倍，因此数组中现有2的( i+1)次方个项。假定 w 是以前的桶数组中作为某项序号的 i 位二进制位序列。在新桶数组中，序号为w0 和 w1的项都指向原 w 项指向的块。也就是，这2个新项共享一个存储块，而存储块本身没有变化。该块的存储资格仍然按原先的位数确定。最后，仍然按第一种情况来分裂B。</p>
+<h3 id="线性散列表"><a href="#线性散列表" class="headerlink" title="线性散列表"></a>线性散列表</h3><p>可扩展散列表最大的好处在于当查找一个记录时，我们总是只需要查找一个数据块。我们还需要查找到一个桶数组的项，但如果桶数组小到可以存放在主存中，那么访问桶数组就不需要进行磁盘 I/O。然而，可扩展散列表也有一些缺点：</p>
+<ol>
+<li>当桶数组需要翻倍时，要做大量的工作。这些工作会阻碍对数据文件的访问，或是使某些插入看来花费很长的时间。</li>
+<li>当桶数翻倍后，它在主存中可能就装不下了，或者把其他的一些我们需要保存在主存的数据挤出去。其结果是，一个运行良好的系统可能突然之间每个操作所需磁盘I/O开始大增。</li>
+<li>如果每块的记录数很少，那么很有可能某一块的分裂比在逻辑上讲需要分裂的时间提前许多。例如，如果像我们使用的例子，块中可以存放2个记录，即使记录的总数远小于2的20次方，也有可能出现三个记录的前20位二进制位序列一样。在这种情况下，我们不得不使用 i = 20 和 100万个桶数组项，尽管存有记录的块数远小于100万。</li>
+</ol>
+<p>有一种线性散列的策略，桶的增长较为缓慢。它的特点主要有：</p>
+<ul>
+<li>桶数 n 的选择总是使存储块的平均记录数保持与存储块所能容纳的记录总数成一个固定的比例，如 80%。</li>
+<li>由于存储块并不总是可以分裂，所以允许有溢出块，尽管每个桶的平均溢出块数远下于1。</li>
+<li>用来作桶数组项序号的二进制位数是[log2n]，其中 n 是当前的桶数。这些位总是从散列函数得到的位序列的右(低位)端开始取。</li>
+<li>假定散列函数值的 i 位正在用来给桶数组项编号，且有一个键值为 K 的记录想要插入到编号为a1a2….ai的桶中；即a1a2…ai是h(K)的后 i 位。那么，把 a1a2…ai 当作二进制整数，设它为m。如果 m &lt; n，那么编号为 m 的桶存在并把记录存入该桶中。如果 n &lt;= m &lt; 2^i，那么 m 桶还不存在，因此我们把记录存入桶 m - 2^i-1，也就是当把我们a1(它肯定是1)改为0时对应的桶。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/14/数据系统实现-B-树详解/" itemprop="url">
                   数据系统实现: B - 树详解
                 </a>
@@ -1881,344 +2214,11 @@ def max_heapify(ary, start, end):
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/25/IP地址基础知识/" itemprop="url">
-                  IP协议学习(二):IP地址基础知识
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-25T21:15:14+08:00" content="2016-09-25">
-              2016-09-25
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/25/IP地址基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/25/IP地址基础知识/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/25/IP地址基础知识/" class="leancloud_visitors" data-flag-title="IP协议学习(二):IP地址基础知识">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在TCP/IP通信时，用IP地址识别主机和路由器。为了保证正常通信，有必要为每个设备识别主机和路由器。在互联网通信中，全世界都必须设定正确的IP地址。否则，根本无法实现正常的通信。</p>
-<h3 id="1-IP地址的定义"><a href="#1-IP地址的定义" class="headerlink" title="1. IP地址的定义"></a>1. IP地址的定义</h3><p>IP地址（IPv4）由32位正整数来表示。TCP/IP通信要求将这样的IP地址分配给每一个参与通信的主机。</p>
-<p>IP地址由 ”网络标识（网络地址）” 和 “主机标识（主机地址）”两部分组成。如下图所示，网络标识在数据链路的每个段配置不同的值。网络标识必须保证相互连接的每个段的地址不相重复。而相同段内相连的主机必须有相同的网络地址。IP地址的 “主机标识” 则不允许在同一个网段内重复出现。</p>
-<p>通过下图也可以看出，IP包被转发到途中某个路由器时，正是利用目标IP地址的网络标识进行路由。因为即使不看主机标识，只要一见到网络标识就能判断出是否为该网段内的主机。网络标识和主机标识通常通过子网掩码（网络前缀）区分。</p>
-<p><img src="/img/IPnet.png" alt=""></p>
-<h3 id="2-IP地址的分类"><a href="#2-IP地址的分类" class="headerlink" title="2. IP地址的分类"></a>2. IP地址的分类</h3><p><img src="/img/IPaddress.png" alt=""></p>
-<p>IP地址分为四个级别，分为A类，B类，C类，D类。它根据IP地址中从第1位到第4位的比特列对网络标识和主机标识进行区分。</p>
-<h4 id="A类地址"><a href="#A类地址" class="headerlink" title="A类地址"></a>A类地址</h4><p>A类IP地址是首位以 “0” 开头的地址。从第1位到第8位是它的网络标识。用十进制表示的话，0.0.0.0 ~ 127.0.0.0 是A类的网络地址。A类地址的后24位相当于主机标识。因此，一个网段内可容纳的主机地址上限为16，777，214个。</p>
-<h4 id="B类地址"><a href="#B类地址" class="headerlink" title="B类地址"></a>B类地址</h4><p>B类IP地址是前两位为 “10” 的地址。从第1位到第16位是它的网络标识。用十进制表示的话，128.0.0.1 ~ 191.255.0.0是B类的网络地址。B类网络地址的后16位相当于主机标识。因此，一个网段内可容纳的主机上限为65，534个。</p>
-<h4 id="C类地址"><a href="#C类地址" class="headerlink" title="C类地址"></a>C类地址</h4><p>C类IP地址是前三位为 “110” 的地址。从第1位到第24位是它的网络标识。用十进制表示的话，192.168.0.0 ~ 239.255.255.0 是C类的网络地址。C类地址的后8位相当于主机标识。因此，一个网段内可容纳的主机地址上限为254个。</p>
-<h4 id="D类地址"><a href="#D类地址" class="headerlink" title="D类地址"></a>D类地址</h4><p>D类IP地址是前四位为 “1110” 地址。从第1位到第32位是它的网络标识。用十进制表示的话，224.0.0.0 ~ 239.255.255.255 是D类的网络地址。D类地址没有主机标识，常被用于多播。</p>
-<p><strong>注意</strong></p>
-<p>主机地址全部为0只有在表示对应的网络地址或IP地址不可获知的情况下才使用。而全部为1的主机地址通常作为广播地址。</p>
-<h3 id="3-广播地址"><a href="#3-广播地址" class="headerlink" title="3. 广播地址"></a>3. 广播地址</h3><p>广播地址用于在同一个链路中相互连接的主机之间发生数据。IP地址中的主机地址部分全部设置为1，就成了广播地址。</p>
-<p>广播地址分为本地广播和直接广播两种。在本网络内的广播为本地广播，这个广播地址的IP包会被路由器屏蔽；在不同网络之间的广播叫做之间广播。</p>
-<h3 id="4-IP多播"><a href="#4-IP多播" class="headerlink" title="4. IP多播"></a>4. IP多播</h3><h4 id="同时发送提供效率"><a href="#同时发送提供效率" class="headerlink" title="同时发送提供效率"></a>同时发送提供效率</h4><p>多播用于将包发送给特点组内的所有主机。由于其之间使用IP协议，因此也不存在可靠传输。</p>
-<h4 id="IP多播与地址"><a href="#IP多播与地址" class="headerlink" title="IP多播与地址"></a>IP多播与地址</h4><p>多播使用D类地址。因此，如果从首位开始到第4位是“1110”，就可以认为是多播地址。而剩下的28位可以成为多播的组编号。</p>
-<h3 id="5-子网掩码"><a href="#5-子网掩码" class="headerlink" title="5. 子网掩码"></a>5. 子网掩码</h3><p><img src="/img/mask.png" alt=""></p>
-<p>引入了子网以后，一个IP地址就有了两种识别码。一是IP地址本身，另一个是表示网络内部的子网掩码。子网掩码用二进制的方式表示的话，也是一个32位的数字。它对应IP地址网络标识部分的位全部为“1”，对应IP地址主机标识的部分则全部为“0”。由此，一个IP地址可以不再受限于自己的类别，而是可以用这样的子网掩码自由的定位自己的网络标识长度。当然，子网掩码必须是IP地址的首位开始连续的“1”。表示方法如下：</p>
-<p>IP地址：    172.20.100.52/26</p>
-<p>子网掩码：    255.255.255.192</p>
-<p>网络地址：  172.20.100.0</p>
-<p>广播地址：    172.20.100.63</p>
-<p><strong>子网掩码可以灵活的指定网络标识的长度</strong></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="url">
-                  谷歌三篇论文学习(一): MapReduce
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-21T15:05:34+08:00" content="2016-09-21">
-              2016-09-21
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/论文/" itemprop="url" rel="index">
-                    <span itemprop="name">论文</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/21/谷歌三篇论文学习-MapReduce/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/21/谷歌三篇论文学习-MapReduce/" class="leancloud_visitors" data-flag-title="谷歌三篇论文学习(一): MapReduce">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h3><p><strong>MapReduce</strong>  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 <strong>Map</strong> 函数处理一个基于 <strong>key/value pair</strong> 的数据集合，输出中间的基于 <strong>key/value pair</strong> 的数据集合；然后再创建一个 <strong>Reduce</strong> 函数来用来合并所有的具有相同中间<strong>key</strong>值的中间<strong>values</strong>值。现实世界中有很多满足上述处理模型的例子。</p>
-<p><strong>MapReduce</strong> 编程模型的原理是:利用一个输入 <strong>key/value pair</strong> 集合来产生一个输出的 <strong>key/value pair</strong> 集合。 <strong>MapReduce</strong>  库的用户用两个函数表达这个计算: <strong>Map</strong> 和 <strong>Reduce</strong>。</p>
-<p>用户自定义的 <strong>Map</strong> 函数接受一个输入的 <strong>key/value pair</strong> 值,然后产生一个中间 <strong>key/value pair</strong> 值的集合。 <strong>MapReduce</strong> 库把所有具有相同中间 key 值的中间 <strong>value</strong> 值集合在一起后传递给 <strong>Reduce</strong> 函数。</p>
-<p>用户自定义的 <strong>Reduce</strong> 函数接受一个中间 <strong>key</strong> 的值和相关的一个 <strong>value</strong> 值的集合。 <strong>Reduce</strong> 函数合并这些 <strong>value</strong> 值，形成一个较小的 <strong>value</strong> 值的集合。一般的，每次 <strong>Reduce</strong> 函数调用只产生 0 或 1 个输出 <strong>value</strong> 值。通 常我们通过一个迭代器把中间 <strong>value</strong> 值提供给 <strong>Reduce</strong> 函数，这样我们就可以处理无法全部放入内存中的大量的 <strong>value</strong> 值的集合。</p>
-<pre><code>map(String key, String value):
-    // key: document name
-    // value: document contents 
-    for each word w in value:
-        EmitIntermediate(w, 1);
-
-reduce(String key, Iterator values): 
-    // key: a word
-    // values: a list of counts 
-    int result = 0;
-    for each v in values:
-        result += ParseInt(v); 
-    Emit(AsString(result));
-</code></pre><p><strong>Map</strong> 函数输出文档中的每个词、以及这个词的出现次数（在这个简单的例子里就是1）。<strong>Reduce</strong> 函数把Map函数产生的每一个特定的词的计数累加起来。</p>
-<h3 id="MapReduce编程模型应用"><a href="#MapReduce编程模型应用" class="headerlink" title="MapReduce编程模型应用"></a>MapReduce编程模型应用</h3><p>分布式的Grep：Map函数输出匹配模式的一行，Reduce函数是一个恒等函数，即把中间数据复制到输出。</p>
-<p>计算URL访问频率：Map函数处理日志中web页面请求的记录，然后输出(URL,1)。Reduce 函数把相同的value值都累加起来，产生(URL，记录总数)结果。</p>
-<p>倒转网络链接图：Map函数在源页面(source)中搜索所有的链接目标(target)并输出为(target, source)。Reduce 函数把给定链接目标(target)的链接组合成一个列表，输出(target, list(source))。</p>
-<p>其他的一些应用场景有，每个主机的检索词向量，倒排索引以及分布式排序。</p>
-<h3 id="MapReduce实现"><a href="#MapReduce实现" class="headerlink" title="MapReduce实现"></a>MapReduce实现</h3><p>上图展示了<strong>MapReduce</strong> 实现中操作的全部流程。当用户调用 <strong>MapReduce</strong> 函数时，将发生下面的一 系列动作(下面的序号和图中的序号一一对应):</p>
-<ol>
-<li><p>用户程序首先调用的 <strong>MapReduce</strong> 库将输入文件分成 M 个数据片度,每个数据片段的大小一般从 16MB 到 64MB(可以通过可选的参数来控制每个数据片段的大小)。然后用户程序在集群中创建大量的程序副本。</p>
-</li>
-<li><p>这些程序副本中的有一个特殊的程序——<strong>master</strong>。副本中其它的程序都是 <strong>worker</strong> 程序，由 <strong>master</strong> 分配 任务。有 M 个 <strong>Map</strong> 任务和 R 个 <strong>Reduce</strong> 任务将被分配，<strong>master</strong> 将一个 <strong>Map</strong> 任务或 <strong>Reduce</strong> 任务分配给一个空闲的 <strong>worker</strong>。</p>
-</li>
-<li><p>被分配了 <strong>Map</strong> 任务的 <strong>worker</strong> 程序读取相关的输入数据片段，从输入的数据片段中解析出 <strong>key/value pair</strong>，然后把 <strong>key/value pair</strong> 传递给用户自定义的 <strong>Map</strong> 函数，由 <strong>Map</strong> 函数生成并输出的中间 <strong>key/value pair</strong>，并缓存在内存中。</p>
-</li>
-<li><p>缓存中的 <strong>key/value pair</strong> 通过分区函数分成 R 个区域,之后周期性的写入到本地磁盘上。缓存的 <strong>key/value pair</strong> 在本地磁盘上的存储位置将被回传给 <strong>master</strong>，由 <strong>master</strong> 负责把这些存储位置再传送给 <strong>Reduce worker</strong>。</p>
-</li>
-<li><p>当 <strong>Reduce worker</strong> 程序接收到 <strong>master</strong> 程序发来的数据存储位置信息后，使用 RPC 从 <strong>Map worker</strong> 所在主机的磁盘上读取这些缓存数据。当 <strong>Reduce worker</strong> 读取了所有的中间数据后，通过对 <strong>key</strong> 进行排序后使得具有相同 <strong>key</strong> 值的数据聚合在一起。由于许多不同的 <strong>key</strong> 值会映射到相同的 <strong>Reduce</strong> 任务上，因此必须进行排序。如果中间数据太大无法在内存中完成排序,那么就要在外部进行排序。</p>
-</li>
-<li><p><strong>Reduce worker</strong> 程序遍历排序后的中间数据,对于每一个唯一的中间 <strong>key</strong> 值，<strong>Reduce worker</strong> 程序将这 个 <strong>key</strong> 值和它相关的中间 <strong>value</strong> 值的集合传递给用户自定义的 <strong>Reduce</strong> 函数。<strong>Reduce</strong> 函数的输出被追加到所属分区的输出文件。</p>
-</li>
-<li><p>当所有的 <strong>Map</strong> 和 <strong>Reduce</strong> 任务都完成之后，<strong>master</strong> 唤醒用户程序。在这个时候,在用户程序里的对 <strong>MapReduce</strong> 调用才返回。</p>
-</li>
-</ol>
-<p>在成功完成任务之后，<strong>Mapreduce</strong> 的输出存放在R个输出文件中（对应每个 <strong>Reduce</strong> 任务产生一个输出文件，文件名由用户指定）。一般情况下，用户不需要将这R个输出文件合并成一个文件——他们经常把这些文件作为另外一个 <strong>Mapreduce</strong> 的输入， 或者在另外一个可以处理多个分割文件的分布式应用中使用。</p>
-<h3 id="Master的数据结构"><a href="#Master的数据结构" class="headerlink" title="Master的数据结构"></a>Master的数据结构</h3><p><strong>Master</strong> 持有一些数据结构，它存储每一个Map和Reduce任务（空闲、工作中或完成），以及Worker机器（非空闲任务的机器）的标识。</p>
-<p><strong>Master</strong> 就像一个数据管道，中间文件存储区域的位置信息通过这个管道从Map传递到Reduce。因此，对于每个已经完成的Map任务，<strong>Master</strong> 存储了Map任务产生的R个中间文件存储区域的大小和位置。当Map任务完成时，<strong>Master</strong>接收到位置和大小的更新信息，这些信息被逐步递增的推送给那些正在工作的Reduce任务。</p>
-<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p><strong>Master</strong> 周期性的 ping 每个 <strong>worker</strong>。如果在一个约定的时间范围内没有收到 <strong>worker</strong> 返回的消息，<strong>Master</strong> 将把这个任务标记为失效。所有由这个失效的 <strong>worker</strong> 完成的 <strong>Map</strong> 任务被重设为初始的空闲状态，之后这些任务就可以被安排给其他的 <strong>worker</strong>。 同样的，<strong>worker</strong> 失效时正在运行的 <strong>Map</strong> 或 <strong>Reduce</strong> 任务也将被重新置为空闲状态，等待重新调度。</p>
-<p>当 <strong>worker</strong> 故障时，由于已经完成的 <strong>Map</strong> 任务的输出存储在这台机器上，<strong>Map</strong> 任务的输出已不接访问了，因此需要重新执行。而已经完成的 Reduce 任务的输出存储在全局文件系统上， 因此不需要再次执行。</p>
-<p>当一个 <strong>Map</strong> 任务首先被 <strong>worker A</strong> 执行，之后由于 <strong>worker A</strong> 失效了又被调度到 <strong>worker B</strong> 执行，这个“重新执行”的动作会被通知给所有执行 <strong>Reduce</strong> 任务的 <strong>worker</strong>。任何还没有从 <strong>worker A</strong> 读取数据的 <strong>Reduce</strong> 任务 将从 <strong>worker B</strong> 读取数据。</p>
-<p><strong>MapReduce</strong> 可以处理大规模 <strong>worker</strong> 失效的情况。比如，在一个 <strong>MapReduce</strong> 操作执行期间，在正在运行的集群上进行网络维护引起80台机器在几分钟内不可访问了，<strong>MapReduce master</strong> 只需要简单的再次执行那些不可访问的 <strong>worker</strong> 完成的工作，之后继续执行未完成的任务，直到最终完成这个 <strong>MapReduce</strong>  操作。</p>
-<h3 id="失效方面的处理机制"><a href="#失效方面的处理机制" class="headerlink" title="失效方面的处理机制"></a>失效方面的处理机制</h3><p>当用户提供的 <strong>Map</strong> 和 <strong>Reduce</strong> 操作是输入确定性函数(即相同的输入产生相同的输出)时，我们的分布式实现在任何情况下的输出都和所有程序没有出现任何错误、顺序的执行产生的输出是一样的。</p>
-<p>我们依赖对 <strong>Map</strong> 和 <strong>Reduce</strong> 任务的输出是原子提交的来完成这个特性。每个工作中的任务把它的输出写到私有的临时文件中。每个 <strong>Reduce</strong> 任务生成一个这样的文件，而每个 <strong>Map</strong> 任务则生成 R 个这样的文件(一个 <strong>Reduce</strong> 任务对应一个文件)。当一个 <strong>Map</strong> 任务完成的时，<strong>worker</strong> 发送一个包含 R 个临时文件名的完成消息给 <strong>master</strong>。如果 <strong>master</strong> 从一个已经完成的 <strong>Map</strong> 任务再次接收到到一个完成消息，<strong>master</strong> 将忽略这个消息；否则，<strong>Master</strong> 将这 R 个文件的名字记录在数据结构里。</p>
-<p>当 <strong>Reduce</strong> 任务完成时，<strong>Reduce worker</strong> 进程以原子的方式把临时文件重命名为最终的输出文件。如果同 一个 <strong>Reduce</strong> 任务在多台机器上执行,针对同一个最终的输出文件将有多个重命名操作执行。我们依赖底层文 件系统提供的重命名操作的原子性来保证最终的文件系统状态仅仅包含一个 <strong>Reduce</strong> 任务产生的数据。</p>
-<h3 id="分区函数"><a href="#分区函数" class="headerlink" title="分区函数"></a>分区函数</h3><p><strong>MapReduce</strong> 的使用者通常会指定 <strong>Reduce</strong> 任务和 <strong>Reduce</strong> 任务输出文件的数量(R)。我们在中间 key 上使用分区函数来对数据进行分区，之后再输入到后续任务执行进程。一个缺省的分区函数是使用 <strong>hash</strong> 方法(比如，hash(key) mod R)进行分区。hash方法能产生非常平衡的分区。然而，有的时候，其它的一些分区函数对 <strong>key</strong> 值进行的分区将非常有用。比如，输出的 <strong>key</strong> 值是 <strong>URLs</strong>，我们希望每个主机的所有条目保持在同一个输出文件中。为了支持类似的情况，<strong>MapReduce</strong> 库的用户需要􏰁供专门的分区函数。例如，使用“hash(Hostname(urlkey)) mod R”作为分区函数就可以把所有来自同一个主机的 <strong>URLs</strong> 保存在同一个输出文件中。</p>
-<h3 id="顺序保证"><a href="#顺序保证" class="headerlink" title="顺序保证"></a>顺序保证</h3><p>我们确保在给定的分区中，中间 <strong>key/value pair</strong> 数据的处理顺序是按照 <strong>key</strong> 值增量顺序处理的。这样的顺序保证对每个分区生成一个有序的输出文件，这对于需要对输出文件按 <strong>key</strong> 值随机存取的应用非常有意义，对在排序输出的数据集也很有帮助。</p>
-<h3 id="Combiner-函数"><a href="#Combiner-函数" class="headerlink" title="Combiner 函数"></a>Combiner 函数</h3><p>在某些情况下，<strong>Map</strong> 函数产生的中间 <strong>key</strong> 值的重复数据会占很大的比重，并且，用户自定义的 <strong>Reduce</strong> 函数满足结合律和交换律。之前举例过的词频统计中，每个 <strong> Map </strong> 任务将产生成千上万个这样的任务<the, 1="">。所有的这些记录将通过网络被发送到一个单独的 <strong>Reduce</strong> 任务，然后这个 <strong>Reduce</strong> 任务把所有这些记录累加起来产生一个数字。我们允许用户指定一个可选的 <strong>combiner</strong> 函数，<strong>combiner</strong> 函数首先在本地将这些记录进行一次合并，然后将合并的结果再通过网络发送出去。</the,></p>
-<p><strong>Combiner</strong> 函数在每台执行 <strong>Map</strong> 任务的机器上都会被执行一次。 一般情况下，<strong>Combiner</strong> 和 <strong>Reduce</strong> 函数是一样的。<strong>Combiner</strong> 函数和 <strong>Reduce</strong>函数之间唯一的区别是 <strong>MapReduce</strong> 库怎样控制函数的输出。<strong>Reduce</strong> 函数的输出被保存在最终的输出文件里，而 <strong>Combiner</strong> 函数的输出被写到中间文件里，然后被发送给 <strong>Reduce</strong> 任务。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2259,7 +2259,7 @@ reduce(String key, Iterator values):
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-count">62</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

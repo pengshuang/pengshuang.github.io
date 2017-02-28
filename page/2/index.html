@@ -258,6 +258,305 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" itemprop="url">
+                  IP协议相关技术: ICMP、DHCP 和 NAT
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-18T21:20:37+08:00" content="2016-11-18">
+              2016-11-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" class="leancloud_visitors" data-flag-title="IP协议相关技术: ICMP、DHCP 和 NAT">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="辅助-IP-的-ICMP"><a href="#辅助-IP-的-ICMP" class="headerlink" title="辅助 IP 的 ICMP"></a>辅助 IP 的 ICMP</h3><p>架构 IP 网络时需要特别注意：1. 确认网络是否正常工作；2. 遇到异常时进行问题诊断，而这一切需要 ICMP 来提供。</p>
+<p>ICMP 的主要功能包括，确认 IP 包是否成功送达目标地址，通知在发送过程当中 IP 包被废弃的具体原因，改善网络设置等。</p>
+<p>在 IP 通信中如果某个 IP 包因为某种原因未能达到目标地址，那么这个具体的原因将由 ICMP 负责通知。主机 A 向主机 B 发送了数据包，由于某种原因，途中的路由器 2 未能发现主机 B 的存在，这时，路由器 2 就会向主机 A 发送一个 ICMP 包，说明发往主机 B 的包未能成功。</p>
+<p>ICMP 的消息大致可以分为两类：一类是通知出错原因的错误消息，另一类是用于诊断的查询消息。</p>
+<h3 id="主要的-ICMP-消息"><a href="#主要的-ICMP-消息" class="headerlink" title="主要的 ICMP 消息"></a>主要的 ICMP 消息</h3><h4 id="ICMP-目标不可达消息（类型3）"><a href="#ICMP-目标不可达消息（类型3）" class="headerlink" title="ICMP 目标不可达消息（类型3）"></a>ICMP 目标不可达消息（类型3）</h4><p>IP 路由器无法将 IP 数据包发送给目标地址时，会给发送端主机返回一个目标不可达的 ICMP 消息，并在这个消息中显示不可达的具体原因。</p>
+<p>在实际通信中经常遇到的错误代码是 1，表示主机不可达，它是指路由表中没有该主机的信息，或该主机没有连接到网络的意思。其他的错误号都可以通过查阅得知具体的错误信息，这里不再赘述。</p>
+<h4 id="ICMP-重定向消息（类型5）"><a href="#ICMP-重定向消息（类型5）" class="headerlink" title="ICMP 重定向消息（类型5）"></a>ICMP 重定向消息（类型5）</h4><p>如果路由器发现发送端主机使用了次优的路径发送数据，那么它会返回一个 ICMP 重定向（ICMP Redirect Message）的消息给这个主机。在这个消息中包含了最合适的路由信息和源数据。这主要发生在路由器持有更好的路由信息的情况下。路由器会通过这样的 ICMP 消息给发送端主机一个更合适的发送路由。</p>
+<h4 id="ICMP-超时消息（类型11）"><a href="#ICMP-超时消息（类型11）" class="headerlink" title="ICMP 超时消息（类型11）"></a>ICMP 超时消息（类型11）</h4><p>IP 包中有一个字段叫做 TTL (生存周期），它的值随着每经过一次路由器就会减 1，直到减到 0 时该 IP 包会被丢弃。此时，IP 路由器将会发送一个 ICMP 超时的消息给发送端主机，并通知该包已被丢弃。</p>
+<p>设置 IP 包生存周期的主要目的，是为了在路由控制遇到问题发送循环状况时，避免 IP 包无休止地在网络上被转发。此外，有时可以用 TTL 控制包的到达范围，例如设置一个较小的 TTL 值。</p>
+<p>有一个重复利用 ICMP 超时消息的应用叫 traceroute。他可以显示由执行程序的主机到达特定主机之前经历多少路由器。它的原理就是利用 IP 包的生存期限从 1 开始按照顺序递增的同时发送 UDP 包，强制接收 ICMP 超时消息的一种方法。这样可以将所有路由器的 IP 地址逐一呈现。这个过去常用于进行问题诊断。</p>
+<h4 id="ICMP-回送消息（类型0、8）"><a href="#ICMP-回送消息（类型0、8）" class="headerlink" title="ICMP 回送消息（类型0、8）"></a>ICMP 回送消息（类型0、8）</h4><p>用于进行通信的主机或路由器之间，判断所发送的数据包是否已经成功到达对端的一种消息。可以向对端主机发送回送请求的消息，也可以接收对端主机发回来的回送应答消息，网络上最常用的 ping 命令就是利用这个消息实现的。</p>
+<h3 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h3><h4 id="ICMPv6-的作用"><a href="#ICMPv6-的作用" class="headerlink" title="ICMPv6 的作用"></a>ICMPv6 的作用</h4><p>IPv4 中 ICMP 仅作为一个辅助作用支持 IPv4.即在 IPv4 中，即使没有 ICMP，仍然可以实现 IP 通信。然而，在 IPv6 中，ICMP 的作用被扩大，如果没有 ICMPv6，IPv6 就无法进行正常通信。</p>
+<p>在 IPv6 中， 从 IP 地址定位 MAC 地址的协议从 ARP 转为 ICMP 的邻居探索消息。这种邻居探索消息融合了 IPv4 的 ARP、ICMP 重定向以及 ICMP 路由器选择消息等功能于一体，甚至还提供自动设置 IP 地址的功能。</p>
+<p>ICMPv6 中将 ICMP 大致分为两类：一类是错误消息，另一类是信息消息。类型 0 ~ 127 属于错误消息，128~255 属于信息消息。</p>
+<h4 id="邻居探索"><a href="#邻居探索" class="headerlink" title="邻居探索"></a>邻居探索</h4><p>ICMPv6 中从类型 133 至类型 137 的消息叫做邻居探索消息。这种邻居探索消息对于 IPv6 通信起着举足轻重的作用。邻居请求消息用于查询 IPv6 的地址与 MAC 地址的对应关系，并由邻居宣告消息得知 MAC 地址。邻居请求消息利用 IPv6 的多播地址实现传输。</p>
+<h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p>如果为每一台主机设置 IP 地址会非常繁琐。所以，为了实现自动设置 IP 地址、同一管理 IP 地址分配，就产生了 DHCP 协议。有了 DHCP，计算机只要连接到网络，就可以进行 TCP/IP 通信。</p>
+<h4 id="DHCP-的工作机制"><a href="#DHCP-的工作机制" class="headerlink" title="DHCP 的工作机制"></a>DHCP 的工作机制</h4><p>使用 DHCP 之前，首先要架设一台 DHCP 服务器。然后将 DHCP 所要分配的 IP 地址设置到服务器上。此外，还需要将相应的子网掩码、路由控制信息以及 DNS 服务器的地址等设置到服务器上。</p>
+<p>为了检查所要分配的 IP 地址以及已经分配了的 IP 地址是否可用，DHCP 服务器或 DHCP 客户端必须具备以下功能：</p>
+<ul>
+<li><p>DHCP 服务器</p>
+<p>  在分配 IP 地址前发送 ICMP 回送请求包，确认没有返回应答。</p>
+</li>
+<li><p>DHCP 客户端</p>
+<p>  针对从 DHCP 那里获得的 IP 地址发送 ARP 请求包，确认没有返回应答。</p>
+</li>
+</ul>
+<h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><p>NAT 用于在本地网络中使用私有地址，在连接互联网时转而使用全局 IP 地址的技术。除转换 IP 地址外，还出现了可以转换 TCP、UDP 的端口号的 NAPT 技术，由此可以实现用一个全局 IP 地址与多个主机的通信。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/11/17/IP协议相关技术-DNS-和-ARP/" itemprop="url">
+                  IP协议相关技术: DNS 和 ARP
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-17T20:32:26+08:00" content="2016-11-17">
+              2016-11-17
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/17/IP协议相关技术-DNS-和-ARP/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/17/IP协议相关技术-DNS-和-ARP/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/17/IP协议相关技术-DNS-和-ARP/" class="leancloud_visitors" data-flag-title="IP协议相关技术: DNS 和 ARP">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h3><p>我们平常在访问某个网站时不使用 IP 地址，而是用一串由字母和点号组成的字符串。而一般用户在使用 TCP/IP 进行通信时也不使用 IP 地址。能够这样的原因主要是因为有 DNS 功能的支持。DNS 可以将它们自动转换为具体的 IP 地址。</p>
+<h4 id="IP-地址不便记忆"><a href="#IP-地址不便记忆" class="headerlink" title="IP 地址不便记忆"></a>IP 地址不便记忆</h4><p>TCP/IP 网络中要求每一个互连的计算机都具有其唯一的 IP 地址，并基于这个 IP 地址进行通信，但是 IP 地址并不容易记忆。</p>
+<p>为此， TCP/IP 世界中从一开始就已经有了一个叫主机识别码的东西。它为每台计算机赋以唯一的主机名，在进行网络通信时可以直接使用主机名称而无需输入长串的 IP 地址。为了实现这种功能，主机往往会利用一个叫做 hosts 的数据库文件。</p>
+<h4 id="DNS-产生"><a href="#DNS-产生" class="headerlink" title="DNS 产生"></a>DNS 产生</h4><p>DNS 系统可以有效管理主机名和 IP 地址之间对应关系。这个系统中主机的管理机构可以对数据进行变更和设定，即它可以维护一个用来表示组织内部主机名和 IP 地址之间对应关系的数据库。</p>
+<p>在应用中，当用户输入主机名（域名）时，DNS 会自动检索那个注册了主机名和 IP 地址的数据库，并迅速定位对应的 IP 地址。而且，如果主机名和 IP 地址需要进行变更时，也只需要在组织机构内部进行处理即可，而没必要再向其他机构进行申请或报告。</p>
+<h3 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h3><p>只要确定了 IP 地址，就可以向这个目标地址发送 IP 数据报。然而，在底层数据链路层，进行实际通信时却有必要了解每个 IP 地址所对应的 MAC 地址。</p>
+<h4 id="ARP-概要"><a href="#ARP-概要" class="headerlink" title="ARP 概要"></a>ARP 概要</h4><p>ARP 是一种解决地址问题的协议。以目标 IP 地址为线索，用来定位下一个应该接收数据分包的网络设备对应的 MAC 地址。如果目标主机不在同一个链路上时，可以通过 ARP 查找下一跳路由器的 MAC 地址。不过 ARP 只适用于 IPv4，不能用于 IPv6。IPv6 中可以用 ICMPv6 替代 ARP 发送邻居探索消息。</p>
+<p>假定 主机 A 向同一链路上的主机 B 发送 IP 包，主机 A 的 IP 地址为 172.20.1.1，主机 B 的 IP 地址为 172.20.1.2，它们互不知道对方的 MAC 地址。</p>
+<p>主机 A 为了获得主机 B 的 MAC 地址，起初要通过广播发送一个 ARP 请求包。这个包中包含了想要了解其 MAC 地址的主机 IP 地址。也就是说，ARP 请求包中已经包含了主机 B 的 IP 地址 172.20.1.2。由于广播的包可以被同一个链路上所有的主机或路由器接收，因此 ARP 请求包中的目标 IP 地址与自己的 IP 地址一致，那么这个节点就将自己的 MAC 地址塞入 ARP 响应包返回给主机 A。</p>
+<p>从一个 IP 地址发送 ARP 请求包以了解其 MAC 地址，目标地址将自己的 MAC 地址填入其中的 ARP 响应包返回到 IP 地址。由此，可以通过 ARP 从 IP 地址获得 MAC 地址，实现链路内的 IP 通信。</p>
+<p>根据 ARP 可以动态地进地址解析，因此，在 TCP/IP 的网络构造和网络通信中无需事先知道 MAC 地址究竟是什么，只要有 IP 地址即可。如果每发送一个 IP 数据报都要进行一次 ARP 请求以此确定 MAC 地址，那将会造成不必要的网络流量，因此，通常是把获取到的 MAC 地址缓存一段时间。即把第一次通过 ARP 获取到的 MAC 地址作为 IP 对 MAC 的映射关系记忆到一个 ARP 缓存表中，下一次再向这个 IP 地址发送数据报时不需要再重新发送 ARP 请求，而是直接使用这个缓存表当中的 MAC 地址进行数据报的发送。每执行一次 ARP，其对应的缓存内容都会被清除。不过在清除之前都可以不需要执行 ARP 就可以获取想要的 MAC 地址。这样，在一定程度上防止了 ARP 包在网络上被大量广播的可能性。</p>
+<h4 id="IP-地址和-MAC-地址都需要吗？"><a href="#IP-地址和-MAC-地址都需要吗？" class="headerlink" title="IP 地址和 MAC 地址都需要吗？"></a>IP 地址和 MAC 地址都需要吗？</h4><p>可能会有这么一个问题，数据链路上只要知道接收端的 MAC 地址就可可以发送数据了，还需要知道它的 IP 地址吗？</p>
+<p>答案是肯定的，如果我们考虑发送给其他数据链路中某一台主机时的情况。如果主机 A 和 主机 B 不在同一个链路，主机 A 想要发送 IP 数据报给主机 B 时必须得经过路由器 C。即使知道了主机 B 的 MAC 地址，由于路由器 C 会隔断两个网络，还是无法实现从主机 A 发送数据报给主机 B。此时，主机 A 必须得先将数据报发送给路由器 C 的 MAC 地址。</p>
+<p>在以太网上发送 IP 包时，“下次要经由哪个路由器发送数据报” 这一信息非常重要。而这里的“下一个路由器”就是相应的 MAC 地址。</p>
+<h4 id="RARP"><a href="#RARP" class="headerlink" title="RARP"></a>RARP</h4><p>RARP 是将 ARP 反过来，从 MAC 地址定位 IP 地址的一种协议。我们平时可以通过个人电脑设置 IP 地址，也可以通过 DHCP 自动分配获取 IP 地址。然而，对于使用嵌入式设备，会遇到没有任何输入接口或无法通过 DHCP 动态获取 IP 地址的情况。在类似这种情况下，就可以使用 RARP。</p>
+<h4 id="代理-ARP"><a href="#代理-ARP" class="headerlink" title="代理 ARP"></a>代理 ARP</h4><p>通常 ARP 包会被路由隔离，但是采用代理 ARP（Proxy ARP）的路由器可以将 ARP 请求转发给邻近的网段。由此，两个以上网段的节点之间可以像在同一个网段中一样进行通信。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/14/HBase架构学习-数据查找和传输/" itemprop="url">
                   HBase架构学习: 数据查找和传输
                 </a>
@@ -1874,309 +2173,11 @@ boolean containsColumn(byte[] family, byte[] qualifier);
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/" itemprop="url">
-                  Google Chubby 学习: Paxos 协议实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-27T14:12:31+08:00" content="2016-10-27">
-              2016-10-27
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/27/Google-Chubby-学习-Paxos-协议实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/" class="leancloud_visitors" data-flag-title="Google Chubby 学习: Paxos 协议实现">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Chubby-中-Paxos-协议实现"><a href="#Chubby-中-Paxos-协议实现" class="headerlink" title="Chubby 中 Paxos 协议实现"></a>Chubby 中 Paxos 协议实现</h3><p>Chubby 服务端的基本架构大致分为三层：</p>
-<ul>
-<li>最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。</li>
-<li>日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。</li>
-<li>存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。</li>
-</ul>
-<p>Paxos 算法的作用在于保证集群内各个副本节点的日志能够保证一致。Chubby 事务日志中的每一个 Value 对应 Paxos 算法中的一个 Instance，由于 Chubby 需要对外提供不间断的服务，因此事务日志会无限增长，于是整个 Chubby 运行过程中，会存在多个 Paxos Instance。同时，Chubby 会为每一个 Paxos Instance 都按序分配一个全局唯一的 Instance 编号，并将其顺序写入到事务日志中去。</p>
-<p>在多 Paxos Instance 的模式下，为了提升算法执行的性能，就必须选举一个副本节点作为 Paxos 算法的主节点，以避免因为每一个 Paxos Instance 都提出提案而陷入多个 Paxos Round 并存的情况。同时，Paxos 会保证在 Master 重启或出现故障而进行切换的时候，允许出现短暂的多个 Master 共存却不影响副本之间的一致性。</p>
-<p>在 Paxos 中，每一个 Paxos Instance 都需要进行一轮或多轮 “ Prepare -&gt; Promise -&gt; Propose -&gt; Accept “ 这样完整的二阶段请求过程来完成对一个提案值的选定，而多个 Instance 之间是完全独立的，每个 Instance 可以自己决定每一个 Round 的序号，仅仅只需要保证在 Instance 内部不会出现序号重复即可。为了在保证正确性的前提下尽可能地提高算法运行性能，可以让多个 Instance 共用一套序号分配机制，并将 “Prepare -&gt; Promise” 合并为一个阶段，具体做法如下。</p>
-<ul>
-<li>当某个副本节点通过选举成为 Master 后，就会使用新分配的编号 N 来广播一个 Prepare 消息，该 Prepare 消息会被所有未达成一致的 Instance 和目前还未开始的 Instance 共用。</li>
-<li>当 Acceptor 接收到 Prepare 消息后，必须对多个 Instance 同时做出回应，这通常可以通过将反馈信息封装在一个数据包中来实现。假设最多允许 K 个 Instance 同时进行提案值的选定，那么：<ul>
-<li>当前至多存在 K 个 未达成一致的 Instance，将这些未决的 Instance 各自最后接受的提案值封装进一个数据包，并作为 Promise 消息返回。</li>
-<li>同时，判断 N 是否大于当前 Acceptor 的 highestPromiseNum 值，如果大于该值的话，那么就标记这些未决 Instance 和所有未来的 Instance 的 highestPromisedNum 指为 N — 这样，这些未决 Instance 和所有未来 Instance 都不能再接受任何编号小于 N 的提案。</li>
-</ul>
-</li>
-<li>然后 Master 就可以对所有未决 Instance 和所有未来 Instance 分别执行 “Propose -&gt; Accept” 阶段的处理。如果当前 Master 能够一直稳定运行的话，那么在接下来的算法运行过程中，就不再需要进行 “Prepare -&gt; Promise” 的处理了。但是，一旦 Master 发现 Acceptor 返回了一个 Reject 消息，说明集群中存在另一个 Master，并且试图使用更大的提案编号发送了 Prepare 消息。碰到这种情况，当前 Master 就需要重新分配新的提案编号并再次进行 “Prepare -&gt; Promise” 阶段的逻辑处理。</li>
-</ul>
-<p>利用上述改进的 Paxos 算法，在 Master 稳定运行的情况下，只需要使用同一个编号来依次执行每一个 Instance 的 “Promise -&gt; Accept” 阶段逻辑处理。在每个 Instance 的运行过程中，一旦接收到多数派的 Accept 反馈后，就可以将对应的提案值写入本地事务日志并广播 COMMIT 消息给集群中的其他副本节点，其他副本节点在接收到这个 COMMIT 消息之后也会将提案值写入到事务日志中去。如果某个副本节点因为宕机或者网络原因没有接收到 COMMIT 消息，可以主动向集群中的其他副本节点进行查询。因此，我们可以看到，在 Chubby 的 Paxos 算法实现中，只要维持集群中存在多数派的机器能够正常运行，即使其他机器在任意时刻发生宕机，也能保证已经提交的提案的安全性。</p>
-<h3 id="Hypertable"><a href="#Hypertable" class="headerlink" title="Hypertable"></a>Hypertable</h3><p>Hypertable 以 Google 的 Bigtable 相关论文为基础指导，采用与 HBase 非常相似的分布式模型，其目的是构建一个针对分布式海量数据的高并发数据库。</p>
-<p>Hypertable 的核心组件包括 Hyperspace、RangeServer、Master 和 DFS Broker 四部分。其中 Hyperspace 是 Hypertable 中最重要的组件之一，其提供了对分布式锁服务的支持以及对元数据的管理，是保证 Hypertable 数据一致性的核心。Hyperspace 类似于 Chubby，它存储一些元数据信息，同时提供分布式锁服务，另外还负责提供高效、可靠的主机选举服务。</p>
-<p>RangeServer 是实际对外提供服务的组件单元，负责数据的读取和写入。在 Hypertable的设计中，对每一张表都按照主键进行切分，形成多个 Range，每个 Range 由一个 RangeServer 负责管理。在 Hypertable 中，通常会部署多个 RangeServer，每个 RangeServer 都负责管理部分数据，由 Master 来负责进行 RangeServer 的集群管理。</p>
-<p>Master 是元数据管理中心，管理包括创建表、删除表或是其他表空间变更在内的所有元数据操作，同时负责检测 RangeServer 的工作状态，一旦某一个 RangeServer 宕机或是重启，能够自动进行 Range 的重新分配，从而实现对 RangeServer 集群的管理和负责均衡。</p>
-<p>DFS Broker 则是底层分布式文件系统的抽象层，用于衔接上层 Hypertable 和底层文件存储。所有对文件系统的读写操作，都是通过 DFS Broker 来完成的。目前已经可以接入 Hypertable 中的分布式文件系统包括 HDFS、MapR，Ceph 和 KFS。针对任何其他的新文件系统，只需实现一个对应的 DFS Broker，就可以将其快速接入到整个 Hypertable 系统中。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/26/Google-Chubby-学习-基本概念/" itemprop="url">
-                  Google Chubby 学习: 基本概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-26T15:14:36+08:00" content="2016-10-26">
-              2016-10-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
-                    <span itemprop="name">分布式系统</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/26/Google-Chubby-学习-基本概念/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/26/Google-Chubby-学习-基本概念/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/26/Google-Chubby-学习-基本概念/" class="leancloud_visitors" data-flag-title="Google Chubby 学习: 基本概念">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Google Chubby 是一个很有名的分布式锁服务，GFS 和 Big Table 等大型系统都用它解决分布式协作、元数据存储和 Master 选举等一系列与分布式锁服务相关的问题。Chubby 的底层一致性实现就是以 Paxos 算法为基础。</p>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Chubby 是一个面向松耦合分布式系统的锁服务，通常用于为一个由大量小型计算机构成的松耦合分布式系统提供可用的分布式锁服务。一个分布式锁服务的目的是允许它的客户端进程同步彼此的操作，并对当前所处环境的基本状态信息达成一致。针对这个目的，Chubby 提供了粗粒度的分布式锁服务，开发人员不需要使用复杂的同学协议，而是直接调用 Chubby 的锁服务接口即可实现分布式系统中多个进程粗粒度的同步控制，从而保证分布式数据的一致性。</p>
-<p>Chubby 的客户端接口设计类似于 Unix 文件系统结构，应用程序通过 Chubby 的客户端接口，不仅能够对 Chubby 服务器上的整个文件进行读写操作，还能够添加对文件节点的锁控制，并且能够订阅 Chubby 服务端发出的一系列文件变动的事件通知。</p>
-<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>Chubby 最典型的应用是 机器中服务器的 Master 选举。例如 GFS 中使用 Chubby 锁服务来实现对 GFS Master 服务器的选举。而在 Bigtable 中，Chubby 同样被用于 Master 选举，并且借助 Chubby，Master 能够非常方便地感知到其所控制的那些服务器。同时，通过 Chubby，Bigtable 的客户端还能够方便地定位到当前 Bigtable 集群的 Master 服务器。此外，在 GFS 和 Bigtable 中，都使用 Chubby 来进行系统运行时元数据的存储。</p>
-<h3 id="Chubby-技术架构"><a href="#Chubby-技术架构" class="headerlink" title="Chubby 技术架构"></a>Chubby 技术架构</h3><h4 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h4><p>Chubby 的整个系统结构主要由服务端和客户端两部分组成，客户端通过 RPC 调用与服务端进行通信。</p>
-<p>一个典型的 Chubby 集群，或称为 Chubby cell，通常由 5 台服务器组成。这些副本服务器采用 Paxos 协议，通过投票的方式来选举产生一个获得过半投票的服务器作为 Master。一旦某台服务器成为了 Master， Chubby 就会保证在一段时间内不会再有其他服务器成为 Master —- 这段时期成为 Master 租期。在运行过程中，Master 服务器会通过不断续租的方式来延长 Master 租期，而如果 Master 服务器出现故障，那么余下的服务器就会进行新一轮的 Master 选举，最终产生新的 Master 服务器，开始新的租期。</p>
-<p>集群中的每个服务器都维护这一份服务端数据库的副本，但在实际运行过程中，只有 Master 可以对数据库进行写操作，而其他服务器都是使用 Paxos 协议从 Master 服务器上同步数据库数据的更新。</p>
-<p>Chubby 客户端通过向记录有 Chubby 服务端机器列表的 DNS 来请求获取所有的 Chubby 服务器列表，然后逐个发起请求获取所有的 Chubby 服务器列表，然后逐个发起请求询问该服务器是否是 Master。在这个询问过程中，那些非 Master 的服务器，则会将当前 Master 所在的服务器标识反馈给客户端，这样客户端就能够非常快地定位到 Master 服务器了。</p>
-<p>一旦客户端定位到 Master 服务器之后，只要该 Master 正常运行，那么客户端就会将所有的请求都发送到该 Master 服务器上。针对写请求，Chubby Master 会采用一致性协议将其广播给集群中所有的副本服务器，并且在过半的服务器接受了该写请求之后，再响应给客户端正确的应答。而对于读请求，则不需要在集群内部进行广播处理，直接由 Master 服务器单独处理即可。</p>
-<p>在 Chubby 运行过程中，服务器难免会发生故障，如果当前的 Master 服务器崩溃了，那么集群中的其他服务器会在 Master 租期到期后，重新开始新一轮 Master 选举。而如果是任意一台非 Master 服务器崩溃，那么整个集群是不会停止工作的，这个崩溃的服务器会在恢复之后自动加入 Chubby 集群中。</p>
-<p>如果集群中的一个服务器发送崩溃并在几小时后仍然无法恢复正常，那么就需要加入新的机器，并同时更新 DNS 列表。</p>
-<h3 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h3><p>Chubby 的数据结构可以看作是一个由文件和目录组成的树，其中每一个节点都可以表示为一个使用斜杠分割的字符串，典型的节点路径如下：</p>
-<pre><code>/ls/foo/wombat/pouch
-</code></pre><p>其中 ls 是所有 Chubby 节点所共有的前缀，代表着锁服务；foo 则指定了 Chubby 机器的名字；剩余部分 /wombat/pouch 则是一个真正包含业务含义的节点名字，由 Chubby 服务器内部解析并定位到数据节点。</p>
-<h3 id="锁与锁序列器"><a href="#锁与锁序列器" class="headerlink" title="锁与锁序列器"></a>锁与锁序列器</h3><p>在分布式系统中，锁是一个非常复杂的问题，由于网络通信的不确定性，导致在分布式系统中锁机制变得非常复杂，消息的延迟或是乱序都有可能会引起锁的失效。一个典型的分布式锁错乱案例是，一个客户端 C1 获取到了互斥锁 L，并且在锁 L 的保护下发出请求 R，但请求 R 迟迟没有到达服务端（可能出现网络延时或反复重发等），这时应用程序会认为该客户端进程已经失败，于是便会为另一个客户端 C2 分配锁 L，然后再重新发起之前的请求 R，并成功地应用到了服务器上。此时，如果客户端 C1 发起的请求 R 经过一波三折也到达了服务端，此时，它可能会在不受任何锁控制的情况下被服务端处理，从而覆盖客户端 C2 的操作，于是导致系统数据出现不一致。解决此类问题的方案主要包括虚拟时间和虚拟同步。</p>
-<p>在 Chubby 中，任意一个数据节点都可以充当一个读写锁来使用：一种是单个客户端以排他（写）模式持有这个锁，另一种则是任意数目的客户端以共享（读）模式持有这个锁同时，在 Chubby 的锁机制中需要注意，Chubby 舍弃了严格的强制锁，客户端可以在没有获取任何锁的情况下访问 Chubby 的文件，即，持有锁 F 既不是访问文件 F 的必要条件，也不会阻止其他客户端访问文件 F。</p>
-<p>在 Chubby 中，主要采用锁延迟和锁序列两种策略来解决上面我们提到的由于消息延迟和重排序引起的分布式锁问题。其中锁延迟是一种比较简单的策略，使用 Chubby 的应用几乎不需要进行任何的代码修改。具体的，如果一个客户端以正常的方式主动释放了一个锁，那么 Chubby 服务端将会允许其他客户端能够立即获取到该锁。而如果一个锁是因为客户端的异常情况（如客户端无响应）而被释放的话，那么 Chubby 服务器会为该锁保留一定的时间，称之为“锁延迟”，在这段时间内，其他客户端无法获取这个锁。锁延迟措施能够很好地防止一些客户端由于网络闪断等原因而与服务器暂时断开的场景出现。另外一种方式称为锁序列器，当然该策略需要 Chubby 的上层应用配合在代码中加入相应的修改逻辑。任何时候，锁的持有者都可以向 Chubby 请求一个锁序列器，包括锁的名字、锁模式，以及锁序号。当客户端应用程序在进行一些需要锁机制保护的操作时，可以将该锁序列一并发送给服务端。Chubby 服务端接收到这样的请求后，会首先检测该序列器是否有效，以及检查客户端是否处于恰当的锁模式；如果没有通过检查，那么服务端就会拒绝该客户端请求。</p>
-<h3 id="Chubby-中的事件通知机制"><a href="#Chubby-中的事件通知机制" class="headerlink" title="Chubby 中的事件通知机制"></a>Chubby 中的事件通知机制</h3><p>为了避免大量客户端轮询 Chubby 服务端状态所带来的压力，Chubby 提供了事件通知机制。Chubby 的客户端可以向服务端注册事件通知，当触发这些事件的时候，服务端就会向客户端发送对应的事件通知。在 Chubby 的事件通知机制中，消息通知都是通过异步的方式发送给客户端的，常用的 Chubby 事件如下：</p>
-<h4 id="文件内容变更"><a href="#文件内容变更" class="headerlink" title="文件内容变更"></a>文件内容变更</h4><p>BigTable 集群使用 Chubby 锁来确定集群中的哪台 BigTable 机器是 Master；获得锁的 BigTable Master 会将自身信息写入 Chubby 上对应的文件中。 BigTable机器中的其他客户端可以通过监视这个 Chubby 文件的变化来确定新的 BigTable Master 机器。</p>
-<h4 id="节点删除"><a href="#节点删除" class="headerlink" title="节点删除"></a>节点删除</h4><p>当 Chubby 上指定节点被删除的时候，会产生“节点删除”事件，通常是临时节点，可以利用该特性来间接判断该临时节点对应的客户端会话是否有效。</p>
-<h4 id="子结点新增、删除"><a href="#子结点新增、删除" class="headerlink" title="子结点新增、删除"></a>子结点新增、删除</h4><p>当 Chubby 上指定节点的子节点新增或是减少时，会产生”子节点新增、删除“事件。</p>
-<h4 id="Master-服务器转移"><a href="#Master-服务器转移" class="headerlink" title="Master 服务器转移"></a>Master 服务器转移</h4><p>当 Chubby 服务器发生 Master 转移时，会以事件的形式通知客户端。</p>
-<h3 id="Chubby-中的缓存"><a href="#Chubby-中的缓存" class="headerlink" title="Chubby 中的缓存"></a>Chubby 中的缓存</h3><p>为了提高 Chubby 的性能，同时也是为了减少客户端和服务端之间频繁的读请求对服务端的压力，Chubby 除了提供事件通知机制之外，还在客户端中实现了缓存，会在客户端对文件内容和元数据信息进行缓存。使用缓存机制在提高系统整体性能的同时，也为系统带来了一定的复杂性，最大的问题是如何保证缓存的一致性。</p>
-<p>Chubby 保证缓存一致性的主要方法是使用了缓存的生命周期这一概念。具体的，每个客户端的缓存都有一个租期，一旦该租期到期，客户端就需要向服务端续订租期以继续维持缓存的有效性。当文件数据或元数据信息被修改时，Chubby服务端首先会阻塞该修改操作，然后由 Master 向所有可能缓存了该数据的客户端发送缓存过期信号，以使其缓存失效，等到 Master 在接收到所有相关客户端针对该过期信号的应答后（1. 客户端明确要求更新缓存；2. 客户端允许缓存租期过期。），再继续进行之前的修改操作。</p>
-<h3 id="会话和会话激活"><a href="#会话和会话激活" class="headerlink" title="会话和会话激活"></a>会话和会话激活</h3><p>Chubby 客户端和服务端之间通过创建一个 TCP 连接来进行所有的网络通信操作，我们将这一连接称为会话（Session）。会话有生命周期，并且存在一个超时时间，在超时时间内，Chubby客户端和服务端之间可以通过心跳检测来保持会话的活性。</p>
-<h3 id="Chubby-Master-故障恢复"><a href="#Chubby-Master-故障恢复" class="headerlink" title="Chubby Master 故障恢复"></a>Chubby Master 故障恢复</h3><p>Chubby 的 Master 服务器上会运行着会话租期计时器，用来管理所有会话的生命周期。如果在运行过程中 Master 出现了故障，那么该计时器会停止，直到新的 Master 选举产生后，计时器才会继续计时，</p>
-<p>新的 Master 会设法将上一个 Master 服务器的内存状态构造出来。具体的，由于本地数据库记录了每个客户端的会话信息，以及其持有的锁和临时文件等信息，因此 Chubby 会通过读取本地磁盘上的数据来恢复一部分状态。总的来讲，一个新的 Chubby Master 服务器选举产生以后会进行如下几个主要处理：</p>
-<ol>
-<li>新的 Master 选举产生之后，首先需要确定 Master 周期。Master 周期用来唯一标识一个 Chubby 集群的 Master 统治轮次，以便区分不同的 Master。一旦新的 Master 周期确定下来之后，Master 就会拒绝所有携带其他 Master 周期编号的客户端请求，同时告知其最新的 Master 周期编号。</li>
-<li>选举产生的新 Master 能够立即对客户端的 Master 寻址请求进行响应，但是不会立即开始处理客户端会话相关的请求操作。</li>
-<li>Master 根据本地数据库中存储的会话和锁信息，来构建服务器的内存状态。</li>
-<li>到现在为止，Master 已经能够处理客户端的 KeepAlive 请求了，但依然无法处理其他会话相关的操作。</li>
-<li>Master 会发生一个”Master 故障切换”事件给每一个会话，客户端接收到这个事件后，会清空它的本地缓存，并警告上层应用程序可能已经丢失了别的事件，之后再向 Master反馈应答。</li>
-<li>此时，Master会一致等待客户端的应答，直到每一个会话都应答了这个切换事件。</li>
-<li>在 Master 接收到了所有客户端的应答之后，就能够开始处理所有的请求操作。</li>
-<li>如果客户端使用了一个在故障切换之前创建的句柄，Master 会重新为其创建这个句柄的内存对象，并执行调用。而如果该句柄在之前的 Master 周期中已经被关闭了，那么它就不能在这个 Master 周期内再次被重建了。这样就确保了即使由于网络原因使得 Master 接收到那些延迟或重发的网络数据包，也不会错误地重建一个已经关闭的句柄。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2217,7 +2218,7 @@ boolean containsColumn(byte[] family, byte[] qualifier);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">60</span>
+              <span class="site-state-item-count">62</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
