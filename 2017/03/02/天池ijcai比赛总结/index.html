@@ -97,7 +97,7 @@
 比赛题目比赛的官方网站在这，IJCAI SocInf’16。
 这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方">
 <meta property="og:image" content="http://pengshuang.space/img/award.png">
-<meta property="og:updated_time" content="2017-03-02T09:21:09.000Z">
+<meta property="og:updated_time" content="2017-03-02T09:28:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
 <meta name="twitter:description" content="一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。先贴上证书。
@@ -377,7 +377,13 @@
 <p>最后要提交的数据格式</p>
 <p>user_id, loc_id, merchant_id1:merchant_id2…</p>
 <p>对于这个问题，我们的想法是，要充分利用每一个用户和每一个口碑商铺的历史数据。更准确的说，我们要从训练集中提取足够的可训练的特征，然后利用一些经典的模型，比如 <strong>Xgboost</strong> 来构建分类模型。同时最需要注意的是，我们要时刻考虑 <strong>budget</strong> 的影响。</p>
-<h3 id="如何来利用历史数据"><a href="#如何来利用历史数据" class="headerlink" title="如何来利用历史数据"></a>如何来利用历史数据</h3>
+<h3 id="如何来利用历史数据"><a href="#如何来利用历史数据" class="headerlink" title="如何来利用历史数据"></a>如何来利用历史数据</h3><p>我们分析了题目所给的训练集，然后将数据切分为两部分，第一部分是 2015 年 11 月 23 号之前的数据，我们把这当做本地训练集；另一部分是 2015 年 11 月 23 号之后的数据，我们把这当做本地测试集。通过对这些数据的整理和分析，我发现几条条重大的规律：</p>
+<ol>
+<li>如果地点确定的话，对于一个用户，他最有可能去的是他曾经光顾过的店。</li>
+<li>从口碑店铺的角度来讲，如果这家店铺曾经的销量很好，那么它也将在未来吸引更多的顾客去消费。</li>
+</ol>
+<p>从这两条观察出来的规律来看，我们将探索数据的方向划分为两条道路：一条是从用户的角度出发；另外则是从口碑商店的角度出发。</p>
+
       
     </div>
 
