@@ -258,6 +258,255 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/22/数据库系统实现-位图索引/" itemprop="url">
+                  数据库系统实现: 位图索引
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-22T08:12:57+08:00" content="2016-10-22">
+              2016-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/22/数据库系统实现-位图索引/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/数据库系统实现-位图索引/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/22/数据库系统实现-位图索引/" class="leancloud_visitors" data-flag-title="数据库系统实现: 位图索引">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="什么是位图索引？"><a href="#什么是位图索引？" class="headerlink" title="什么是位图索引？"></a>什么是位图索引？</h3><p>我们先设想文件的记录有一个永久的编号：1，2，…，n。此外，文件存在某种数据结构，它对于任意的一个 i 可使我们容易地找到第 i 个记录。字段 F 的<em>位图索引</em>是有个长度为n的位向量的集合。每一个位向量对应于字段F中可能出现的一个值。如果第 i 个记录的字段F的值为 v，那么对应于值 v 的位向量在位置 i 上的取值为1；否则该向量的位置 i 上的取值为0。</p>
+<p>下面举个例子，</p>
+<p>假设一个文件中的记录由两个字段 F 和 G 组成，分别为整数型和字符串型。目前文件中有 6 个记录，编号为 1 到 6，它们的值以此如下：(30, foo), (30, bar), (40, baz), (50, foo), (40, bar), (30, baz)。</p>
+<p>第一个字段 F 的位图索引有 3 个位向量，每个长度为 6。第一个对应于30，是110001，因为第一、第二和第六个记录都是 F = 30；另外两个分别对应于 40 和 50，是 001010 和 000100。</p>
+<p>字段 G 的位图索引也有 3 个位向量，因为那儿有 3 个不同的字符串出现。3 个向量是:</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>向量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>foo</td>
+<td>100100</td>
+</tr>
+<tr>
+<td>bar</td>
+<td>010010</td>
+</tr>
+<tr>
+<td>baz</td>
+<td>001001</td>
+</tr>
+</tbody>
+</table>
+<p>在每种情形下，1 表示在那个记录中出现了相应的字符串。</p>
+<h3 id="位图索引的动机"><a href="#位图索引的动机" class="headerlink" title="位图索引的动机"></a>位图索引的动机</h3><p>初看，位图索引需要太多的空间，尤其是当字段有许多不同值时，因为位的总数是记录和取值数的乘积。例如，如果字段是键，且记录数为 n，那么该字段的所有位向量需要使用 n^2 个二进制位。不过，压缩能够使位的数量接近于n，而与不同字段值的数量无关。</p>
+<p>位图索引的补偿优势是它们允许我们在许多情形下高效地回答部分匹配查询。在某种意义上来说，它具备类似桶的优势。</p>
+<p>位图索引能够帮助回答范围查询。它用一些短的位向量详细地显示了位向量的逐位与/或如何能够被用来找到查询的答案，它只查找我们所要的记录而不会查找任何其他记录。</p>
+<p>下面来看，</p>
+<p><img src="/img/3.41.png" alt=""></p>
+<p>对第一个分量年龄，它有 7 个不同值，因此年龄的位图索引由下面 7 个向量组成：</p>
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>-</th>
+<th>-</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25: 100000001000</td>
+<td>30: 000000010000</td>
+<td>45: 010000000100</td>
+</tr>
+<tr>
+<td>50: 001110000010</td>
+<td>60: 000000000001</td>
+<td>70: 000001000000</td>
+</tr>
+<tr>
+<td>85: 000000100000</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>对于薪水分量，它有10个不同值，因而薪水的位图索引有下面10个分量：</p>
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>-</th>
+<th>-</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60: 110000000000</td>
+<td>75: 001000000000</td>
+<td>100: 000100000000</td>
+</tr>
+<tr>
+<td>110: 000001000000</td>
+<td>120: 000010000000</td>
+<td>140: 000000100000</td>
+</tr>
+<tr>
+<td>260: 000000010001</td>
+<td>275: 000000000010</td>
+<td>350: 000000000100</td>
+</tr>
+<tr>
+<td>400: 000000001000</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>假定我们要找出年龄范围在 45 ~ 55且薪水范围在100 ~ 200的所有首饰购买者。我们先找出在这个范围内的年龄值向量。 我们先找出在这个范围内的年龄值向量，如果将它们按位取或，我们就得到一个新向量：当且仅当第 i 个记录的年龄在给定范围内时它的位置 i 上取值为 1，且该向量为 01110000110。</p>
+<p>下一步，我们找出范围在 100K 到 200K 之间的薪水值向量：它们有 4 个，分别对应于薪水100、110、120和140，它们的按位或结果是000111100000。</p>
+<p>最后一步是取我们通过“或”运算得到的两个位向量的按位与，即：</p>
+<pre><code>011110000110 AND 000111100000 = 000110000000
+</code></pre><p>于是我们找到只有第4和第5个记录(50, 100)和(50，120)是在所要求的范围内。</p>
+<h3 id="压缩位图"><a href="#压缩位图" class="headerlink" title="压缩位图"></a>压缩位图</h3><p>假定我们在一个有 n 个记录的文件的字段F上建有位图索引，且在文件中出现的字段 F 的不同值的数目为 m。那么该索引的所有位向量的二进制位数就是 mn。如果说块的大小为 4096 个字节，那么在一个块中我们可存放32768位，因此所需块数是 mn/32768。这个数比存放文件本身所需的块数要小，但是随着 m 的变大，位图索引所需空间也就越多。</p>
+<p>但是如果 m 很大，那么位向量中的 1 将会很少。精确地说，任何一位出现 1 的概率为 1/m。如果 1 很少，那么我们就有机会编码位向量以便它们平均所占用的位比 n 少得多。一个常用的方法叫做<strong>分段长度编码</strong>，段是由 i 个 0 后跟一个 1 所组的序列，通过对整数 i 适当的二进制编码来表示一个段。我们把每个段的代码拼接在一起，则这个位序列就是整个位向量的编码。</p>
+<p>我们的编码方法是，首先确定 i 的二进制表示是多少位，这个数字 j 近似地等于 log2i，被表示成“一元”: j - 1 个 1 和 一个 0。然后，我们在它后面加上 i 的二进制表示。</p>
+<p>下面来举例：</p>
+<pre><code>例1. 如果 i = 13， 那么 j = 4。即我们需要 4 位二进制来表示 i。因此，i 的编
+码开始部分为 1110。我们把 i 的二进制数 1101 加上，这样，13的编码就是11101101。
+</code></pre><p>i = 1的编码是 01，而 i = 0的编码是00。在这两种情况下，j = 1，因此我们以一个 0 开始且 0 后面为表示 i 的一位二进制数。</p>
+<p>相似的我们也可以完成解码。</p>
+<pre><code>例2. 让我们来对序列 11101101001011 进行解码。从头开始，
+我们在第四位上找到第一0，因而 j = 4，下面四位为 1101，
+因而我们确定第一个整数是13.现在我们剩下001011要解码。
+
+由于第一位是0，我们知道下一位表示整数本身，该整数为0。
+因此我们已经解码的序列为 13、0，而且我们必须解码剩下的序列 1011。
+
+我们在第二个位置上找到第一个 0，于是我们下结论：最末两位表示最后的整数3。
+我们整个分段长度序列是这样：13，0，3。
+从这些数字，我们能够重新构造实际的位向量：0000000000000110001。
+</code></pre><h3 id="位图索引的管理"><a href="#位图索引的管理" class="headerlink" title="位图索引的管理"></a>位图索引的管理</h3><h4 id="查找位向量"><a href="#查找位向量" class="headerlink" title="查找位向量"></a>查找位向量</h4><p>把位向量看成记录，它们的键时对应于该位向量的字段值（虽然值本身不在“记录”中出现）。然后任何辅助索引技术都可以使我们有效地按值找到它们的位向量。</p>
+<p>我们也需要在某处存储位向量。最好是把它们看作可变长记录，因为随着数据文件中记录的增加，它们一般会增长。</p>
+<h4 id="查找记录"><a href="#查找记录" class="headerlink" title="查找记录"></a>查找记录</h4><p>一旦我们确定了我们所需要的文件中的记录 k，那第 k 个记录看作索引键值为 k。然后我们可在数据文件上创建辅助索引，它的索引键时记录号。</p>
+<h4 id="数据文件修改的处理"><a href="#数据文件修改的处理" class="headerlink" title="数据文件修改的处理"></a>数据文件修改的处理</h4><p>在位图索引中，要反映数据文件的修改有两方面问题：</p>
+<ol>
+<li>一旦分配后，记录数必须保持一定。</li>
+<li>数据文件的改变需要位图索引也做相应改变。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/21/数据库系统实现-多维数据的树结构/" itemprop="url">
                   数据库系统实现: 多维数据的树结构
                 </a>
@@ -2041,179 +2290,6 @@ def max_heapify(ary, start, end):
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/26/TCP学习-三/" itemprop="url">
-                  IP协议学习(三):路由控制和IPv4数据包
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-26T18:47:11+08:00" content="2016-09-26">
-              2016-09-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/26/TCP学习-三/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/TCP学习-三/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/26/TCP学习-三/" class="leancloud_visitors" data-flag-title="IP协议学习(三):路由控制和IPv4数据包">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-路由控制表"><a href="#1-路由控制表" class="headerlink" title="1. 路由控制表"></a>1. 路由控制表</h3><p>路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。</p>
-<h3 id="2-默认路由"><a href="#2-默认路由" class="headerlink" title="2. 默认路由"></a>2. 默认路由</h3><p>如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路由是不错的选择。默认路由是指路由表中任何一个地址都能与之匹配的记录。</p>
-<h3 id="3-主机路由"><a href="#3-主机路由" class="headerlink" title="3. 主机路由"></a>3. 主机路由</h3><p>“IP地址/32” 也被称为主机路由。例如，192.168.153.15/32 就是一种主机路由。它的意思是整个IP地址的所有位都将参与路由。进行主机路由，意味着要基于主机上网卡上配置的IP地址本身，而不是基于该地址的网络地址部分进行路由。</p>
-<h3 id="4-环回地址"><a href="#4-环回地址" class="headerlink" title="4. 环回地址"></a>4. 环回地址</h3><p>环回地址是同一台计算机上的程序之间进行网络通信时所使用的一个默认地址。计算机使用一个特殊的IP地址127.0.0.1作为环回地址。与该地址具有相同意义的一个叫做localhost的主机名。使用这个IP或主机名时，数据包不会流向网络。</p>
-<h3 id="5-路由控制表的聚合"><a href="#5-路由控制表的聚合" class="headerlink" title="5. 路由控制表的聚合"></a>5. 路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行分层配置。对内即使有多个子网掩码，对外呈现出的也是同一个网络地址。这样可以更好的构建网络，通过路由信息的聚合可以有效地减少路由表的条目。下图展示一个简单的路由聚合的例子。</p>
-<p><img src="/img/juhe.png" alt=""></p>
-<h3 id="6-IPv4首部"><a href="#6-IPv4首部" class="headerlink" title="6. IPv4首部"></a>6. IPv4首部</h3><p>IP首部包含着用于IP协议进行发包控制时所有的必要信息。下图展示了一个IP数据包格式(IPv4)。</p>
-<p><img src="/img/ipv4.png" alt=""></p>
-<p>下面对IP首部各部分一一进行介绍。</p>
-<h4 id="（1）版本"><a href="#（1）版本" class="headerlink" title="（1）版本"></a>（1）版本</h4><p>没什么实际意义。。。忽略</p>
-<h4 id="（2）首部长度"><a href="#（2）首部长度" class="headerlink" title="（2）首部长度"></a>（2）首部长度</h4><p>由4比特构成，表明IP首部的大小，单位为4字节(32比特)，对应没有可选项的IP包，首部长度则设置为5，即没有可选项时，IP首部的长度为20字节(4*5=20)。</p>
-<h4 id="（3）区分服务（TOS）"><a href="#（3）区分服务（TOS）" class="headerlink" title="（3）区分服务（TOS）"></a>（3）区分服务（TOS）</h4><p>由8比特构成，用来表明服务质量。用0、1、2这三位来表示0~7的优先度。从0到7表示优先度从低到高。每一位具体含义如下所示。</p>
-<p><img src="/img/tos.png" alt=""></p>
-<h4 id="（4）总长度（Total-Length）"><a href="#（4）总长度（Total-Length）" class="headerlink" title="（4）总长度（Total Length）"></a>（4）总长度（Total Length）</h4><p>表示IP首部与数据部分合起来的总字节数。该字段长16比特。因此IP包的最大长度为65535。</p>
-<h4 id="（5）标识-（ID：Identification）"><a href="#（5）标识-（ID：Identification）" class="headerlink" title="（5）标识 （ID：Identification）"></a>（5）标识 （ID：Identification）</h4><p>由16比特构成，用于分片重组。同一个分片的标识值相同，不同分片的标识值不同。通常，没发送一个IP包，它的值也逐渐递增。此外，即使ID相同，如果目标地址、源地址或协议不同的话，也会被认为是不同的分片。</p>
-<h4 id="（6）标志（Flags）"><a href="#（6）标志（Flags）" class="headerlink" title="（6）标志（Flags）"></a>（6）标志（Flags）</h4><p>由3比特构成，表示包被分片的相关信息。每一位的具体含义如下：</p>
-<table>
-<thead>
-<tr>
-<th>比特</th>
-<th>含义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>未使用</td>
-</tr>
-<tr>
-<td>1</td>
-<td>指示是否进行分片。0-可以分片；1-不能分片</td>
-</tr>
-<tr>
-<td>2</td>
-<td>包被分片的情况下，表示是否为最后一个包。0-最后一个分片的包；1-分片中段的包</td>
-</tr>
-</tbody>
-</table>
-<h4 id="（7）片偏移（FO-Fragment-Offset"><a href="#（7）片偏移（FO-Fragment-Offset" class="headerlink" title="（7）片偏移（FO: Fragment Offset)"></a>（7）片偏移（FO: Fragment Offset)</h4><p>由13比特构成，用来标识被分片的每一个分段相对于原始数据的位置。第一个分片对应的值为0.由于FO域占13位，因此最多可以表示8192个相对位置。单位为8字节，因此最大可以表示原始数据为65536字节。</p>
-<h4 id="（8）生存时间-TTL"><a href="#（8）生存时间-TTL" class="headerlink" title="（8）生存时间 (TTL)"></a>（8）生存时间 (TTL)</h4><p>由8比特构成，在实际中表示可以中转多少个路由器。每经过一个路由器，TTL会减少1，直到变成0则丢弃该包。</p>
-<h4 id="（9）协议（Protocol）"><a href="#（9）协议（Protocol）" class="headerlink" title="（9）协议（Protocol）"></a>（9）协议（Protocol）</h4><p>由8比特构成，表示IP首部的下一个首部隶属于哪个协议。</p>
-<h4 id="（10）首部校验和"><a href="#（10）首部校验和" class="headerlink" title="（10）首部校验和"></a>（10）首部校验和</h4><p>由16比特（2个字节构成），也叫IP首部校验和。该字段只校验数据报的首部，不校验数据部分。它主要用来确保IP数据报不被破坏。校验和的计算过程，首先要将校验和的所有位置设置为0，然后以16比特为单位划分IP首部，并用1补数计算所有16位字的和。最后将所得到这个和1的补数赋给首部校验和字段。</p>
-<h4 id="（11）源地址"><a href="#（11）源地址" class="headerlink" title="（11）源地址"></a>（11）源地址</h4><p>由32位比特（4个字节）构成，表示发送端IP地址。</p>
-<h4 id="（12）目标地址"><a href="#（12）目标地址" class="headerlink" title="（12）目标地址"></a>（12）目标地址</h4><p>由32位比特（4个字节）构成，表示接收端IP地址。 </p>
-<h4 id="（13）数据"><a href="#（13）数据" class="headerlink" title="（13）数据"></a>（13）数据</h4><p>存入数据。将IP上层协议的首部也作为数据进行处理。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2259,7 +2335,7 @@ def max_heapify(ary, start, end):
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">62</span>
+              <span class="site-state-item-count">63</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

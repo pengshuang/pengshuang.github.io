@@ -258,6 +258,151 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/02/天池ijcai比赛总结/" itemprop="url">
+                  IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T16:40:05+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/02/天池ijcai比赛总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/02/天池ijcai比赛总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/02/天池ijcai比赛总结/" class="leancloud_visitors" data-flag-title="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。先贴上证书。</p>
+<p><img src="/img/award.png" alt=""></p>
+<h3 id="比赛题目"><a href="#比赛题目" class="headerlink" title="比赛题目"></a>比赛题目</h3><p>比赛的官方网站在这，<a href="https://tianchi.shuju.aliyun.com/competition/introduction.htm?spm=5176.100066.333.2.4HLjZH&amp;raceId=231532" target="_blank" rel="external">IJCAI SocInf’16</a>。</p>
+<p>这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方，就是它关注的是一个用户来到一个他之前没有去过的新地点之后，他会去哪些店铺消费，有一点像推荐系统中经典的冷启动问题。比赛提供的数据也有这个特点：</p>
+<ol>
+<li>在测试集中，只有 10 % 的用户用之前使用口碑的记录；</li>
+<li>有 5 % 的用户虽然有之前使用口碑的记录，但是在测试集中，这些用户来到了新的地点；</li>
+<li>所有用户都有他们淘宝购物的行为数据。</li>
+</ol>
+<p>如果题目是这样的，其实还不算奇怪，奇怪的是题目的评价标准上加上了 <strong>budget</strong> 这个神奇的东西，先来看看评价指标：</p>
+<p>$$P = \frac{\sum_i min(|S_i \cap S_i^*, b_i|)}{\sum_i| S_i^* |}$$</p>
+<p>$$R = \frac{\sum_i min(|S_i \cap S_i^*, b_i|)}{\sum_i min(|S_i, b_i|)}$$</p>
+<p>$$F_1 = \frac{2 \ast P \ast R}{P + R}$$</p>
+<p>最后考核的目标是 F1 值。简单来说一下这个 <strong>budget</strong>：</p>
+<p>我们的目标是在用户来到一个地点之后，给他推荐他可能会去的店铺。这里，把问题转换一下，我们要给很多店铺来推荐可能会来这里购物的人。这里推荐的人数要受到  <strong>budget</strong> 的限制，即不能超过店铺的最大承载量以及口碑提供给这家店铺的优惠券的个数。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/28/问答社区的回答排序算法/" itemprop="url">
                   问答社区的回答排序算法(一）
                 </a>
@@ -2283,179 +2428,6 @@ bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/22/一致性-Hash-学习/" itemprop="url">
-                  一致性 Hash 学习
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-22T10:00:39+08:00" content="2016-11-22">
-              2016-11-22
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/22/一致性-Hash-学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/22/一致性-Hash-学习/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/22/一致性-Hash-学习/" class="leancloud_visitors" data-flag-title="一致性 Hash 学习">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一致性 Hash 算法为了解决因特网中的热点问题，它提出了在动态变化的 Cache 环境中，判定 Hash 算法好坏的四个定义：</p>
-<ol>
-<li><p><strong>平衡性</strong>：平衡性是指哈希的结果能够尽可能分不到所有的缓冲中去，这样可以使得所有的缓冲都得到利用。</p>
-</li>
-<li><p><strong>单调性</strong>：单调性是指如果已经有一些内容通过哈希分派到了相应的缓冲中，又有新的缓冲加入到系统中。哈希的结果应能够保证原有已分配的内容可以被映射到原有的或者新的缓冲中去，而不会被映射到旧的缓冲集合中的其他缓冲区。 </p>
-</li>
-<li><p><strong>分散性</strong>：在分布式环境中，终端有可能看不到所有的缓冲，而是只能看到其中的一部分。当终端希望通过哈希过程将内容映射到缓冲上时，由于不同终端所见的缓冲范围有可能不同，从而导致哈希的结果不一致，最终的结果是相同的内容被不同的终端映射到不同的缓冲区中。这种情况显然是应该避免的，因为它导致相同内容被存储到不同缓冲中去，降低了系统存储的效率。分散性的定义就是上述情况发生的严重程度。好的哈希算法应能够尽量避免不一致的情况发生，也就是尽量降低分散性。 </p>
-</li>
-<li><p><strong>负载</strong>：负载问题实际上是从另一个角度看待分散性问题。既然不同的终端可能将相同的内容映射到不同的缓冲区中，那么对于一个特定的缓冲区而言，也可能被不同的用户映射为不同 的内容。与分散性一样，这种情况也是应当避免的，因此好的哈希算法应能够尽量降低缓冲的负荷。</p>
-</li>
-</ol>
-<p>在分布式集群中，对机器的添加删除，或者机器故障后自动脱离集群这些操作是分布式集群管理最基本的功能。如果采用常用的 <strong>hash(object)%N</strong> 算法，那么在有机器添加或者删除后，很多原有的数据就无法找到了，这样严重的违反了单调性原则。</p>
-<h4 id="环形Hash空间"><a href="#环形Hash空间" class="headerlink" title="环形Hash空间"></a>环形Hash空间</h4><p>按照常用的hash算法来将对应的key哈希到一个具有2^32次方个桶的空间中，即0~(2^32)-1的数字空间中。现在我们可以将这些数字头尾相连，想象成一个闭合的环形。</p>
-<p><img src="/img/h1.png" alt=""></p>
-<p><strong>把数据通过一定的hash算法处理后映射到环上</strong></p>
-<p>现在我们将object1、object2、object3、object4四个对象通过特定的Hash函数计算出对应的key值，然后散列到Hash环上。如下图：</p>
-<pre><code>Hash(object1) = key1；
-Hash(object2) = key2；
-Hash(object3) = key3；
-Hash(object4) = key4；
-</code></pre><p><img src="/img/h2.JPG" alt=""></p>
-<p><strong>将机器通过hash算法映射到环上</strong></p>
-<p>在采用一致性哈希算法的分布式集群中将新的机器加入，其原理是通过使用与对象存储一样的Hash算法将机器也映射到环中（一般情况下对机器的hash计算是采用机器的IP或者机器唯一的别名作为输入值），然后以顺时针的方向计算，将所有对象存储到离自己最近的机器中。<br>假设现在有 Cache A，Cache B，Cache C 三台机器，通过 Hash 算法得到对应的 KEY 值，映射到环中，其示意图如下：</p>
-<pre><code>Hash(NODE1) = KEY1;
-Hash(NODE2) = KEY2;
-Hash(NODE3) = KEY3;
-</code></pre><p><img src="/img/h3.JPG" alt=""></p>
-<p>通过上图可以看出对象与机器处于同一哈希空间中，这样按顺时针转动 object1 存储到了Cache A 中，object3 存储到了 Cache B 中，object2、object4 存储到了 Cache C中。在这样的部署环境中，hash 环是不会变更的，因此，通过算出对象的hash值就能快速的定位到对应的机器中，这样就能找到对象真正的存储位置了。</p>
-<p><strong>机器的删除与添加</strong></p>
-<p>普通hash求余算法最为不妥的地方就是在有机器的添加或者删除之后会照成大量的对象存储位置失效，这样就大大的不满足单调性了。下面来分析一下一致性哈希算法是如何处理的。</p>
-<ol>
-<li><p>节点（机器）的删除<br> 以上面的分布为例，如果 Cache B 出现故障被删除了，那么按照顺时针迁移的方法，object3将会被迁移到 Cache C 中，这样仅仅是object3的映射位置发生了变化，其它的对象没有任何的改动。如下图：</p>
-<p> <img src="/img/h4.JPG" alt=""></p>
-</li>
-<li><p>节点（机器）的添加<br> 如果往集群中添加一个新的节点 Cache D，通过对应的哈希算法得到KEY4，并映射到环中，如下图：</p>
-<p> <img src="/img/h5.JPG" alt=""></p>
-</li>
-</ol>
-<p>通过按顺时针迁移的规则，那么object2被迁移到了 Cache D 中，其它对象还保持这原有的存储位置。通过对节点的添加和删除的分析，一致性哈希算法在保持了单调性的同时，还是数据的迁移达到了最小，这样的算法对分布式集群来说是非常合适的，避免了大量数据迁移，减小了服务器的的压力。</p>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
-<li><p><a href="http://www.codeproject.com/Articles/56138/Consistent-hashing" target="_blank" rel="external">Consistent hashing</a></p>
-</li>
-<li><p><a href="http://blog.csdn.net/cywosp/article/details/23397179/#comments" target="_blank" rel="external">五分钟理解一致性哈希算法</a></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2501,7 +2473,7 @@ Hash(NODE3) = KEY3;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">62</span>
+              <span class="site-state-item-count">63</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
