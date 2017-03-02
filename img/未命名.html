@@ -1,0 +1,1691 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;!-- saved from url=(0055)http://www.chinahadoop.cn/course/773/learn#lesson/16235 --&amp;gt;
+&amp;lt;!--&amp;lt;![endif]--&amp;gt;
+  
+  
+  
+  
+  视频-5 分布式计算：批处理引擎 MapReduce(第一部分) - 视频-分布式资源管理系统：YARN 架构与应用 - 《Hadoo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小沙文的博客">
+<meta property="og:url" content="http://pengshuang.space/img/未命名.html">
+<meta property="og:site_name" content="小沙文的博客">
+<meta property="og:description" content="&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;!-- saved from url=(0055)http://www.chinahadoop.cn/course/773/learn#lesson/16235 --&amp;gt;
+&amp;lt;!--&amp;lt;![endif]--&amp;gt;
+  
+  
+  
+  
+  视频-5 分布式计算：批处理引擎 MapReduce(第一部分) - 视频-分布式资源管理系统：YARN 架构与应用 - 《Hadoo">
+<meta property="og:image" content="http://www.chinahadoop.cn/course/773/learn">
+<meta property="og:updated_time" content="2017-03-01T07:08:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小沙文的博客">
+<meta name="twitter:description" content="&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;!-- saved from url=(0055)http://www.chinahadoop.cn/course/773/learn#lesson/16235 --&amp;gt;
+&amp;lt;!--&amp;lt;![endif]--&amp;gt;
+  
+  
+  
+  
+  视频-5 分布式计算：批处理引擎 MapReduce(第一部分) - 视频-分布式资源管理系统：YARN 架构与应用 - 《Hadoo">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://pengshuang.space/img/未命名.html"/>
+
+  <title>
+  
+
+  
+     | 小沙文的博客
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">小沙文的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    
+      <!DOCTYPE html>
+<!-- saved from url=(0055)http://www.chinahadoop.cn/course/773/learn#lesson/16235 -->
+<html lang="zh_CN"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>视频-5 分布式计算：批处理引擎 MapReduce(第一部分) - 视频-分布式资源管理系统：YARN 架构与应用 - 《Hadoop大数据体系》回放与资料下载 - 小象学院 - 中国最专业的Hadoop,Spark大数据在线教育平台——权威课程：Hadoop培训,Spark培训,HBase培训,Hive培训,Mahout培训等</title>
+  <meta name="keywords" content="hadoop，hadoop培训，大数据技术，小象社区，Hbase，Spark，Mahout，Hive，Impala，Storm，大数据应用案例，Hadoop实战，在线教育">
+  <meta name="description" content="中国最活跃、最专业的Hadoop培训,大数据在线教育平台,专注于大数据技术的应用推广,通过系列实战性Hadoop培训课程,包括Spark,Impala,Hbase,Hive,Mahout,Storm等最前沿的大数据技术,提供来自互联网一线公司专家的Hadoop实战经验和大数据应用案例">
+  <meta content="79fYrhG6NYOo-XfgNEZzkE5yyXm2rb6x6Kd-oyOy644" name="csrf-token">
+  <meta content="1" name="is-login">
+  <meta content="1" name="is-open">
+  <meta property="qc:admins" content="3514001051630161014770636">
+<meta property="wb:webmaster" content="7143832026c0eaae">
+    <link rel="icon" href="http://scb1a9q0-sb.edusoho.net/files/system/favicon_1405502134.ico?7.5.2.3" type="image/x-icon">
+  <link rel="shortcut icon" href="http://scb1a9q0-sb.edusoho.net/files/system/favicon_1405502134.ico?7.5.2.3" type="image/x-icon" media="screen">
+  
+            		
+	<link href="./未命名_files/bootstrap-blue-light.css" rel="stylesheet">
+
+<link rel="stylesheet" media="screen" href="./未命名_files/common.css">
+<link rel="stylesheet" media="screen" href="./未命名_files/font-awesome.min.css">
+<link rel="stylesheet" media="screen" href="./未命名_files/es-icon.css">
+
+	<link href="./未命名_files/main-blue-light.css" rel="stylesheet">
+
+
+
+
+        
+  
+
+  <!--[if lt IE 9]>
+    <script src="//scb1a9q0-sb.edusoho.net/assets/libs/html5shiv.js?7.5.2.3"></script>
+    <script src="//scb1a9q0-sb.edusoho.net/assets/libs/respond.min.js?7.5.2.3"></script>
+  <![endif]-->
+
+  
+<style>.cke{visibility:hidden;}</style></head>
+<body class="lesson-dashboard-page">
+
+  <div class="es-wrap">
+
+    
+      <div class="lesson-dashboard lesson-dashboard-open" id="lesson-dashboard" data-course-id="773" data-course-uri="/course/773" data-dashboard-uri="/course/773/learn" data-watch-limit="" data-starttime="" data-hide-media-lesson-learn-btn="" data-widget-cid="widget-0">
+    <div class="dashboard-content">
+                    <a class="btn btn-primary  nav-btn back-course-btn" href="http://www.chinahadoop.cn/classroom/33" target="_blank" rel="external"><span class="glyphicon glyphicon-chevron-left"></span> 返回班级</a>
+      
+      <a class="btn btn-primary  nav-btn prev-lesson-btn" href="javascript:" data-role="prev-lesson" data-placement="right" title="" data-original-title="上一课时" target="_blank" rel="external"><span class="glyphicon glyphicon-chevron-up" title="上一课时"></span></a>
+      <a class="btn btn-primary nav-btn next-lesson-btn" href="javascript:" data-role="next-lesson" data-placement="right" title="" data-original-title="下一课时" target="_blank" rel="external"><span class="glyphicon glyphicon-chevron-down"></span></a>
+
+      <div class="dashboard-header">
+        <div class="pull-left title-group">
+          <span class="chapter-label" style="display: none;">
+                        第<span data-role="chapter-number"></span>章</span>
+                    <span class="divider" style="display: none;">»</span>
+          <span class="chapter-label" style="display: none;">
+                      第<span data-role="unit-number"></span>节</span>
+                    <span class="divider" style="display: none;">»</span>
+          <span class="item-label">课时<span data-role="lesson-number">20</span></span>
+          <span class="item-title" data-role="lesson-title">视频-5 分布式计算：批处理引擎 MapReduce(第一部分)</span>
+        </div>
+      </div>
+
+      <div class="dashboard-body">
+        <div class="lesson-content" id="lesson-video-content" data-role="lesson-content" style="display: block;" data-watermark="http://scb1a9q0-sb.edusoho.net/files/system/watermark_1470976042.png" data-fingerprint="www.chinahadoop.cn 小沙文" data-user-id="25407" data-balloon-player="1"><iframe src="./未命名_files/player.html" name="viewerIframe" id="viewerIframe" width="100%" allowfullscreen webkitallowfullscreen="" height="100%" style="border:0px"></iframe></div>
+        <div class="watermarkEmbedded"><input type="hidden" id="videoWatermarkEmbedded" value="0"></div>
+
+        <div class="lesson-content lesson-content-audio" id="lesson-audio-content" data-role="lesson-content" style="display:none;"></div>
+        <div class="lesson-content" id="lesson-swf-content" data-role="lesson-content" style="display:none;"></div>
+        <div class="lesson-content" id="lesson-iframe-content" data-role="lesson-content" style="display:none;"></div>
+        <div class="lesson-content lesson-content-text" id="lesson-text-content" data-role="lesson-content" style="display:none;" oncopy="return false;" oncut="return false;" onselectstart="return false" oncontextmenu="return false;">
+          <div class="lesson-content-text-body"></div>
+        </div>
+
+        <div class="lesson-content lesson-content-document" id="lesson-document-content" data-role="lesson-content" style="display:none;">
+          <div class="lesson-content-document-body"></div>
+        </div>
+
+        <div class="lesson-content lesson-content-text" id="lesson-live-content" data-role="lesson-content" style="display:none;">
+          <div class="lesson-content-text-body"></div>
+        </div>
+        <div class="lesson-content lesson-content-text" id="lesson-unpublished-content" data-role="lesson-content" style="display:none;">
+          <div class="lesson-content-text-body">当前课时正在编辑中，暂时无法观看。</div>
+        </div>
+
+        <div class="lesson-content lesson-content-text" id="lesson-testpaper-content" data-role="lesson-content" style="display:none;">
+          <div class="lesson-content-text-body"></div>
+        </div>
+        <div class="lesson-content lesson-content-text" id="lesson-ppt-content" data-role="lesson-content" style="display:none;">
+          <div class="lesson-content-text-body"></div>
+        </div>
+
+      </div>
+
+      <div class="dashboard-footer clearfix">
+        <div class="pull-right">
+          <button class="btn btn-primary finish-btn" data-role="finish-lesson" style=""><span class="glyphicon glyphicon-unchecked"></span> 学过了</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar toolbar-open" id="lesson-dashboard-toolbar" data-widget-cid="widget-1">
+      <div class="toolbar-nav">
+
+        <ul class="toolbar-nav-stacked" id="lesson-toolbar-primary"><li data-plugin="lesson" data-noactive="false" class="active"><a href="http://www.chinahadoop.cn/course/773/learn#" target="_blank" rel="external"><span class="glyphicon glyphicon-th-list"> </span>目录</a></li><li data-plugin="question" data-noactive="false"><a href="http://www.chinahadoop.cn/course/773/learn#" target="_blank" rel="external"><span class="glyphicon glyphicon-question-sign"> </span>问答</a></li><li data-plugin="note" data-noactive="false"><a href="http://www.chinahadoop.cn/course/773/learn#" target="_blank" rel="external"><span class="glyphicon glyphicon-edit"> </span>笔记</a></li><li data-plugin="material" data-noactive="false"><a href="http://www.chinahadoop.cn/course/773/learn#" target="_blank" rel="external"><span class="glyphicon glyphicon-download-alt"> </span>资料</a></li><li data-plugin="homework" data-noactive="false"><a href="http://www.chinahadoop.cn/course/773/learn#" target="_blank" rel="external"><span class="glyphicon glyphicon-list-alt"> </span>作业</a></li></ul>
+        <ul class="list-unstyled">
+          <li class="es-qrcode toolbar-qrcode" data-url="/course/773">
+            <i class="es-icon es-icon-qrcode"></i><br>
+            扫一扫
+            <span class="qrcode-popover">
+              <img src="http://www.chinahadoop.cn/course/773/learn" alt="">
+              扫二维码继续学习
+              二维码时效为半小时
+            </span>
+          </li>
+        </ul>
+        <ul class="toolbar-nav-stacked" id="lesson-toolbar-secondary">
+          <li class="hide-pane" style="">
+            <a href="javascript:" target="_blank" rel="external"><span class="glyphicon glyphicon-chevron-right"></span></a>
+          </li>
+        </ul>
+
+      </div>
+      <div class="toolbar-pane-container">
+      <div data-pane="lesson" class="lesson-pane" data-widget-cid="widget-2" style="display: block;"><div class="course-item-list-in-toolbar-pane ps-container">
+    <ul class="period-list" id="course-item-list">
+              <li class="period lesson-item lesson-item-16092" data-id="16092" data-num="1">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16092" title="0 课程安排" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时1：0 课程安排</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="chapter clearfix">
+    <i class="es-icon es-icon-toc"></i>
+    <span class="title">
+       
+        第1 
+                  章
+        ：
+              董老师——大数据hadoop与spark学习经验谈
+      </span>
+    
+    <span class="period-show"><i class="es-icon es-icon-remove"></i></span>
+  </li>
+                  <li class="period lesson-item lesson-item-16186" data-id="16186" data-num="3">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16186" title="视频-大数据hadoop与spark学习经验谈" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时2：视频-大数据hadoop与spark学习经验谈</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长103:15">103:15</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16188" data-id="16188" data-num="4">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16188" title="课件-大数据Hadoop与Spark学习经验谈" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时3：课件-大数据Hadoop与Spark学习经验谈</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="chapter clearfix">
+    <i class="es-icon es-icon-toc"></i>
+    <span class="title">
+       
+        第2 
+                  章
+        ：
+              课前资料——Hadoop安装部署（请学员自己看课件和视频练习）
+      </span>
+    
+    <span class="period-show"><i class="es-icon es-icon-remove"></i></span>
+  </li>
+                  <li class="period lesson-item lesson-item-16096" data-id="16096" data-num="6">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16096" title="Hadoop 2.0安装部署方法" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时4：Hadoop 2.0安装部署方法</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16098" data-id="16098" data-num="7">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16098" title="Hadoop 2.0 理论基础—安装部署方法" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时5：Hadoop 2.0 理论基础—安装部署方法</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长50:05">50:05</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16100" data-id="16100" data-num="8">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16100" title="Hadoop 2.0 上机实践（部署单机HDFS+YARN）" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时6：Hadoop 2.0 上机实践（部署单机HDFS+YARN）</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长21:02">21:02</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16102" data-id="16102" data-num="9">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16102" title="Hadoop 2.0 上机实践（部署多机-HDFS HA+YARN）" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时7：Hadoop 2.0 上机实践（部署多机-HDFS HA+YARN）</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长25:09">25:09</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16104" data-id="16104" data-num="10">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16104" title="Hadoop 2.0 上机实践（部署多机-HDFS HA+Federation-YARN）" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时8：Hadoop 2.0 上机实践（部署多机-HDFS HA+Federation-YARN）</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长38:35">38:35</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16106" data-id="16106" data-num="11">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16106" title="Hadoop 2.0安装部署方法 课外阅读" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时9：Hadoop 2.0安装部署方法 课外阅读</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16108" data-id="16108" data-num="12">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16108" title="0-小象学院教程文档说明" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时10：0-小象学院教程文档说明</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="chapter clearfix">
+    <i class="es-icon es-icon-toc"></i>
+    <span class="title">
+       
+        第3 
+                  章
+        ：
+              直播讲义及回看视频
+      </span>
+    
+    <span class="period-show"><i class="es-icon es-icon-remove"></i></span>
+  </li>
+                  <li class="period lesson-item lesson-item-16094" data-id="16094" data-num="14">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16094" title="1 Hadoop生态系统概述以及版本演化" target="_blank" rel="external">
+            <i class="es-icon es-icon-doing color-primary status-icon"></i>
+        <span class="title">   课时11：1 Hadoop生态系统概述以及版本演化</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16112" data-id="16112" data-num="15">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16112" title="视频-Hadoop生态系统概述及版本演化" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时12：视频-Hadoop生态系统概述及版本演化</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长120:37">120:37</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16116" data-id="16116" data-num="16">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16116" title="2 分布式数据收集：Flume 原理与应用" target="_blank" rel="external">
+            <i class="es-icon es-icon-doing color-primary status-icon"></i>
+        <span class="title">   课时13：2 分布式数据收集：Flume 原理与应用</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16122" data-id="16122" data-num="17">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16122" title="视频-分布式数据收集：Flume 原理与应用" target="_blank" rel="external">
+            <i class="es-icon es-icon-done1 color-primary status-icon"></i>
+        <span class="title">   课时14：视频-分布式数据收集：Flume 原理与应用</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长117:32">117:32</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16147" data-id="16147" data-num="18">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16147" title="3 分布式文件系统：HDFS 基础与应用" target="_blank" rel="external">
+            <i class="es-icon es-icon-doing color-primary status-icon"></i>
+        <span class="title">   课时15：3 分布式文件系统：HDFS 基础与应用</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16154" data-id="16154" data-num="19">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16154" title="视频-分布式文件系统：HDFS 基础与应用" target="_blank" rel="external">
+            <i class="es-icon es-icon-done1 color-primary status-icon"></i>
+        <span class="title">   课时16：视频-分布式文件系统：HDFS 基础与应用</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长118:06">118:06</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16174" data-id="16174" data-num="20">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16174" title="4 分布式资源管理系统：YARN 架构与应用" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时17：4 分布式资源管理系统：YARN 架构与应用</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16182" data-id="16182" data-num="21">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16182" title="视频-分布式资源管理系统：YARN 架构与应用" target="_blank" rel="external">
+        <i class="es-icon status-icon color-primary es-icon-done1"></i>
+      <span class="title">   课时18：视频-分布式资源管理系统：YARN 架构与应用</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长118:10">118:10</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16228" data-id="16228" data-num="22">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16228" title="5 分布式计算：批处理引擎 MapReduce(第一部分)" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时19：5 分布式计算：批处理引擎 MapReduce(第一部分)</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16235 item-active" data-id="16235" data-num="23">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16235" title="视频-5 分布式计算：批处理引擎 MapReduce(第一部分)" target="_blank" rel="external">
+        <i class="es-icon status-icon color-primary es-icon-doing"></i>
+      <span class="title">   课时20：视频-5 分布式计算：批处理引擎 MapReduce(第一部分)</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长119:24">119:24</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16242" data-id="16242" data-num="24">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16242" title="6 分布式计算：批处理引擎 MapReduce(第二部分)" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时21：6 分布式计算：批处理引擎 MapReduce(第二部分)</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16260" data-id="16260" data-num="25">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16260" title="视频-6 分布式计算：批处理引擎 MapReduce(第二部分)" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时22：视频-6 分布式计算：批处理引擎 MapReduce(第二部分)</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长128:10">128:10</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16270" data-id="16270" data-num="26">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16270" title="7 数据分析引擎 Hive(第一部分)" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时23：7 数据分析引擎 Hive(第一部分)</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16276" data-id="16276" data-num="27">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16276" title="视频-7 数据分析引擎 Hive（第一部分）" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时24：视频-7 数据分析引擎 Hive（第一部分）</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长132:08">132:08</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16286" data-id="16286" data-num="28">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16286" title="8 数据分析引擎 Hive(第二部分)" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时25：8 数据分析引擎 Hive(第二部分)</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16306" data-id="16306" data-num="29">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16306" title="视频-8 数据分析引擎 Hive（第二部分）" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时26：视频-8 数据分析引擎 Hive（第二部分）</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长119:48">119:48</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16344" data-id="16344" data-num="30">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16344" title="9 数据处理引擎 Presto" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时27：9 数据处理引擎 Presto</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16348" data-id="16348" data-num="31">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16348" title="视频-9 数据处理引擎 Presto" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时28：视频-9 数据处理引擎 Presto</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长122:16">122:16</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16354" data-id="16354" data-num="32">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16354" title="10 大数据可视化" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时29：10 大数据可视化</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16356" data-id="16356" data-num="33">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16356" title="11 综合案例回顾：分布式日志分析系统" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时30：11 综合案例回顾：分布式日志分析系统</span>
+      <!-- 紧跟标题 -->
+
+
+  <span data-toggle="tooltip" data-placement="top" title="" data-original-title="资料"><i class="glyphicon glyphicon-paperclip mls"></i></span>
+
+
+
+<!-- 右边图标 -->
+  
+  
+  
+  
+  
+      <span class="course-type">
+      <i class="es-icon es-icon-description" data-toggle="tooltip" data-placement="top" title="" data-original-title="文档课程"></i>
+    </span>
+  
+  
+  
+      </a>
+      </li>                      <li class="period lesson-item lesson-item-16366" data-id="16366" data-num="34">
+            <a class="course-lesson" href="http://www.chinahadoop.cn/course/773/learn#lesson/16366" title="视频-10大数据可视化与11综合案例回顾：分布式日志分析系统" target="_blank" rel="external">
+        <i class="es-icon es-icon-undone status-icon"></i>
+      <span class="title">   课时31：视频-10大数据可视化与11综合案例回顾：分布式日志分析系统</span>
+      <!-- 紧跟标题 -->
+
+
+
+
+
+<!-- 右边图标 -->
+      <span class="date" title="视频时长118:43">118:43</span>
+    <span class="course-type">
+      <i class="es-icon es-icon-videoclass" data-toggle="tooltip" data-placement="top" title="" data-original-title="视频课程"></i>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+  
+      </a>
+      </li>          </ul><div class="ps-scrollbar-x-rail" style="left: 0px; bottom: -1184px; width: 359px; display: none;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 1187px; right: 3px; height: 803px; display: inherit;"><div class="ps-scrollbar-y" style="top: 407px; height: 275px;"></div></div></div></div></div>
+    </div>
+
+  </div>
+
+  <div class="modal" id="course-learned-modal" style="display:none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">学习进度提示</h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-success">赞一个，这个课程你已经都学完啦，你可以再回顾一下或者去看看别的课程～～～</p>
+        </div>
+        <div class="modal-footer">
+          <a href="http://www.chinahadoop.cn/course/773" class="btn btn-primary" target="_blank" rel="external">回课程主页</a>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="modal" id="mediaPlayed-control-modal" style="display:none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">媒体课时学习提示</h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-success">此课时设置了必须完整播放完整个课时才能学完～～</p>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="modal" id="homeworkDone-control-modal" style="display:none;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">作业未完成提示</h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-success">此课时设置了必须做完本课时作业并提交后才能学完～～</p>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  		<div class="hidden jweixin-data" data-config="{&quot;appId&quot;:&quot;wxe9c061d2aed9ae09&quot;,&quot;timestamp&quot;:1488336999,&quot;nonceStr&quot;:&quot;edusoho58b6386703f83&quot;,&quot;jsApiList&quot;:[&quot;onMenuShareTimeline&quot;,&quot;onMenuShareAppMessage&quot;,&quot;onMenuShareQZone&quot;,&quot;onMenuShareQQ&quot;],&quot;string&quot;:&quot;jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VEFBLv_oYA1_Wo8T3MxNWVQhPi8tYp6OlBGRoKS7siO7GjCGuO3hQCmoOtE6N5g0Eg&amp;noncestr=edusoho58b6386703f83&amp;timestamp=1488336999&amp;url=http:\/\/www.chinahadoop.cn\/course\/773\/learn&quot;,&quot;signature&quot;:&quot;a6038178b6b2ee62ef4e8c298146d091a98fdffc&quot;}" data-title="《Hadoop大数据体系》回放与资料下载" data-desc="" data-link="http://www.chinahadoop.cn/course/773/learn" data-img-url="http://scb1a9q0-sb.edusoho.net/files/course/2016/12-01/1308386d24fb124399.jpg" data-type="" data-data-url="">
+	</div>
+
+
+    
+        
+      </div>
+
+  
+        
+  <div id="login-modal" class="modal" data-url="/login/ajax"></div>
+  <div id="modal" class="modal"></div>
+  <div id="attachment-modal" class="modal"></div>
+
+  <script>
+  var app = {};
+  app.debug = false;
+  app.version = '7.5.2.3';
+  app.httpHost = 'http://www.chinahadoop.cn';
+  app.basePath = '//scb1a9q0-sb.edusoho.net';
+  app.theme = 'jianmo';
+  app.themeGlobalScript = 'theme/global-script';
+  app.jsPaths = {"common":"common","theme":"\/\/scb1a9q0-sb.edusoho.net\/themes\/jianmo\/js","schoolgatebundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/schoolgate\/js","discountbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/discount\/js","moneycardbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/moneycard\/js","chargecoinbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/chargecoin\/js","homeworkbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/homework\/js","userimporterbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/userimporter\/js","gracefulthemebundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/gracefultheme\/js","questionplusbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/questionplus\/js","vipbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/vip\/js","couponbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/coupon\/js","customwebbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/customweb\/js","customadminbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/customadmin\/js","topxiawebbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/topxiaweb\/js","topxiaadminbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/topxiaadmin\/js","classroombundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/classroom\/js","materiallibbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/materiallib\/js","sensitivewordbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/sensitiveword\/js","permissionbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/permission\/js","orgbundle":"\/\/scb1a9q0-sb.edusoho.net\/bundles\/org\/js"};
+
+  app.crontab = '/common/crontab';
+            
+  var CKEDITOR_BASEPATH = app.basePath + '/assets/libs/ckeditor/4.6.7/';
+  var CLOUD_FILE_SERVER = ""; 
+
+  app.config = {"api":{"weibo":{"key":"3735672790"},"qq":{"key":"101291257"},"douban":{"key":""},"renren":{"key":""}},"cloud":{"video_player":"http:\/\/cdn.staticfile.org\/GrindPlayerCN\/1.0.2\/GrindPlayer.swf","video_player_watermark_plugin":"http:\/\/cdn.staticfile.org\/GrindPlayerCN\/1.0.2\/Watermake-1.0.3.swf","video_player_fingerprint_plugin":"http:\/\/cdn.staticfile.org\/GrindPlayerCN\/1.0.2\/Fingerprint-1.0.1.swf"},"loading_img_path":"\/\/scb1a9q0-sb.edusoho.net\/assets\/img\/default\/loading.gif?7.5.2.3"};
+
+  app.arguments = {};
+      app.controller = 'course/learn';
+        app.arguments = {"customChapter":"1","plugins":["lesson","question","note","material","homework"]};
+    
+  app.scripts = ["common\/weixin-share"];
+  
+  app.uploadUrl = '/file/upload';
+  app.imgCropUrl = '/file/img/crop';
+  app.lessonCopyEnabled = '1';
+  app.cloudSdkCdn = '';
+  app.mainScript = '//scb1a9q0-sb.edusoho.net/bundles/topxiaweb/js/app.js?7.5.2.3';
+  app.lang = 'zh_CN';
+</script>
+<script src="./未命名_files/translator.min.js"></script>
+<script src="./未命名_files/js"></script>
+<script src="./未命名_files/sea.js"></script>
+<script src="./未命名_files/seajs-style.js"></script>
+<script src="./未命名_files/seajs-text.min.js"></script>
+<script src="./未命名_files/seajs-global-config.js"></script>
+<script>
+  seajs.use(app.mainScript);
+</script>
+
+
+</body></html>
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="img/未命名.html"
+           data-title="" data-url="http://pengshuang.space/img/未命名.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="PengShuang" />
+          <p class="site-author-name" itemprop="name">PengShuang</p>
+          <p class="site-description motion-element" itemprop="description">在路上，慢慢走！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">62</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/pengshuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/2176899852/profile?rightmod=1&wvr=6&mod=personnumber&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://lingyu.wang/" title="天镶的博客" target="_blank">天镶的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://coolshell.cn/" title="酷壳" target="_blank">酷壳</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dongwm.com" title="小明明的博客" target="_blank">小明明的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">PengShuang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"pengshuang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("DKbLgBme7UkAx9JX6sM3D4Hj-gzGzoHsz", "GXjJ9Ox3pUGI9PJhm6CNfJGN");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+</body>
+</html>
