@@ -97,7 +97,7 @@
 比赛题目比赛的官方网站在这，IJCAI SocInf’16。
 这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方">
 <meta property="og:image" content="http://pengshuang.space/img/award.png">
-<meta property="og:updated_time" content="2017-03-02T09:04:50.000Z">
+<meta property="og:updated_time" content="2017-03-02T09:11:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
 <meta name="twitter:description" content="一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。先贴上证书。
@@ -352,12 +352,30 @@
 <li>有 5 % 的用户虽然有之前使用口碑的记录，但是在测试集中，这些用户来到了新的地点；</li>
 <li>所有用户都有他们淘宝购物的行为数据。</li>
 </ol>
-<p>如果题目是这样的，其实还不算奇怪，奇怪的是题目的评价标准上加上了 <strong>budget</strong> 这个神奇的东西，先来看看评价指标：</p>
+<p>如果题目只是这样的，其实还不算奇怪，奇怪的是题目的评价标准上加上了 <strong>budget</strong> 这个神奇的东西，先来看看评价指标：</p>
 <p>$$P = \frac{\sum_i min(|S_i \cap S_i^*, b_i|)}{\sum_i| S_i^* |}$$</p>
 <p>$$R = \frac{\sum_i min(|S_i \cap S_i^*, b_i|)}{\sum_i min(|S_i, b_i|)}$$</p>
 <p>$$F_1 = \frac{2 \ast P \ast R}{P + R}$$</p>
 <p>最后考核的目标是 F1 值。简单来说一下这个 <strong>budget</strong>：</p>
 <p>我们的目标是在用户来到一个地点之后，给他推荐他可能会去的店铺。这里，把问题转换一下，我们要给很多店铺来推荐可能会来这里购物的人。这里推荐的人数要受到  <strong>budget</strong> 的限制，即不能超过店铺的最大承载量以及口碑提供给这家店铺的优惠券的个数。</p>
+<p>先详细介绍一下比赛提供的数据格式：</p>
+<ul>
+<li>Online user behavior before Dec. 2015. (ijcai2016 taobao.csv)</li>
+</ul>
+<p>2015 年 7 ~ 11 月淘宝上用户的购物行为数据，包括用户的点击、购买，购买物品种类等属性。</p>
+<ul>
+<li>Users shopping records at brick-and-mortar stores before Dec. 2015. (ijcai2016 Koubei train.csv)</li>
+</ul>
+<p>2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，数据格式：(user_id, loc_id, merchant_id, time_stamp)</p>
+<ul>
+<li>Merchant information (ijcai2016 merchant info.csv)</li>
+</ul>
+<p>不同口碑商铺的位置分布情况，有的商铺有连锁店，数据格式：（merchan_id, loc_id1:loc_id2:…)</p>
+<ul>
+<li>Prediction result. (ijcai2016 Koubei test.csv)</li>
+</ul>
+<p>最后要提交的数据格式</p>
+<p>user_id, loc_id, merchant_id1:merchant_id2….</p>
 
       
     </div>
