@@ -371,8 +371,9 @@
 <li>Prediction result. (ijcai2016 Koubei test.csv)</li>
 </ul>
 <p>最后要提交的数据格式</p>
-<p>user_id, loc_id, merchant_id1:merchant_id2….</p>
-
+<p>user_id, loc_id, merchant_id1:merchant_id2…</p>
+<p>对于这个问题，我们的想法是，要充分利用每一个用户和每一个口碑商铺的历史数据。更准确的说，我们要从训练集中提取足够的可训练的特征，然后利用一些经典的模型，比如 <strong>Xgboost</strong> 来构建分类模型。同时最需要注意的是，我们要时刻考虑 <strong>budget</strong> 的影响。</p>
+<h3 id="如何来利用历史数据"><a href="#如何来利用历史数据" class="headerlink" title="如何来利用历史数据"></a>如何来利用历史数据</h3>
           
         
       
