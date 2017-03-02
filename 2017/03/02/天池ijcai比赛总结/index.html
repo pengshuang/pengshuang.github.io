@@ -96,8 +96,8 @@
 
 比赛题目比赛的官方网站在这，IJCAI SocInf’16。
 这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方">
-<meta property="og:image" content="http://pengshuang.space/img/award.png">
-<meta property="og:updated_time" content="2017-03-02T12:51:50.000Z">
+<meta property="og:image" content="http://pengshuang.space/../img/award.png">
+<meta property="og:updated_time" content="2017-03-02T13:16:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
 <meta name="twitter:description" content="一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。先贴上证书。
@@ -344,7 +344,7 @@
         <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
 <p>一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。先贴上证书。</p>
-<p><img src="/img/award.png" alt=""></p>
+<p><img src="../img/award.png" width="460" height="620" alt="图片名称" align="center"></p>
 <h3 id="比赛题目"><a href="#比赛题目" class="headerlink" title="比赛题目"></a>比赛题目</h3><p>比赛的官方网站在这，<a href="https://tianchi.shuju.aliyun.com/competition/introduction.htm?spm=5176.100066.333.2.4HLjZH&amp;raceId=231532" target="_blank" rel="external">IJCAI SocInf’16</a>。</p>
 <p>这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方，就是它关注的是一个用户来到一个他之前没有去过的新地点之后，他会去哪些店铺消费，有一点像推荐系统中经典的冷启动问题。比赛提供的数据也有这个特点：</p>
 <ol>
@@ -388,7 +388,12 @@
 <p>不过从另一方面说，每一家口碑店铺都有 <strong>budget</strong> 限制，这意味着，如果按照用户之前光顾过哪家店铺来推荐的话，肯定会有部分店铺的 <strong>budget</strong> 超标。</p>
 <p>我们在用户的数据中找寻这样一个键值对 (user, location, merchant)，通过计算这样一个键值对出现的频率，我们可以统计出 (user, location, merchant, frequency) 的键值对，将这个键值对按照 <strong>frequency</strong> 来从高到低排序，然后按照这个顺序，从高到低来给 (user, query) 这样一个查询来推荐店铺，直到这家店铺的 <strong>budget</strong> 耗尽为止。</p>
 <p>经过统计发现，平均每一个用户在一个地点只会关顾 1.3 个商家，所以在这里我们限制最大的推荐个数为 4。</p>
-<h4 id="从商家的历史信息来看"><a href="#从商家的历史信息来看" class="headerlink" title="从商家的历史信息来看"></a>从商家的历史信息来看</h4><p>经过之前的分析，我们发现不同的店铺有着不同的“受欢迎度”。问题是我们怎么定义这个“受欢迎度”呢？</p>
+<h4 id="从商家的历史信息来看"><a href="#从商家的历史信息来看" class="headerlink" title="从商家的历史信息来看"></a>从商家的历史信息来看</h4><p>经过之前的分析，我们发现不同的店铺有着不同的“受欢迎度”。举个例子，“820”这个商家在整个训练集中几乎出现 1/4。问题是我们怎么定义这个“受欢迎度”呢？</p>
+<p>为了解决这个问题，我们首先定义，在不同地点的同一家口碑商铺是不一样。因为在题目给定的数据中，存在大量的连锁商铺，但是这些连锁店铺在不同地点的“受欢迎度”是完全不同的。</p>
+<p>接下来我们设想这样一种情况，90 % 来到地点 A 的人都会去 商铺 B 消费，在这种情况下，如果我们给所有的来地点 A 的人都推荐 B 商铺的话，我们就能得到 90 % 的准确率。所以，在一个地点某家店铺消费的总人数占该地点所有人数的比例，我们称之为该店铺的 “受欢迎度” (Popularity)。</p>
+<p>因此我们将所有店铺按照 Popularity 从大到小来进行排序，依次推荐来到该地点的所有用户，直到超过 <strong>budget</strong>。经过一些线下的实验，我们取这个 Popularity 的值的阈值为 0.25。</p>
+<h4 id="引入淘宝数据来提升推荐质量"><a href="#引入淘宝数据来提升推荐质量" class="headerlink" title="引入淘宝数据来提升推荐质量"></a>引入淘宝数据来提升推荐质量</h4><p>我们之前的推荐完全没有用到每个人的特征，相当于无法做到“千人千面”。于是接下来我们就想办法，如何利用淘宝的数据来提升推荐质量。</p>
+<p>从直观上而且，淘宝的数据应该很有帮助，比如，在淘宝上经常浏览或者购买电子产品的人往往不太会去关顾口碑商铺里面那些卖女式服装的。受到这个的启发，我们就建立了一个这样的表：如果存在这样一条记录，一个用户在淘宝上浏览或者购买的商铺 A；同时也在线下口碑上的商铺 B 消费，我们就把 (A, B) 这个关系链表放入表中。基于这样的表，我们对那些之前没有口碑消费记录的新用户，如果他们曾在淘宝上购买或浏览了商铺 A， 那么我们就只给他推荐在关系链表中与 A 相连的口碑商铺。</p>
 
       
     </div>
@@ -599,7 +604,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#比赛题目"><span class="nav-number">1.</span> <span class="nav-text">比赛题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何来利用历史数据"><span class="nav-number">2.</span> <span class="nav-text">如何来利用历史数据 ?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从用户的历史信息来看"><span class="nav-number">2.1.</span> <span class="nav-text">从用户的历史信息来看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从商家的历史信息来看"><span class="nav-number">2.2.</span> <span class="nav-text">从商家的历史信息来看</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#比赛题目"><span class="nav-number">1.</span> <span class="nav-text">比赛题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何来利用历史数据"><span class="nav-number">2.</span> <span class="nav-text">如何来利用历史数据 ?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从用户的历史信息来看"><span class="nav-number">2.1.</span> <span class="nav-text">从用户的历史信息来看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从商家的历史信息来看"><span class="nav-number">2.2.</span> <span class="nav-text">从商家的历史信息来看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引入淘宝数据来提升推荐质量"><span class="nav-number">2.3.</span> <span class="nav-text">引入淘宝数据来提升推荐质量</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
