@@ -102,7 +102,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。
 工作原理
 假设现在有样本 \(x">
-<meta property="og:updated_time" content="2017-03-03T02:52:34.000Z">
+<meta property="og:updated_time" content="2017-03-03T15:05:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习常见算法总结">
 <meta name="twitter:description" content="朴素贝叶斯事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A
@@ -358,9 +358,9 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <p>对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。</p>
 <h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
 <li>假设现在有样本 \(x = (a_1,a_2,…,a_n)\) 这个待分类项(并认为 x 里面的特征独立)。</li>
-<li>再假设现在有分类目标 \(Y = (y_n,y_n,…,y_n)\)</li>
+<li>再假设现在有分类目标 \(Y = (y_1,y_2,…,y_n)\)</li>
 <li>那么 \(max(P(y_1|x),P(y_2|x),P(y_3|x),…,P(y_n|x))\) 就是最终的分类类别。</li>
-<li>而 \(Y = (y_n,y_n,…,y_n)\) 就是最终的分类类别。</li>
+<li>而 \(Y = (y_1,y_2,…,y_n)\) 就是最终的分类类别。</li>
 </ol>
 <h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><h4 id="1-准备阶段"><a href="#1-准备阶段" class="headerlink" title="1. 准备阶段"></a>1. 准备阶段</h4><p>确定特征属性，并对每个特征属性进行适当划分，然后由人工对一部分待分类项进行分类，形成训练样本。</p>
 <h4 id="2-训练阶段"><a href="#2-训练阶段" class="headerlink" title="2. 训练阶段"></a>2. 训练阶段</h4><p>计算每个类别在训练样本中的出现频率及每个特征属性划分对每个类别的条件概率估计。</p>
@@ -379,7 +379,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <p>关于这个权重值 w 一般使用最大似然法来估计，假设现在有样本 \(x_i, y_i\)，其中 xi 表示样本的特征，\(y_i \epsilon 0, 1\)表示样本的分类真实值，\(y_i = 1\) 的概率是 \(p_i\)，则 \(y_i = 0\) 的概率是 \(1 − p_i\)，那么观测概率为:</p>
 <p>$$p(y_i) = p_i^{y_i} * (1 - p_i)^{1 - y_i}$$</p>
 <p>则最大似然估计为：</p>
-<p>$$\prod (h_w(x_i)^y_i * (1 - h_w(x_i))^{1 - y_i}))$$</p>
+<p>$$\prod h_w(x_i)^y_i * (1 - h_w(x_i))^{1 - y_i}$$</p>
 <p>对这个似然函数取对数之后就会得到表达式：</p>
 <p>$$L(w) = \sum_{i}^{N} \left ( y_i \ast logh_w(x_i) + (1 - y_i) \ast log(1 - h_w(x_i))\right )$$</p>
 <p>对这个 L(w) 求极大值就可以得到 w 的估计值。</p>
@@ -772,7 +772,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">63</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

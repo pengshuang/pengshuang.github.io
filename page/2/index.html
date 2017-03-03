@@ -258,6 +258,302 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/23/Elasticsearch-学习-Java-API-一/" itemprop="url">
+                  Elasticsearch 学习: Java API (一)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-23T10:51:30+08:00" content="2016-11-23">
+              2016-11-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/11/23/Elasticsearch-学习-Java-API-一/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/23/Elasticsearch-学习-Java-API-一/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/23/Elasticsearch-学习-Java-API-一/" class="leancloud_visitors" data-flag-title="Elasticsearch 学习: Java API (一)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。</p>
+<p>使用 Maven 工程，我的 pom 文件如下所示：</p>
+<pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.elasticsearch&lt;/groupId&gt;
+        &lt;artifactId&gt;elasticsearch&lt;/artifactId&gt;
+        &lt;version&gt;2.4.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+        &lt;version&gt;2.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h3 id="连接机器"><a href="#连接机器" class="headerlink" title="连接机器"></a>连接机器</h3><pre><code>TransportClient client = TransportClient.builder()
+    .build()
+    .addTransportAddress(new InetSocketTransportAddress(InetAddress
+    .getByName(&quot;localhost&quot;), 9300));       
+</code></pre><h3 id="Index-API-创建-Index-并且插入-Document"><a href="#Index-API-创建-Index-并且插入-Document" class="headerlink" title="Index API 创建 Index 并且插入 Document"></a>Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
+<pre><code>HashMap&lt;String, Object&gt; json = new HashMap&lt;String, Object&gt;();
+json.put(&quot;first_name&quot;,&quot;Shuang&quot;);
+json.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json.put(&quot;age&quot;, 24);
+json.put(&quot;about&quot;, &quot;I love coding&quot;);
+IndexResponse response = client
+    .prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
+    .setSource(json).get();
+
+IndexResponse response = client.prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
+   .setSource(jsonBuilder()
+   .startObject()
+   .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+   .field(&quot;first_name&quot;, &quot;Peng&quot;)
+   .field(&quot;age&quot;, 24)
+   .field(&quot;about&quot;, &quot;I love coding&quot;)
+   .endObject())
+   .get();
+</code></pre><p><strong>注意</strong>：Index API 只能用于创建 index，类似于关系型数据库里面的 create table，他不能对已有的数据库进行添加。追加操作可以用后面会提到的 Update 或者 Bulk 来完成。    </p>
+<h3 id="Get-API-获取-Document"><a href="#Get-API-获取-Document" class="headerlink" title="Get API 获取 Document"></a>Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;).get();
+Map&lt;String, Object&gt; res = response2.getSource();
+for (Map.Entry&lt;String, Object&gt; entry: res.entrySet()){
+     System.out.println(entry.getKey() + &quot; : &quot; + entry.getValue());
+     }
+</code></pre><h3 id="Delete-API-删除-Index-或者-Document"><a href="#Delete-API-删除-Index-或者-Document" class="headerlink" title="Delete API 删除 Index 或者 Document"></a>Delete API 删除 Index 或者 Document</h3><pre><code>// 用来删除对应的 document 
+DeleteResponse response3 = 
+    client.prepareDelete(&quot;tesg&quot;,&quot;students&quot;,&quot;1&quot;).get();
+// 用来删除对应的 index
+DeleteIndexResponse response4 = 
+    client.admin().indices().prepareDelete(&quot;facebook&quot;).execute().actionGet();
+</code></pre><h3 id="Update-API-更新操作"><a href="#Update-API-更新操作" class="headerlink" title="Update API 更新操作"></a>Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
+<p>第一种</p>
+<pre><code>client.prepareUpdate(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
+    .setDoc(jsonBuilder()
+    .startObject().field(&quot;age&quot;, 32)
+    .endObject())
+    .get();
+</code></pre><p>第二种</p>
+<pre><code>IndexRequest indexRequest = new IndexRequest(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
+    .source(jsonBuilder()
+    .startObject()
+    .field(&quot;first_name&quot;, &quot;Shuang&quot;)
+    .field(&quot;last_name&quot;, &quot;Peng&quot;)
+    .field(&quot;age&quot;, 32)
+    .field(&quot;about&quot;, &quot;I loving coding&quot;)
+    .endObject());
+
+UpdateRequest updateRequest = new UpdateRequest(&quot;tseg&quot;,&quot;students&quot;, &quot;1&quot;)
+    .doc(jsonBuilder()
+    .startObject().field(&quot;age&quot;, 32)
+    .endObject())
+    .upsert(indexRequest);
+ client.update(updateRequest).get();
+</code></pre><p>不过这里提一下第二种方法，如果对应的 <strong>field</strong> 不存在的话，则更新操作自动变为插入操作，否则，就是正常的修改操作。</p>
+<h3 id="Multi-Get-API-多查找"><a href="#Multi-Get-API-多查找" class="headerlink" title="Multi Get API 多查找"></a>Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
+<pre><code>MultiGetResponse multiGetItemResponses = client.prepareMultiGet()
+    .add(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;).get();
+
+for (MultiGetItemResponse itemResponses : multiGetItemResponses) {
+    GetResponse response5 = itemResponses.getResponse();
+    if (response5.isExists()) {
+
+// 第一种用法
+    Map&lt;String, Object&gt; fields = response5.getSource();
+    System.out.println(fields.get(&quot;first_name&quot;));
+
+// 第二种用法
+    String json2 = response5.getSourceAsString();
+    System.out.println(json2);
+}
+</code></pre><h3 id="Bulk-API-批量操作"><a href="#Bulk-API-批量操作" class="headerlink" title="Bulk API 批量操作"></a>Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
+<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
+           .setSource(jsonBuilder()
+           .startObject()
+           .field(&quot;first_name&quot;, &quot;Allen&quot;)
+           .field(&quot;last_name&quot;, &quot;Peng&quot;)
+           .field(&quot;age&quot;, &quot;22&quot;)
+           .endObject()))
+           .get();
+
+bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;2&quot;))
+            .setSource(jsonBuilder()
+            .startObject()
+            .field(&quot;first_name&quot;, &quot;Hou&quot;)
+            .field(&quot;last_name&quot;, &quot;Xue&quot;)
+            .field(&quot;age&quot;, &quot;30&quot;)
+            .endObject()))
+            .get();
+
+HashMap&lt;String, Object&gt; json2 = new HashMap&lt;String, Object&gt;();
+List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+list.add(&quot;music&quot;);
+list.add(&quot;football&quot;);
+json2.put(&quot;first_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;last_name&quot;, &quot;Peng&quot;);
+json2.put(&quot;interests&quot;, list);
+BulkRequestBuilder bulkRequest2 = client.prepareBulk();
+
+// 两种执行方法，个人倾向于第一种
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, &quot;info&quot;, 
+    &quot;3&quot;).setSource(json2)).get();
+// 第二种方法
+bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, 
+    &quot;info&quot;,&quot;1&quot;).setSource(json2)).execute().actionGet();
+</code></pre><p>还可以这样做：</p>
+<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
+bulkRequest.add(client.prepareIndex(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;)
+    .setSource(source);
+bulkRequest.add(client.prepareIndex(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;)
+    .setSource(source);
+BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+</code></pre><h3 id="Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作"><a href="#Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作" class="headerlink" title="Bulk Processor API 可在批量操作完成之前和之后进行相应的操作"></a>Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
+        client,  
+        new BulkProcessor.Listener() {
+            @Override
+            public void beforeBulk(long executionId,
+                                  BulkRequest request) { ... } 
+
+            @Override
+            public void afterBulk(long executionId,
+                                  BulkRequest request,
+                                  BulkResponse response) { ... } 
+
+            @Override
+            public void afterBulk(long executionId,
+                                  BulkRequest request,
+                                  Throwable failure) { ... } 
+        })
+        .setBulkActions(10000) 
+        .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)) 
+        .setFlushInterval(TimeValue.timeValueSeconds(5)) 
+        .setConcurrentRequests(1) 
+         .build();
+
+bulkProcessor.add(new IndexRequest(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;).source(source1));  
+bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;);        
+</code></pre><ol>
+<li>beforeBulk 会在批量提交之前执行，可以从 BulkRequest 中获取请求信息request.requests() 或者请求数量 request.numberOfActions()。 </li>
+<li>第一个 afterBulk 会在批量成功后执行，可以跟 beforeBulk 配合计算批量所需时间。 </li>
+<li>第二个 afterBulk 会在批量失败后执行。 </li>
+<li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
+</ol>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/22/一致性-Hash-学习/" itemprop="url">
                   一致性 Hash 学习
                 </a>
@@ -1902,202 +2198,6 @@ int getBatch()
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/28/HBase-学习-Delete-和-行锁/" itemprop="url">
-                  HBase 学习: Delete、批量处理操作
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-28T15:50:58+08:00" content="2016-10-28">
-              2016-10-28
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/28/HBase-学习-Delete-和-行锁/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/28/HBase-学习-Delete-和-行锁/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/28/HBase-学习-Delete-和-行锁/" class="leancloud_visitors" data-flag-title="HBase 学习: Delete、批量处理操作">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="单行删除"><a href="#单行删除" class="headerlink" title="单行删除"></a>单行删除</h3><p>delete() 方法 </p>
-<pre><code>void delete(Delete delete) throws IOException
-</code></pre><p>和 get 及 post 方法一样，用户必须先创建一个 Delete 实例，然后再添加想要删除的数据的详细信息。</p>
-<p>下面是一个使用 delete() 函数的例子</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test1&quot;);
-Delete delete = new Delete(Bytes.toBytes(&quot;row1&quot;));
-// 设置时间戳
-delete.setTimestamp(1);
-// 删除一列中的特定版本
-delete.deleteColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 1);
-// 删除一列中的全部版本
-delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual1&quot;));
-// 删除一列中的给定版本和所有更旧的版本
-delete.deleteColumns(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;qual3&quot;),15);
-// 删除整个列族,包括所有的列和版本
-delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;));
-// 删除给定列族中的所有列的给定版本和所有更旧的版本
-delete.deleteFamily(Bytes.toBytes(&quot;colfam3&quot;), 3);
-table.delete(delete);
-table.close(); 
-</code></pre><h3 id="多行删除"><a href="#多行删除" class="headerlink" title="多行删除"></a>多行删除</h3><p>多行删除和之前博文介绍的多行 Put 很类似，</p>
-<pre><code>void delete(List&lt;Delete&gt; deletes) throw IOException
-</code></pre><p>这里不再赘述。</p>
-<h3 id="批量处理操作"><a href="#批量处理操作" class="headerlink" title="批量处理操作"></a>批量处理操作</h3><p>HBase 中有一些 API 可以批量处理跨多行的不同操作。</p>
-<pre><code>void batch(List&lt;Row&gt; actions, Object[] results) throws 
-    IOException, InterruptedException
-Object[] batch(List&lt;Row&gt; actions) throws
-    IOException, InterruptedException
-</code></pre><p>上面的 API 提供了批量处理操作。用户可能注意到这里引入了一个新的名为 Row 的类，它是 Put、Get 和 Delete 的祖先，或者是父类。</p>
-<p>使用同样的父类允许在列表中实现多态，即放入以上 3 种不同的子类。这种调用跟之前介绍的基于列表的调用方法一样简单易用。下面展示了一个简单的例子。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test&quot;);
-
-byte[] ROW1 = Bytes.toBytes(&quot;row1&quot;);
-byte[] ROW2 = Bytes.toBytes(&quot;row2&quot;);
-
-byte[] COLFAM1 = Bytes.toBytes(&quot;colfam1&quot;);
-
-byte[] QUAL1 = Bytes.toBytes(&quot;qual1&quot;);
-
-List&lt;Row&gt; batch = new ArrayList&lt;Row&gt;();
-
-Put put = new Put(ROW1);
-put.add(COLFAM1, QUAL2,Bytes.toBytes(&quot;val5&quot;));
-batch.add(put);
-
-Get get1 = new Get(ROW2);
-get1.addColumn(COLFAM1,QUAL2);
-batch.add(get1);
-
-Delete delete = new Delete(ROW1);
-delete.deleteColumns(COLFAM1,QUAL2);
-batch.add(delete);
-
-table.batch(batch, results);
-</code></pre><p><strong>注意</strong>：不可以将针对同一行的 Put 和 Delete 操作放在同一个批量处理请求中。</p>
-<h3 id="行锁"><a href="#行锁" class="headerlink" title="行锁"></a>行锁</h3><p>像 put()、delete()、checkAndPut() 这样的修改操作是独立执行的，这意味着在一个串行方式的执行中，对于每一行必须保证行级别的操作是原子性的。region 服务器提供了一个行锁 (row lock) 的特性，这个特性保证了只有一个客户端能获取一行数据相应的锁，同时对该行进行修改。</p>
-<p>处理服务器端隐式加锁之外，客户端也可以显示地对当行数据的多次操作进行加锁，通过以下调用实现：</p>
-<pre><code>RowLock lockRow(byte[] row) throws IOException
-void unlockRow(RowLock r1) throws IOException
-</code></pre><p>第一个调用 lockRow() 需要一个行健作为参数，返回一个 RowLock 的实例，这个实例可以供后续的 Put 或者 Delete 的构造函数使用。一旦不再需要锁时，必须通过 unLockRow() 调用来释放它。</p>
-<p>默认的锁超时时间是一分钟，但是可以在 <strong>hbase-site.xml</strong> 文件中添加一下配置项。</p>
-<pre><code>&lt;property&gt;
-    &lt;name&gt;hbase.regionserver.lease.period&lt;/name&gt;
-    &lt;value&gt;1200000&lt;/value&gt;
-&lt;property&gt;
-</code></pre><p><strong>注意</strong>：Get 方法是不需要锁的。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2143,7 +2243,7 @@ void unlockRow(RowLock r1) throws IOException
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">63</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

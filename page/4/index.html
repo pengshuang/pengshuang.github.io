@@ -258,6 +258,199 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/22/Hash-Heap详解/" itemprop="url">
+                  Hash Heap详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-22T10:08:22+08:00" content="2016-10-22">
+              2016-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据结构/" itemprop="url" rel="index">
+                    <span itemprop="name">数据结构</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/22/Hash-Heap详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/Hash-Heap详解/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/22/Hash-Heap详解/" class="leancloud_visitors" data-flag-title="Hash Heap详解">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="性质和性质"><a href="#性质和性质" class="headerlink" title="性质和性质"></a>性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
+<h3 id="接口和时间复杂度分析"><a href="#接口和时间复杂度分析" class="headerlink" title="接口和时间复杂度分析"></a>接口和时间复杂度分析</h3><pre><code>插入 o(logn)
+1. add(self, key, value)
+
+删除 o(logn)
+2. remove(self, key)
+
+查找 o(log1)
+3. hasKey(self, key)
+
+取最大值 o(log1)
+4. max(self)
+</code></pre><h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><pre><code>class HashHeap:
+    def __init__(self):
+        self.heap = [0]
+        self.hash = {}
+
+def add(self, key, value):
+    self.heap.append((key, value))
+    self.hash[key] = self.heap[0] + 1
+    self.heap[0] += 1
+    self._siftup(self.heap[0])
+
+def remove(self, key):
+    index = self.hash[key]
+    self._swap(index, self.heap[0])
+    del self.hash[self.heap[self.heap[0]][0]]
+    self.heap.pop()
+    self.heap[0] -= 1
+    if index &lt;= self.heap[0]:
+        index = self._siftup(index)
+        self._siftdown(index)
+
+def hasKey(self, key):
+    return key in self.hash
+
+def max(self):
+    return 0 if self.heap[0] == 0 else self.heap[1][1]
+
+def _swap(self, a, b):
+    self.heap[a], self.heap[b] = self.heap[b], self.heap[a]
+    self.hash[self.heap[a][0]] = a
+    self.hash[self.heap[b][0]] = b
+
+def _siftup(self, index):
+    while index != 1:
+        if self.heap[index][1] &lt;= self.heap[index / 2][1]:
+            break
+        self._swap(index, index / 2)
+        index /= 2
+    return index
+
+def _siftdown(self, index):
+    size = self.heap[0]
+    while index &lt; size:
+        t = index
+        if index * 2 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2][1]:
+            t = index * 2
+        if index * 2 + 1 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2 + 1][1]:
+            t = index * 2 + 1
+        if t == index:
+            break
+        self._swap(index, t)
+        index = t
+    return index
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/22/数据库系统实现-位图索引/" itemprop="url">
                   数据库系统实现: 位图索引
                 </a>
@@ -1960,336 +2153,6 @@ facts.collect.foreach(println(_))
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/27/面试排序算法总结/" itemprop="url">
-                  面试排序算法总结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-27T09:15:16+08:00" content="2016-09-27">
-              2016-09-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/面试总结/" itemprop="url" rel="index">
-                    <span itemprop="name">面试总结</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/27/面试排序算法总结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/27/面试排序算法总结/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/27/面试排序算法总结/" class="leancloud_visitors" data-flag-title="面试排序算法总结">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-冒泡排序"><a href="#1-冒泡排序" class="headerlink" title="1. 冒泡排序"></a>1. 冒泡排序</h3><p>冒泡排序的原理就是重复的去遍历要排序的数列，一次比较2个元素，如果它们顺序错误就把它们交换过来。</p>
-<p>代码实现：</p>
-<pre><code>def bubble_sort(arry):
-    n = len(arry)   # 获得数组的长度
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arry[i] &gt; arry[j]:   # 如果前者比后者大
-                arry[i], arry[j] = arry[j], arry[i] # 则互相交换
-    return arry
-</code></pre><h3 id="2-选择排序"><a href="#2-选择排序" class="headerlink" title="2. 选择排序"></a>2. 选择排序</h3><p>选择排序的思想比较简单，先在未排序的序列中找到最大（最小）的元素，存放到排序序列的起始位置；再从剩余未排序的序列中寻找最大（最小）的元素，然后放到已排序序列的末尾；以此类推。</p>
-<p>代码实现：</p>
-<pre><code>def select_sort(arry):
-n = len(arry)
-for i in range(0, n):
-    min = i     # 先假定第一个为最小元素
-    for j in range(i+1, n):
-        if arry[j] &lt; arry[min]:
-            min = j     # 找到最小值的下标
-    arry[min], arry[i] = arry[i], arry[min]
-return arry
-</code></pre><h3 id="3-插入排序"><a href="#3-插入排序" class="headerlink" title="3. 插入排序"></a>3. 插入排序</h3><p>插入排序的工作原理是，对于每个未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。</p>
-<p>步骤：</p>
-<ol>
-<li>从第一个元素开始，该元素可以认为已经被排序</li>
-<li>取出下一个元素，在已经排序的元素序列中从后向前扫描</li>
-<li>如果被扫描的元素（已排序）大于新元素，将该元素后移一位</li>
-<li>重复步骤3，直到找到已排序的元素小于或者等于新元素的位置</li>
-<li>将新元素插入到该位置后</li>
-<li>重复步骤2~5</li>
-</ol>
-<p>代码实现：</p>
-<pre><code>def insert_sort(arry):
-    n = len(arry)
-    for i in range(1, n):
-        if arry[i] &lt; arry[i-1]:
-            temp = arry[i]
-            index = i   # 待插入的下标
-            for j in range(i-1, -1, -1): # 从i-1 循环到 0 (包括0)
-                if arry[j] &gt; temp:
-                    arry[j+1] = arry[j]
-                    index = j
-                else:
-                    break
-            arry[index] = temp
-    return arry
-</code></pre><h3 id="4-希尔排序"><a href="#4-希尔排序" class="headerlink" title="4. 希尔排序"></a>4. 希尔排序</h3><p>希尔排序，也称递减增量排序算法，实质是分组插入排序。</p>
-<p>希尔排序的基本思想是：将数组列在一个表中并对列分别进行插入排序，重复这过程，不过每次用更长的列（步长更长了，列数更少了）来进行。最后整个表就只有一列了。将数组转换至表是为了更好地理解这算法，算法本身还是使用数组进行排序。</p>
-<p>例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样：</p>
-<pre><code>13 14 94 33 82
-25 59 94 65 23
-45 27 73 25 39
-10
-</code></pre><p>然后我们对每列进行排序：</p>
-<pre><code>10 14 73 25 23
-13 27 94 33 39
-25 59 94 65 82
-45
-</code></pre><p>将上述四行数字，依序接在一起时我们得到：[ 10 14 73 25 23 13 27 94 33 39 25 59 94 65 82 45 ]。这时10已经移至正确位置了，然后再以3为步长进行排序：</p>
-<pre><code>10 14 73
-25 23 13
-27 94 33
-39 25 59
-94 65 82
-45
-</code></pre><p>排序之后变为：</p>
-<pre><code>10 14 13
-25 23 33
-27 25 59
-39 65 73
-45 94 82
-94
-</code></pre><p>最后以1步长进行排序（此时就是简单的插入排序了）。</p>
-<p>代码实现：</p>
-<pre><code>def shell_sort(arry):
-    n = len(arry)
-    gap = n/2    # 初始步长
-    while gap &gt; 0:
-        for i in range(gap, n):     # 对每一列进行插入排序, 从gap 到 n-1
-            temp = arry[i]
-            j = i
-            while j &gt;= gap and arry[j-gap] &gt; temp: # 插入排序
-                arry[j] = arry[j-gap]
-                j -= gap
-            arry[j] = temp
-        gap /= 2
-    return arry
-</code></pre><h3 id="5-归并排序"><a href="#5-归并排序" class="headerlink" title="5. 归并排序"></a>5. 归并排序</h3><p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
-<p>先考虑合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。</p>
-<p>再考虑递归分解，基本思路是将数组分解成left和right，如果这两个数组内部数据是有序的，那么就可以用上面合并数组的方法将这两个数组合并排序。如何让这两个数组内部是有序的？可以再二分，直至分解出的小组只含有一个元素时为止，此时认为该小组内部已有序。然后合并排序相邻二个小组即可。</p>
-<p>代码实现：</p>
-<pre><code>def merge(left, right):
-    l, r = 0, 0
-    result = []
-    while l &lt; len(left) and r &lt; len(right):
-      if left[l] &lt; right[r]:
-          result.append(left[l])
-          l += 1
-      else:
-          result.append(right[r])
-          r += 1
-    result += left[l:]
-    result += right[r:]
-    return result
-
-def merge_sort(arry):
-    n = len(arry)
-    if n &lt;= 1:
-        return arry
-    num = n/2
-    left = merge_sort(arry[:num])
-    right = merge_sort(arry[num:])
-    return merge(left, right)
-</code></pre><h3 id="6-快速排序"><a href="#6-快速排序" class="headerlink" title="6. 快速排序"></a>6. 快速排序</h3><p>快速排序是面试中被考的频率最高的排序算法了。快速排序通常明显比同为Ο(nlogn)的其他算法更快，因此常被采用，而且快排采用了分治法的思想，所以在很多笔试面试中能经常看到快排的影子。可见掌握快排的重要性。</p>
-<p>步骤：</p>
-<ol>
-<li>从数列中挑出一个元素作为基准数。</li>
-<li>分区过程，将比基准数大的放到右边，小于或等于它的数都放到左边。</li>
-<li>再对左右区间递归执行第二步，直至各区间只有一个数</li>
-</ol>
-<p>代码实现：</p>
-<pre><code>def quick_sort(arry):
-    return qsort(arry, 0, len(arry)-1)
-
-def qsort(arry, left, right):
-    # arry为待排序数组,left为该数组左边界,right为该数组右边界
-    if left &gt;= right:
-        return arry
-    # 取最左边的数为基准数
-    key = arry[left]
-    lp = left
-    rp = right
-    while lp &lt; rp:
-        while arry[rp] &gt;= key and lp &lt; rp:
-            rp -= 1
-        while arry[lp] &lt;= key and lp &lt; rp:
-            lp += 1
-        arry[lp], arry[rp] = arry[rp], arry[lp]
-    arry[left], arry[rp] = arry[rp], arry[left]
-    qsort(arry, left, lp - 1)
-    qsort(arry, rp + 1, right)
-    return arry
-</code></pre><h3 id="7-堆排序"><a href="#7-堆排序" class="headerlink" title="7. 堆排序"></a>7. 堆排序</h3><p>堆排序在 top K 问题中使用比较频繁。堆排序是采用二叉堆的数据结构来实现的，虽然实质上还是一维数组。二叉堆是一个近似完全二叉树。</p>
-<p>二叉堆具有以下性质：</p>
-<ol>
-<li><p>父节点的键值总是大于或等于(小于或等于)任何一个子节点的键值。</p>
-</li>
-<li><p>每个节点的左右子树都是一个二叉堆(都是最大堆或最小堆)。</p>
-</li>
-</ol>
-<p>步骤：</p>
-<ol>
-<li><p>构造最大堆（Build_Max_Heap）：若数组下标范围为0~n，考虑到单独一个元素是大根堆，则从下标n/2开始的元素均为大根堆。于是只要从n/2-1开始，向前依次构造大根堆，这样就能保证，构造到某个节点时，它的左右子树都已经是大根堆。</p>
-</li>
-<li><p>堆排序（HeapSort）：由于堆是用数组模拟的。得到一个大根堆后，数组内部并不是有序的。因此需要将堆化数组有序化。思想是移除根节点，并做最大堆调整的递归运算。第一次将heap[0]与heap[n-1]交换，再对heap[0…n-2]做最大堆调整。第二次将heap[0]与heap[n-2]交换，再对heap[0…n-3]做最大堆调整。重复该操作直至heap[0]和heap[1]交换。由于每次都是将最大的数并入到后面的有序区间，故操作完后整个数组就是有序的了。</p>
-</li>
-<li><p>最大堆调整（Max_Heapify）：该方法是提供给上述两个过程调用的。目的是将堆的末端子节点作调整，使得子节点永远小于父节点。</p>
-</li>
-</ol>
-<p>代码实现：</p>
-<pre><code>def heap_sort(ary) :
-    n = len(ary)
-    # 最后一个非叶子节点
-    first = int(n/2-1)
-    # 构造大根堆
-    for start in range(first, -1, -1):     
-        max_heapify(ary, start, n-1)
-    for end in range(n-1, 0, -1):
-        # 堆排，将大根堆转换成有序数组
-        ary[end], ary[0] = ary[0], ary[end]
-        max_heapify(ary, 0, end-1)
-    return ary
-
-&apos;&apos;&apos;
-最大堆调整：将堆的末端子节点作调整，使得子节点永远小于父节点
-start为当前需要调整最大堆的位置，end为调整边界
-&apos;&apos;&apos;
-def max_heapify(ary, start, end):
-    root = start
-    while True:
-        # 调整节点的子节点
-        child = root*2 + 1
-        if child &gt; end:
-            break
-        if child+1 &lt;= end and ary[child] &lt; ary[child+1]:
-            # 取较大的子节点
-            child += 1
-        # 较大的子节点成为父节点
-        if ary[root] &lt; ary[child]:
-            # 交换
-            ary[root], ary[child] = ary[child], ary[root]
-            root = child
-        else:
-            break
-</code></pre><h3 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h3><p>下面为七种经典排序算法指标对比情况：</p>
-<p><img src="/img/classicalsort.png" alt=""></p>
-<h3 id="9-参考资料"><a href="#9-参考资料" class="headerlink" title="9. 参考资料"></a>9. 参考资料</h3><ul>
-<li><p><a href="http://wuchong.me/blog/2014/02/09/algorithm-sort-summary/" target="_blank" rel="external">经典排序算法总结与实现</a></p>
-</li>
-<li><p><a href="http://blog.csdn.net/morewindows/article/details/7961256" target="_blank" rel="external">白话经典算法系列</a></p>
-</li>
-</ul>
-<p>注：本文所有源代码已共享到<a href="https://github.com/pengshuang/Leetcode/tree/master/classical%20alogrithm" target="_blank" rel="external">GitHub</a>。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2335,7 +2198,7 @@ def max_heapify(ary, start, end):
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">63</span>
+              <span class="site-state-item-count">64</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

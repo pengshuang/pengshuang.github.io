@@ -84,34 +84,28 @@
 
 
 
-<meta name="description" content="基本概念扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。
-Scan 类拥有以下构造器：
-Scan()
-Scan(byte[] startRow, Filter filter)
-Scan(byte[] startRow)
-Scan(byte[] startRow, byte[] stopRow)
-我们可以选择性地提供 startRow 参数，来">
+<meta name="description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
+其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
+线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
+一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
+Response">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HBase 学习: 扫描">
-<meta property="og:url" content="http://pengshuang.space/2016/10/29/HBase-学习-扫描/index.html">
+<meta property="og:title" content="线性模型和非线性模型的区别">
+<meta property="og:url" content="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="基本概念扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。
-Scan 类拥有以下构造器：
-Scan()
-Scan(byte[] startRow, Filter filter)
-Scan(byte[] startRow)
-Scan(byte[] startRow, byte[] stopRow)
-我们可以选择性地提供 startRow 参数，来">
-<meta property="og:updated_time" content="2016-10-29T10:38:13.000Z">
+<meta property="og:description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
+其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
+线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
+一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
+Response">
+<meta property="og:updated_time" content="2017-03-03T15:27:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HBase 学习: 扫描">
-<meta name="twitter:description" content="基本概念扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。
-Scan 类拥有以下构造器：
-Scan()
-Scan(byte[] startRow, Filter filter)
-Scan(byte[] startRow)
-Scan(byte[] startRow, byte[] stopRow)
-我们可以选择性地提供 startRow 参数，来">
+<meta name="twitter:title" content="线性模型和非线性模型的区别">
+<meta name="twitter:description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
+其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
+线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
+一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
+Response">
 
 
 
@@ -132,9 +126,9 @@ Scan(byte[] startRow, byte[] stopRow)
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/10/29/HBase-学习-扫描/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/"/>
 
-  <title> HBase 学习: 扫描 | 小沙文的博客 </title>
+  <title> 线性模型和非线性模型的区别 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -274,7 +268,7 @@ Scan(byte[] startRow, byte[] stopRow)
             
             
               
-                HBase 学习: 扫描
+                线性模型和非线性模型的区别
               
             
           </h1>
@@ -286,8 +280,8 @@ Scan(byte[] startRow, byte[] stopRow)
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-29T10:30:50+08:00" content="2016-10-29">
-              2016-10-29
+            <time itemprop="dateCreated" datetime="2017-03-03T21:59:49+08:00" content="2017-03-03">
+              2017-03-03
             </time>
           </span>
 
@@ -300,8 +294,8 @@ Scan(byte[] startRow, byte[] stopRow)
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
 
@@ -316,8 +310,8 @@ Scan(byte[] startRow, byte[] stopRow)
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/29/HBase-学习-扫描/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/29/HBase-学习-扫描/" itemprop="commentsCount"></span>
+                <a href="/2017/03/03/线性模型和非线性模型的区别/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/03/线性模型和非线性模型的区别/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -327,7 +321,7 @@ Scan(byte[] startRow, byte[] stopRow)
 
           
           
-             <span id="/2016/10/29/HBase-学习-扫描/" class="leancloud_visitors" data-flag-title="HBase 学习: 扫描">
+             <span id="/2017/03/03/线性模型和非线性模型的区别/" class="leancloud_visitors" data-flag-title="线性模型和非线性模型的区别">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -349,71 +343,23 @@ Scan(byte[] startRow, byte[] stopRow)
       
 
       
-        <h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>扫描技术 (scan) 类似于数据库系统中的游标，并利用到了 HBase 提供的底层顺序存储的数据结构。</p>
-<p>Scan 类拥有以下构造器：</p>
-<pre><code>Scan()
-Scan(byte[] startRow, Filter filter)
-Scan(byte[] startRow)
-Scan(byte[] startRow, byte[] stopRow)
-</code></pre><p>我们可以选择性地提供 startRow 参数，来定义扫描读取 HBase 表的起始行键，即行键不是必须指定的。同时可选 stopRow 来限定读取到何时停止。</p>
-<p>创建 Scan 实例之后，用户可能还要给它增加更多限制条件。可以使用多种方法限制所要读取的数据：</p>
-<pre><code>Scan addFamily(byte[] family)
-Scan addColumn(byte[] family, byte[] qualifier)
-</code></pre><p>一旦设置好了 Scan 实例，就可以调用 Htable 的 getScanner() 方法，获得用于检索数据的 ResultScanner 实例。</p>
-<p>扫描操作不会通过一次 RPC 请求返回所有匹配的行，而是以行为单位进行返回，很明显，行的数目很大，可能有上千条甚至更多，同时在一次请求中发送大量数据，会占用大量的系统资源并消耗很长时间。</p>
-<p>ResultScanner 把扫描操作转换为类似的 get 操作，它将每一行数据封装成一个 Result 实例，并将所有的 Result 实例放入一个迭代器中，ResultScanner 的一些方法如下：</p>
-<pre><code>Result next() throws IOException
-Result next(int nbRows) throws IOException
-void close()
-</code></pre><p>有 2 种类型的 next() 调用供用户选择。调用 close() 方法会释放所有由扫描控制的资源。</p>
-<p>next() 调用返回一个单独的 Result 实例，这个实例代表了下一个可用的行。此外，用户可以使用 next(int nbRows) 一次获取多行数据，它返回一个数组，数组中包含的 Result 实例最多可达 nbRows 个，每个实例代表唯一的一行。下面展示了一个关于扫描的简单例子。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test&quot;);
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-Scan scan1 = new Scan();
-ResultScanner scanner1 = table.getScanner(scan1);
-for (Result res: scanner1) {
-    System.out.println(res);
-}
-scanner1.close();
-
-Scan scan2 = new Scan();
-scan2.addFamily(Bytes.toBytes(&quot;colfam1&quot;));
-ResultScanner scanner2 = table.getScanner(scan2);
-for (Result res: scanner2) {
-    System.out.println(res);
-}
-scanner2.close();
-
-Scan scan3 = new Scan();
-// 使用 builder 模式将详细限制条件添加到 Scan 中
-scan3.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;col-5&quot;))
-        .addColumn(Bytes.toBytes(&quot;colfam2&quot;), Bytes.toBytes(&quot;col-33&quot;))
-        .setStartRow(Bytes.toBytes(&quot;row-10&quot;)).setStopRow(Bytes.toBytes(&quot;row-20&quot;));
-ResultScanner scanner3 = table.getScanner(scan3);
-for(Result res: scanner3) {
-    System.out.println(res);
-}
-scanner3.close();
-</code></pre><p><strong>注意</strong>：要确保尽早释放扫描器实例，一个打开的扫描器会占用不少服务端资源，累积多了会占用大量的堆空间。当使用完 ResultScanner 之后应调用它的 close() 方法，同时应当把 close() 方法放到 try/finally 块中，以保证其在迭代获取数据过程中出现异常和错误时，仍然能执行 close()。</p>
-<h3 id="缓存与批量处理"><a href="#缓存与批量处理" class="headerlink" title="缓存与批量处理"></a>缓存与批量处理</h3><p>当我想要一次 RPC 请求可以获取多行数据时，可以使用<strong>扫描器缓存</strong>，默认情况下，这个缓存是关闭的。</p>
-<p>可以在连个层面上打开它：在表的层面，这个表所有扫描实例的缓存都会生效：也可以在扫描层面，这样便只会影响当前的扫描实例。用户可以使用以下的 HTable 方法设置表级的扫描器缓存：</p>
-<pre><code>void setScannerCaching(int scannerCaching)
-int getScannerCaching()
-</code></pre><p>用户可以修改整个 HBase 集群的默认值1，只要把下面的配置项添加到 hbase-site.xml 中即可。</p>
-<pre><code>&lt;property&gt;
-    &lt;name&gt;hbase.client.scanner.caching&lt;/name&gt;
-    &lt;value&gt;10&lt;/value&gt;
-&lt;/property&gt;
-</code></pre><p>可以使用下列 Scan 类的方法设置扫描级别的缓存：</p>
-<pre><code>void setCaching(int caching)
-int getCaching()
-</code></pre><p><strong>注意</strong>：扫描层面的配置高于表层面的配置，这两种方法能控制每次RPC调用取回的行数。</p>
-<p>我们之前介绍的了如何使用客户端的扫描器缓存来从远程 region 服务器向客户端整批传输数据，不过还有一件事需要注意：数据量非常大的行，这些行有可能超过客户端进程的内存容量。HBase 和它的客户端 API 对这个问题有一个解决方法：批量。用户可以使用以下方法控制批量获取操作：</p>
-<pre><code>void setBatch(int batch)
-int getBatch()
-</code></pre><p>缓存是面向行一级的操作，而批量则是面向列一级的操作。批量可以让用户选择每一次 ResultScanner 实例的 next() 操作要取回多少列。例如，在扫描中设置 setBatch(5)，则一次 next() 返回的 Result 实例会包括 5 列。</p>
-<p>通过组合使用扫描器缓存和批量大小，可以让用户方便地控制一个范围内的行键时所需要的 RPC 调用次数。</p>
+<p>在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？</p>
+<p>其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。</p>
+<h3 id="线性回归的等式"><a href="#线性回归的等式" class="headerlink" title="线性回归的等式"></a>线性回归的等式</h3><p>线性回归需要一个线性的模型。这到底意味着什么呢？</p>
+<p>一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。</p>
+<pre><code>Response = constant + parameter * predictior1 + ... + parameter * predictior2
+</code></pre><p>下是个典型的线性模型：</p>
+<p>$$Y = b + w_1x_1 + w_2x_2 + … + w_kx_k$$</p>
+<p>在统计意义上，如果一个回归等式是线性的，那么它的参数就必须也是线性的。如果参数是线性，那么即使变量的特征是二次方或者多次方，这个回归模型也是线性的 (例如下面的公式)。</p>
+<p>$$Y = b + w_1x_1 + w_2x_2^2$$</p>
+<p>你甚至可以使用 log 或者指数去形式化特征</p>
+<p>$$Y = b + w_1e^{-x_1} + w_2e^{-x_2}$$</p>
+<h3 id="非线性回归的等式"><a href="#非线性回归的等式" class="headerlink" title="非线性回归的等式"></a>非线性回归的等式</h3><p>最简单的判断一个模型是不是非线性，就是关注非线性本身，判断它的参数是不是非线性的。非线性有很多种形象，这也是为什么非线性模型能够那么好的拟合那些曲折的函数曲线的原因。比如下面这个：</p>
+<p>$$Y = \theta_1 \ast x^{\theta_2}$$</p>
+<p>$$Y = \theta_1 + (\theta_3 - \theta_2) \ast e^{- \theta_4 X}$$</p>
+<p>与线性模型不一样的是，这些非线性模型的特征因子对应的参数不止一个。</p>
 
       
     </div>
@@ -439,17 +385,13 @@ int getBatch()
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/28/HBase-学习-Delete-和-行锁/" rel="next" title="HBase 学习: Delete、批量处理操作">
-                <i class="fa fa-chevron-left"></i> HBase 学习: Delete、批量处理操作
+              <a href="/2017/03/02/天池ijcai比赛总结/" rel="next" title="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
+                <i class="fa fa-chevron-left"></i> IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/07/HBase学习-比较过滤器/" rel="prev" title="HBase学习: 比较过滤器">
-                HBase学习: 比较过滤器 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -464,10 +406,10 @@ int getBatch()
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/10/29/HBase-学习-扫描/"
-     data-title="HBase 学习: 扫描"
+        <div class="ds-share flat" data-thread-key="2017/03/03/线性模型和非线性模型的区别/"
+     data-title="线性模型和非线性模型的区别"
      data-content=""
-     data-url="http://pengshuang.space/2016/10/29/HBase-学习-扫描/">
+     data-url="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -494,8 +436,8 @@ int getBatch()
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/29/HBase-学习-扫描/"
-           data-title="HBase 学习: 扫描" data-url="http://pengshuang.space/2016/10/29/HBase-学习-扫描/">
+      <div class="ds-thread" data-thread-key="2017/03/03/线性模型和非线性模型的区别/"
+           data-title="线性模型和非线性模型的区别" data-url="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/">
       </div>
     
   </div>
@@ -628,7 +570,7 @@ int getBatch()
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存与批量处理"><span class="nav-number">2.</span> <span class="nav-text">缓存与批量处理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#线性回归的等式"><span class="nav-number">1.</span> <span class="nav-text">线性回归的等式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性回归的等式"><span class="nav-number">2.</span> <span class="nav-text">非线性回归的等式</span></a></li></ol></div>
             
           </div>
         </section>
