@@ -102,7 +102,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。
 工作原理
 假设现在有样本 \(x">
-<meta property="og:updated_time" content="2017-02-28T07:54:38.000Z">
+<meta property="og:updated_time" content="2017-03-03T02:52:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="机器学习常见算法总结">
 <meta name="twitter:description" content="朴素贝叶斯事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A
@@ -543,20 +543,21 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 <li>然后继续对子节点进行递归，直到所有特征都被划分</li>
 </ol>
 <p>熵的定义：</p>
-<p>$$H(D) = - \sum_{i = 1}^{n}(p_i \ast log(p_i))$$</p>
+<p>$$H(D) = - \sum_{i = 1}^{n} p_i \ast log(p_i)$$</p>
 <p>一个属性中的某个类别 Di 的熵，为：</p>
-<p>$$H(D_i|D) = - \sum_{i}^{ }(\frac{|D_i|}{|D|} \ast H(D_i))$$</p>
+<p>$$H(D|D_i) = - \sum_{i}^{ } \frac{|D_i|}{|D|} \ast H(D_i)$$</p>
+<p>$$H(D_i) = - \sum_i^K \frac{D_{ik}}{D_i} log_2 \frac{D_{ik}}{D_i}$$</p>
 <p>信息增益表示分类目标的熵减去当前属性的熵，增益越大，分类能力越强。</p>
-<p>$$Gain(C, A) = H(D) - H(D_i|D)$$</p>
-<h4 id="损失函数-1"><a href="#损失函数-1" class="headerlink" title="损失函数"></a>损失函数</h4><p>设树的叶子节点个数为 \(T\)，\(t\) 为其中一个叶子节点，该叶子节点有\(N_t\)个样本，其中kk类的样本有\(N_{tk}\)个，\(H(t)\)为叶子节点上的经验熵，则损失函数定义为：</p>
+<p>$$Gain(C, A) = H(D) - H(D|D_i)$$</p>
+<h4 id="损失函数-1"><a href="#损失函数-1" class="headerlink" title="损失函数"></a>损失函数</h4><p>设树的叶子节点个数为 \(T\)，\(t\) 为其中一个叶子节点，该叶子节点有\(N_t\)个样本，其中 k 类的样本有\(N_{tk}\)个，\(H(t)\)为叶子节点上的经验熵，则损失函数定义为：</p>
 <p>$$C_t(T) = \sum (N_t \ast H(t)) + \lambda |T|$$</p>
 <p>其中，</p>
-<p>$$H_t(T) = \sum (\frac{N_{tk}}{N_t} \ast log(\frac{N_{tk}}{N_t}))$$</p>
+<p>$$H_t(T) = - \sum \frac{N_{tk}}{N_t} \ast log \frac{N_{tk}}{N_t}$$</p>
 <p>代入可以得到</p>
-<p>$$C_t(T) = \sum(\sum (N_{tk} \ast log(N_{tk}/N_t))) + \lambda |T|$$</p>
+<p>$$C_t(T) = \sum \sum N_{tk} \ast log \frac{N_{tk}}{N_t} + \lambda |T|$$</p>
 <p>其中 \(\lambda |T| \) 为正则化项， \(\lambda \) 是用于调节比率，决策树的生成只考虑了信息增益。 </p>
 <h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h3><p>它是ID3的一个改进算法，使用信息增益率来进行属性的选择</p>
-<p>$$splitInformation(D | A) = - \sum_{i} (\frac{D_i}{D} \ast log2(\frac{D_i}{D}))$$</p>
+<p>$$splitInformation(D | A) = - \sum_{i} \frac{D_i}{D} \ast log_2 \frac{D_i}{D}$$</p>
 <p>$$GainRatio(D,A) = \frac{Gain(D,A)}{splitInformation(D, A)}$$</p>
 <h4 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h4><p>准确率高，但是子构造树的过程中需要进行多次的扫描和排序，所以它的运算效率较低。</p>
 <h3 id="Cart"><a href="#Cart" class="headerlink" title="Cart"></a>Cart</h3><p>分类回归树(Classification And Regression Tree)是一个决策二叉树，在通过递归的方式建立，每个节点在分裂的时候都是希望通过最好的方式将剩余的样本划分成两类，这里的分类指标：</p>
@@ -643,7 +644,7 @@ $$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$
 </ol>
 <h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h4><ol>
 <li>并行麻烦（因为上下两颗树有联系）</li>
-<li>多分类的时候 复杂度很大</li>
+<li>多分类的时候 复杂度很大                         </li>
 </ol>
 
       
