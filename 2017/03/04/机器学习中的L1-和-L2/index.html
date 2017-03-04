@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="算法," />
+  <meta name="keywords" content="数据挖掘," />
 
 
 
@@ -84,31 +84,16 @@
 
 
 
-<meta name="description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
-接口和时间复杂度分析插入 o(logn)
-1. add(self, key, value)
-
-删除 o(logn)
-2. remove(self, k">
+<meta name="description" content="有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hash Heap详解">
-<meta property="og:url" content="http://pengshuang.space/2016/10/22/Hash-Heap详解/index.html">
+<meta property="og:title" content="机器学习中的L1 和 L2">
+<meta property="og:url" content="http://pengshuang.space/2017/03/04/机器学习中的L1-和-L2/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
-接口和时间复杂度分析插入 o(logn)
-1. add(self, key, value)
-
-删除 o(logn)
-2. remove(self, k">
-<meta property="og:updated_time" content="2016-10-22T04:34:01.000Z">
+<meta property="og:description" content="有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误">
+<meta property="og:updated_time" content="2017-03-04T04:28:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hash Heap详解">
-<meta name="twitter:description" content="性质和性质和传统的 Hash 所不同的是，HashHeap 在查询这一块优化了，原有的方法将 Heap 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 Hash 来存放原来 Heap 中的每个元素时，查询的辅助马上降为 o(1)。
-接口和时间复杂度分析插入 o(logn)
-1. add(self, key, value)
-
-删除 o(logn)
-2. remove(self, k">
+<meta name="twitter:title" content="机器学习中的L1 和 L2">
+<meta name="twitter:description" content="有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误">
 
 
 
@@ -129,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/10/22/Hash-Heap详解/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/03/04/机器学习中的L1-和-L2/"/>
 
-  <title> Hash Heap详解 | 小沙文的博客 </title>
+  <title> 机器学习中的L1 和 L2 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +256,7 @@
             
             
               
-                Hash Heap详解
+                机器学习中的L1 和 L2
               
             
           </h1>
@@ -283,8 +268,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-22T10:08:22+08:00" content="2016-10-22">
-              2016-10-22
+            <time itemprop="dateCreated" datetime="2017-03-04T11:07:05+08:00" content="2017-03-04">
+              2017-03-04
             </time>
           </span>
 
@@ -297,8 +282,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据结构/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构</span>
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
 
@@ -313,8 +298,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/22/Hash-Heap详解/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/22/Hash-Heap详解/" itemprop="commentsCount"></span>
+                <a href="/2017/03/04/机器学习中的L1-和-L2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/04/机器学习中的L1-和-L2/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -324,7 +309,7 @@
 
           
           
-             <span id="/2016/10/22/Hash-Heap详解/" class="leancloud_visitors" data-flag-title="Hash Heap详解">
+             <span id="/2017/03/04/机器学习中的L1-和-L2/" class="leancloud_visitors" data-flag-title="机器学习中的L1 和 L2">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -346,72 +331,44 @@
       
 
       
-        <h3 id="性质和性质"><a href="#性质和性质" class="headerlink" title="性质和性质"></a>性质和性质</h3><p>和传统的 Hash 所不同的是，<strong>HashHeap</strong> 在查询这一块优化了，原有的方法将 <strong>Heap</strong> 存放到数组中，遍历数组查询某个数的时间复杂度为 o(n)，而选用 <strong>Hash</strong> 来存放原来 <strong>Heap</strong> 中的每个元素时，查询的辅助马上降为 o(1)。</p>
-<h3 id="接口和时间复杂度分析"><a href="#接口和时间复杂度分析" class="headerlink" title="接口和时间复杂度分析"></a>接口和时间复杂度分析</h3><pre><code>插入 o(logn)
-1. add(self, key, value)
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-删除 o(logn)
-2. remove(self, key)
-
-查找 o(log1)
-3. hasKey(self, key)
-
-取最大值 o(log1)
-4. max(self)
-</code></pre><h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><pre><code>class HashHeap:
-    def __init__(self):
-        self.heap = [0]
-        self.hash = {}
-
-def add(self, key, value):
-    self.heap.append((key, value))
-    self.hash[key] = self.heap[0] + 1
-    self.heap[0] += 1
-    self._siftup(self.heap[0])
-
-def remove(self, key):
-    index = self.hash[key]
-    self._swap(index, self.heap[0])
-    del self.hash[self.heap[self.heap[0]][0]]
-    self.heap.pop()
-    self.heap[0] -= 1
-    if index &lt;= self.heap[0]:
-        index = self._siftup(index)
-        self._siftdown(index)
-
-def hasKey(self, key):
-    return key in self.hash
-
-def max(self):
-    return 0 if self.heap[0] == 0 else self.heap[1][1]
-
-def _swap(self, a, b):
-    self.heap[a], self.heap[b] = self.heap[b], self.heap[a]
-    self.hash[self.heap[a][0]] = a
-    self.hash[self.heap[b][0]] = b
-
-def _siftup(self, index):
-    while index != 1:
-        if self.heap[index][1] &lt;= self.heap[index / 2][1]:
-            break
-        self._swap(index, index / 2)
-        index /= 2
-    return index
-
-def _siftdown(self, index):
-    size = self.heap[0]
-    while index &lt; size:
-        t = index
-        if index * 2 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2][1]:
-            t = index * 2
-        if index * 2 + 1 &lt;= size and self.heap[t][1] &lt; self.heap[index * 2 + 1][1]:
-            t = index * 2 + 1
-        if t == index:
-            break
-        self._swap(index, t)
-        index = t
-    return index
-</code></pre>
+<p>有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误差，这样得到的模型才能有很好的 “泛化” 能力。著名的 “奥卡姆剃刀” 原理说的就是这个东西，模型简单主要是通过规则项来实现，规则项的实现相当于将我们对这个模型的先验知识加入，强行的让学习到的模型具有人想要的特性，例如稀疏、低秩或者平滑等。</p>
+<p>加入了规则项之后的有监督模型的目标函数都可以写成下面这中形式：</p>
+<p>$$w^* = arg min_w \sum_i L(y_i, f(x_i , w)) + \lambda \Omega(w)$$</p>
+<p>其中第一项 \(L(y_i, f(x_i , w))\) 衡量我们的模型对第 i 个样本的预测值 \(f(x_i , w))\) 和真实的标签 \(y_i\) 之间的误差。因为我们的模型是要拟合我们的训练样本。为了提升我们模型的泛化能力，我们需要加上第二项去限制，即对参数 w 的规则化函数 \(\Omega(w)\) 去约束我们的模型尽量的简单。</p>
+<p>规则化 \(\Omega(w)\) 函数有很多种选择，一般是模型复杂度的单调递增函数，模型越复杂，规则化值就越大。比如，规则化项可以是模型参数向量的范数。然而，不同的选择对参数 w 的约束不同，取得的效果也不同。今天我这篇文章主要介绍最常见的 L1 和 L2。</p>
+<h3 id="L1-范数"><a href="#L1-范数" class="headerlink" title="L1 范数"></a>L1 范数</h3><p>说到 L1 范数，就不得不先提一下 L0 范数，L1 是经 L0 发展而来的。如果我们用 L0 范数去规则化一个参数矩阵 W 的话，就是希望 W 的大部分元素都是 0，即希望参数尽可能稀疏；而 L1 范数值指向量中各个元素的绝对值加和，常称 “lasso”。L1 也可以实现特征权值稀疏。那这是为什么呢？因为 L1 是 L0 范数的最优凸近似。对于任何的规则化算子，如果它在 Wi = 0 的地方不可微，并且可以分解为一个 “求和” 的形式，那么这个规则化算子就可以实现稀疏。参数矩阵 W 的 L1 范数是绝对值，|w| 在 w = 0 处是不可微的，并且可以分解为一个求和的形式。那么为什么要用 L1 而不是 L0 去实现特征稀疏呢，因为 L0 范数很难优化求解。</p>
+<h4 id="为什么要特征稀疏"><a href="#为什么要特征稀疏" class="headerlink" title="为什么要特征稀疏"></a>为什么要特征稀疏</h4><p>特征稀疏有一个很大的好处是它可以实现特征的自动选择。一般而言，特征矩阵中的大部元素，也就是特征都是和最终的输出 yi 没有关系或者不提供任何信息的，在最小化目标函数的时候考虑 xi 这些额外的特征，虽然可以获得更小的训练误差，但是在预测新样本的时候，可能会干扰正常的预测。故特征稀疏是为了帮组我们去更好的完成特征选择而设定的。</p>
+<h4 id="特征稀疏的可解释性"><a href="#特征稀疏的可解释性" class="headerlink" title="特征稀疏的可解释性"></a>特征稀疏的可解释性</h4><p>经过特征稀疏之后，模型更容易解释。因为，当特征稀疏之后，大部分的特征权重都是 0，我们可以相信，那些特征权重不为 0 的特征才是对模型起关键意义的。</p>
+<h3 id="L2-范数"><a href="#L2-范数" class="headerlink" title="L2 范数"></a>L2 范数</h3><p>L2 范数常为称为 “Ridge”。 它的形式是 \(||w||_2\)。当用于线性回归中时，它常被称为 “岭回归”。它的主要作用是去解决机器学习中的过拟合问题。那为什么呢？</p>
+<p>L2 范数是指向量各元素的平方和然后求平方根。我们让 L2 范数的规则项 \(||w||_2\) 最小，可以使得 W 的每个元素都很小，通常很解决 0。越小的参数说明模型越简单，越简单的模型则不容易产生过拟合现象。因为当限制了参数很小时，实际上就限制了多项式模型分量的影响很小。</p>
+<h4 id="L2-的好处"><a href="#L2-的好处" class="headerlink" title="L2 的好处"></a>L2 的好处</h4><p>L2 除了可以避免模型陷入过拟合的困境外，还可以处理 <strong>condition number</strong> 不好情况下矩阵求逆很困难的问题。</p>
+<p>在机器学习中，去最优化目标函数时，有 2 个很头疼的问题：</p>
+<ol>
+<li>局部最小值，如果要优化的目标的函数不是凸函数的时候，我们用梯度下降或者其他方法去优化时，可能会得到局部最小值而不是全局最小值。</li>
+<li>ill condition：ill-condition对应的是 well-condition。那他们分别代表什么？假设我们有个方程组 \(AX = b\)，我们需要求解 X。如果A或者b稍微的改变，会使得X的解发生很大的改变，那么这个方程组系统就是 ill-condition 的，反之就是 well-condition 的。ill-condition 是指 \(AX = b\) 的解对于系数矩阵 A 或者 b 很敏感，A 或 b 微小的变化都可能影响解。</li>
+</ol>
+<p><strong>condition number</strong> 就是用来衡量 ill-condition 系统的可行度。condition number 衡量的是输入发生微小变化的时候，输出会发生多大的变化。也就是系统对微小变化的敏感度。condition number 值小的就是 well-conditioned 的，大的就是 ill-conditioned 的。</p>
+<p>如果方阵 A 是非奇异的，那么 A 的 <strong>condition number</strong> 定义为：</p>
+<p>$$\sigma (A) = ||A||\, ||A^{-1}||$$</p>
+<p>也就是矩阵A的 norm 乘以它的逆的 norm。所以具体的值是多少，就要看你选择的 norm 是什么了。如果方阵 A 是奇异的，那么A的 condition number 就是正无穷大了。实际上，每一个可逆方阵都存在一个 condition number。但如果要计算它，我们需要先知道这个方阵的 norm（范数）和 Machine Epsilon（机器的精度）。为什么要范数？范数就相当于衡量一个矩阵的大小，我们知道矩阵是没有大小的，刚才不是要衡量一个矩阵 A 或者向量 b 变化的时候，我们的解 x 变化的大小吗？所以肯定得要有一个东西来度 量矩阵和向量的大小吧？这个东西就是范数，表示矩阵大小或者向量长度。OK，经过比较简单的证明，对于 \(AX = b\)，我们可以得到以下的结论：</p>
+<p>$$\frac{||\Delta x||}{||x||} \leq ||A|| \cdot ||A^{-1}|| \cdot  \frac{||\Delta b||}{||b||}$$</p>
+<p>$$\frac{||\Delta x||}{||x||} \leq \sigma (A) \cdot  \frac{||\Delta b||}{||b||}$$</p>
+<p>$$\frac{||\Delta x||}{||x + \Delta x||} \leq \sigma (A) \cdot  \frac{||\Delta A||}{||b||}$$</p>
+<p>也就是我们的解 x 的相对变化和 A 或者 b 的相对变化是有像上面那样的关系的，其中 \(\sigma (A)\) 的值就相当于倍率，看到了吗？相当于 x 变化的界。</p>
+<p>对 condition number 来个一句话总结：condition number 是一个矩阵（或者它所描述的线性系统）的稳定性或者敏感度的度量，如果一个矩阵的 condition number 在 1 附近，那么它就是 well-conditioned 的，如果远大于 1，那么它就是 ill-conditioned 的，如果一个系统是 ill-conditioned 的，它的输出结果就不是很可信。</p>
+<p>从优化或者数值计算的角度来说，L2 范数有助于处理 condition number 不好的情况下矩阵求逆很困难的问题。因为目标函数如果是二次的，对于线性回归来说，那实际上是有解析解的，求导并令导数等于零即可得到最优解为：</p>
+<p>$$w^* = (X^TX)^{-1}X^Ty$$</p>
+<p>然而，如果当我们的样本 X 的数目比每个样本的维度还要小的时候，矩阵 \(X^TX\) 将会不是满秩的，也就是 \(X^TX\) 会变得不可逆，所以 \(w^*\) 就没办法直接计算出来了。或者更确切地说，将会有无穷多个解（因为我们方程组的个数小于未知数的个数）。也就是说，我们的数据不足以确定一个解，如果我们从所有可行解里随机选一个的话，很可能并不是真正好的解，总而言之，我们过拟合了。</p>
+<p>但是如果加上 L2 规则项，就可以直接求逆，</p>
+<p>$$w^* = (X^TX + \lambda I)^{-1}X^Ty$$</p>
+<p>这里面，要得到这个解，我们通常并不直接求矩阵的逆，而是通过解线性方程组的方式（例如高斯消元法）来计算。考虑没有规则项的时候，也就是 λ=0 的情况，如果矩阵 \(X^TX\) 的 condition number 很大的话，解线性方程组就会在数值上相当不稳定，而这个规则项的引入则可以改善 condition number。</p>
+<p>另外，如果使用迭代优化的算法，condition number 太大仍然会导致问题：它会拖慢迭代的收敛速度，而规则项从优化的角度来看，实际上是将目标函数变成 λ-strongly convex（λ 强凸）的了。</p>
+<p>关于什么是 λ 强凸，如图说一个函数是凸函数，指函数曲线位于改点处的切线之上，而强凸则进一步要求位于该处的一个二次函数之上，也就是说要求函数不要太“平坦”而是可以保证有一定的 “向上弯曲” 的趋势。如果我们有“强凸”的话，我们就可以得到一个更好的近似解。效果的好坏取决于 strongly convex性质中的常数 λ 的大小。</p>
+<p>所以，如果我们想要获得 λ 强凸的话，就是往目标函数里面加上 \(\frac{\alpha}{2} ||w||^{2}\)</p>
+<p>在梯度下降中，目标函数收敛速率的上界实际上是和矩阵 \(X^TX\) 的 condition number 有关，\(X^TX\) 的 condition number 越小，上界就越小，也就是收敛速度会越快。L2 范数不但可以防止过拟合，还可以让我们的优化求解变得稳定和快速。</p>
+<h3 id="L1-和-L2-的区别"><a href="#L1-和-L2-的区别" class="headerlink" title="L1 和 L2 的区别"></a>L1 和 L2 的区别</h3>
       
     </div>
 
@@ -433,7 +390,7 @@ def _siftdown(self, index):
       
         <div class="post-tags">
           
-            <a href="/tags/算法/" rel="tag">#算法</a>
+            <a href="/tags/数据挖掘/" rel="tag">#数据挖掘</a>
           
         </div>
       
@@ -442,17 +399,13 @@ def _siftdown(self, index):
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/22/数据库系统实现-位图索引/" rel="next" title="数据库系统实现: 位图索引">
-                <i class="fa fa-chevron-left"></i> 数据库系统实现: 位图索引
+              <a href="/2017/03/03/线性模型和非线性模型的区别/" rel="next" title="线性模型和非线性模型的区别">
+                <i class="fa fa-chevron-left"></i> 线性模型和非线性模型的区别
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/22/数据库系统实现-索引结构小结/" rel="prev" title="数据库系统实现: 索引结构小结">
-                数据库系统实现: 索引结构小结 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -467,10 +420,10 @@ def _siftdown(self, index):
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/10/22/Hash-Heap详解/"
-     data-title="Hash Heap详解"
+        <div class="ds-share flat" data-thread-key="2017/03/04/机器学习中的L1-和-L2/"
+     data-title="机器学习中的L1 和 L2"
      data-content=""
-     data-url="http://pengshuang.space/2016/10/22/Hash-Heap详解/">
+     data-url="http://pengshuang.space/2017/03/04/机器学习中的L1-和-L2/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -497,8 +450,8 @@ def _siftdown(self, index):
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/22/Hash-Heap详解/"
-           data-title="Hash Heap详解" data-url="http://pengshuang.space/2016/10/22/Hash-Heap详解/">
+      <div class="ds-thread" data-thread-key="2017/03/04/机器学习中的L1-和-L2/"
+           data-title="机器学习中的L1 和 L2" data-url="http://pengshuang.space/2017/03/04/机器学习中的L1-和-L2/">
       </div>
     
   </div>
@@ -631,7 +584,7 @@ def _siftdown(self, index):
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#性质和性质"><span class="nav-number">1.</span> <span class="nav-text">性质和性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接口和时间复杂度分析"><span class="nav-number">2.</span> <span class="nav-text">接口和时间复杂度分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码实现"><span class="nav-number">3.</span> <span class="nav-text">代码实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#L1-范数"><span class="nav-number">1.</span> <span class="nav-text">L1 范数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为什么要特征稀疏"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要特征稀疏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征稀疏的可解释性"><span class="nav-number">1.2.</span> <span class="nav-text">特征稀疏的可解释性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L2-范数"><span class="nav-number">2.</span> <span class="nav-text">L2 范数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#L2-的好处"><span class="nav-number">2.1.</span> <span class="nav-text">L2 的好处</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#L1-和-L2-的区别"><span class="nav-number">3.</span> <span class="nav-text">L1 和 L2 的区别</span></a></li></ol></div>
             
           </div>
         </section>

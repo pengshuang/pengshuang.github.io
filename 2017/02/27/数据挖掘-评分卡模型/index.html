@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数据挖掘," />
 
 
 
@@ -92,7 +92,7 @@ WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始
 <meta property="og:site_name" content="小沙文的博客">
 <meta property="og:description" content="信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量 WOE 编码方式离散化之后运用 logistic 回归模型进行的一种二分类变量的广义线性模型。本文重点介绍模型变量 WOE 以及 IV 原理.
 WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始自变量的一种编码形式。要对一个变量进行">
-<meta property="og:updated_time" content="2017-03-02T05:48:21.000Z">
+<meta property="og:updated_time" content="2017-03-04T03:14:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据挖掘: 评分卡模型">
 <meta name="twitter:description" content="信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量 WOE 编码方式离散化之后运用 logistic 回归模型进行的一种二分类变量的广义线性模型。本文重点介绍模型变量 WOE 以及 IV 原理.
@@ -342,7 +342,9 @@ WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始
 <p>其中，\(p_{y_i}\) 是这个组中响应客户，风险模型中，对应的是违约客户，指的是模型中预测变量取值为 1 的个体占所有样本中所有响应客户的比例，\(p_{n_i}\) 是这个组中未响应客户占样本中所有未响应客户的比例，\(y_i\) 是这个组中响应客户的数量，\(n_i\) 是这个组中未响应客户的数量，\(y_s\) 是样本中所有响应客户的数量，\(n_s\) 是样本中所有未响应客户的数量。</p>
 <p>简单来说， WOE 表示的是<strong>当前分组中响应的用户占所有响应用户的比例</strong>和<strong>当前分组中没有响应的用户占所有没有响应用户的比例</strong>的差异。</p>
 <p>WOE 也可以这么来理解，</p>
-<p>$$woe_i = ln\frac{P_{y_i}}{P_{n_i}} = ln\frac{y_i/y_s}{n_i/n_s} = ln\frac{y_i/n_i}{y_s/n_s}$$</p>
+<p>$$woe_i = ln\frac{P_{y_i}}{P_{n_i}} = ln\frac{y_i/y_s}{n_i/n_s}$$</p>
+<p>WOE 同时也等于：</p>
+<p>$$woe_i = ln\frac{y_i/n_i}{y_s/n_s}$$</p>
 <p>可以看出，WOE 也可以表示<strong>当前这个组中响应的客户和未响应的客户的比例</strong>和<strong>所有样本中这个比例</strong>的差异。这个差异是用这两个比值的比值，再取对数来表示的。WOE 越大，这种差异越大，这个分组里的样本响应的可能性就越大，WOE 越小，差异越小，这个分组里的样本响应的可能性就越小。WOE 蕴含了自变量取值对应目标变量（违约概率）的影响。再加上 WOE 计算形式与 logistic 回归中目标变量的 logistic 转换很相似，因此可以将自变量 WOE 替代原先的自变量值。</p>
 <h3 id="IV"><a href="#IV" class="headerlink" title="IV"></a>IV</h3><p>其实 IV 衡量的是某一个变量的信息量，从公式来看的话，相当于是自变量 WOE 值的一个加权求和，其值的大小决定了自变量对于目标变量的影响程度；从另一个角度来看的话，IV 公式与信息熵的公式极其相似。</p>
 <p>IV 公式如下：</p>
@@ -386,6 +388,12 @@ WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据挖掘/" rel="tag">#数据挖掘</a>
+          
+        </div>
       
 
       
@@ -493,7 +501,7 @@ WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">64</span>
+              <span class="site-state-item-count">65</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -510,7 +518,7 @@ WOEWOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-count">29</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
