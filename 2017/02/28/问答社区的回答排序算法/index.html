@@ -96,7 +96,7 @@
 基于用户投票的排序算法顾名思义">
 <meta property="og:image" content="http://pengshuang.space/img/p1.png">
 <meta property="og:image" content="http://pengshuang.space/img/p2.png">
-<meta property="og:updated_time" content="2017-02-28T12:14:12.000Z">
+<meta property="og:updated_time" content="2017-03-04T07:29:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="问答社区的回答排序算法(一）">
 <meta name="twitter:description" content="正好研究生的研究方向是问答社区的专家发现，所以，看过很多关于专家发现的 paper 以及一些工业界实践的经验。一直没有机会好好总结一下，借此机会梳理一下。问答社区的专家用户的发现有助于问题的顺利解决，并且也有助于提高问答社区的用户体验，有利于问答社区的长期发展。
@@ -348,6 +348,7 @@
 <p><strong>Urban Dictionary</strong> 就是这种错误算法的实例。</p>
 <p><img src="/img/p1.png" alt=""></p>
 <h3 id="得分-赞成票-总票数"><a href="#得分-赞成票-总票数" class="headerlink" title="得分 = 赞成票 / 总票数"></a>得分 = 赞成票 / 总票数</h3><p>如果总票数很大，这种算法其实是对的。问题出在如果总票数很少，这时就会出错。假定 A 有 2 张赞成票、0 张反对票，B 有 100 张赞成票、1 张反对票。这种算法会使得 A 排在 B 前面。这显然错误。</p>
+<p><strong>Amazon</strong> 便采用的是这种做法。</p>
 <p><img src="/img/p2.png" alt=""></p>
 <h3 id="威尔逊得分"><a href="#威尔逊得分" class="headerlink" title="威尔逊得分"></a>威尔逊得分</h3><p>威尔逊得分的思想是，如果把一个回答展示给很多人看并让他们投票，内容质量不同的回答会得到不同比例的赞同和反对票数，最终得到一个反映内容质量的得分。当投票的人比较少时，可以根据已经获得的票数估计这个回答的质量得分，投票的人越多则估计结果越接近真实得分。</p>
 <p>如果新一个回答获得了 1 票赞同 0 票反对，也就是说参与投票的用户 100% 都选了赞同，但是因为数量太少，所以得分也不会太高。如果一小段时间后这个回答获得了 20 次赞同 1 次反对，那么基于新算法，我们就有较强的信心把它排在另一个有 50 次赞同 20 次反对的回答前面。原因是我们预测当这个回答同样获得 50 次赞同时，它获得的反对数应该会小于 20。威尔逊得分算法最好的特性就是，即使前一步我们错了，现在这个新回答排到了前面，获得了更多展示，在它得到更多投票后，算法便会自我修正，基于更多的投票数据更准确地计算得分，从而让排序最终能够真实地反映内容的质量。</p>
