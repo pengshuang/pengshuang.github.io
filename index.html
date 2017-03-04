@@ -374,7 +374,23 @@
 <p>关于什么是 λ 强凸，如图说一个函数是凸函数，指函数曲线位于改点处的切线之上，而强凸则进一步要求位于该处的一个二次函数之上，也就是说要求函数不要太“平坦”而是可以保证有一定的 “向上弯曲” 的趋势。如果我们有“强凸”的话，我们就可以得到一个更好的近似解。效果的好坏取决于 strongly convex性质中的常数 λ 的大小。</p>
 <p>所以，如果我们想要获得 λ 强凸的话，就是往目标函数里面加上 \(\frac{\alpha}{2} ||w||^{2}\)</p>
 <p>在梯度下降中，目标函数收敛速率的上界实际上是和矩阵 \(X^TX\) 的 condition number 有关，\(X^TX\) 的 condition number 越小，上界就越小，也就是收敛速度会越快。L2 范数不但可以防止过拟合，还可以让我们的优化求解变得稳定和快速。</p>
-<h3 id="L1-和-L2-的区别"><a href="#L1-和-L2-的区别" class="headerlink" title="L1 和 L2 的区别"></a>L1 和 L2 的区别</h3>
+<h3 id="L1-和-L2-的区别"><a href="#L1-和-L2-的区别" class="headerlink" title="L1 和 L2 的区别"></a>L1 和 L2 的区别</h3><p>L1 和 L2，一个让绝对值最小，一个让平方最小，他们的差距大吗？</p>
+<h4 id="下降速度"><a href="#下降速度" class="headerlink" title="下降速度"></a>下降速度</h4><p>我们知道，L1 和 L2 都是规则化的方式，我们将权值参数以 L1 或者 L2 了的方式放到代价函数里面去。然后模型就会尝试去最小化这些权值参数。而这个最小化就像一个下坡的过程，L1 和 L2 的差别就在于这个“坡”不同，如下图：L1就是按绝对值函数的“坡”下降的，而L2是按二次函数的“坡”下降。所以实际上在 0 附近，L1 的下降速度比 L2 的下降速度要快。所以会非常快得降到0。</p>
+<p><img src="/img/l1l2.png" width="500" height="520" alt="图片名称" align="center"></p>
+<h4 id="模型空间的限制"><a href="#模型空间的限制" class="headerlink" title="模型空间的限制"></a>模型空间的限制</h4><p>$$Lasso: min_w \frac{1}{n} ||y - Xw||^2,  s.t ||w||_1 \leq C$$</p>
+<p>$$Ridge: min_w \frac{1}{n} ||y - Xw||^2,  s.t ||w||_2 \leq C$$</p>
+<p>也就是说，我们将模型空间限制在 w 的一个L1-ball 中。为了便于可视化，我们考虑两维的情况，在(w1, w2) 平面上可以画出目标函数的等高线，而约束条件则成为平面上半径为 C 的一个 norm ball。等高线与 norm ball 首次相交的地方就是最优解：如下图：</p>
+<p><img src="/img/l1l2p.png" width="800" height="420" alt="图片名称" align="center"></p>
+<p>可以看到，L1-ball 与 L2-ball 的不同就在于 L1 在和每个坐标轴相交的地方都有“角”出现，而目标函数的测地线除非位置摆得非常好，大部分时候都会在角的地方相交。注意到在角的位置就会产生稀疏性，例如图中的相交点就有 w1=0，而更高维的时候（想象一下三维的L1-ball 是什么样的？）除了角点以外，还有很多边的轮廓也是既有很大的概率成为第一次相交的地方，又会产生稀疏性。</p>
+<p>相比之下，L2-ball 就没有这样的性质，因为没有角，所以第一次相交的地方出现在具有稀疏性的位置的概率就变得非常小了。这就从直观上来解释了为什么 L1-regularization 能产生稀疏性，而 L2-regularization 不行的原因了。</p>
+<p>因此，一句话总结就是：L1会趋向于产生少量的特征，而其他的特征都是0，而L2会选择更多的特征，这些特征都会接近于0。Lasso 在特征选择时候非常有用，而 Ridge 就只是一种规则化而已。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><p><a href="http://blog.csdn.net/zouxy09/article/details/24971995" target="_blank" rel="external">机器学习中的范数规则化之（一）L0、L1与L2范数</a></p>
+</li>
+<li><p><a href="http://t.hengwei.me/post/%E6%B5%85%E8%B0%88l0l1l2%E8%8C%83%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8.html" target="_blank" rel="external">浅谈L0,L1,L2范数及其应用</a></p>
+</li>
+</ul>
+
           
         
       
@@ -1037,7 +1053,8 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
 <p>可以看出，WOE 也可以表示<strong>当前这个组中响应的客户和未响应的客户的比例</strong>和<strong>所有样本中这个比例</strong>的差异。这个差异是用这两个比值的比值，再取对数来表示的。WOE 越大，这种差异越大，这个分组里的样本响应的可能性就越大，WOE 越小，差异越小，这个分组里的样本响应的可能性就越小。WOE 蕴含了自变量取值对应目标变量（违约概率）的影响。再加上 WOE 计算形式与 logistic 回归中目标变量的 logistic 转换很相似，因此可以将自变量 WOE 替代原先的自变量值。</p>
 <h3 id="IV"><a href="#IV" class="headerlink" title="IV"></a>IV</h3><p>其实 IV 衡量的是某一个变量的信息量，从公式来看的话，相当于是自变量 WOE 值的一个加权求和，其值的大小决定了自变量对于目标变量的影响程度；从另一个角度来看的话，IV 公式与信息熵的公式极其相似。</p>
 <p>IV 公式如下：</p>
-<p>$$IV_i = (P_{yi} - P_{ni}) \ast WOE<em>i = (P\</em>{yi} - P_{ni}) \ast ln \frac{P_{y_i}}{P_{n_i}} = (y_i / y_s - n_i / n_s) ln \frac{y_i/y_s}{n_i/n_s}$$</p>
+<p>$$IV_i = (P_{yi} - P_{ni}) \ast WOE<em>i = (P\</em>{yi} - P_{ni}) \ast ln \frac{P_{y_i}}{P_{n_i}}$$</p>
+<p>$$IV_i = (y_i / y_s - n_i / n_s) ln \frac{y_i/y_s}{n_i/n_s}$$</p>
 <p>计算了一个变量各个组的 IV 值之后，我们就可以计算整个变量的 IV 值：</p>
 <p>$$IV = \sum_i^n IV_i$$</p>
 <p>其中 n 为变量的分组个数。</p>
@@ -1483,6 +1500,9 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
 <li>并行麻烦（因为上下两颗树有联系）</li>
 <li>多分类的时候 复杂度很大                         </li>
 </ol>
+<h3 id="9-参考资料"><a href="#9-参考资料" class="headerlink" title="9. 参考资料"></a>9. 参考资料</h3><ul>
+<li><a href="http://kubicode.me/2015/08/16/Machine%20Learning/Algorithm-Summary-for-Interview/" target="_blank" rel="external">机器学习常见算法个人总结（面试用）</a></li>
+</ul>
 
           
         
