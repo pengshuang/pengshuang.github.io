@@ -259,7 +259,7 @@
               
                 
                 <a class="post-title-link" href="/2017/03/05/随机森林和GBDT/" itemprop="url">
-                  从随机森林到 GBDT
+                  集成学习：从随机森林到 GBDT
                 </a>
               
             
@@ -313,7 +313,7 @@
 
           
           
-             <span id="/2017/03/05/随机森林和GBDT/" class="leancloud_visitors" data-flag-title="从随机森林到 GBDT">
+             <span id="/2017/03/05/随机森林和GBDT/" class="leancloud_visitors" data-flag-title="集成学习：从随机森林到 GBDT">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -395,16 +395,16 @@
 <p>即，\(F^{i-1}(x)\) 加上反向梯度的 \(h_i(x)\) 得到 \(F^i(x)\)，该值可能导致平方差损失函数降低，预测的准确度降低。</p>
 <h4 id="拟合反向梯度"><a href="#拟合反向梯度" class="headerlink" title="拟合反向梯度"></a>拟合反向梯度</h4><p>引入任意损失函数后，我们可以定义整体模型的迭代式如下：</p>
 <p>$$F^i(x) = F^{i-1}(x) + argmin \sum_j^n L(y_j, F^{i-1}(x_j) + h_i(x_j))$$</p>
-<h3 id="常见的损失函数"><a href="#常见的损失函数" class="headerlink" title="常见的损失函数"></a>常见的损失函数</h3><ul>
+<h4 id="常见的损失函数"><a href="#常见的损失函数" class="headerlink" title="常见的损失函数"></a>常见的损失函数</h4><ul>
 <li>最小均方误差函数：sklearn 中 GBDT 回归中的默认损失函数，刚才介绍的拟合残差其实就是改损失函数的反向梯度值。</li>
 <li>logit 函数：LR 中常用的损失函数。逻辑回归的本质是求极大似然解，其认为样本服从几何分布，样本属于某类别的概率可以用 logistics 函数表达。sklean 中 GBDT 分类模型默认采用这个损失函数。</li>
 <li>指数损失函数：<br>$$L(y_j, F^{i-1}(x_j) = e^{-y_j \ast F^{i-1}(x_j)}$$<br>对该损失函数求反向梯度得：<br>$$- \frac{\partial ( y_j, F^{i-1}(x_j))}{\partial ^{i-1} F^{i-1}(x)} = y_j \ast e^{-y_j \ast F^{i-1}(x_j)}$$<br>这时，第 i 轮迭代中，新训练集如下：<br>$${(x_j, y_j \ast e^{-y_j \ast F^{i-1}(x_j)})}$$<br>这表明当损失函数是指数损失时，GBDT 相当于二分类的 Adaboost 算法。是的，指数损失仅能用于二分类的情况。</li>
 </ul>
-<h3 id="shrinkage"><a href="#shrinkage" class="headerlink" title="shrinkage"></a>shrinkage</h3><p>使用 GBDT 时，每次学习的步长缩减一点。这有什么好处呢？缩减思想认为每次走一小步，多走几次，更容易逼近真实值。如果步子迈大了，使用最速下降法时，容易迈过最优点。</p>
-<h3 id="初始模型"><a href="#初始模型" class="headerlink" title="初始模型"></a>初始模型</h3><p>我们定义损失模型为：</p>
+<h4 id="shrinkage"><a href="#shrinkage" class="headerlink" title="shrinkage"></a>shrinkage</h4><p>使用 GBDT 时，每次学习的步长缩减一点。这有什么好处呢？缩减思想认为每次走一小步，多走几次，更容易逼近真实值。如果步子迈大了，使用最速下降法时，容易迈过最优点。</p>
+<h4 id="初始模型"><a href="#初始模型" class="headerlink" title="初始模型"></a>初始模型</h4><p>我们定义损失模型为：</p>
 <p>$$ F^0 (x) = argmin \sum_j^n L(y_j, \gamma)$$</p>
 <p>根据上式可知，对于不同的损失函数来说，初始模型也是不一样的。</p>
-<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p><strong>偏差描述了模型在训练集准确度，而损失函数则是描述该准确度的间接量纲。</strong> 也就是说，模型采用不同的损失函数，其训练过程会朝着不同的方向进行！</p>
+<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h4><p><strong>偏差描述了模型在训练集准确度，而损失函数则是描述该准确度的间接量纲。</strong> 也就是说，模型采用不同的损失函数，其训练过程会朝着不同的方向进行！</p>
 
           
         
