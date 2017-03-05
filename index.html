@@ -258,6 +258,152 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/05/随机森林和GBDT/" itemprop="url">
+                  随机森林和GBDT
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-05T15:23:15+08:00" content="2017-03-05">
+              2017-03-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/05/随机森林和GBDT/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/05/随机森林和GBDT/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/05/随机森林和GBDT/" class="leancloud_visitors" data-flag-title="随机森林和GBDT">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>研究生期间参加了很多数据挖掘比赛，比赛的题目各不相同，但其实每次用的模型都差不多，其中用的最多的就是随机森林和 GBDT。所以今天打算总结一下这两个模型。</p>
+<p>随机森林是一种 bagging 的方法，而 GBDT 则是一种 boosting 的方法。这两类方法统称为集成学习。</p>
+<h3 id="什么是集成学习"><a href="#什么是集成学习" class="headerlink" title="什么是集成学习"></a>什么是集成学习</h3><p>集成学习是一种技术框架，其按照不同的思路来组合基础模型，从而达到比单一模型更好的效果。常见的集成学习框架有：bagging，boosting和stacking。南京大学的周志华老师曾经对这三种方法有很明确的定义：</p>
+<ul>
+<li><strong>bagging</strong>：从训练集从进行子抽样组成每个基模型所需要的子训练集，对所有基模型预测的结果进行综合产生最终的预测结果。</li>
+</ul>
+<p><img src="/img/bagging.jpg" width="500" height="200" alt="图片名称" align="center"></p>
+<ul>
+<li><strong>boosting</strong>：训练过程为阶梯状，基模型按次序一一进行训练（实现上可以做到并行），基模型的训练集按照某种策略每次都进行一定的转化。对所有基模型预测的结果进行线性综合产生最终的预测结果。</li>
+</ul>
+<p><img src="/img/boosting.jpg" width="500" height="300" alt="图片名称" align="center"></p>
+<ul>
+<li><strong>stack</strong>：将训练好的所有基模型对训练基进行预测，第j个基模型对第i个训练样本的预测值将作为新的训练集中第i个样本的第j个特征值，最后基于新的训练集进行训练。同理，预测的过程也要先经过所有基模型的预测形成新的测试集，最后再对测试集进行预测。</li>
+</ul>
+<p><img src="/img/stack.jpg" width="500" height="400" alt="图片名称" align="center"></p>
+<p>有了集成学习的思想，模型便有了 “集思广益” 的能力，也就不容易产生过拟合现象。但是，为什么这样就可以防止过拟合呢，这就不得不先从模型的偏差和方差入手。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/04/机器学习中的L1-和-L2/" itemprop="url">
                   机器学习中的L1 和 L2
                 </a>
@@ -338,8 +484,6 @@
         
           
             <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-
 
 <p>有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误差，这样得到的模型才能有很好的 “泛化” 能力。著名的 “奥卡姆剃刀” 原理说的就是这个东西，模型简单主要是通过规则项来实现，规则项的实现相当于将我们对这个模型的先验知识加入，强行的让学习到的模型具有人想要的特性，例如稀疏、低秩或者平滑等。</p>
 <p>加入了规则项之后的有监督模型的目标函数都可以写成下面这中形式：</p>
@@ -670,7 +814,6 @@
             <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
 <p>一直想总结一下这次的比赛，拖啊拖。。。一直等到现在，趁着现在要找实习，好好总结一下。</p>
-<!--<img src="/img/award.png" width = "460" height = "620" alt="图片名称" align=center />-->
 <h3 id="比赛题目"><a href="#比赛题目" class="headerlink" title="比赛题目"></a>比赛题目</h3><p>比赛的官方网站在这，<a href="https://tianchi.shuju.aliyun.com/competition/introduction.htm?spm=5176.100066.333.2.4HLjZH&amp;raceId=231532" target="_blank" rel="external">IJCAI SocInf’16</a>。</p>
 <p>这次比赛的题目是给定 2015 年 7 ~ 11 月份的用户在不同地点口碑购买记录，以及 2015 年 7 ~ 11 月淘宝上用户的购物行为数据，来预测 12 月这一整月用户来到一个地点之后会光顾哪些口碑商铺。这个比赛有一个很有意思的地方，就是它关注的是一个用户来到一个他之前没有去过的新地点之后，他会去哪些店铺消费，有一点像推荐系统中经典的冷启动问题。比赛提供的数据也有这个特点：</p>
 <ol>
@@ -2115,201 +2258,6 @@ val result = sqlContext.sql(&quot;SELECT * FROM people&quot;)
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/04/Spark实践-1-Spark-工作机制/" itemprop="url">
-                  Spark实践 (1): Spark 工作机制
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-02-04T15:07:57+08:00" content="2017-02-04">
-              2017-02-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/02/04/Spark实践-1-Spark-工作机制/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/04/Spark实践-1-Spark-工作机制/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/02/04/Spark实践-1-Spark-工作机制/" class="leancloud_visitors" data-flag-title="Spark实践 (1): Spark 工作机制">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Spark 工作机制主要包括调度管理、内存管理、容错机制。</p>
-<h3 id="调度管理"><a href="#调度管理" class="headerlink" title="调度管理"></a>调度管理</h3><p>Spark 调度管理按照场景可以分为2类，一类是Spark程序之间的调度，这是最主要的调度场景；另外一类是Spark程序内部的调度。</p>
-<h4 id="Driver-程序"><a href="#Driver-程序" class="headerlink" title="Driver 程序"></a>Driver 程序</h4><p>在集群模式下，用户编写的 Spark 程序称为 Driver 程序。每个 Driver 程序包含一个代表集群环境的 SparkContenxt 对象并与之连接，程序的执行从 Driver 程序开始，中间过程会调用 RDD 操作，这些操作通过集群资源管理器来调度执行，一般在 Worker 节点上执行，所有操作执行结束后回到 Driver 程序中，在 Driver 程序中结束。</p>
-<h4 id="SparkContext-对象"><a href="#SparkContext-对象" class="headerlink" title="SparkContext 对象"></a>SparkContext 对象</h4><p>每个驱动程序里都有一个 SparkContext 对象，担负着与集群沟通的职责，其工作过程如下：</p>
-<ol>
-<li>SaprkContext 对象联系集群管理器、分配CPU、内存等资源。</li>
-<li>集群管理器在工作节点上启动一个执行器。</li>
-<li>程序代码会被分发到相应的工作节点上。</li>
-<li>SparkContext 分发任务（Task）至各执行器执行。</li>
-</ol>
-<h4 id="集群管理器"><a href="#集群管理器" class="headerlink" title="集群管理器"></a>集群管理器</h4><p>集群管理器负责集群的资源调度。Spark 支持 3 种集群部署方式，每种部署对应一种资源管理器。</p>
-<ol>
-<li>Standalone 模式（资源管理器是Master结点）。最简单的一种集群模式，不依赖于其他系统，调度策略相对单一，只支持先出先进。</li>
-<li>Hadoop Yarn。</li>
-<li>Apache Mesos。</li>
-</ol>
-<h4 id="其他相关名称"><a href="#其他相关名称" class="headerlink" title="其他相关名称"></a>其他相关名称</h4><ul>
-<li>Job： 一次 RDD Action 对应一次 Job，会提交至资源管理器调度执行。</li>
-<li>Stage： Job 在执行过程中被分为多个阶段。介于 Job 和 Task 之间，是按 Shuffle 分隔的 Task 集合。</li>
-<li>执行器： 每个 Spark 程序在每个节点上启动一个进程，专属于一个 Spark 程序，与 Spark 程序有相同的生命周期，负责 Spark 在节点上启动的 Task，管理内存和磁盘。如果一个节点上有多个 Spark 程序在执行，那么相应的就会启动多个执行器。</li>
-<li>Task： 在执行器上执行的最小单元。比如 RDD Transformation 操作时对 RDD 内每个分区计算都会对应一个 Task。</li>
-</ul>
-<h4 id="Spark-程序之间的调度"><a href="#Spark-程序之间的调度" class="headerlink" title="Spark 程序之间的调度"></a>Spark 程序之间的调度</h4><p>主要分为两种，</p>
-<ol>
-<li>静态资源分配</li>
-<li>动态资源分配</li>
-</ol>
-<h4 id="Spark-程序内部的调度"><a href="#Spark-程序内部的调度" class="headerlink" title="Spark 程序内部的调度"></a>Spark 程序内部的调度</h4><p>当 Spark 为多个用户同时提供服务时，我们可以考虑配置 Spark 程序内部的调度。</p>
-<p>在 Spark 程序内部，不同线程提交的 Job 可以并行执行。Spark 的调度器是线程安全的，因此可以支持这种需要同时处理多个请求的服务型应用。</p>
-<p>默认情况下，Spark的调度器以 FIFO 的方式运行 Job，前面运行的 Job 优先获得所有资源。从 Spark 0.8 开始，可以开始采用“循环”（round robin）的方式为不同 Job 之间的 Task 分配资源，这样所有的 Job 可以获取差不多相同的资源。这种模式特别适用于多用户的场景。</p>
-<p>如果想要开启程序的公平调度，只需要在 SparkContext 中设置 Spark.scheduler.mode 的值为 FAIR：</p>
-<pre><code>var conf = new SparkConf().setMaster(...).setAppName(...)
-conf.set(&quot;spark.scheduler.mode&quot;, &quot;FAIR&quot;)
-var sc = new SparkContext(conf);
-</code></pre><h4 id="公平调度池"><a href="#公平调度池" class="headerlink" title="公平调度池"></a>公平调度池</h4><p>公平调度支持对多个 Job 进行分组，这个分组称为调度池，每个调度池可以设置不同的调度选项，当我们想要为一些更重要的 Job 设置更高的优先级时，这个功能就非常有用了。我们可以为不同的用户设置不同的调度池。然后让各个调度池平等地共享资源，而不是按 Job 来共享资源。</p>
-<p>指定让 Job 进入那个调度池的具体方法是提交任务的线程在 SparkContext 中设置 spark.scheduler.pool </p>
-<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;, &quot;pool1&quot;)
-</code></pre><p>这样设置之后，这个线程提交的所有 Job 会使用这个调度池。设置按线程来进行，这样可以很方便地让一个线程下的所有 Job 都在同一个用户下。如果要清空当前线程的调度池设置，可以这样设置</p>
-<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;,null)
-</code></pre><h4 id="调度池的默认行为"><a href="#调度池的默认行为" class="headerlink" title="调度池的默认行为"></a>调度池的默认行为</h4><p>默认情况下，所有调度池平均共享集群的资源，默认调度池也是。但在每个调度池内部，各个 Job 是按 FIFO 的顺序来执行的。</p>
-<h4 id="调度池的配置"><a href="#调度池的配置" class="headerlink" title="调度池的配置"></a>调度池的配置</h4><ul>
-<li>schedulingMode。（FIFO 或者 FAIR）</li>
-<li>weight。（用于控制调度池相对于其他调度池的权重）</li>
-<li>minShare。（最小资源值( core 的数量)）</li>
-</ul>
-<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>相比 Hadoop MapReduce，Spark 计算具有巨大的性能优势，其中很大一部分是因为 Spark  对于内存的充分利用，以及提供的缓存机制。</p>
-<h4 id="RDD-持久化"><a href="#RDD-持久化" class="headerlink" title="RDD 持久化"></a>RDD 持久化</h4><p>如果一个 RDD 不止一次被用到，那么就可以持久化它，以大幅提升程序的性能。持久化的方法是调用 persist() 函数，除了持久化至内存中，还可以在 persist() 中指定 storage level 参数使用其他的类型。</p>
-<h4 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h4><p>Spark 大部分操作都是 RDD 操作，通过传入函数给 RDD 操作函数来计算。这些函数在不同的节点上并发执行，内部的变量有不同的作用域，不能互相访问。Spark 提供 2 种共享变量–广播变量和计数器。</p>
-<ol>
-<li>广播变量</li>
-</ol>
-<p>一个只读对象，在所有节点上都有一份缓存，创建方法如下：</p>
-<pre><code>val broadcastVar = sc.broadcast(Array(1, 2, 3))
-</code></pre><ol>
-<li>计数器</li>
-</ol>
-<p>计数器只能增加，可以用于计算或者求和。计数器变量的创建方法是:</p>
-<pre><code>SparkContext.accumulator(v, name) 
-</code></pre><p>v 是初始值，name 是名称。注意，只有 Driver 程序可以读这个计算器变量，RDD 操作中读取计数器变量是无意义的。</p>
-<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p>Spark  以前的集群容错处理模型，像 MapReduce，将计算转换为一个有向无环图（DAG）的任务集合，这样可以通过重复执行 DAG 里的一部分任务来完成容错恢复。但是由于主要的数据存储在分布式文件系统中，没有提供其他存储的概念，容错过程中需要在网络上进行数据复制，从而增加了大量的消耗。所以，分布式编程中经常需要做检查点，即将某个时机的中间数据写到存储（通常是分布式文件系统）中。</p>
-<p>RDD 也是一个 DAG，每一个 RDD 都会记住创建该数据集需要哪些操作，跟踪记录 RDD 的继承关系，这个关系在 Spark 里面叫 lineage。由于创建 RDD 的操作是相对粗粒度的变换，即单一的操作应用于许多数据元素，而不需存储真正的数据。当一个 RDD 的某个分区丢失时， RDD 有足够的信息记录其如何通过其他 RDD 进行计算，且只需重新计算该分区。</p>
-<p>RDD 之间的依赖分为两种。</p>
-<ul>
-<li>窄依赖。父分区对应一个子分区。</li>
-<li>宽依赖。父分区对应多个子分区。</li>
-</ul>
-<p>对应窄依赖，只需要通过重新计算丢失的那一块数据来恢复，容错成本较小。但如果是宽依赖，则当容错重算分区时，因为父分区数据只有一部分是需要重算子分区的，其余数据重算则成了冗余计算。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2355,7 +2303,7 @@ var sc = new SparkContext(conf);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-count">66</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

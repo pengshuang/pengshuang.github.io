@@ -4,6 +4,62 @@
 
     
   <url>
+    <loc>http://pengshuang.space/2017/03/05/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97%E5%92%8CGBDT/</loc>
+    <lastmod>2017-03-05T07:39:28.000Z</lastmod>
+    <data>
+        <display>
+        <title>随机森林和GBDT</title>
+        <pubTime>2017-03-05T07:23:15.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://pengshuang.space/2017/03/04/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84L1-%E5%92%8C-L2/</loc>
+    <lastmod>2017-03-05T07:33:58.000Z</lastmod>
+    <data>
+        <display>
+        <title>机器学习中的L1 和 L2</title>
+        <pubTime>2017-03-04T03:07:05.000Z</pubTime>
+        
+        <tag>数据挖掘</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://pengshuang.space/2017/03/02/%E5%A4%A9%E6%B1%A0ijcai%E6%AF%94%E8%B5%9B%E6%80%BB%E7%BB%93/</loc>
+    <lastmod>2017-03-05T07:25:06.000Z</lastmod>
+    <data>
+        <display>
+        <title>IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结</title>
+        <pubTime>2017-03-02T08:40:05.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://pengshuang.space/2017/03/03/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E5%92%8C%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB/</loc>
     <lastmod>2017-03-04T07:57:32.000Z</lastmod>
     <data>
@@ -29,26 +85,6 @@
         <title>问答社区的回答排序算法(一）</title>
         <pubTime>2017-02-28T07:50:26.000Z</pubTime>
         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://pengshuang.space/2017/03/04/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84L1-%E5%92%8C-L2/</loc>
-    <lastmod>2017-03-04T07:22:26.000Z</lastmod>
-    <data>
-        <display>
-        <title>机器学习中的L1 和 L2</title>
-        <pubTime>2017-03-04T03:07:05.000Z</pubTime>
-        
-        <tag>数据挖掘</tag>
-         
          
            
              
@@ -87,24 +123,6 @@
         
         <tag>数据挖掘</tag>
          
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://pengshuang.space/2017/03/02/%E5%A4%A9%E6%B1%A0ijcai%E6%AF%94%E8%B5%9B%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2017-03-04T02:14:18.000Z</lastmod>
-    <data>
-        <display>
-        <title>IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结</title>
-        <pubTime>2017-03-02T08:40:05.000Z</pubTime>
-        
          
            
              
