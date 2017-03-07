@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数据挖掘," />
 
 
 
@@ -84,15 +84,19 @@
 
 
 
-<meta name="description" content="在路上，慢慢走！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小沙文的博客">
-<meta property="og:url" content="http://pengshuang.space/tags/B-树/index.html">
+<meta name="description" content="Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。
+Adaboost 二元分类问题的算法流程输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adaboost 算法总结">
+<meta property="og:url" content="http://pengshuang.space/2017/03/07/Adaboost-算法总结/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在路上，慢慢走！">
+<meta property="og:description" content="Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。
+Adaboost 二元分类问题的算法流程输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为">
+<meta property="og:updated_time" content="2017-03-07T12:59:33.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小沙文的博客">
-<meta name="twitter:description" content="在路上，慢慢走！">
+<meta name="twitter:title" content="Adaboost 算法总结">
+<meta name="twitter:description" content="Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。
+Adaboost 二元分类问题的算法流程输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为">
 
 
 
@@ -113,9 +117,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/tags/B-树/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/03/07/Adaboost-算法总结/"/>
 
-  <title> 标签: B-树 | 小沙文的博客 </title>
+  <title> Adaboost 算法总结 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -136,7 +140,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,46 +238,240 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        B-树
-        <small>标签</small>
-      </h2>
-    </div>
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
 
     
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Adaboost 算法总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-07T20:01:42+08:00" content="2017-03-07">
+              2017-03-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/07/Adaboost-算法总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/07/Adaboost-算法总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/07/Adaboost-算法总结/" class="leancloud_visitors" data-flag-title="Adaboost 算法总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+      
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-      <h1 class="post-title">
+<p>Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。</p>
+<h3 id="Adaboost-二元分类问题的算法流程"><a href="#Adaboost-二元分类问题的算法流程" class="headerlink" title="Adaboost 二元分类问题的算法流程"></a>Adaboost 二元分类问题的算法流程</h3><p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为 {+1，-1}。</p>
+<p>弱分类器迭代次数为 K。输出为最终的强分类器 \(f(x)\)</p>
+<p>1) 初始化样本集权重为：</p>
+<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
+<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
+<p>2）对于 \(k = 1, 2, 3 … K\):</p>
+<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
+<p>b) 计算 \(G_{k}(x)\) 的分类误差率</p>
+<p>$$e_{k} = P(G_k(x_i) \neq y_i); i = 1,2,…,m$$</p>
+<p>c) 计算弱分类器的系数</p>
+<p>$$\alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k}$$</p>
+<p>d) 更新样本集的权重分布</p>
+<p>$$w_{k+1,i} = \frac{w_{ki}}{Z_k} exp(- \alpha_k y_i G(x_i))$$</p>
+<p>这里 \(Z_k\) 是规范因子：</p>
+<p>$$Z_k = \sum_{i=1}^m w_{ki} exp(-\alpha_k y_i G_k(x_i)) \,\,  i = 1,2,…,m$$</p>
+<p>3) 构建最终的分类器为：</p>
+<p>$$f(x) = sign \sum_{k=1}^K \alpha_k G_k(K)$$</p>
+<p>对于 Adaboost 多元分类算法，其实原理和二分类很类似，最主要的区别是在弱分类器的系数上，比如 Adaboost SAMME 算法，它的弱分类器的系数：</p>
+<p>$$ \alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k} + log(R - 1)$$</p>
+<p>其中 R 为类别数，从上式可以看出，如果是二元分类，R = 2，则上式和我们的二元分类算法中的弱分类器的系数一致。</p>
+<h3 id="Adaboost-回归问题的算法流程"><a href="#Adaboost-回归问题的算法流程" class="headerlink" title="Adaboost 回归问题的算法流程"></a>Adaboost 回归问题的算法流程</h3><p>AdaBoost回归算法变种很多，下面的算法为Adaboost R2 回归算法过程。</p>
+<p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，</p>
+<p>最终输出为强学习器 \(f(x)\)</p>
+<p>1) 初始化样本集权重为：</p>
+<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
+<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
+<p>2）对于 \(k = 1, 2, 3 … K\):</p>
+<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
+<p>b) 计算训练集上的最大误差</p>
+<p>$$E_k = max|y_i - G_k(x_i)|; i = 1, 2, 3 … m$$</p>
+<p>c) 计算每个样本的相对误差：</p>
+<p>如果是线性误差，则 \(e_{ki} = \frac{|y_i - G_k(x_i)|}{E_k}\)</p>
+<p>如果是平方误差，则 \(e_{ki} = \frac{(y_i - G_k(x_i))^2}{E_k}\)</p>
+<p>如果是指数误差，则 \(e_{ki} = 1 -  exp(\frac{-y_i + G_k(x_i)}{E_k})\)</p>
+<p>d) 计算回归误差率</p>
+<p>$$e_k = \sum_{i=1}^m w_{ki}e_{ki}$$</p>
+<p>e) 计算弱学习器的系数</p>
+<p>$$\alpha_k = \frac{e_k}{1 - e_k}$$</p>
+<p>f) 更新样本集的权重分布为</p>
+<p>$$w_{k+1, j} = \frac{w_{ki}}{Z_k} \alpha_k^{1 - e_{ki}}$$</p>
+<p>这里 \(Z_k\) 是规范化因子：</p>
+<p>$$ Z_k = \sum_{i=1}^m w_{ki} \alpha_k ^{1 - e_{ki}}$$</p>
+<p>3) 构建最终的强学习器：</p>
+<p>$$f(x) = \sum_{k=1}^K = (ln \frac{1}{\alpha_k}) G_k(x)$$</p>
+<h3 id="Adaboost算法的正则化"><a href="#Adaboost算法的正则化" class="headerlink" title="Adaboost算法的正则化"></a>Adaboost算法的正则化</h3><p>为了防止 Adaboost 过拟合，我们通常也会加入正则化项，这个正则化项我们通常称为步长(learning rate)。定义为 ν，对于前面的弱学习器的迭代：</p>
+<p>$$f_k(x) = f_{k-1}(x) + \alpha_k G_k (x)$$</p>
+<p>如果我们加上了正则项，则有：</p>
+<p>$$f_k(x) = f_{k-1}(x) + \nu \alpha_k G_k(x)$$</p>
+<p>ν 的取值范围为 \(0&lt;ν≤10&lt;ν≤1\)。对于同样的训练集学习效果，较小的 ν 意味着我们需要更多的弱学习器的迭代次数。通常我们用步长和迭代最大次数一起来决定算法的拟合效果。</p>
+<h3 id="Adaboost-小结"><a href="#Adaboost-小结" class="headerlink" title="Adaboost 小结"></a>Adaboost 小结</h3><p>理论上任何学习器都可以用于 Adaboost。但一般来说，使用最广泛的 Adaboost 弱学习器是决策树和神经网络。对于决策树，Adaboost分类用了 CART 分类树，而 Adaboost 回归用了 CART 回归树。</p>
+<p>这里对Adaboost算法的优缺点做一个总结。</p>
+<p>Adaboost的主要优点有：</p>
+<ol>
+<li>Adaboost作为分类器时，分类精度很高</li>
+<li>在Adaboost的框架下，可以使用各种回归分类模型来构建弱学习器，非常灵活。</li>
+<li>作为简单的二元分类器时，构造简单，结果可理解。</li>
+<li>不容易发生过拟合</li>
+</ol>
+<p>Adaboost的主要缺点有：</p>
+<ol>
+<li>对异常样本敏感，异常样本在迭代中可能会获得较高的权重，影响最终的强学习器的预测准确性。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
         
-            <a class="post-title-link" href="/2016/10/14/数据系统实现-B-树详解/" itemprop="url">
-              
-                <span itemprop="name">数据系统实现: B - 树详解</span>
-              
-            </a>
+
+      
+    </div>
+
+    <div>
+      
         
-      </h1>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-10-14T11:25:31+08:00"
-              content="2016-10-14" >
-          10-14
-        </time>
-      </div>
+      
+    </div>
 
-    </header>
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据挖掘/" rel="tag">#数据挖掘</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/05/随机森林和GBDT/" rel="next" title="集成学习：从随机森林到 GBDT">
+                <i class="fa fa-chevron-left"></i> 集成学习：从随机森林到 GBDT
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </article>
 
 
-    
-  </div>
 
-  
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/03/07/Adaboost-算法总结/"
+     data-title="Adaboost 算法总结"
+     data-content=""
+     data-url="http://pengshuang.space/2017/03/07/Adaboost-算法总结/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
 
 
           </div>
@@ -281,6 +479,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/07/Adaboost-算法总结/"
+           data-title="Adaboost 算法总结" data-url="http://pengshuang.space/2017/03/07/Adaboost-算法总结/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -300,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -393,6 +608,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Adaboost-二元分类问题的算法流程"><span class="nav-number">1.</span> <span class="nav-text">Adaboost 二元分类问题的算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adaboost-回归问题的算法流程"><span class="nav-number">2.</span> <span class="nav-text">Adaboost 回归问题的算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adaboost算法的正则化"><span class="nav-number">3.</span> <span class="nav-text">Adaboost算法的正则化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Adaboost-小结"><span class="nav-number">4.</span> <span class="nav-text">Adaboost 小结</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -498,6 +724,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 

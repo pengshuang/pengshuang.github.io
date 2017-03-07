@@ -258,6 +258,199 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/07/Adaboost-算法总结/" itemprop="url">
+                  Adaboost 算法总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-07T20:01:42+08:00" content="2017-03-07">
+              2017-03-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/07/Adaboost-算法总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/07/Adaboost-算法总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/07/Adaboost-算法总结/" class="leancloud_visitors" data-flag-title="Adaboost 算法总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。</p>
+<h3 id="Adaboost-二元分类问题的算法流程"><a href="#Adaboost-二元分类问题的算法流程" class="headerlink" title="Adaboost 二元分类问题的算法流程"></a>Adaboost 二元分类问题的算法流程</h3><p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为 {+1，-1}。</p>
+<p>弱分类器迭代次数为 K。输出为最终的强分类器 \(f(x)\)</p>
+<p>1) 初始化样本集权重为：</p>
+<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
+<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
+<p>2）对于 \(k = 1, 2, 3 … K\):</p>
+<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
+<p>b) 计算 \(G_{k}(x)\) 的分类误差率</p>
+<p>$$e_{k} = P(G_k(x_i) \neq y_i); i = 1,2,…,m$$</p>
+<p>c) 计算弱分类器的系数</p>
+<p>$$\alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k}$$</p>
+<p>d) 更新样本集的权重分布</p>
+<p>$$w_{k+1,i} = \frac{w_{ki}}{Z_k} exp(- \alpha_k y_i G(x_i))$$</p>
+<p>这里 \(Z_k\) 是规范因子：</p>
+<p>$$Z_k = \sum_{i=1}^m w_{ki} exp(-\alpha_k y_i G_k(x_i)) \,\,  i = 1,2,…,m$$</p>
+<p>3) 构建最终的分类器为：</p>
+<p>$$f(x) = sign \sum_{k=1}^K \alpha_k G_k(K)$$</p>
+<p>对于 Adaboost 多元分类算法，其实原理和二分类很类似，最主要的区别是在弱分类器的系数上，比如 Adaboost SAMME 算法，它的弱分类器的系数：</p>
+<p>$$ \alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k} + log(R - 1)$$</p>
+<p>其中 R 为类别数，从上式可以看出，如果是二元分类，R = 2，则上式和我们的二元分类算法中的弱分类器的系数一致。</p>
+<h3 id="Adaboost-回归问题的算法流程"><a href="#Adaboost-回归问题的算法流程" class="headerlink" title="Adaboost 回归问题的算法流程"></a>Adaboost 回归问题的算法流程</h3><p>AdaBoost回归算法变种很多，下面的算法为Adaboost R2 回归算法过程。</p>
+<p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，</p>
+<p>最终输出为强学习器 \(f(x)\)</p>
+<p>1) 初始化样本集权重为：</p>
+<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
+<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
+<p>2）对于 \(k = 1, 2, 3 … K\):</p>
+<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
+<p>b) 计算训练集上的最大误差</p>
+<p>$$E_k = max|y_i - G_k(x_i)|; i = 1, 2, 3 … m$$</p>
+<p>c) 计算每个样本的相对误差：</p>
+<p>如果是线性误差，则 \(e_{ki} = \frac{|y_i - G_k(x_i)|}{E_k}\)</p>
+<p>如果是平方误差，则 \(e_{ki} = \frac{(y_i - G_k(x_i))^2}{E_k}\)</p>
+<p>如果是指数误差，则 \(e_{ki} = 1 -  exp(\frac{-y_i + G_k(x_i)}{E_k})\)</p>
+<p>d) 计算回归误差率</p>
+<p>$$e_k = \sum_{i=1}^m w_{ki}e_{ki}$$</p>
+<p>e) 计算弱学习器的系数</p>
+<p>$$\alpha_k = \frac{e_k}{1 - e_k}$$</p>
+<p>f) 更新样本集的权重分布为</p>
+<p>$$w_{k+1, j} = \frac{w_{ki}}{Z_k} \alpha_k^{1 - e_{ki}}$$</p>
+<p>这里 \(Z_k\) 是规范化因子：</p>
+<p>$$ Z_k = \sum_{i=1}^m w_{ki} \alpha_k ^{1 - e_{ki}}$$</p>
+<p>3) 构建最终的强学习器：</p>
+<p>$$f(x) = \sum_{k=1}^K = (ln \frac{1}{\alpha_k}) G_k(x)$$</p>
+<h3 id="Adaboost算法的正则化"><a href="#Adaboost算法的正则化" class="headerlink" title="Adaboost算法的正则化"></a>Adaboost算法的正则化</h3><p>为了防止 Adaboost 过拟合，我们通常也会加入正则化项，这个正则化项我们通常称为步长(learning rate)。定义为 ν，对于前面的弱学习器的迭代：</p>
+<p>$$f_k(x) = f_{k-1}(x) + \alpha_k G_k (x)$$</p>
+<p>如果我们加上了正则项，则有：</p>
+<p>$$f_k(x) = f_{k-1}(x) + \nu \alpha_k G_k(x)$$</p>
+<p>ν 的取值范围为 \(0&lt;ν≤10&lt;ν≤1\)。对于同样的训练集学习效果，较小的 ν 意味着我们需要更多的弱学习器的迭代次数。通常我们用步长和迭代最大次数一起来决定算法的拟合效果。</p>
+<h3 id="Adaboost-小结"><a href="#Adaboost-小结" class="headerlink" title="Adaboost 小结"></a>Adaboost 小结</h3><p>理论上任何学习器都可以用于 Adaboost。但一般来说，使用最广泛的 Adaboost 弱学习器是决策树和神经网络。对于决策树，Adaboost分类用了 CART 分类树，而 Adaboost 回归用了 CART 回归树。</p>
+<p>这里对Adaboost算法的优缺点做一个总结。</p>
+<p>Adaboost的主要优点有：</p>
+<ol>
+<li>Adaboost作为分类器时，分类精度很高</li>
+<li>在Adaboost的框架下，可以使用各种回归分类模型来构建弱学习器，非常灵活。</li>
+<li>作为简单的二元分类器时，构造简单，结果可理解。</li>
+<li>不容易发生过拟合</li>
+</ol>
+<p>Adaboost的主要缺点有：</p>
+<ol>
+<li>对异常样本敏感，异常样本在迭代中可能会获得较高的权重，影响最终的强学习器的预测准确性。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/05/随机森林和GBDT/" itemprop="url">
                   集成学习：从随机森林到 GBDT
                 </a>
@@ -2155,165 +2348,6 @@ val result = sqlContext.sql(&quot;SELECT * FROM people&quot;)
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/06/Spark实践-2-Spark-内核/" itemprop="url">
-                  Spark实践 (2): Spark 内核
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-02-06T17:43:45+08:00" content="2017-02-06">
-              2017-02-06
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/02/06/Spark实践-2-Spark-内核/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/06/Spark实践-2-Spark-内核/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/02/06/Spark实践-2-Spark-内核/" class="leancloud_visitors" data-flag-title="Spark实践 (2): Spark 内核">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Spark-核心数据结构-RDD"><a href="#Spark-核心数据结构-RDD" class="headerlink" title="Spark 核心数据结构 RDD"></a>Spark 核心数据结构 RDD</h3><p>RDD 全称是“弹性分布式数据集”。首先，它是一个数据集；其次，RDD 是分布式存储的。里面的成员被水平切割成小的的数据块，分散在集群的多个节点上，便于对 RDD 里面的数据进行并行计算。最后，RDD 的分布式弹性的，不是固定不变的。RDD 的一些操作可以被拆分成对各数据块直接计算，不涉及其他节点，比如 map。这样的操作一般在数据块所在的节点上直接进行，不影响 RDD 的分布，除非某个节点故障需要转换到其他节点上。但是在有些操作中，例如 groupBy，必须要访问 RDD 的所有数据块。</p>
-<p>RDD 还具有的特点是：</p>
-<ol>
-<li>RDD 是只读的，一旦生成，内容就不能修改了。这样的好处是让整个系统的设计相对简单，比如并行计算时不用考虑数据互斥的问题。</li>
-<li>RDD 可指定缓存在内存中。一般计算都是流水式生成、使用 RDD，新的 RDD 生成之后，旧的不再使用，并被 Java 虚拟机回收掉。但如果后续有许多计算依赖某个 RDD，我们可以让这个 RDD 缓存在内存中，避免重复计算（尤其适用于机器学习）。</li>
-<li>RDD 可以通过重新计算得到。RDD 的高可靠性不是通过复制来实现的，而是通过记录足够的计算过程。</li>
-</ol>
-<h4 id="RDD-的定义"><a href="#RDD-的定义" class="headerlink" title="RDD 的定义"></a>RDD 的定义</h4><p>一个 RDD 对象，包含如下的 5 个核心属性。</p>
-<ul>
-<li>一个分区列表，每个分区里是 RDD 的部分数据（或者称数据块）。</li>
-<li>一个依赖列表，存储依赖的其他 RDD。</li>
-<li>一个名为 compute 的计算函数，用于计算各 RDD 各分区的值。</li>
-<li>分区器（可选），用于键/值类型的 RDD，比如某个 RDD 是按散列来分区。</li>
-<li>计算各分区时优先的位置列表（可选），比如从 HDFS 上的文件生成 RDD 时，RDD 分区的位置优先选择数据所在的节点，这样可以避免数据移动带来的开销。</li>
-</ul>
-<h4 id="RDD-的-Transformation"><a href="#RDD-的-Transformation" class="headerlink" title="RDD 的 Transformation"></a>RDD 的 Transformation</h4><p>RDD 的 Transformation 是指由一个 RDD 生成新 RDD 的过程，比如 flapMap。filter 操作都会返回一个新的 RDD 对象，类型是 MapPartitionsRDD，它是 RDD 子类。</p>
-<p>在 Spark 中，RDD 是有依赖关系的，这种依赖关系有两种类型。</p>
-<ul>
-<li>窄依赖。依赖上级 RDD 的部分分区。</li>
-<li>Shuffle 依赖上级 RDD 的所有分区。</li>
-</ul>
-<p>使用窄依赖时，可以精确知道依赖的上级 RDD 的分区。一般情况下，会选择与自己在同一节点的上级 RDD 分区，这样计算过程都在同一节点进行，没有网络 IO 开销，非常高效，常见的 map、flatMap、filter操作都是这一类。而 Shuffle 依赖则无法精确定位依赖的上级 RDD 的分区，相当于依赖索引分区，计算时涉及所有节点之间的数据传输，开销巨大。所以，以 Shuffle 依赖为分隔，Task 被分成 Stage，方便计算时的管理。</p>
-<h4 id="RDD-的-Action"><a href="#RDD-的-Action" class="headerlink" title="RDD 的 Action"></a>RDD 的 Action</h4><p>一次 Action 调用之后，不在生成新的 RDD，结果返回到 Driver 程序。</p>
-<h4 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h4><p>Shuffle 概念来源于 Hadoop MapReduce，当对一个 RDD 的某个结果分区进行操作而无法精确知道依赖前一个 RDD 的哪个分区时，依赖关系变成了依赖前一个 RDD 的所有分区。Shuffle 本身是一个非常耗资源的操作，它的结果是一次调度的 Stage 的结果，而一次 Stage 包含许多 Task，缓存下来比较划算。Shuffle 使用的本地磁盘目录由 spark.local.dir 属性项指定。</p>
-<h3 id="SparkContext"><a href="#SparkContext" class="headerlink" title="SparkContext"></a>SparkContext</h3><p>SparkContext 是 Spark 程序最主要的入口，用于和 Spark 集群连接。所有的 Spark 程序都必须创建 SparkContext。进行流式计算时使用 StreamingContext，进行 SQL 计算时使用 SQLContext，都会创建一个 SparkContext。每个 JVM 只允许启动一个 SparkContext。</p>
-<h4 id="SparkConf-配置"><a href="#SparkConf-配置" class="headerlink" title="SparkConf 配置"></a>SparkConf 配置</h4><p>SparkContext 可以无参数配置，也可以自定义配置。SparkContext 在构造的过程中，已经完成了各项服务的启动。最重要的初始化操作之一是启动 Task 调度器和 DAG 调度器。</p>
-<p>DAG 调度与 Task 调度的区别是，DAG 是高层级的调度，为每个 Job 绘制一个有向无环图，跟踪各 Stage 的输出。计算完成 Job 的最短路径，并将 Task 提交给 Task 调度器执行，而 Task 调度器只负责接收 DAG 调度器的请求，负责 Task 的实际调度执行，所以 DAGScheduler 的初始化必须在 Task 调度器之后。</p>
-<p>DAG 与 Task 这种分离设计的好处是，Spark 可以灵活设计自己的 DAG 调度，同时还能与其他资源调度系统结合，比如 YARN、Mesos。</p>
-<h3 id="DAG-调度"><a href="#DAG-调度" class="headerlink" title="DAG 调度"></a>DAG 调度</h3><p>SparkContext 在初始化时，创建了 DAG 调度与 Task 调度来负责 RDD Action 操作的调度执行。</p>
-<h4 id="DAGScheduler"><a href="#DAGScheduler" class="headerlink" title="DAGScheduler"></a>DAGScheduler</h4><p>DAGScheduler 负责 Spark 的最高级别的任务调度，调度的粒度是 Stage，它为每个 Job 的所有 Stage 计算一个有向无环图，控制它们的并发，并找到一个最佳路径来执行它们。具体的执行过程是将 Stage 下的 Task 集提交给 TaskScheduler 对象，由它来提交到集群上去申请资源并最终完成执行。</p>
-<h4 id="TaskScheduler"><a href="#TaskScheduler" class="headerlink" title="TaskScheduler"></a>TaskScheduler</h4><p>相比 DAGScheduler 而言，TaskScheduler 是低级别的调度接口，允许实现不同的 Task 调度器，除了自带的之外，还可以使用 Yarn 和 Mesos 调度器。每个 TaskScheduler 对象只服务于一个 SparkContext 的 Task 调度。TaskScheduler 从 DAGScheduler 的每个 Stage 接收一组 Task，并负责将它们发送到集群上，运行它们，如果出错还会重试，最后返回消息给 DAGScheduler。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2359,7 +2393,7 @@ val result = sqlContext.sql(&quot;SELECT * FROM people&quot;)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">66</span>
+              <span class="site-state-item-count">67</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

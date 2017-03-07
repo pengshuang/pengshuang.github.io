@@ -258,6 +258,173 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="url">
+                  Spark RDD学习: aggregate函数
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-09T11:24:07+08:00" content="2016-10-09">
+              2016-10-09
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/09/Spark-RDD学习-aggregate函数/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/09/Spark-RDD学习-aggregate函数/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/09/Spark-RDD学习-aggregate函数/" class="leancloud_visitors" data-flag-title="Spark RDD学习: aggregate函数">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在做项目的时候遇到了<strong>Spark RDD</strong>里面的一个<strong>aggregate</strong>函数，觉得它的用法挺有意思的，在此记录一下。</p>
+<p>Spark 文档中对 <strong>aggregate</strong>的函数定义如下：</p>
+<pre><code>def aggregate[U](zeroValue: U)(seqOp: (U, T) =&gt; U, combOp: (U, U) 
+=&gt; U)(implicit arg0: ClassTag[U]): U
+</code></pre><p>注释：</p>
+<pre><code>Aggregate the elements of each partition, and then the results for 
+all the partitions, using given combine functions and a neutral 
+&quot;zero value&quot;. 
+This function can return a different result type, U, 
+than the type of this RDD, T. 
+Thus, we need one operation for merging a T into an U 
+and one operation for merging two U&apos;s, as in 
+Scala.TraversableOnce. Both of these functions are allowed to 
+modify and return their first argument instead of creating a new U 
+to avoid memory allocation. 
+</code></pre><p><strong>aggregate</strong>函数首先对每个分区里面的元素进行聚合，然后用combine函数将每个分区的结果和初始值（zeroValue）进行combine操作。这个操作返回的类型不需要和RDD中元素类型一致，所以在使用 <strong>aggregate()</strong>时，需要提供我们期待的返回类型的初始值，然后通过一个函数把RDD中的元素累加起来􏵧􏲢放入累加器􏵌。考虑到每个节点是在本地进行累加的，最终还需要提供第二个函数来将累加器两两合并。</p>
+<p>其中<strong>seqOp</strong>操作会聚合各分区中的元素，然后<strong>combOp</strong>操作会把所有分区的聚合结果再次聚合，两个操作的初始值都是<strong>zeroValue</strong>. <strong>seqOp</strong>的操作是遍历分区中的所有元素(T)，第一个T跟<strong>zeroValue</strong>做操作，结果再作为与第二个T做操作的<strong>zeroValue</strong>，直到遍历完整个分区。<strong>combOp</strong>操作是把各分区聚合的结果，再聚合。<strong>aggregate</strong>函数返回一个跟<strong>RDD</strong>不同类型的值。因此，需要一个操作<strong>seqOp</strong>来把分区中的元素T合并成一个U，另外一个操作<strong>combOp</strong>把所有U聚合。</p>
+<p>下面举一个利用aggreated求平均数的例子:</p>
+<pre><code>val rdd = List(1,2,3,4)
+val input = sc.parallelize(rdd)
+val result = input.aggregate((0,0))(
+(acc,value) =&gt; (acc._1 + value, acc._2 + 1),
+(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)
+)
+result: (Int, Int) = (10, 4)
+val avg = result._1 / result._2
+avg: Int = 2.5
+</code></pre><p>程序的详细过程大概如下：</p>
+<ol>
+<li>首先定义一个初始值 (0, 0)，即我们期待的返回类型的初始值。</li>
+<li><p><strong>(acc,value) =&gt; (acc._1 + value, acc._2 + 1)</strong>， <strong>value</strong>是函数定义里面的<strong>T</strong>，这里是List里面的元素。所以<strong>acc._1 + value, acc._2 + 1</strong>的过程如下：</p>
+<pre><code>1.  0+1,  0+1
+2.  1+2,  1+1
+3.  3+3,  2+1
+4.  6+4,  3+1
+</code></pre></li>
+<li><p>结果为 (10,4)。在实际Spark执行中是分布式计算，可能会把List分成多个分区，假如3个，p1(1,2), p2(3), p3(4)，经过计算各分区的的结果 (3,2), (3,1), (4,1)，这样，执行 <strong>(acc1,acc2) =&gt; (acc1._1 + acc2._1, acc1._2 + acc2._2)</strong> 就是 <strong>(3+3+4,2+1+1)</strong> 即 <strong>(10,4)</strong>，然后再计算平均值。 </p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/08/GraphX学习/" itemprop="url">
                   GraphX学习:基础知识
                 </a>
@@ -2012,160 +2179,6 @@ REBUILD
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/15/TCP-IP基础知识/" itemprop="url">
-                  TCP/IP协议分层模型
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-15T22:01:00+08:00" content="2016-09-15">
-              2016-09-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/15/TCP-IP基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/TCP-IP基础知识/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/15/TCP-IP基础知识/" class="leancloud_visitors" data-flag-title="TCP/IP协议分层模型">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-物理层（硬件）"><a href="#1-物理层（硬件）" class="headerlink" title="1. 物理层（硬件）"></a>1. 物理层（硬件）</h3><p>TCP/IP的最底层是负责数据传输的硬件。</p>
-<h3 id="2-数据链路层（网络接口层）"><a href="#2-数据链路层（网络接口层）" class="headerlink" title="2. 数据链路层（网络接口层）"></a>2. 数据链路层（网络接口层）</h3><p>数据链路层利用以太网中的数据链路层进行通信，因此属于接口层。驱动程序是在操作系统与硬件之间起桥梁作用的软件。</p>
-<h3 id="3-网络层（互联网层）"><a href="#3-网络层（互联网层）" class="headerlink" title="3. 网络层（互联网层）"></a>3. 网络层（互联网层）</h3><p>网络层使用IP协议，它相当于OSI模型中的第三层网络层。IP协议基于IP地址转发分包数据。TCP/IP分层中的网络层与传输层的功能通常由操作系统提供。尤其是路由器，它必须得实现通过网络层转发分组数据包的功能。</p>
-<h4 id="IP"><a href="#IP" class="headerlink" title="IP"></a>IP</h4><p>IP是跨越网络传送数据包，使整个互联网都能收到数据的协议。IP协议使数据能够发送到地球的另一端，这期间使用IP地址作为主机的标识。虽然IP也是分组交换的一种协议，但是它不具有重发机制。即使分组数据包未能到达对端主机也不会重发。因此，属于非可靠性传输。</p>
-<h4 id="ICMP"><a href="#ICMP" class="headerlink" title="ICMP"></a>ICMP</h4><p>IP数据包在发送途中一旦发送异常导致无法到达对端目标地址时，需要给发送端发送一个发送异常的通知。ICMP就是被用来诊断网络的健康状况。</p>
-<h4 id="ARP"><a href="#ARP" class="headerlink" title="ARP"></a>ARP</h4><p>从分组数据包的IP地址中解析出物理地址（MAC地址）的一种协议。</p>
-<h3 id="4-传输层"><a href="#4-传输层" class="headerlink" title="4. 传输层"></a>4. 传输层</h3><p>传输层主要的功能就是能够让应用程序之间实现通信。计算机内部，通常同一时间运行着多个程序。为此，必须分清是哪些程序与哪些程序在进行通信。识别这些应用程序的事端口号。</p>
-<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><p>TCP是一种面向有连接的传输层协议。它可以保证两端通信主机之间的通信可达。TCP能够正确处理在传输过程中丢包、传输顺序乱掉等异常情况。此外，TCP还能够有效利用带宽，缓解网络拥堵。</p>
-<h4 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h4><p>UDP有别于TCP，它是一种面向无连接的传输层协议。UDP不会关注对端是否真的收到了传送过去的数据。UDP常用于分组数据较少或多播、广播通信以及视频通信等多媒体领域。</p>
-<h3 id="5-应用层（会话层以上的分层）"><a href="#5-应用层（会话层以上的分层）" class="headerlink" title="5. 应用层（会话层以上的分层）"></a>5. 应用层（会话层以上的分层）</h3><p>TCP/IP的分层中，将OSI参考模型中的会话层、表示层和应用层的功能都集中到了应用程序中实现。</p>
-<p>HTTP协议属于应用层的协议，HTML和电子邮件属于表示层协议。</p>
-<h3 id="6-TCP-IP分层模型及通信示例"><a href="#6-TCP-IP分层模型及通信示例" class="headerlink" title="6. TCP/IP分层模型及通信示例"></a>6. TCP/IP分层模型及通信示例</h3><p>以甲向乙发送电子邮件为例，来讲解TCP/IP的通信过程。</p>
-<h4 id="应用程序处理"><a href="#应用程序处理" class="headerlink" title="应用程序处理"></a>应用程序处理</h4><p>启动应用新建邮件，填写好内容并点击发送之后，应用程序会进行编码处理，这些编码相当于OSI的表示层的功能。编码转化后，实际邮件不一定会马上被发送出去，因为有些邮件的软件有一次同时发送多个邮件的功能。像这种何时建立通信连接何时发送数据的管理功能，其实属于OSI参考模型中会话层的功能。</p>
-<p>应用在发送电子邮件的那一刻建立TCP连接，从而利用这个TCP连接发送数据。它的过程首先是将应用的数据发送给下一层的TCP，再做实际的转发处理。</p>
-<h4 id="TCP模块的处理"><a href="#TCP模块的处理" class="headerlink" title="TCP模块的处理"></a>TCP模块的处理</h4><p>TCP根据应用的指示，负责建立连接、发送数据以及断开连接。TCP提供将应用层发来的数据顺利发送至对端的可靠传输。为了实现TCP的这一功能，需要在应用层数据的前端附加一个TCP首部。TCP首部中包括源端口号和目标端口号。（用以识别发送主机跟接收主机上的应用）、序号（用以发送的包中哪部分是数据）以及校验和（用以判断数据是否被损坏）。随后将附加了TCP首部的包再发送给IP。</p>
-<h4 id="IP模块的处理"><a href="#IP模块的处理" class="headerlink" title="IP模块的处理"></a>IP模块的处理</h4><p>IP将TCP传过来的TCP首部和TCP数据合起来当做自己的数据，并在TCP首部的前端加上自己的IP首部。因此，IP数据包中的IP首部后面紧跟着TCP首部，然后才是应用的数据首部和数据本身。IP首部中包含接收端IP地址以及发送端IP地址。紧随IP首部的还有用来判断其后面数据是TCP还是UDP的信息。</p>
-<h4 id="网络接口（以太网驱动）的处理"><a href="#网络接口（以太网驱动）的处理" class="headerlink" title="网络接口（以太网驱动）的处理"></a>网络接口（以太网驱动）的处理</h4><p>从IP传过来的IP包，对于以太网驱动来说不过就是数据。给这数据附上以太网首部并进行发送处理。以太网首部中包含接收端MAC地址、发送端MAC地址以及标志以太网类型的以太网数据的协议。根据上述信息产生的以太网数据包将通过物理层传输给接收端。</p>
-<h4 id="经过数据链路的包"><a href="#经过数据链路的包" class="headerlink" title="经过数据链路的包"></a>经过数据链路的包</h4><p>每个包首部中至少都会包含两个信息：一个是发送端和接收端地址，另一个是上一层的协议类型。经过每个协议分层时，都必须有识别包发送端和接收端的信息。以太网会用MAC地址，IP会用IP地址，而TCP/UDP会用端口号作为识别两端主机的地址。分层中包的结构如下所示：</p>
-<p><img src="/img/tcp.png" alt=""></p>
-<p>此外每个分层的包首部中还包含一个识别位，它是用来标识上一层协议的种类信息。例如以太网的包首部中的以太网类型，IP中的协议类型以及TCP/UDP中两个端口的端口号都起着识别协议类型的作用。</p>
-<h4 id="数据包接收处理"><a href="#数据包接收处理" class="headerlink" title="数据包接收处理"></a>数据包接收处理</h4><p>包的接收流程是发送流程的逆序过程。</p>
-<h4 id="网络接口（以太网驱动）的处理-1"><a href="#网络接口（以太网驱动）的处理-1" class="headerlink" title="网络接口（以太网驱动）的处理"></a>网络接口（以太网驱动）的处理</h4><p>主机收到以太网包以后，首先从以太网的包首部找到MAC地址判断是否为发给自己的包。如果不是则丢弃。而如果接收到了恰好是发送给自己的包，就查找以太网包首部中的类型域从而确定以太网协议所传送过来的数据类型（IP或其他诸如ARP的协议）。如果以太网首部的类型域包含了一个无法识别的协议类型，则丢弃数据。</p>
-<h4 id="IP模块的处理-1"><a href="#IP模块的处理-1" class="headerlink" title="IP模块的处理"></a>IP模块的处理</h4><p>IP模块收到IP包首部以及后面的数据部分后，如果判断得出包首部中的IP地址与自己的IP地址匹配，则可接收数据并从中查找上一层的协议。如果上一层是TCP就将IP包首部之后的传给TCP处理；UDP类似。对于有路由器的情况，接收端地址往往不是自己的地址，此时需要借助路由控制表，在调查应该送达的主机或路由器以后再转发数据。</p>
-<h4 id="TCP模块的处理-1"><a href="#TCP模块的处理-1" class="headerlink" title="TCP模块的处理"></a>TCP模块的处理</h4><p>在TCP模块中，首先会计算一下校验和，判断数据是否被破坏。然后检查是否在按序号接收数据。最后检查端口号，确定具体的应用程序。数据接收完毕之后，接收端返回一个“确认回执”给发送端。</p>
-<p>数据被完整地接收以后，会传给由端口号识别的应用程序。</p>
-<h4 id="应用程序的处理"><a href="#应用程序的处理" class="headerlink" title="应用程序的处理"></a>应用程序的处理</h4><p>接收端应用程序会直接接收发送端发送的数据，如果确认是发送给自己的，则邮件会被保存到本机的硬盘上。如果保存能正常进行，那么会返回给一个“处理正常”的回执给发送端。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2211,7 +2224,7 @@ REBUILD
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">66</span>
+              <span class="site-state-item-count">67</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

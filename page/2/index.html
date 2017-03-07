@@ -258,6 +258,165 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/06/Spark实践-2-Spark-内核/" itemprop="url">
+                  Spark实践 (2): Spark 内核
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-06T17:43:45+08:00" content="2017-02-06">
+              2017-02-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/06/Spark实践-2-Spark-内核/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/06/Spark实践-2-Spark-内核/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/06/Spark实践-2-Spark-内核/" class="leancloud_visitors" data-flag-title="Spark实践 (2): Spark 内核">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Spark-核心数据结构-RDD"><a href="#Spark-核心数据结构-RDD" class="headerlink" title="Spark 核心数据结构 RDD"></a>Spark 核心数据结构 RDD</h3><p>RDD 全称是“弹性分布式数据集”。首先，它是一个数据集；其次，RDD 是分布式存储的。里面的成员被水平切割成小的的数据块，分散在集群的多个节点上，便于对 RDD 里面的数据进行并行计算。最后，RDD 的分布式弹性的，不是固定不变的。RDD 的一些操作可以被拆分成对各数据块直接计算，不涉及其他节点，比如 map。这样的操作一般在数据块所在的节点上直接进行，不影响 RDD 的分布，除非某个节点故障需要转换到其他节点上。但是在有些操作中，例如 groupBy，必须要访问 RDD 的所有数据块。</p>
+<p>RDD 还具有的特点是：</p>
+<ol>
+<li>RDD 是只读的，一旦生成，内容就不能修改了。这样的好处是让整个系统的设计相对简单，比如并行计算时不用考虑数据互斥的问题。</li>
+<li>RDD 可指定缓存在内存中。一般计算都是流水式生成、使用 RDD，新的 RDD 生成之后，旧的不再使用，并被 Java 虚拟机回收掉。但如果后续有许多计算依赖某个 RDD，我们可以让这个 RDD 缓存在内存中，避免重复计算（尤其适用于机器学习）。</li>
+<li>RDD 可以通过重新计算得到。RDD 的高可靠性不是通过复制来实现的，而是通过记录足够的计算过程。</li>
+</ol>
+<h4 id="RDD-的定义"><a href="#RDD-的定义" class="headerlink" title="RDD 的定义"></a>RDD 的定义</h4><p>一个 RDD 对象，包含如下的 5 个核心属性。</p>
+<ul>
+<li>一个分区列表，每个分区里是 RDD 的部分数据（或者称数据块）。</li>
+<li>一个依赖列表，存储依赖的其他 RDD。</li>
+<li>一个名为 compute 的计算函数，用于计算各 RDD 各分区的值。</li>
+<li>分区器（可选），用于键/值类型的 RDD，比如某个 RDD 是按散列来分区。</li>
+<li>计算各分区时优先的位置列表（可选），比如从 HDFS 上的文件生成 RDD 时，RDD 分区的位置优先选择数据所在的节点，这样可以避免数据移动带来的开销。</li>
+</ul>
+<h4 id="RDD-的-Transformation"><a href="#RDD-的-Transformation" class="headerlink" title="RDD 的 Transformation"></a>RDD 的 Transformation</h4><p>RDD 的 Transformation 是指由一个 RDD 生成新 RDD 的过程，比如 flapMap。filter 操作都会返回一个新的 RDD 对象，类型是 MapPartitionsRDD，它是 RDD 子类。</p>
+<p>在 Spark 中，RDD 是有依赖关系的，这种依赖关系有两种类型。</p>
+<ul>
+<li>窄依赖。依赖上级 RDD 的部分分区。</li>
+<li>Shuffle 依赖上级 RDD 的所有分区。</li>
+</ul>
+<p>使用窄依赖时，可以精确知道依赖的上级 RDD 的分区。一般情况下，会选择与自己在同一节点的上级 RDD 分区，这样计算过程都在同一节点进行，没有网络 IO 开销，非常高效，常见的 map、flatMap、filter操作都是这一类。而 Shuffle 依赖则无法精确定位依赖的上级 RDD 的分区，相当于依赖索引分区，计算时涉及所有节点之间的数据传输，开销巨大。所以，以 Shuffle 依赖为分隔，Task 被分成 Stage，方便计算时的管理。</p>
+<h4 id="RDD-的-Action"><a href="#RDD-的-Action" class="headerlink" title="RDD 的 Action"></a>RDD 的 Action</h4><p>一次 Action 调用之后，不在生成新的 RDD，结果返回到 Driver 程序。</p>
+<h4 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h4><p>Shuffle 概念来源于 Hadoop MapReduce，当对一个 RDD 的某个结果分区进行操作而无法精确知道依赖前一个 RDD 的哪个分区时，依赖关系变成了依赖前一个 RDD 的所有分区。Shuffle 本身是一个非常耗资源的操作，它的结果是一次调度的 Stage 的结果，而一次 Stage 包含许多 Task，缓存下来比较划算。Shuffle 使用的本地磁盘目录由 spark.local.dir 属性项指定。</p>
+<h3 id="SparkContext"><a href="#SparkContext" class="headerlink" title="SparkContext"></a>SparkContext</h3><p>SparkContext 是 Spark 程序最主要的入口，用于和 Spark 集群连接。所有的 Spark 程序都必须创建 SparkContext。进行流式计算时使用 StreamingContext，进行 SQL 计算时使用 SQLContext，都会创建一个 SparkContext。每个 JVM 只允许启动一个 SparkContext。</p>
+<h4 id="SparkConf-配置"><a href="#SparkConf-配置" class="headerlink" title="SparkConf 配置"></a>SparkConf 配置</h4><p>SparkContext 可以无参数配置，也可以自定义配置。SparkContext 在构造的过程中，已经完成了各项服务的启动。最重要的初始化操作之一是启动 Task 调度器和 DAG 调度器。</p>
+<p>DAG 调度与 Task 调度的区别是，DAG 是高层级的调度，为每个 Job 绘制一个有向无环图，跟踪各 Stage 的输出。计算完成 Job 的最短路径，并将 Task 提交给 Task 调度器执行，而 Task 调度器只负责接收 DAG 调度器的请求，负责 Task 的实际调度执行，所以 DAGScheduler 的初始化必须在 Task 调度器之后。</p>
+<p>DAG 与 Task 这种分离设计的好处是，Spark 可以灵活设计自己的 DAG 调度，同时还能与其他资源调度系统结合，比如 YARN、Mesos。</p>
+<h3 id="DAG-调度"><a href="#DAG-调度" class="headerlink" title="DAG 调度"></a>DAG 调度</h3><p>SparkContext 在初始化时，创建了 DAG 调度与 Task 调度来负责 RDD Action 操作的调度执行。</p>
+<h4 id="DAGScheduler"><a href="#DAGScheduler" class="headerlink" title="DAGScheduler"></a>DAGScheduler</h4><p>DAGScheduler 负责 Spark 的最高级别的任务调度，调度的粒度是 Stage，它为每个 Job 的所有 Stage 计算一个有向无环图，控制它们的并发，并找到一个最佳路径来执行它们。具体的执行过程是将 Stage 下的 Task 集提交给 TaskScheduler 对象，由它来提交到集群上去申请资源并最终完成执行。</p>
+<h4 id="TaskScheduler"><a href="#TaskScheduler" class="headerlink" title="TaskScheduler"></a>TaskScheduler</h4><p>相比 DAGScheduler 而言，TaskScheduler 是低级别的调度接口，允许实现不同的 Task 调度器，除了自带的之外，还可以使用 Yarn 和 Mesos 调度器。每个 TaskScheduler 对象只服务于一个 SparkContext 的 Task 调度。TaskScheduler 从 DAGScheduler 的每个 Stage 接收一组 Task，并负责将它们发送到集群上，运行它们，如果出错还会重试，最后返回消息给 DAGScheduler。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/04/Spark实践-1-Spark-工作机制/" itemprop="url">
                   Spark实践 (1): Spark 工作机制
                 </a>
@@ -1908,234 +2067,6 @@ Proposal 进行提交。
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/08/HBase学习-专用过滤器/" itemprop="url">
-                  HBase学习: 专用过滤器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-08T17:25:26+08:00" content="2016-11-08">
-              2016-11-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/08/HBase学习-专用过滤器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/08/HBase学习-专用过滤器/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/08/HBase学习-专用过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 专用过滤器">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
-<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
-<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, byte[] value)
-SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, ByteArrayComparable comparator)
-</code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
-<p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
-<pre><code>boolean getFilterIfMissing()
-void setFilterIfMissing(boolean filterIfMissing)
-boolean getLatestVersionOnly()
-void setLatestVersionOnly(boolean latestVersionOnly)
-</code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
-<p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-SingleColumnValueFilter filter = new SingleColumnValueFilter(
-        Bytes.toBytes(&quot;colfam1&quot;),
-        Bytes.toBytes(&quot;col-5&quot;),
-        CompareFilter.CompareOp.NOT_EQUAL,
-        new SubstringComparator(&quot;val-5&quot;));
-filter.setFilterIfMissing(true);
-
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result: scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
-<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
-<pre><code>Public PrefixFilter(byte[] prefix)
-</code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result : scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
-
-Scan scan = new Scan();
-scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result:scanner){
-    System.out.println(result);
-}
-scanner.close();
-</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
-<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
-</code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
-// 向列表中添加时间戳
-ts.add(new Long(5));
-ts.add(new Long(10));
-ts.add(new Long(15));
-Filter filter = new TimestampsFilter(ts);
-
-Scan scan1 = new Scan();
-// 向scan实例中添加过滤器
-scan1.setFilter(filter);
-ResultScanner scanner1 = hTable.getScanner(scan1);
-for(Result result:scanner1){
-    System.out.println(result);
-}
-scanner1.close();
-
-Scan scan2 = new Scan();
-scan2.setFilter(filter);
-// 添加时间范围限制
-scan2.setTimeRange(8,12);
-ResultScanner scanner2 = hTable.getScanner(scan2);
-for(Result result:scanner2){
-    System.out.println(result);
-}
-scanner2.close();
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2181,7 +2112,7 @@ scanner2.close();
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">66</span>
+              <span class="site-state-item-count">67</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
