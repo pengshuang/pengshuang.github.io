@@ -84,28 +84,19 @@
 
 
 
-<meta name="description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
-其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
-线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
-一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
-Response">
+<meta name="description" content="线性回归的目的是要得到输出向量 Y 和输入特征 X 之间的线性关系，求出线性回归系数 \(\theta\)，也就是 \(Y = X\theta\)。其中 Y 的维度是 m  1，X 的维度是 m  n，而 \(\theta\) 的维度为 n * 1。m 代表样本个数，n 代表样本特征的维度。
+为了得到线性回归系数 \(\theta\)，我们需要定义一个损失函数，一个极小化损失函数的优化方法，以及一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线性模型和非线性模型的区别">
-<meta property="og:url" content="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/index.html">
+<meta property="og:title" content="线性回归家族一览">
+<meta property="og:url" content="http://pengshuang.space/2017/03/13/线性回归家族一览/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
-其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
-线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
-一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
-Response">
-<meta property="og:updated_time" content="2017-03-04T07:57:32.000Z">
+<meta property="og:description" content="线性回归的目的是要得到输出向量 Y 和输入特征 X 之间的线性关系，求出线性回归系数 \(\theta\)，也就是 \(Y = X\theta\)。其中 Y 的维度是 m  1，X 的维度是 m  n，而 \(\theta\) 的维度为 n * 1。m 代表样本个数，n 代表样本特征的维度。
+为了得到线性回归系数 \(\theta\)，我们需要定义一个损失函数，一个极小化损失函数的优化方法，以及一">
+<meta property="og:updated_time" content="2017-03-13T13:39:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线性模型和非线性模型的区别">
-<meta name="twitter:description" content="在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？
-其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。
-线性回归的等式线性回归需要一个线性的模型。这到底意味着什么呢？
-一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。
-Response">
+<meta name="twitter:title" content="线性回归家族一览">
+<meta name="twitter:description" content="线性回归的目的是要得到输出向量 Y 和输入特征 X 之间的线性关系，求出线性回归系数 \(\theta\)，也就是 \(Y = X\theta\)。其中 Y 的维度是 m  1，X 的维度是 m  n，而 \(\theta\) 的维度为 n * 1。m 代表样本个数，n 代表样本特征的维度。
+为了得到线性回归系数 \(\theta\)，我们需要定义一个损失函数，一个极小化损失函数的优化方法，以及一">
 
 
 
@@ -126,9 +117,9 @@ Response">
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/03/13/线性回归家族一览/"/>
 
-  <title> 线性模型和非线性模型的区别 | 小沙文的博客 </title>
+  <title> 线性回归家族一览 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -268,7 +259,7 @@ Response">
             
             
               
-                线性模型和非线性模型的区别
+                线性回归家族一览
               
             
           </h1>
@@ -280,8 +271,8 @@ Response">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-03T21:59:49+08:00" content="2017-03-03">
-              2017-03-03
+            <time itemprop="dateCreated" datetime="2017-03-13T20:59:23+08:00" content="2017-03-13">
+              2017-03-13
             </time>
           </span>
 
@@ -310,8 +301,8 @@ Response">
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/03/03/线性模型和非线性模型的区别/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/03/线性模型和非线性模型的区别/" itemprop="commentsCount"></span>
+                <a href="/2017/03/13/线性回归家族一览/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/13/线性回归家族一览/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -321,7 +312,7 @@ Response">
 
           
           
-             <span id="/2017/03/03/线性模型和非线性模型的区别/" class="leancloud_visitors" data-flag-title="线性模型和非线性模型的区别">
+             <span id="/2017/03/13/线性回归家族一览/" class="leancloud_visitors" data-flag-title="线性回归家族一览">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -345,21 +336,33 @@ Response">
       
         <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-<p>在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？</p>
-<p>其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。</p>
-<h3 id="线性回归的等式"><a href="#线性回归的等式" class="headerlink" title="线性回归的等式"></a>线性回归的等式</h3><p>线性回归需要一个线性的模型。这到底意味着什么呢？</p>
-<p>一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。</p>
-<pre><code>Response = constant + parameter * predictior1 + ... + parameter * predictior2
-</code></pre><p>下是个典型的线性模型：</p>
-<p>$$Y = b + w_1x_1 + w_2x_2 + … + w_kx_k$$</p>
-<p>在统计意义上，如果一个回归等式是线性的，那么它的相对于参数就必须也是线性的。如果相对于参数是线性，那么即使性对于样本变量的特征是二次方或者多次方，这个回归模型也是线性的 (例如下面的公式)。</p>
-<p>$$Y = b + w_1x_1 + w_2x_2^2$$</p>
-<p>你甚至可以使用 log 或者指数去形式化特征</p>
-<p>$$Y = b + w_1e^{-x_1} + w_2e^{-x_2}$$</p>
-<h3 id="非线性回归的等式"><a href="#非线性回归的等式" class="headerlink" title="非线性回归的等式"></a>非线性回归的等式</h3><p>最简单的判断一个模型是不是非线性，就是关注非线性本身，判断它的参数是不是非线性的。非线性有很多种形象，这也是为什么非线性模型能够那么好的拟合那些曲折的函数曲线的原因。比如下面这个：</p>
-<p>$$Y = \theta_1 \ast x^{\theta_2}$$</p>
-<p>$$Y = \theta_1 + (\theta_3 - \theta_2) \ast e^{- \theta_4 X}$$</p>
-<p>与线性模型不一样的是，这些非线性模型的特征因子对应的参数不止一个。</p>
+<p>线性回归的目的是要得到输出向量 Y 和输入特征 X 之间的线性关系，求出线性回归系数 \(\theta\)，也就是 \(Y = X\theta\)。其中 Y 的维度是 m <em> 1，X 的维度是 m </em> n，而 \(\theta\) 的维度为 n * 1。m 代表样本个数，n 代表样本特征的维度。</p>
+<p>为了得到线性回归系数 \(\theta\)，我们需要定义一个损失函数，一个极小化损失函数的优化方法，以及一个验证算法的方法。损失函数的不同，损失函数的优化方法的不同，验证方法的不同，就形成了不同的线性回归算法。</p>
+<h3 id="LinearRegression"><a href="#LinearRegression" class="headerlink" title="LinearRegression"></a>LinearRegression</h3><p>损失函数：</p>
+<p>LinearRegression类就是我们平时说的最常见普通的线性回归，它的损失函数也是最简单的，如下：</p>
+<p>$$J(\theta) =  \frac{1}{2}(X\theta - Y)^{T}(X\theta - Y)$$</p>
+<p>损失函数的优化方法：</p>
+<p>对于这个函数，一般有梯度下降法和最小二乘法两种极小化损失函数的优化方法。通过最小二乘法，可以解出线性回归系数 \(\theta\) 为：</p>
+<p>$$\theta = (X^TX)^{-1}X^{T}Y$$</p>
+<h4 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h4><p>一般来说，只要我们觉得数据有线性关系，LinearRegression 是我们的首先应该采用的。如果发现拟合或者预测的不好，再考虑用其他的线性回归库。如果是学习线性回归，推荐先从这个类开始第一步的研究。</p>
+<h3 id="Ridge-Regression"><a href="#Ridge-Regression" class="headerlink" title="Ridge Regression"></a>Ridge Regression</h3><p>由于单纯的线性回归没有考虑过拟合的问题，有可能泛化能力较差，这时损失函数可以加入正则化项，如果加入的是 L2 范数的正则化项，就是 Ridge 回归。此时，损失函数如下：</p>
+<p>$$J(\theta) =  \frac{1}{2}(X\theta - Y)^{T}(X\theta - Y) + \frac{1}{2}\alpha ||\theta||^2_2$$</p>
+<p>其中 \(\alpha\) 为常数系数，需要进行调优。</p>
+<p>Ridge 回归在不抛弃任何一个特征的情况下，缩小了回归系数，使得模型相对而言比较的稳定，不至于过拟合。</p>
+<h4 id="损失函数的优化方法"><a href="#损失函数的优化方法" class="headerlink" title="损失函数的优化方法"></a>损失函数的优化方法</h4><p>一般也用最小二乘法或者梯度下降法来优化。通过最小二乘法，可以解得系数：</p>
+<p>$$\theta = (X^TX + \alpha E)^{-1}X^TY$$</p>
+<h4 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h4><p>一般来说，只要我们觉得数据有线性关系，用 LinearRegression 拟合的不是特别好，需要正则化，可以考虑用 Ridge Regression。但是这个类最大的缺点是每次我们要自己指定一个超参数 \(\alpha\)，然后自己评估 \(\alpha\) 的好坏，比较麻烦。</p>
+<h3 id="RidgeCV"><a href="#RidgeCV" class="headerlink" title="RidgeCV"></a>RidgeCV</h3><p>RidgeCV 的损失函数和损失函数的优化方法完全与 Ridge 类相同，区别在于验证方法。</p>
+<p>RidgeCV 对超参数 \(\alpha\) 使用了交叉验证，来帮忙我们选择一个合适的 \(\alpha\)。在初始化 RidgeCV 时候，我们可以传一组备选的 \(\alpha\) 值，10个，100个都可以。RidgeCV类会帮我们选择一个合适的αα。免去了我们自己去一轮轮筛选αα的苦恼。　　</p>
+<h4 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h4><p>一般来说，只要我们觉得数据有线性关系，用 LinearRegression 拟合的不是特别好，需要正则化，可以考虑用 RidgeCV。如果输入特征的维度很高，而且是稀疏线性关系的话，RidgeCV类就不合适了。这时应该主要考虑下面要讲到的 Lasso 回归类家族。</p>
+<h3 id="Lasso-Regression"><a href="#Lasso-Regression" class="headerlink" title="Lasso Regression"></a>Lasso Regression</h3><p>线性回归的 L1 正则化通常称为 Lasso 回归，它和 Ridge 回归的区别是在损失函数上增加了的是 L1 正则化的项，而不是 L2 正则化项。L1 正则化的项也有一个常数系数 \(\alpha\) 来调节损失函数的均方差项和正则化项的权重，具体 Lasso 回归的损失函数表达式如下：</p>
+<p>$$J(\theta) = \frac{1}{2m}(X\theta - Y)^{T}(X\theta - Y) + \alpha||\theta||_1$$</p>
+<p>Lasso 回归可以使得一些特征的系数变小，甚至还是一些绝对值比较小的系数直接变为 0。增强模型的泛化能力。</p>
+<h3 id="ElasticNet"><a href="#ElasticNet" class="headerlink" title="ElasticNet"></a>ElasticNet</h3><p>ElasticNet 可以看做 Lasso 和 Ridge 的结合。它也是对普通的线性回归做了正则化，但是它的损失函数记不全是 L1 的正则化，也不全是 L2 的正则化，而是一个权重 \(\rho\) 来平衡 L1 和 L2 正则化的比重，形成了一个全新的损失函数如下：</p>
+<p>$$J(\theta) = \frac{1}{2m}(X\theta - Y)^{T}(X\theta - Y) + \alpha \rho||\theta||_1 + \frac{\alpha(1 - \rho)}{2}||\theta||^2_2$$</p>
+<h4 id="使用场景-2"><a href="#使用场景-2" class="headerlink" title="使用场景"></a>使用场景</h4><p>ElasticNet 用在我们发现用 Lasso 回归太过（太多特征被稀疏为0），而用Ridge回归又正则化的不够（回归系数衰减的太慢）的时候。一般不推荐拿到数据就直接就 ElasticNet。</p>
+<h3 id="BayesianRidge"><a href="#BayesianRidge" class="headerlink" title="BayesianRidge"></a>BayesianRidge</h3><p>贝叶斯回归模型假设先验概率，似然函数和后验概率都是正态分布。先验概率是假设模型输出 Y 是符合均值为 \(X\theta\) 的正态分布，正则化参数 \(X\alpha\) 被看作是一个需要从数据中估计得到的随机变量。回归系数 \(\theta\) 的先验分布规律为球形正态分布，超参数为 λ。我们需要通过最大化边际似然函数来估计超参数 α 和 λ，以及回归系数 \(\theta\)。</p>
+<h4 id="使用场景：-1"><a href="#使用场景：-1" class="headerlink" title="使用场景："></a>使用场景：</h4><p>如果我们的数据有很多缺失或者矛盾的病态数据，可以考虑 BayesianRidge，它对病态数据鲁棒性很高，也不用交叉验证选择超参数。但是极大化似然函数的推断过程比较耗时，一般情况不推荐使用。</p>
 
       
     </div>
@@ -385,17 +388,13 @@ Response">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/02/天池ijcai比赛总结/" rel="next" title="IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结">
-                <i class="fa fa-chevron-left"></i> IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结
+              <a href="/2017/03/13/什么是单例模式/" rel="next" title="(转载) 什么是单例模式?">
+                <i class="fa fa-chevron-left"></i> (转载) 什么是单例模式?
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/04/机器学习中的L1-和-L2/" rel="prev" title="机器学习中的L1 和 L2">
-                机器学习中的L1 和 L2 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -410,10 +409,10 @@ Response">
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2017/03/03/线性模型和非线性模型的区别/"
-     data-title="线性模型和非线性模型的区别"
+        <div class="ds-share flat" data-thread-key="2017/03/13/线性回归家族一览/"
+     data-title="线性回归家族一览"
      data-content=""
-     data-url="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/">
+     data-url="http://pengshuang.space/2017/03/13/线性回归家族一览/">
   <div class="ds-share-inline">
     <ul  class="ds-share-icons-16">
 
@@ -440,8 +439,8 @@ Response">
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/03/03/线性模型和非线性模型的区别/"
-           data-title="线性模型和非线性模型的区别" data-url="http://pengshuang.space/2017/03/03/线性模型和非线性模型的区别/">
+      <div class="ds-thread" data-thread-key="2017/03/13/线性回归家族一览/"
+           data-title="线性回归家族一览" data-url="http://pengshuang.space/2017/03/13/线性回归家族一览/">
       </div>
     
   </div>
@@ -574,7 +573,7 @@ Response">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#线性回归的等式"><span class="nav-number">1.</span> <span class="nav-text">线性回归的等式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非线性回归的等式"><span class="nav-number">2.</span> <span class="nav-text">非线性回归的等式</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#LinearRegression"><span class="nav-number">1.</span> <span class="nav-text">LinearRegression</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景"><span class="nav-number">1.1.</span> <span class="nav-text">使用场景</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ridge-Regression"><span class="nav-number">2.</span> <span class="nav-text">Ridge Regression</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#损失函数的优化方法"><span class="nav-number">2.1.</span> <span class="nav-text">损失函数的优化方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景："><span class="nav-number">2.2.</span> <span class="nav-text">使用场景：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RidgeCV"><span class="nav-number">3.</span> <span class="nav-text">RidgeCV</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景-1"><span class="nav-number">3.1.</span> <span class="nav-text">使用场景</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lasso-Regression"><span class="nav-number">4.</span> <span class="nav-text">Lasso Regression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ElasticNet"><span class="nav-number">5.</span> <span class="nav-text">ElasticNet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景-2"><span class="nav-number">5.1.</span> <span class="nav-text">使用场景</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BayesianRidge"><span class="nav-number">6.</span> <span class="nav-text">BayesianRidge</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用场景：-1"><span class="nav-number">6.1.</span> <span class="nav-text">使用场景：</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

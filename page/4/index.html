@@ -258,6 +258,231 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/25/分布式系统学习-Paxos算法/" itemprop="url">
+                  分布式系统学习: Paxos算法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-25T13:54:04+08:00" content="2016-10-25">
+              2016-10-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式系统</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/25/分布式系统学习-Paxos算法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/25/分布式系统学习-Paxos算法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/25/分布式系统学习-Paxos算法/" class="leancloud_visitors" data-flag-title="分布式系统学习: Paxos算法">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在常见的分布式系统中，总会发生诸如机器宕机或网络异常等情况。Paxos 算法需要解决的问题就是如何在一个可能发生上述异常的分布式系统中快速且正确地在集群内部对某个数据的值达成一致，并且保证不会破坏整个系统的一致性。</p>
+<h3 id="Paxos-算法详解"><a href="#Paxos-算法详解" class="headerlink" title="Paxos 算法详解"></a>Paxos 算法详解</h3><h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>假设有一组可以提出提案的进程集合，那么对于一个一致性算法来说需要保证以下几点：</p>
+<ul>
+<li>在这些提出的提案中，只有一个会被选定</li>
+<li>如果没有提案被提出，那么就不会有被选定的提案</li>
+<li>当一个提案被选定后，进程应该可以获取被选定的提案信息</li>
+</ul>
+<p>对于一致性来说，安全性需求如下：</p>
+<ul>
+<li>只有被提出的提案才能被选定</li>
+<li>只能有一个值被选定</li>
+<li>如果某个进程认为某个提案被选定了，那么这个提案必须是真的被选定的那个</li>
+</ul>
+<p><strong>从整体上来说，Paxos 算法的目标就是要保证最终有一个提案会被选定，当提案被选定后，进程最终也能获取到被选定的提案。</strong></p>
+<p>在该一致性算法中，有三种参与角色，我们用 Proposer、Acceptor 和 Learner 来表示。在具体的实现中，一个进程可能充当不止一种角色。假设不同参与者之间可以通过收发消息来进行通信，那么：</p>
+<ul>
+<li>每个参与者以任意的速度执行，可能会因为出错而停止，也可能会重启。同时，即使一个提案被选定后，所有的参与者也都有可能失败或重启，因此除非那些失败或重启的参与者可以记录某些信息，否则将无法确定最终的值。</li>
+<li>消息在传输过程中可能会出现不可预知的延迟，也可能会重复或丢失，但是消息不会被损坏，即消息内容不会被篡改。</li>
+</ul>
+<h4 id="提案的选定"><a href="#提案的选定" class="headerlink" title="提案的选定"></a>提案的选定</h4><p>要选定一个唯一提案的最简单方式莫过于只允许一个 Acceptor 存在，这样的话，Proposer 只能发生提案给该 Acceptor，Acceptor 会选择它接收到的第一个提案作为被选定的提案。这种解决方式尽管实现简单，但也存在单点问题，因为一旦这个 Acceptor 出现问题，那么整个系统就无法工作。</p>
+<p>在存在多个 Acceptor 的情况下，如何进行提案的选取：Proposer 向一个 Acceptor 集合发送提案，同样，集合中的每个 Acceptor 都可能会批准（Accept）该提案，当有足够多的 Acceptor 批准这个提案的时候，我们就可以认为该提案被选定。</p>
+<p>但是，如何去定义“足够多”这个概念，我们假定足够多的 Acceptor 是整个 Acceptor 集合的一个子集，并且让这个集合大得可以包含 Acceptor 集合中的大多数成员，因为任意两个包含大多数 Acceptor 的子集至少有一个公共成员。另外，我们假定每一个 Acceptor 最多只能批准一个提案，那么就能保证只有一个提案被选定了。</p>
+<h4 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h4><p>在没有失败和消息丢失的情况下，如果我们希望即使在只有一个提案被提出的情况下，仍然可以选出一个提案，这就暗示了如下的需求：</p>
+<pre><code>P1：一个 Acceptor 必须批准它收到的第一个提案
+</code></pre><p>但是上面这个存在一点问题：如果有多个提案被不同的 Proposer 同时提出，这可能会导致虽然每个 Acceptor 都批准了它收到的第一个提案，但是没有一个提案是由多数人都批准的。</p>
+<p>因此，在 P1 的基础上，再加上一个提案被选定需要由半数以上的 Acceptor 批准的需求暗示着一个 Acceptor 必须能够批准不止一个提案。在这里我们使用一个全局的编号（这种全局唯一编号的生成并不是 Paxos算法 需要关注的地方）来唯一标识每一个被 Acceptor 批准的提案，当一个具有某 Value 值的提案被半数以上的 Acceptor 批准后，我们就认为该 Value 被选定了，此时我们也认为该提案被选定了。注意，这里的提案和 Value 不是同一个概念，提案变成了一个由编号和 Value 组成的组合体，因此我们以 “[编号，Value]”来表示一个提案。</p>
+<p>根据上面讲到的内容，我们虽然允许多个提案被选定，但同时必须要保证所有被选定的提案都具有相同的 Value 值—这是一个关于提案 Value 的约定，结合提案的编号，该约定可以定义如下：</p>
+<pre><code>P2：如果编号为 M0、Value 值为 V0 的提案（即[M0，V0]）被选定了，那么所有比
+编号 M0 更高的，且被选定的提案，其 Value 值必须也是 V0。
+</code></pre><p>因为提案的编号是全序的，条件 P2 就保证了只有一个 Value 值被选定这一关键安全性属性。同时，一个提案要被选定，其首先必须被至少一个 Acceptor 批准，因此我们可以通过满足如下条件来满足 P2：</p>
+<pre><code>P2a：如果编号为M0、Value 值为 V0 的提案（即[M0，V0]）被选定了，那么所有比
+编号 M0 更高的，且被 Acceptor 批准的提案，其 Value 值必须也是 V0。
+</code></pre><p>但是由于通信是异步的，一个提案可能会在某个 Acceptor 还未收到任何提案时就被选定了，但是 P1 又要求我们必须批准第一个收到的提案，这与 P2a 矛盾，因此如果要同时满足 P1 和 P2a，需要对 P2a 进行如下强化：</p>
+<pre><code>P2b：如果一个提案[M0，V0] 被选定之后，那么之后任何 Proposer 产生的编号更高
+的提案，其 Value 值都为 V0。
+</code></pre><p>因为一个提案必须在被 Proposer 提出后才能被 Acceptor 批准，因此 P2b 包含了 P2a，进而包含了 P2。所以只需要证明 P2b 成立即可：</p>
+<pre><code>假设某个提案 [M0，V0] 已经被选定了，证明任何编号 Mn &gt; M0 的提案，其 Value 
+值都是 V0。
+</code></pre><h4 id="数学归纳法证明"><a href="#数学归纳法证明" class="headerlink" title="数学归纳法证明"></a>数学归纳法证明</h4><p>我们可以通过对 Mn 进行第二数学归纳法来进行证明，即：</p>
+<pre><code>假设编号在 M0 到 Mn-1 之间的提案，其 Value 值都是 V0，证明编号为 Mn 的提案
+的 Value 值也为 V0。
+</code></pre><p>因为编号为 M0 的提案已经被选定了，这就意味着肯定存在一个由半数以上的 Acceptor 组成的集合 C，C 中的每个 Acceptor 都批准了该提案。再结合归纳假设，“编号为 M0 的提案被选定” 意味着：</p>
+<pre><code>C 中的每个 Acceptor 都批准了一个编号在 M0 到 Mn-1范围内的提案，并且每个编
+号在 M0 到 Mn-1 范围内的被 Acceptor 批准的提案，其 Value 值都是 V0。
+</code></pre><p>因为任何包含半数以上的 Acceptor 的集合 S 都至少包含 C 中的一个成员，因此我们可以认为如果保持了下面 P2c 的不变性，那么编号为 Mn 的提案的 Value 也为 V0。</p>
+<pre><code>P2c：对于任意的 Mn 和 Vn，如果提案 [Mn，Vn] 被提出，那么肯定存在一个由半数
+以上的 Acceptor 组成的集合 S，满足以下两个条件中的任意一个：
+    1. S 中不存在任何批准过编号小于 Mn 的提案的 Acceptor
+    2. 选取 S 中所有 Acceptor 批准的编号小于 Mn 的提案，其中编号最大的那个
+       提案其 Value 值是 Vn
+</code></pre><p>至此，只需要通过保持 P2c，我们就能满足 P2b。</p>
+<p>从 P1 到 P2c 是对一系列条件的逐步加强，实际上 P2c 规定了每个 Proposer 如何产生一个提案：对于产生的每个提案 [Mn，Vn]，需要满足以下条件：</p>
+<pre><code>存在一个由超过半数的 Acceptor 组成的集合 S：
+1. 要么 S 中没有 Acceptor 批准过编号小于 Mn 的任何提案
+2. 要么 S 中的所有 Acceptor 批准的所有编号小于 Mn 的提案中，编号最大的那个
+   提案的Value值为 Vn
+</code></pre><p> 当每个 Proposer 都按照这个规则来产生提案时，就可以保证满足 P2b 了， P2c 可以用第二数学归纳法证明，此处省略。</p>
+<h4 id="Proposer-生成提案"><a href="#Proposer-生成提案" class="headerlink" title="Proposer 生成提案"></a>Proposer 生成提案</h4><p>对于一个 Proposer 来说，获取那些已经被通过的提案远比预测未来可能会被通过的提案简单。因此，Proposer 在产生一个编号为 Mn 的提案时，必须要知道当前某一个将要或已经被半数以上 Acceptor 批准的编号小于 Mn 但为最大编号的提案。并且，Proposer 会要求所有的 Acceptor 都不要再批准任何编号小于 Mn 的提案—这便是下面的提案生产算法。</p>
+<ol>
+<li><p>Proposer 选择一个新的提案编号 Mn，然后向某个 Acceptor 集合的成员发送请求，要求该集合中的 Acceptor 作出如下回应。</p>
+<ul>
+<li>像 Proposer 承诺，保证不再批准任何编号小于 Mn 的提案。</li>
+<li><p>如果 Acceptor 已经批准过任何提案，那么其就向 Proposer 反馈当前该 Acceptor 已经批准的编号小于 Mn 但为最大编号的那个提案的值。</p>
+<p>我们将该请求称为编号为 Mn 的提案的 Prepare 请求。</p>
+</li>
+</ul>
+</li>
+<li><p>如果 Proposer 收到了来自半数以上的 Acceptor 的响应结果，那么它就可以产生编号为 Mn， Value 值为 Vn 的提案，这里的 Vn 是所有响应中编号最大的提案的 Value 值。还有一种情况，就是半数以上的 Acceptor 都没有批准过任何提案，即响应中不包含任何的提案，那么此时 Vn 值就可以由 Proposer 任意选择</p>
+</li>
+</ol>
+<p>在确定提案之后，Proposer 就会将该提案再次发送给某个 Acceptor 集合，并期望获得它们的批准，这称为 Accept 请求。</p>
+<h4 id="Paxos-提案选定的整个流程"><a href="#Paxos-提案选定的整个流程" class="headerlink" title="Paxos 提案选定的整个流程"></a>Paxos 提案选定的整个流程</h4><p><strong>阶段一</strong></p>
+<ol>
+<li><p>Proposer 选择一个提案编号 Mn，然后向 Acceptor 的某个超过半数的子集成员发送编号为 Mn 的 Prepare 请求。</p>
+</li>
+<li><p>如果一个 Acceptor 收到一个编号为 Mn 的 Prepare 请求， 且编号 Mn 大于该 Acceptor 已经响应的所有 Prepare 请求的编号，那么它就会将它已经批准过的最大编号的提案作为响应反馈给 Proposer，同时该 Acceptor 会承诺不会再批准任何编号小于 Mn 的提案。</p>
+</li>
+</ol>
+<p><strong>阶段二</strong></p>
+<ol>
+<li><p>如果 Proposer 收到来自半数以上的 Acceptor 对于其发出的编号为 Mn 的 Prepare 请求的响应，那么它就会发送一个针对 [Mn, Vn] 提案的 Accept 请求给 Acceptor。</p>
+</li>
+<li><p>如果 Acceptor 收到这个针对 [Mn, Vn]提案的 Accept 请求，只要该 Acceptor 尚未对编号大于 Mn 的 Prepare 请求做出响应，它就可以通过这个提案。</p>
+</li>
+</ol>
+<h4 id="提案的获取"><a href="#提案的获取" class="headerlink" title="提案的获取"></a>提案的获取</h4><p>Learner 获取提案，有以下几种方案。</p>
+<p><strong>方案一</strong></p>
+<p>Learner 获取一个已经被选定的提案的前提是，该提案已经被半数以上的 Acceptor 批准。因此，最简单的做法是一旦 Acceptor 批准了一个提案，就将该提案发送给所有的 Learner。</p>
+<p>这种方式需要让每个 Acceptor 与所有的 Learner 逐个进行一次通信，通信的次数至少为二者个数的乘积。</p>
+<p><strong>方案二</strong></p>
+<p>另一种可行的方案是，我们可以让所有的 Acceptor 将它们对提案的批准情况，统一发给一个特定的 Learner (主 Learner)，我们假定 Learner 之间可以通过消息通信来互相感知提案的选定情况。这样来说，当主 Learner 被通知一个提案已经被选定时，它会负责通知其他的 Learner。</p>
+<p>这种方案下，Acceptor 首先会将被批准的提案发送给 Learner，再由其同步给其他 Learner，因此方案二的通信次数较方案一而言，大大减少了，通常只是 Acceptor 和 Learner 的总和。但同时又引入了单点问题，即主 Learner 随时可能故障。</p>
+<p><strong>方案三</strong></p>
+<p>针对方案二的单点问题，可以将主 Learner 的范围扩大，即 Acceptor 可以将批准的提案发送给一个特定的 Learner 集合，该集合中的每个 Learner 都可以在一个提案被选定后通知所有其他的 Learner。</p>
+<h4 id="通过选取主-Proposer-保证算法的活性"><a href="#通过选取主-Proposer-保证算法的活性" class="headerlink" title="通过选取主 Proposer 保证算法的活性"></a>通过选取主 Proposer 保证算法的活性</h4><p>假设存在这样一种极端情况，有两个 Proposer 依次提出了一系列编号递增的议案，但是最终都无法确定，从而陷入死循环。</p>
+<p>为了保证 Paxos 算法流程的可持续性，以避免陷入上述提到的“死循环”，就必须选择一个主 Proposer，并规定只有主 Proposer 才能提出议案。这样一来，只要主 Proposer 和过半的 Acceptor 能够正常进行网络通信，那么但凡主 Proposer 提出一个编号更高的提案，该提案最终将会被批准。当然，如果当前有一个编号更高的提案被提出或正在接受批准，那么它会丢弃当前这个编号较小的提案，并最终能够选出一个编号足够大的提案。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>2PC、3PC 和 Paxos都是典型的分布式一致性协议，都从不同方面不同程度地解决了分布式一致性问题。其中二阶段提交协议解决了分布式事务的原子性问题，保证了分布式事务的多个参与者要么执行成功，要么执行失败。但是，二阶段存在一些诸如同步阻塞和无限期等待的问题。三阶段提交协议则是在二阶段的基础上，添加了 PreCommit 过程，从而避免了二阶段提交协议中的无限期等待问题。而 Paxos 算法中引入 “过半” 的理念，同时支持分布式节点角色之间的轮换。从而避免了分布式单点的出现。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/24/分布式系统学习-一致性协议/" itemprop="url">
                   分布式系统学习: 2PC 与 3PC
                 </a>
@@ -2228,196 +2453,6 @@ SELECT * FROM R WHERE R.k &gt;- 10 AND R.k &lt;= 25;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/13/Python中的引用/" itemprop="url">
-                  Python中的引用
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-13T09:53:50+08:00" content="2016-10-13">
-              2016-10-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/编程语言/" itemprop="url" rel="index">
-                    <span itemprop="name">编程语言</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/13/Python中的引用/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/13/Python中的引用/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/13/Python中的引用/" class="leancloud_visitors" data-flag-title="Python中的引用">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。</p>
-<p>事实上，当人们复制列表或字典时，就复制了对象列表的引用同，如果改变引用的值，则修改了原始的参数。</p>
-<p>为了简化内存管理，Python通过引用计数机制实现自动垃圾回收功能，Python中的每个对象都有一个引用计数，用来计数该对象在不同场所分别被引用了多少次。每当引用一次Python对象，相应的引用计数就增1，每当消毁一次Python对象，则相应的引用就减1，只有当引用计数为零时，才真正从内存中删除Python对象。</p>
-<h3 id="列表引用"><a href="#列表引用" class="headerlink" title="列表引用"></a>列表引用</h3><p>示例一:</p>
-<pre><code>&gt;&gt;&gt; a = [1,2,3]
-&gt;&gt;&gt; b = a
-&gt;&gt;&gt; b.append(4)
-&gt;&gt;&gt; print b
-# output: [1,2,3,4]
-&gt;&gt;&gt; print a
-# output: [1,2,3,4]
-</code></pre><p>这里把a的值赋给了b，相当于把a的引用给了b，这样改变b的值也就改变了a的值。</p>
-<p>示例二:</p>
-<pre><code>&gt;&gt;&gt; a = [1,2,3]
-&gt;&gt;&gt; b = a + []
-&gt;&gt;&gt; b.append(4)
-&gt;&gt;&gt; print b
-# output: [1,2,3,4]
-&gt;&gt;&gt; print a
-# output: [1,2,3]
-</code></pre><p>这里把 <strong>a+[ ]</strong> 的值赋给了b， <strong>a+[ ]</strong> 相当于一个新的变量，而不是a的引用传递，所以改变b的值不会同时也改变a。</p>
-<p>示例三:</p>
-<pre><code>def add_list(p):
-     p = p + [1]
-p1 = [1,2,3]
-add_list(p1)
-print p1
-# output: [1, 2, 3]
-
-def add_list(p):
-    p += [1]
-p2 = [1,2,3]
-proc2(p2)
-print p2
-# output: [1, 2, 3, 1]
-</code></pre><p>这主要是由于“=”操作符会新建一个新的变量保存赋值结果，然后再把引用名指向“=”左边，即修改了原来的p引用，使p成为指向新赋值变量的引用。而+=不会，直接修改了原来p引用的内容，事实上+=和=在python内部使用了不同的实现函数。</p>
-<h3 id="字典引用"><a href="#字典引用" class="headerlink" title="字典引用"></a>字典引用</h3><p>示例一:</p>
-<pre><code>&gt;&gt;&gt; a = {&quot;a&quot;:1,&quot;b&quot;:2}
-&gt;&gt;&gt; b = a
-&gt;&gt;&gt; b[&quot;c&quot;] = 3
-&gt;&gt;&gt; b
-output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
-&gt;&gt;&gt; a
-output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
-</code></pre><p>同列表引用一样，传递字典的时候其实传递的也是引用。</p>
-<p>示例二:</p>
-<pre><code>a = []
-b = {&apos;num&apos;:0, &apos;sqrt&apos;:0}
-resurse = [1,2,3]
-for i in resurse:
-  b[&apos;num&apos;] = i
-  b[&apos;sqrt&apos;] = i * i
-  a.append(b)
-print a
-output: [{&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
-</code></pre><p>我们可能会觉得有点奇怪，因为我们想要的值可能是这个:</p>
-<pre><code>output: [{&apos;num&apos;: 1, &apos;sqrt&apos;: 1}, {&apos;num&apos;: 2, &apos;sqrt&apos;: 4}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
-</code></pre><p>这是由于a中的元素就是b的引用，那怎么办呢？可以这样来修改:</p>
-<pre><code>a = []
-resurse = [1,2,3]
-for i in resurse:
-    a.append({&quot;num&quot;: i, &quot;sqrt&quot;: i * i})
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2463,7 +2498,7 @@ for i in resurse:
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">68</span>
+              <span class="site-state-item-count">69</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
