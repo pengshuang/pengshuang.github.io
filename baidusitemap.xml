@@ -4,6 +4,44 @@
 
     
   <url>
+    <loc>http://pengshuang.space/2017/03/13/%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</loc>
+    <lastmod>2017-03-13T02:06:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>(转载) 什么是单例模式?</title>
+        <pubTime>2017-03-13T01:16:00.000Z</pubTime>
+        
+         
+           
+             
+              <breadCrumb title="设计模式" url="http://pengshuang.space/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://pengshuang.space/2016/09/27/%E9%9D%A2%E8%AF%95%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</loc>
+    <lastmod>2017-03-13T01:34:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>面试排序算法总结</title>
+        <pubTime>2016-09-27T01:15:16.000Z</pubTime>
+        
+        <tag>算法</tag>
+         
+         
+           
+             
+              <breadCrumb title="面试总结" url="http://pengshuang.space/categories/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://pengshuang.space/2017/03/07/Adaboost-%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</loc>
     <lastmod>2017-03-07T13:34:42.000Z</lastmod>
     <data>
@@ -878,26 +916,6 @@
         <pubTime>2016-10-07T03:10:09.000Z</pubTime>
         
         <tag>C++</tag>
-         
-         
-           
-             
-              <breadCrumb title="面试总结" url="http://pengshuang.space/categories/%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://pengshuang.space/2016/09/27/%E9%9D%A2%E8%AF%95%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</loc>
-    <lastmod>2016-09-27T02:42:38.000Z</lastmod>
-    <data>
-        <display>
-        <title>面试排序算法总结</title>
-        <pubTime>2016-09-27T01:15:16.000Z</pubTime>
-        
-        <tag>算法</tag>
          
          
            

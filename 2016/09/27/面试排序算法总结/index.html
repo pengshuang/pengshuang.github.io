@@ -86,33 +86,21 @@
 
 <meta name="description" content="1. 冒泡排序冒泡排序的原理就是重复的去遍历要排序的数列，一次比较2个元素，如果它们顺序错误就把它们交换过来。
 代码实现：
-def bubble_sort(arry):
-    n = len(arry)   # 获得数组的长度
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arry[i] &amp;gt;">
+1234567def bubble_sort(arry):    n = len(arry)   # 获得数组的长度    for i in range(n):        for j in range(i + 1, n):            if arry[i] &amp;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试排序算法总结">
 <meta property="og:url" content="http://pengshuang.space/2016/09/27/面试排序算法总结/index.html">
 <meta property="og:site_name" content="小沙文的博客">
 <meta property="og:description" content="1. 冒泡排序冒泡排序的原理就是重复的去遍历要排序的数列，一次比较2个元素，如果它们顺序错误就把它们交换过来。
 代码实现：
-def bubble_sort(arry):
-    n = len(arry)   # 获得数组的长度
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arry[i] &amp;gt;">
+1234567def bubble_sort(arry):    n = len(arry)   # 获得数组的长度    for i in range(n):        for j in range(i + 1, n):            if arry[i] &amp;g">
 <meta property="og:image" content="http://pengshuang.space/img/classicalsort.png">
-<meta property="og:updated_time" content="2016-09-27T02:42:38.000Z">
+<meta property="og:updated_time" content="2017-03-13T01:34:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试排序算法总结">
 <meta name="twitter:description" content="1. 冒泡排序冒泡排序的原理就是重复的去遍历要排序的数列，一次比较2个元素，如果它们顺序错误就把它们交换过来。
 代码实现：
-def bubble_sort(arry):
-    n = len(arry)   # 获得数组的长度
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arry[i] &amp;gt;">
+1234567def bubble_sort(arry):    n = len(arry)   # 获得数组的长度    for i in range(n):        for j in range(i + 1, n):            if arry[i] &amp;g">
 
 
 
@@ -352,25 +340,11 @@ def bubble_sort(arry):
       
         <h3 id="1-冒泡排序"><a href="#1-冒泡排序" class="headerlink" title="1. 冒泡排序"></a>1. 冒泡排序</h3><p>冒泡排序的原理就是重复的去遍历要排序的数列，一次比较2个元素，如果它们顺序错误就把它们交换过来。</p>
 <p>代码实现：</p>
-<pre><code>def bubble_sort(arry):
-    n = len(arry)   # 获得数组的长度
-    for i in range(n):
-        for j in range(i + 1, n):
-            if arry[i] &gt; arry[j]:   # 如果前者比后者大
-                arry[i], arry[j] = arry[j], arry[i] # 则互相交换
-    return arry
-</code></pre><h3 id="2-选择排序"><a href="#2-选择排序" class="headerlink" title="2. 选择排序"></a>2. 选择排序</h3><p>选择排序的思想比较简单，先在未排序的序列中找到最大（最小）的元素，存放到排序序列的起始位置；再从剩余未排序的序列中寻找最大（最小）的元素，然后放到已排序序列的末尾；以此类推。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bubble_sort</span><span class="params">(arry)</span>:</span></span><br><span class="line">    n = len(arry)   <span class="comment"># 获得数组的长度</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">if</span> arry[i] &gt; arry[j]:   <span class="comment"># 如果前者比后者大</span></span><br><span class="line">                arry[i], arry[j] = arry[j], arry[i] <span class="comment"># 则互相交换</span></span><br><span class="line">    <span class="keyword">return</span> arry</span><br></pre></td></tr></table></figure>
+<h3 id="2-选择排序"><a href="#2-选择排序" class="headerlink" title="2. 选择排序"></a>2. 选择排序</h3><p>选择排序的思想比较简单，先在未排序的序列中找到最大（最小）的元素，存放到排序序列的起始位置；再从剩余未排序的序列中寻找最大（最小）的元素，然后放到已排序序列的末尾；以此类推。</p>
 <p>代码实现：</p>
-<pre><code>def select_sort(arry):
-n = len(arry)
-for i in range(0, n):
-    min = i     # 先假定第一个为最小元素
-    for j in range(i+1, n):
-        if arry[j] &lt; arry[min]:
-            min = j     # 找到最小值的下标
-    arry[min], arry[i] = arry[i], arry[min]
-return arry
-</code></pre><h3 id="3-插入排序"><a href="#3-插入排序" class="headerlink" title="3. 插入排序"></a>3. 插入排序</h3><p>插入排序的工作原理是，对于每个未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">select_sort</span><span class="params">(arry)</span>:</span></span><br><span class="line">   n = len(arry)</span><br><span class="line">   <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>, n):</span><br><span class="line">       min = i     <span class="comment"># 先假定第一个为最小元素</span></span><br><span class="line">       <span class="keyword">for</span> j <span class="keyword">in</span> range(i+<span class="number">1</span>, n):</span><br><span class="line">           <span class="keyword">if</span> arry[j] &lt; arry[min]:</span><br><span class="line">               min = j     <span class="comment"># 找到最小值的下标</span></span><br><span class="line">       arry[min], arry[i] = arry[i], arry[min]</span><br><span class="line">   <span class="keyword">return</span> arry</span><br></pre></td></tr></table></figure>
+<h3 id="3-插入排序"><a href="#3-插入排序" class="headerlink" title="3. 插入排序"></a>3. 插入排序</h3><p>插入排序的工作原理是，对于每个未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。</p>
 <p>步骤：</p>
 <ol>
 <li>从第一个元素开始，该元素可以认为已经被排序</li>
@@ -381,21 +355,22 @@ return arry
 <li>重复步骤2~5</li>
 </ol>
 <p>代码实现：</p>
-<pre><code>def insert_sort(arry):
+<pre><code class="python"><span class="function"><span class="keyword">def</span> <span class="title">insert_sort</span><span class="params">(arry)</span>:</span>
     n = len(arry)
-    for i in range(1, n):
-        if arry[i] &lt; arry[i-1]:
+    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n):
+        <span class="keyword">if</span> arry[i] &lt; arry[i<span class="number">-1</span>]:
             temp = arry[i]
-            index = i   # 待插入的下标
-            for j in range(i-1, -1, -1): # 从i-1 循环到 0 (包括0)
-                if arry[j] &gt; temp:
-                    arry[j+1] = arry[j]
+            index = i   <span class="comment"># 待插入的下标</span>
+            <span class="keyword">for</span> j <span class="keyword">in</span> range(i<span class="number">-1</span>, <span class="number">-1</span>, <span class="number">-1</span>): <span class="comment"># 从i-1 循环到 0 (包括0)</span>
+                <span class="keyword">if</span> arry[j] &gt; temp:
+                    arry[j+<span class="number">1</span>] = arry[j]
                     index = j
-                else:
-                    break
+                <span class="keyword">else</span>:
+                    <span class="keyword">break</span>
             arry[index] = temp
-    return arry
-</code></pre><h3 id="4-希尔排序"><a href="#4-希尔排序" class="headerlink" title="4. 希尔排序"></a>4. 希尔排序</h3><p>希尔排序，也称递减增量排序算法，实质是分组插入排序。</p>
+    <span class="keyword">return</span> arry
+</code></pre>
+<h3 id="4-希尔排序"><a href="#4-希尔排序" class="headerlink" title="4. 希尔排序"></a>4. 希尔排序</h3><p>希尔排序，也称递减增量排序算法，实质是分组插入排序。</p>
 <p>希尔排序的基本思想是：将数组列在一个表中并对列分别进行插入排序，重复这过程，不过每次用更长的列（步长更长了，列数更少了）来进行。最后整个表就只有一列了。将数组转换至表是为了更好地理解这算法，算法本身还是使用数组进行排序。</p>
 <p>例如，假设有这样一组数[ 13 14 94 33 82 25 59 94 65 23 45 27 73 25 39 10 ]，如果我们以步长为5开始进行排序，我们可以通过将这列表放在有5列的表中来更好地描述算法，这样他们就应该看起来是这样：</p>
 <pre><code>13 14 94 33 82
@@ -423,20 +398,21 @@ return arry
 94
 </code></pre><p>最后以1步长进行排序（此时就是简单的插入排序了）。</p>
 <p>代码实现：</p>
-<pre><code>def shell_sort(arry):
+<pre><code class="python"><span class="function"><span class="keyword">def</span> <span class="title">shell_sort</span><span class="params">(arry)</span>:</span>
     n = len(arry)
-    gap = n/2    # 初始步长
-    while gap &gt; 0:
-        for i in range(gap, n):     # 对每一列进行插入排序, 从gap 到 n-1
+    gap = n/<span class="number">2</span>    <span class="comment"># 初始步长</span>
+    <span class="keyword">while</span> gap &gt; <span class="number">0</span>:
+        <span class="keyword">for</span> i <span class="keyword">in</span> range(gap, n):     <span class="comment"># 对每一列进行插入排序, 从gap 到 n-1</span>
             temp = arry[i]
             j = i
-            while j &gt;= gap and arry[j-gap] &gt; temp: # 插入排序
+            <span class="keyword">while</span> j &gt;= gap <span class="keyword">and</span> arry[j-gap] &gt; temp: <span class="comment"># 插入排序</span>
                 arry[j] = arry[j-gap]
                 j -= gap
             arry[j] = temp
-        gap /= 2
-    return arry
-</code></pre><h3 id="5-归并排序"><a href="#5-归并排序" class="headerlink" title="5. 归并排序"></a>5. 归并排序</h3><p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
+        gap /= <span class="number">2</span>
+    <span class="keyword">return</span> arry
+</code></pre>
+<h3 id="5-归并排序"><a href="#5-归并排序" class="headerlink" title="5. 归并排序"></a>5. 归并排序</h3><p>归并排序是采用分治法的一个非常典型的应用。归并排序的思想就是先递归分解数组，再合并数组。</p>
 <p>先考虑合并两个有序数组，基本思路是比较两个数组的最前面的数，谁小就先取谁，取了后相应的指针就往后移一位。然后再比较，直至一个数组为空，最后把另一个数组的剩余部分复制过来即可。</p>
 <p>再考虑递归分解，基本思路是将数组分解成left和right，如果这两个数组内部数据是有序的，那么就可以用上面合并数组的方法将这两个数组合并排序。如何让这两个数组内部是有序的？可以再二分，直至分解出的小组只含有一个元素时为止，此时认为该小组内部已有序。然后合并排序相邻二个小组即可。</p>
 <p>代码实现：</p>
@@ -684,7 +660,7 @@ def max_heapify(ary, start, end):
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">67</span>
+              <span class="site-state-item-count">68</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -692,7 +668,7 @@ def max_heapify(ary, start, end):
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
