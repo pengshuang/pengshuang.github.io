@@ -87,7 +87,7 @@
 <meta name="description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
 XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
 $$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
-$$where \Omega(f) = \gamma T + \frac{1}{2">
+$$where \,\, \Omega(f) = \gamma T + \frac">
 <meta property="og:type" content="article">
 <meta property="og:title" content="XGBoost 介绍">
 <meta property="og:url" content="http://pengshuang.space/2017/03/15/XGBoost-介绍/index.html">
@@ -95,14 +95,14 @@ $$where \Omega(f) = \gamma T + \frac{1}{2">
 <meta property="og:description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
 XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
 $$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
-$$where \Omega(f) = \gamma T + \frac{1}{2">
-<meta property="og:updated_time" content="2017-03-15T12:39:40.000Z">
+$$where \,\, \Omega(f) = \gamma T + \frac">
+<meta property="og:updated_time" content="2017-03-15T12:52:06.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="XGBoost 介绍">
 <meta name="twitter:description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
 XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
 $$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
-$$where \Omega(f) = \gamma T + \frac{1}{2">
+$$where \,\, \Omega(f) = \gamma T + \frac">
 
 
 
@@ -345,8 +345,8 @@ $$where \Omega(f) = \gamma T + \frac{1}{2">
 <h3 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h3><p>我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。</p>
 <p>XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。</p>
 <p>$$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$</p>
-<p>$$where \Omega(f) = \gamma T + \frac{1}{2}\lambda||w||^2$$</p>
-<p>其中 i 是样本 id，k 是树 id（轮数），由于 loss 和复杂度项都是凸函数，所以有最小值。w 是与真实值的残差，将 w 的 L2 正则项加在目标函数中，可以有效的防止过拟合。叶子节点的数目的线性项也加在了目标函数中，一定程度上限制了叶子数量，防止过拟合。而传统 GBDT 防止过拟合的手段是预剪枝或者后剪枝。</p>
+<p>$$where \,\, \Omega(f) = \gamma T + \frac{1}{2}\lambda||w||^2$$</p>
+<p>其中 i 是样本 id，k 是树 id（轮数），由于 loss 函数和复杂度项都是凸函数，所以有最小值。w 是与真实值的残差，将 w 的 L2 正则项加在目标函数中，可以有效的防止过拟合。叶子节点的数目也作为正则项加在了目标函数中，一定程度上限制了叶子数量，防止过拟合。而传统 GBDT 防止过拟合的手段是预剪枝或者后剪枝。</p>
 <h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p>对于每次迭代过程，可以将一颗树的训练目标函数写成形式如下：</p>
 <p>$$L^{(t)} = \sum_{i=1}^n l(y_i, y_i^{*(t-1)} + f_t(x_i)) + \Omega(f_t)$$</p>
 <p>输入是 \(t-1\) 轮后预测的值和真实值，用来拟合残差 \(f(x)\)。对于这个式子，因为无法对 \(f(x)\) 进行有效的最优估计，所以要进行如下推导：</p>
@@ -365,7 +365,9 @@ $$where \Omega(f) = \gamma T + \frac{1}{2">
 <p>带入原方程最小值为：</p>
 <p>$$L^{t}(q) = - \frac{1}{2} \sum_{j=1}^T \frac{(\sum_{i \in I_j} g_i)^2}{\sum_{i \in I_j} h_i + \lambda} + \gamma T$$</p>
 <p>最后求得的w就是目标函数在一个样本集合条件下的最优解。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>为何要对目标函数进行推导。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>为什么要用泰勒二阶近似展开。</strong></p>
+<p>由于 gbdt 只用到了一阶信息，相当于 loss 函数只进行了一阶泰勒展开。在没有复杂度项的情况下，无法确定步长，所以只能用常数步长根据一阶梯度方向去逼近。这就是牛顿下降法和梯度下降法的区别。由于二阶展开用二次函数去逼近函数，所以可以利用二阶信息确定更新步长，比只利用一阶信息的 gdbt 用更少的迭代获得更好的效果。</p>
+<p><strong>为何要对目标函数进行推导。</strong></p>
 <ol>
 <li>为了适应各种损失函数。</li>
 <li>正则项的加入对参数估计产生了影响。</li>
