@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pengshuang.space/2017/03/15/XGBoost-%E4%BB%8B%E7%BB%8D/</loc>
+    
+    <lastmod>2017-03-15T12:39:40.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://pengshuang.space/2017/03/13/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%AE%B6%E6%97%8F%E4%B8%80%E8%A7%88/</loc>
     
     <lastmod>2017-03-13T13:39:58.000Z</lastmod>
@@ -107,14 +114,14 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/main-blue-light.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/main.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/main.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/bootstrap.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
@@ -128,13 +135,6 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/bootstrap-blue-light.css</loc>
-    
-    <lastmod>2017-03-01T07:08:24.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/player.js</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
@@ -142,7 +142,7 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/es-icon.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/bootstrap-blue-light.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
@@ -163,14 +163,14 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/bootstrap.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/seajs-global-config.js</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/seajs-style.js</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/es-icon.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
@@ -184,14 +184,14 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/balloon-default.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/font-awesome.min.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/font-awesome.min.css</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/main-blue-light.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
@@ -206,6 +206,13 @@
   
   <url>
     <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/video-js.css</loc>
+    
+    <lastmod>2017-03-01T07:08:24.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/balloon-default.css</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     
@@ -254,7 +261,7 @@
   </url>
   
   <url>
-    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/seajs-global-config.js</loc>
+    <loc>http://pengshuang.space/img/%E6%9C%AA%E5%91%BD%E5%90%8D_files/seajs-style.js</loc>
     
     <lastmod>2017-03-01T07:08:24.000Z</lastmod>
     

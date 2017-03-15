@@ -258,6 +258,434 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/21/机器学习常见算法总结/" itemprop="url">
+                  机器学习常见算法总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-21T15:11:48+08:00" content="2017-02-21">
+              2017-02-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/02/21/机器学习常见算法总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/21/机器学习常见算法总结/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/21/机器学习常见算法总结/" class="leancloud_visitors" data-flag-title="机器学习常见算法总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<h2 id="朴素贝叶斯"><a href="#朴素贝叶斯" class="headerlink" title="朴素贝叶斯"></a>朴素贝叶斯</h2><p>事件 A 和 B 同时发生的概率为在 A 发生的情况下发生 B 或者在 B 发生的情况下发生 A</p>
+<p>$$P(A\cap B) = P(B) * P(A|B)$$</p>
+<p>所以，</p>
+<p>$$P(A|B) = \frac{P(B|A) * P(A)}{P(B)}$$</p>
+<p>对于给出的待分类项，求解在此项出现的条件下各个目标类别出现的概率，哪个最大，就认为此待分类项属于哪个类别。</p>
+<h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><ol>
+<li>假设现在有样本 \(x = (a_1,a_2,…,a_n)\) 这个待分类项(并认为 x 里面的特征独立)。</li>
+<li>再假设现在有分类目标 \(Y = (y_1,y_2,…,y_n)\)</li>
+<li>那么 \(max(P(y_1|x),P(y_2|x),P(y_3|x),…,P(y_n|x))\) 就是最终的分类类别。</li>
+<li>而 \(Y = (y_1,y_2,…,y_n)\) 就是最终的分类类别。</li>
+</ol>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><h4 id="1-准备阶段"><a href="#1-准备阶段" class="headerlink" title="1. 准备阶段"></a>1. 准备阶段</h4><p>确定特征属性，并对每个特征属性进行适当划分，然后由人工对一部分待分类项进行分类，形成训练样本。</p>
+<h4 id="2-训练阶段"><a href="#2-训练阶段" class="headerlink" title="2. 训练阶段"></a>2. 训练阶段</h4><p>计算每个类别在训练样本中的出现频率及每个特征属性划分对每个类别的条件概率估计。</p>
+<h4 id="3-应用阶段"><a href="#3-应用阶段" class="headerlink" title="3. 应用阶段"></a>3. 应用阶段</h4><p>使用分类器进行分类，输入时分类器和待分类样本，输出是样本属于的分类类别。</p>
+<h3 id="属性特征"><a href="#属性特征" class="headerlink" title="属性特征"></a>属性特征</h3><ol>
+<li>特征为离散值时直接统计即可。</li>
+<li>特征为连续值的时候假定特征符合高斯分布：\(g(x,n,u)\)</li>
+</ol>
+<h3 id="拉普拉斯校准"><a href="#拉普拉斯校准" class="headerlink" title="拉普拉斯校准"></a>拉普拉斯校准</h3><p>当某个类别下某个特征划分没有出现时，会有 \(P(a|y) = 0\)，就是导致分类器质量降低，所以此时引入 拉普拉斯校验，就是对每类别下所有划分的计数加 1。</p>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>对小规模的数据表现很好，适合多分类任务，适合增量式训练。</li>
+<li>对输入数据的表达形式很敏感。(离散、连续、极大值，极小值）。</li>
+</ol>
+<h2 id="逻辑回归和线性回归"><a href="#逻辑回归和线性回归" class="headerlink" title="逻辑回归和线性回归"></a>逻辑回归和线性回归</h2><p>LR回归是一个线性的二分类模型，主要是计算在某个样本特征下事件发生的概率，比如根据用户的浏览购买情况作为特征来计算它是否会购买这个商品，抑或是它是否会点击这个商品。然后LR的最终值是根据一个线性和函数再通过一个 <strong>sigmoid</strong> 函数来求得，这个线性和函数权重与特征值的累加以及加上偏置求出来的，所以在训练LR时也就是在训练线性和函数的各个权重值w。</p>
+<p>$$h_w(x) = \frac{1}{1 + e^{-(w^Tx + b)}}$$</p>
+<p>关于这个权重值 w 一般使用最大似然法来估计，假设现在有样本 \(x_i, y_i\)，其中 xi 表示样本的特征，\(y_i \epsilon 0, 1\)表示样本的分类真实值，\(y_i = 1\) 的概率是 \(p_i\)，则 \(y_i = 0\) 的概率是 \(1 − p_i\)，那么观测概率为:</p>
+<p>$$p(y_i) = p_i^{y_i} * (1 - p_i)^{1 - y_i}$$</p>
+<p>则最大似然估计为：</p>
+<p>$$\prod h_w(x_i)^y_i * (1 - h_w(x_i))^{1 - y_i}$$</p>
+<p>对这个似然函数取对数之后就会得到表达式：</p>
+<p>$$L(w) = \sum_{i}^{N} \left ( y_i \ast logh_w(x_i) + (1 - y_i) \ast log(1 - h_w(x_i))\right )$$</p>
+<p>对这个 L(w) 求极大值就可以得到 w 的估计值。</p>
+<p>实际计算中，常改为求极小值，在前面加个负号即可。故求解问题就变成了这个最大似然函数的最优化问题，这里通常会采取随机梯度下降和拟牛顿迭代法来进行优化。</p>
+<h3 id="梯度下降法"><a href="#梯度下降法" class="headerlink" title="梯度下降法"></a>梯度下降法</h3><p>LR 的损失函数为：</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1 - y_i) \ast log(1 - h_w(x_i)))$$</p>
+<p>这里除以 N 是因为求的是最小均方误差，这样就变成了求 min(J(w))，</p>
+<p>其更新 w 的过程为:</p>
+<p>$$w := w - \alpha \ast \bigtriangledown J(w)$$</p>
+<p>$$w := w - \alpha \frac{1}{N} \ast \sum_{i = 1}^{N} ((h_w(x_i) - y_i) \ast x_i)$$</p>
+<p>其中 \(\alpha\) 为步长，直到 \(J(w)\) 不能再小时停止。</p>
+<p>批量梯度下降法的最大问题是会陷入局部最优，并且每次在对当前样本计算 cost 的时候都需要遍历全部样本，这样计算速度会很慢，计算的时候可以转为矩阵乘法去更新整个 w 值。</p>
+<p>有好多方法也采用随机梯度下降，它在计算 cost 的时候只计算当前代价，最终 cost 是在全部样本迭代一次求和得出，还有他在更新当前的参数 w 的时候并不是依次遍历样本，而是从所有样本中随机选择一条进行计算，这种方法收敛速度快，也可以避免局部最优，还容易并行。</p>
+<p>$$w := w - \alpha \ast \left ( (h_w(x_j) - y_i) \ast x_i \right )$$</p>
+<p>$$j \epsilon 1…N$$</p>
+<p>SGD 可以改进的地方是使用动态的步长。</p>
+<h3 id="其他的优化方法"><a href="#其他的优化方法" class="headerlink" title="其他的优化方法"></a>其他的优化方法</h3><ul>
+<li>拟牛顿法</li>
+<li>BFDS</li>
+<li>L-BFGS</li>
+</ul>
+<p>优缺点： 无需选择学习率，更快，但也更复杂</p>
+<h3 id="如何避免过拟合"><a href="#如何避免过拟合" class="headerlink" title="如何避免过拟合"></a>如何避免过拟合</h3><ol>
+<li>减少 feature 的个数</li>
+<li>正则化 (L1, L2)</li>
+</ol>
+<p>添加 L2 正则化之后的损失函数为：</p>
+<p>$$J(w) = - \frac{1}{N} \sum_{i = 1}^{N} (y_i \ast log(h_w(x_i)) + (1 - y_i) \ast log(1 - h_w(x_i))) +\lambda \left | w \right |_2$$</p>
+<p>同时 w 的更新变为:</p>
+<p>$$w := w - \alpha \ast ( h_w(x_j) - y_j) \ast x_i ) - 2\alpha \ast w_j$$</p>
+<p>这里 \(w_0\) 不受正则化影响。</p>
+<h3 id="优缺点："><a href="#优缺点：" class="headerlink" title="优缺点："></a>优缺点：</h3><ol>
+<li>实现简单，计算量小</li>
+<li>容易欠拟合</li>
+</ol>
+<h2 id="KNN-算法"><a href="#KNN-算法" class="headerlink" title="KNN 算法"></a>KNN 算法</h2><p>给一个训练数据集和一个新的实例，在训练数据集中找出与这个新实例最近的k个训练实例，然后统计最近的k个训练实例中所属类别计数最多的那个类，就是新实例的类.</p>
+<h3 id="三要素"><a href="#三要素" class="headerlink" title="三要素"></a>三要素</h3><ol>
+<li>k 值的选择</li>
+<li>距离的度量</li>
+<li>分类决策规则</li>
+</ol>
+<h3 id="k-值的选择"><a href="#k-值的选择" class="headerlink" title="k 值的选择"></a>k 值的选择</h3><ol>
+<li>k值越小表明模型越复杂，更加容易过拟合</li>
+<li>但是 k 值越大，模型越简单，如果 k = N 就代表什么点都是训练集中类别最多的那个类。</li>
+</ol>
+<p><strong>所以一般k会取一个较小的值，然后用过交叉验证来确定<br>这里所谓的交叉验证就是将样本划分一部分出来为预测样本，比如95%训练，5%预测，然后k分别取1，2，3，4，5之类的，进行预测，计算最后的分类误差，选择误差最小的k</strong></p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>计算量大；</li>
+<li>样本不均时会造成问题；</li>
+<li>需要大量的内存。</li>
+</ol>
+<h3 id="Kd-树"><a href="#Kd-树" class="headerlink" title="Kd 树"></a>Kd 树</h3><p>Kd 树是一个二叉树，表示对K维空间的一个划分，可以进行快速检索（那KNN计算的时候不需要对全样本进行距离的计算了）</p>
+<h4 id="构造-Kd-树"><a href="#构造-Kd-树" class="headerlink" title="构造 Kd 树"></a>构造 Kd 树</h4><p>在 k 维的空间上循环找子区域的中位数进行划分的过程</p>
+<p>假设现在有 k 维空间的数据集 T = {x1, x2, x3,…,xn}，xi = {a1, a2, a3,…,ak}</p>
+<ol>
+<li>首先构造根节点，以坐标 a1 的中位数 b 为切分点，将根结点对应的矩形区域划分为两个区域，区域 1 中 a1 &lt; b，区域 2 中 a1 &gt; b</li>
+<li>构造叶子节点，分别以上面两个区域中 a2 的中位数作为切分点，再次将他们两两划分，作为深度为 1 的叶子节点</li>
+<li>不断重复 2 操作，深度为 j 的叶子节点划分的时候，索取的 ai 的 i = j % k + 1，直到两个子区域没有实例时停止。</li>
+</ol>
+<h4 id="Kd-树的搜索"><a href="#Kd-树的搜索" class="headerlink" title="Kd 树的搜索"></a>Kd 树的搜索</h4><ol>
+<li>首先从根节点开始递归往下找到包含x的叶子节点，每一层都是找对应的xi</li>
+<li>将这个叶子节点认为是当前的 “近似最近点”</li>
+<li>递归向上回退，如果以x圆心，以“近似最近点”为半径的球与根节点的另一半子区域边界相交，则说明另一半子区域中存在与x更近的点，则进入另一个子区域中查找该点并且更新”近似最近点“</li>
+<li>重复3的步骤，直到另一子区域与球体不相交或者退回根节点</li>
+<li>最后更新的 ”近似最近点“ 与x真正的最近点</li>
+</ol>
+<h3 id="Kd-树进行-KNN-查找"><a href="#Kd-树进行-KNN-查找" class="headerlink" title="Kd 树进行 KNN 查找"></a>Kd 树进行 KNN 查找</h3><p>通过 Kd 树的搜索找到与搜索目标最近的点，这样 KNN 的搜索就可以被限制在空间的局部区域上了，可以大大增加效率。</p>
+<h3 id="Kd-树搜索的复杂度"><a href="#Kd-树搜索的复杂度" class="headerlink" title="Kd 树搜索的复杂度"></a>Kd 树搜索的复杂度</h3><p>当实例随机分布的时候，搜索的复杂度为 log(N)，N 为实例的个数，KD树更加适用于实例数量远大于空间维度的 KNN 搜索，如果实例的空间维度与实例个数差不多时，它的效率基于等于线性扫描。</p>
+<h2 id="SVM-支持向量机"><a href="#SVM-支持向量机" class="headerlink" title="SVM (支持向量机)"></a>SVM (支持向量机)</h2><p>对于样本点 (Xi,Yi) 以及 svm 的超平面：\(w^Tx_i + b = 0\)</p>
+<ul>
+<li>函数间隔：\(yi \ast ( w^Tx_i + b )\)</li>
+<li>几何间隔： \(\frac{(yi \ast ( w^Tx_i + b )}{||w||}\)</li>
+</ul>
+<p>SVM 的基本思想是求解能正确划分训练样本并且其几何间隔最大化的超平面。</p>
+<h3 id="线性-SVM-问题"><a href="#线性-SVM-问题" class="headerlink" title="线性 SVM 问题"></a>线性 SVM 问题</h3><p>$$argmax_{w,b}   \gamma$$</p>
+<p>同时满足：</p>
+<p>$$st. \frac{y_i(w^Tx_i + b)}{||w||} \geq \gamma $$</p>
+<p>那么假设 \(\widehat{\gamma } = \gamma \ast ||w||\)，则问题转换为：</p>
+<p>$$argmax \frac{\widehat{\gamma }}{||w||}$$</p>
+<p>$$st. y_i(w^Tx_i + b) \geq 1$$</p>
+<p>由于 \(\widehat{\gamma }\) 的成比例增减不会影响实际间距，所以这里的取 \(\widehat{\gamma } = 1\)，又因为 \(max(\frac{1}{||w||}) = min(\frac{1}{2} \ast ||w||^2）\)。</p>
+<p>所以最终问题就变成了</p>
+<p>$$argmin_{w,b}  \frac{1}{2} \ast ||w||^2  \gamma$$</p>
+<p>$$st. y_i(w^Tx_i + b) \geq 1$$</p>
+<p>这样就把原始问题转换为了一个凸的二次规划，可以将其转换为拉格朗日函数，然后使用对偶算法来求解。</p>
+<h3 id="对偶求解"><a href="#对偶求解" class="headerlink" title="对偶求解"></a>对偶求解</h3><p>引进拉格朗日乘子 \(a = {a_1, a_2,…}\)，定义拉格朗日函数：</p>
+<p>$$L(w, b, a) = \frac{1}{2} \ast ||w||^2 - \sum_{i=1}^{N} (\alpha_i \ast y_i (w^Tx_i + b)) + \sum_{i = 1}^{N} (\alpha_i)$$</p>
+<p>根据对偶性质，原始问题就是对偶问题的极大极小</p>
+<p>$$max min L(w, b, a)$$</p>
+<p>先求 L 对 w，b 的极小，再求对 \(\alpha\) 的极大。第一步，相当于对 \(w, b) 求偏导并且令其等于 0</p>
+<p>$$\bigtriangledown_w L(w, b, a) = w - \sum_{i = 1}^{N} a_iy_ix_i$$</p>
+<p>$$\bigtriangledown_b L(w, b, a) = \sum_{i = 1}^{N} a_iy_i$$</p>
+<p>带入后即得，</p>
+<p>$$minL(w, b, a) = - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot  x_j) + \sum_{i = 1}^{N} a_i$$</p>
+<p>对上式求极大，即是对偶问题：</p>
+<p>$$max - \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} a_ia_jy_iy_j(x_i \cdot x_j) + \sum_{i = 1}^{N} a_i$$</p>
+<p>$$st. \sum_{i = 1}^{N}(\alpha_i y_i) = 0$$</p>
+<p>$$a \geq 0, i = 1, 2, 3…$$</p>
+<p>将求最大转为求最小，得到等价的式子为：</p>
+<p>$$min \frac{1}{2} \ast \sum_{i = 1}^{N} \sum_{j = 1}^{N} (a_ia_jy_iy_j(x_i \cdot x_j) - \sum_{i = 1}^{N} a_i$$</p>
+<p>$$st. \sum_{i = 1}^{N}(\alpha_i y_i) = 0$$</p>
+<p>$$a \geq 0, i = 1, 2, 3…$$</p>
+<p>假如求解出来的 \(\alpha^* (\alpha_1^\ast,…\alpha_n^\ast)\)</p>
+<p>则得到最优的 w，b 分别为</p>
+<p>$$w^ \ast = \sum_{i = 1}^{N}(\alpha_i^\ast y_ix_i)$$</p>
+<p>$$b^ \ast = y_i - \sum_{i = 1}^{N}(\alpha_i^\ast y_i (x_i \cdot x_j))$$</p>
+<p>所以，最终的决策分类面为：</p>
+<p>$$f(x) = sign(\sum_{i = 1}^{N} a_i^\ast y_i(x \cdot x_i) + b^*)$$</p>
+<p>即，分类决策函数只依赖于输入 x 与训练样本输入的内积。</p>
+<h4 id="SVM-软间距最大化"><a href="#SVM-软间距最大化" class="headerlink" title="SVM 软间距最大化"></a>SVM 软间距最大化</h4><p>软间距最大化引用了松弛变量 \(\xi \)，将原问题的求解转换为：</p>
+<p>$$argmin_{w,b} \frac{1}{2} \ast ||w||^2  + C \sum_{i = 1}^{N} \xi_i$$</p>
+<p>$$y_i(w^Tx_i + b) \geq 1 - \xi_i$$</p>
+<p>$$\xi_i \geq 0, i = 1,2,…N$$</p>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>优化目标为：</p>
+<p>$$\sum [1 - y_i(w^Tx_i + b)]_+  + \lambda ||w||^2$$</p>
+<p>其中 \([1 - y_i(w^Tx_i + b)]_+\) 称为折页损失函数，当其值小于等于 0 时，返回 0。</p>
+<h3 id="为何要引入对偶算法"><a href="#为何要引入对偶算法" class="headerlink" title="为何要引入对偶算法"></a>为何要引入对偶算法</h3><ol>
+<li>对偶问题往往更加容易求解。</li>
+<li>可以很自然的引入核函数。</li>
+</ol>
+<h3 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h3><p>将输入特征x（线性不可分）映射到高维特征 R 空间，可以在 R 空间上让 SVM 进行线性可以变，这就是核函数的作用。常见的核函数有：</p>
+<ul>
+<li>多项式核函数: \( K(x, z)=(x \ast z + 1)^p\)</li>
+<li>高斯核函数: \( K(x, z) = exp(\frac{-(x - z)^2}{\sigma ^2})\) </li>
+</ul>
+<h3 id="SVM优缺点"><a href="#SVM优缺点" class="headerlink" title="SVM优缺点"></a>SVM优缺点</h3><h4 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h4><ol>
+<li>使用核函数可以向高维空间进行映射</li>
+<li>使用核函数可以解决非线性的分类</li>
+<li>分类思想很简单，就是将样本与决策面的间隔最大化</li>
+<li>分类效果较好</li>
+</ol>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ol>
+<li>对大规模数据训练比较困难</li>
+<li>无法直接支持多分类，但是可以使用间接的方法来做</li>
+</ol>
+<h3 id="SMO"><a href="#SMO" class="headerlink" title="SMO"></a>SMO</h3><p>SMO是用于快速求解SVM的。它选择凸二次规划的两个变量，其他的变量保持不变，然后根据这两个变量构建一个二次规划问题，这个二次规划关于这两个变量解会更加的接近原始二次规划的解，通过这样的子问题划分可以大大增加整个算法的计算速度，关于这两个变量：</p>
+<ol>
+<li>其中一个是严重违反KKT条件的一个变量。</li>
+<li>另一个变量是根据自由约束确定，好像是求剩余变量的最大化来确定的。</li>
+</ol>
+<h3 id="SVM多分类问题"><a href="#SVM多分类问题" class="headerlink" title="SVM多分类问题"></a>SVM多分类问题</h3><ul>
+<li>直接法</li>
+</ul>
+<p>直接在目标函数上进行修改，将多个分类面的参数求解合并到一个最优化问题中，通过求解该优化就可以实现多分类（计算复杂度很高，实现起来较为困难）</p>
+<ul>
+<li>间接法</li>
+</ul>
+<ol>
+<li>一对多</li>
+</ol>
+<p>其中某个类为一类，其余 n-1 个类为另一个类，比如 A,B,C,D 四个类，第一次 A 为一个类，{B,C,D} 为一个类训练一个分类器，第二次B为一个类，{A,C,D}为另一个类，按这方式共需要训练4个分类器，最后在测试的时候将测试样本经过这4个分类器f1(x)，f2(x)，f3(x) 和 f4(x)，取其最大值为分类器 (这种方式由于是1对M分类，会存在偏置，很不实用)</p>
+<ol>
+<li>一对一(libsvm实现的方式)</li>
+</ol>
+<p>任意两个类都训练一个分类器，那么n个类就需要 n*(n-1)/2 个 SVM 分类器。<br>还是以A,B,C,D为例，那么需要 {A,B},{A,C},{A,D},{B,C},{B,D},{C,D} 为目标共 6 个分类器，然后在预测的将测试样本通过这6个分类器之后进行投票选择最终结果。（这种方法虽好，但是需要 n*(n-1)/2 个分类器代价太大）</p>
+<h2 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h2><p>决策树是一颗依托决策而建立起来的树。</p>
+<h3 id="ID3"><a href="#ID3" class="headerlink" title="ID3"></a>ID3</h3><ol>
+<li>首先是针对当前的集合，计算每个特征的信息增益</li>
+<li>然后选择信息增益最大的特征作为当前节点的决策决策特征</li>
+<li>根据特征不同的类别划分到不同的子节点（比如年龄特征有青年，中年，老年，则划分到3颗子树）</li>
+<li>然后继续对子节点进行递归，直到所有特征都被划分</li>
+</ol>
+<p>熵的定义：</p>
+<p>$$H(D) = - \sum_{i = 1}^{n} p_i \ast log(p_i)$$</p>
+<p>一个属性中的某个类别 Di 的熵，为：</p>
+<p>$$H(D|D_i) = - \sum_{i}^{ } \frac{|D_i|}{|D|} \ast H(D_i)$$</p>
+<p>$$H(D_i) = - \sum_i^K \frac{D_{ik}}{D_i} log_2 \frac{D_{ik}}{D_i}$$</p>
+<p>信息增益表示分类目标的熵减去当前属性的熵，增益越大，分类能力越强。</p>
+<p>$$Gain(C, A) = H(D) - H(D|D_i)$$</p>
+<h4 id="损失函数-1"><a href="#损失函数-1" class="headerlink" title="损失函数"></a>损失函数</h4><p>设树的叶子节点个数为 \(T\)，\(t\) 为其中一个叶子节点，该叶子节点有\(N_t\)个样本，其中 k 类的样本有\(N_{tk}\)个，\(H(t)\)为叶子节点上的经验熵，则损失函数定义为：</p>
+<p>$$C_t(T) = \sum (N_t \ast H(t)) + \lambda |T|$$</p>
+<p>其中，</p>
+<p>$$H_t(T) = - \sum \frac{N_{tk}}{N_t} \ast log \frac{N_{tk}}{N_t}$$</p>
+<p>代入可以得到</p>
+<p>$$C_t(T) = \sum \sum N_{tk} \ast log \frac{N_{tk}}{N_t} + \lambda |T|$$</p>
+<p>其中 \(\lambda |T| \) 为正则化项， \(\lambda \) 是用于调节比率，决策树的生成只考虑了信息增益。 </p>
+<h3 id="C4-5"><a href="#C4-5" class="headerlink" title="C4.5"></a>C4.5</h3><p>它是ID3的一个改进算法，使用信息增益率来进行属性的选择</p>
+<p>$$splitInformation(D | A) = - \sum_{i} \frac{D_i}{D} \ast log_2 \frac{D_i}{D}$$</p>
+<p>$$GainRatio(D,A) = \frac{Gain(D,A)}{splitInformation(D, A)}$$</p>
+<h4 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h4><p>准确率高，但是子构造树的过程中需要进行多次的扫描和排序，所以它的运算效率较低。</p>
+<h3 id="Cart"><a href="#Cart" class="headerlink" title="Cart"></a>Cart</h3><p>分类回归树(Classification And Regression Tree)是一个决策二叉树，在通过递归的方式建立，每个节点在分裂的时候都是希望通过最好的方式将剩余的样本划分成两类，这里的分类指标：</p>
+<ul>
+<li>分类树：基尼指数最小化(gini_index）</li>
+<li>回归树：平方误差最小化</li>
+</ul>
+<h4 id="分类树："><a href="#分类树：" class="headerlink" title="分类树："></a>分类树：</h4><ol>
+<li>首先是根据当前特征计算他们的基尼增益</li>
+<li>选择基尼增益最小的特征作为划分特征</li>
+<li>从该特征中查找基尼指数最小的分类类别作为最优划分点</li>
+<li>将当前样本划分成两类，一类是划分特征的类别等于最优划分点，另一类就是不等于</li>
+<li>针对这两类递归进行上述的划分工作，直达所有叶子指向同一样本目标或者叶子个数小于一定的阈值</li>
+</ol>
+<p><strong>gini</strong> 用来度量分布不均匀性（或者说不纯），总体的类别越杂乱，GINI指数就越大（跟熵的概念很相似）</p>
+<p>$$gini(a_i) = 1 - \sum_i(p_i^2)$$</p>
+<p>\(p_i\) ：当前数据集中第 i 类样本的比例；</p>
+<p><strong>gini</strong> 越小，表示样本越均匀，越大越不均匀。</p>
+<p>基尼增益：</p>
+<p>$$giniGain = \sum_i (\frac{N_i}{N} \ast gini(a_i))$$</p>
+<p>\(\frac{N_i}{N}\) 表示当前类别占所有类别的概率<br>最终Cart选择GiniGain最小的特征作为划分特征。</p>
+<h4 id="回归树"><a href="#回归树" class="headerlink" title="回归树"></a>回归树</h4><p>回归树是以平方误差最小化的准则划分为两块区域。</p>
+<ol>
+<li>遍历特征计算最优的划分点s，使其最小化的平方误差是：\(min(min(\sum_i^{R1}((y_i−c_1)^2)) + min(\sum_i^{R2}((y_i−c_2)^2)))\)<br>计算根据s划分到左侧和右侧子树的目标值与预测值之差的平方和最小，这里的预测值是两个子树上输入 \(x_i\) 样本对应 \(y_i\) 的均值。</li>
+<li>找到最小的划分特征 j 以及其最优的划分点 s，根据特征 j 以及划分点 s 将现有的样本划分为两个区域，一个是在特征 j 上小于等于 s，另一个在在特征 j 上大于 s</li>
+<li>进入两个子区域按上述方法继续划分，直到到达停止条件</li>
+</ol>
+<h3 id="停止条件"><a href="#停止条件" class="headerlink" title="停止条件"></a>停止条件</h3><ol>
+<li>直到每个叶子节点都只有一种类型的记录时停止。（这种方式很容易过拟合）</li>
+<li>另一种时当叶子节点的记录树小于一定的阈值或者节点的信息增益小于一定的阈值时停止。</li>
+</ol>
+<h3 id="决策树的分类与回归"><a href="#决策树的分类与回归" class="headerlink" title="决策树的分类与回归"></a>决策树的分类与回归</h3><h4 id="分类树"><a href="#分类树" class="headerlink" title="分类树"></a>分类树</h4><p>输出叶子节点中所属类别最多的那一类。</p>
+<h4 id="回归树-1"><a href="#回归树-1" class="headerlink" title="回归树"></a>回归树</h4><p>输出叶子节点中各个样本值的平均值。</p>
+<h2 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h2><p>随机森林是有很多随机得决策树构成，它们之间没有关联。得到RF以后，在预测时分别对每一个决策树进行判断，最后使用Bagging的思想进行结果的输出（也就是投票的思想）</p>
+<h3 id="学习过程"><a href="#学习过程" class="headerlink" title="学习过程"></a>学习过程</h3><ol>
+<li>现在有 N 个训练样本，每个样本的特征为 M 个，需要建 K 颗树。</li>
+<li>从 N 个训练样本中有放回的取 N 个样本作为一组训练集（其余未取到的样本作为预测分类，评估其误差）。</li>
+<li>从 M 个特征中取m个特征左右子集特征。 (m &lt;&lt; M)</li>
+<li>对采样的数据使用完全分裂的方式来建立决策树，这样的决策树每个节点要么无法分裂，要么所有的样本都指向同一个分类。</li>
+<li>重复2的过程K次，即可建立森林。</li>
+</ol>
+<h3 id="预测过程"><a href="#预测过程" class="headerlink" title="预测过程"></a>预测过程</h3><ol>
+<li>将预测样本输入到K颗树分别进行预测。</li>
+<li>如果是分类问题，直接使用投票的方式选择分类频次最高的类别。</li>
+<li>如果是回归问题，使用分类之后的均值作为结果。</li>
+</ol>
+<h3 id="参数问题"><a href="#参数问题" class="headerlink" title="参数问题"></a>参数问题</h3><ol>
+<li>这里的一般取 m = sqrt(M)</li>
+<li>关于树的个数K，一般都需要成百上千，但是也有具体的样本有关（比如特征数量）</li>
+<li>树的最大深度，（太深可能可能导致过拟合）</li>
+<li>节点上的最小样本数、最小信息增益</li>
+</ol>
+<h3 id="泛化误差估计"><a href="#泛化误差估计" class="headerlink" title="泛化误差估计"></a>泛化误差估计</h3><p>使用 <strong>oob（out-of-bag）</strong> 进行泛化误差的估计，将各个树的未采样样本作为预测样本（大约有36.8%），使用已经建立好的森林对各个预测样本进行预测，预测完之后最后统计误分得个数占总预测样本的比率作为 RF 的 oob 误分率。</p>
+<h3 id="学习算法"><a href="#学习算法" class="headerlink" title="学习算法"></a>学习算法</h3><ul>
+<li>ID3 算法：处理离散值的量</li>
+<li>C45 算法：处理连续值的量</li>
+<li>Cart 算法：离散和连续 两者都合适。</li>
+</ul>
+<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>能够处理大量特征的分类，并且还不用做特征选择</li>
+<li>在训练完成之后能给出哪些feature的比较重要</li>
+<li>训练速度很快</li>
+<li>很容易并行</li>
+<li>实现相对来说较为简单</li>
+</ol>
+<h2 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h2><p>GBDT的精髓在于训练的时候都是以上一颗树的残差为目标，这个残差就是上一个树的预测值与真实值的差值。</p>
+<p><strong>比如，当前样本年龄是18岁，那么第一颗会去按18岁来训练，但是训练完之后预测的年龄为12岁，差值为6，<br>所以第二颗树的会以6岁来进行训练，假如训练完之后预测出来的结果为6，那么两棵树累加起来就是真实年龄了，<br>但是假如第二颗树预测出来的结果是5，那么剩余的残差1就会交给第三个树去训练。</strong></p>
+<p>Boosting 的好处就是每一步的参加就是变相了增加了分错 instance 的权重，而对已经对的 instance 趋向于0，这样后面的树就可以更加关注错分的 instance 的训练了。</p>
+<h3 id="Shrinkage"><a href="#Shrinkage" class="headerlink" title="Shrinkage"></a>Shrinkage</h3><p>Shrinkage 认为，每次走一小步逐步逼近的结果要比每次迈一大步逼近结果更加容易避免过拟合。</p>
+<p>$$y_i = y_{i-1} + step \ast y_i$$</p>
+<h3 id="调参"><a href="#调参" class="headerlink" title="调参"></a>调参</h3><ul>
+<li>树的个数 100 ~ 10000</li>
+<li>叶子的深度 3 ~ 8</li>
+<li>学习速率 0.01 ~ 1</li>
+<li>叶子上最大节点树 20</li>
+<li>训练采样比例 0.5 ~ 1 </li>
+<li>训练特征采样比例 sqrt(num)</li>
+</ul>
+<h3 id="优缺点：-1"><a href="#优缺点：-1" class="headerlink" title="优缺点："></a>优缺点：</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ol>
+<li>精度高</li>
+<li>能处理非线性数据</li>
+<li>能处理多特征类型</li>
+<li>适合低维稠密数据</li>
+</ol>
+<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h4><ol>
+<li>并行麻烦（因为上下两颗树有联系）</li>
+<li>多分类的时候 复杂度很大                         </li>
+</ol>
+<h3 id="9-参考资料"><a href="#9-参考资料" class="headerlink" title="9. 参考资料"></a>9. 参考资料</h3><ul>
+<li><a href="http://kubicode.me/2015/08/16/Machine%20Learning/Algorithm-Summary-for-Interview/" target="_blank" rel="external">机器学习常见算法个人总结（面试用）</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/02/13/算法面试总结：大数据题/" itemprop="url">
                   面试总结：大数据题
                 </a>
@@ -1999,149 +2427,6 @@ Hash(NODE3) = KEY3;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/14/HBase架构学习-数据查找和传输/" itemprop="url">
-                  HBase架构学习: 数据查找和传输
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-14T15:06:44+08:00" content="2016-11-14">
-              2016-11-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/11/14/HBase架构学习-数据查找和传输/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/14/HBase架构学习-数据查找和传输/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/14/HBase架构学习-数据查找和传输/" class="leancloud_visitors" data-flag-title="HBase架构学习: 数据查找和传输">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在介绍 HBase 架构之前，首先来介绍典型的 RDBMS 和其他非关系型数据库底层存储结构之间的不同。其中传统关系型存储引擎广泛采用了 B 树和 B + 树；而 BigTable 的底层架构则采用了 LSM 树（Log-Structured Merge Tree）。</p>
-<h3 id="B-树"><a href="#B-树" class="headerlink" title="B + 树"></a>B + 树</h3><p>B + 树的一些特性使其能够通过主键对记录进行高效插入、查找以及删除。它表示为一个动态、多层并有上下界的索引。同时要注意维护每一段（也被称作页表）所包含的主键数目。分段 B + 树的效果远好于二叉树的数据划分，其大大减少了查询特定主键所需的 I/O 操作。</p>
-<p>除此之外，B + 树能够提供高效的范围扫描功能，这得益于它的叶节点相互连接并且按主键有序，扫描时避免了耗时的遍历树操作。这也是 B + 树被关系型数据库用作索引的原因之一。</p>
-<h3 id="LSM-树"><a href="#LSM-树" class="headerlink" title="LSM 树"></a>LSM 树</h3><p>LSM 树与 B + 树不同，它按照另一种方式组织数据。输入数据首先被存储在日志文件，这些文件内的数据完全有序。当有日志文件被修改时，对应的更新会先保存在内存中来加速查询。</p>
-<p>当系统经历过许多次数据修改，且内存空间被逐渐占满后，LSM 树会把有序的“键 - 记录”对写到磁盘中，同时创建一个新的数据存储文件。此时，因为最近的修改都被持久化了，内存中保存的最近更新就可以被丢弃了。</p>
-<p>存储文件的组织与 B 树相似，不过其为磁盘顺序读取做了优化，所有节点都是满的并按页存储。修改数据文件的操作通过滚动合并完成，即，系统将现有的页与内存刷写数据混合在一起进行管理，直到数据块达到它的容量。</p>
-<p>多次数据刷写之后会创建许多数据存储文件，后台线程就会自动将小文件聚合成大文件，这样磁盘查找就会被限制在少数几个数据存储文件中。磁盘上的树结构也可以拆分成独立的小单元，这样更新就可以被分散到多个数据存储文件中。所有的数据存储文件都按键排序，所以没有必要再存储文件中为新的键预留位置。</p>
-<p>查询时先查找内存中的存储，然后再查找磁盘上的文件。这样在客户端看来数据存储文件的位置是透明的。</p>
-<p>删除是一种特殊的更改，当删除标记被存储之后，查找会跳过这些删除过的键。当页被重写时，有删除标记的键会被丢弃。</p>
-<p>此外，后台运维过程可以处理预先设定的删除请求。这些请求由 TTL 触发，例如当 TTL 设为 20 天后，合并进程会检查这些预设的时间戳，同时在重写数据块时丢弃过期的记录。</p>
-<p>B 树 和 LSM 树最主要的区别在于它们的结构如何利用硬件，特别是磁盘。</p>
-<p>比较 B + 树 和 LSM 树的意义在于理解它们的相对优势和不足。在没有太多的修改时，B + 树表现得很好，因为这些修改要求执行高代价的优化操作以保证查询能在有限时间内完成。在任意位置添加数据的规模越大、速度越快，这些页成为碎片的速度就越快。最后，用户写入的速度可能比优化后重写文件的处理速度更快。由于更新和删除以磁盘寻道的速率完成，这就强制用户就范于磁盘提供的较差的性能指标。</p>
-<p>LSM 树以磁盘传输速率工作并能较好地扩展以处理大量的数据。它们使用日志文件和内存存储来将随机写转换成顺序写，因此也能保证稳定的数据插入速率。由于读和写独立，因此在这两种操作之间没有冲突。</p>
-<p>由于存储数据的布局较优，查询一个键需要的磁盘寻道次数在一个可预测的范围内，并且读取与该键连续的任意数量的记录都不会引发任何额外的磁盘寻道。一般来说，基于 LSM 树的系统强调的是成本透明：假如有 5 个存储文件，一个访问需要最多 5 次磁盘寻道。反观关系型数据库，即使在存在索引的情况下，它也没有办法确定一次查询需要的寻道次数。</p>
-<p>所以， HBase 和 BigTable 一样，都是基于 LSM 树的系统。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2187,7 +2472,7 @@ Hash(NODE3) = KEY3;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">69</span>
+              <span class="site-state-item-count">70</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

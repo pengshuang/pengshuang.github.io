@@ -84,15 +84,25 @@
 
 
 
-<meta name="description" content="在路上，慢慢走！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="小沙文的博客">
-<meta property="og:url" content="http://pengshuang.space/categories/数据挖掘/index.html">
+<meta name="description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
+XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
+$$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
+$$where \Omega(f) = \gamma T + \frac{1}{2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XGBoost 介绍">
+<meta property="og:url" content="http://pengshuang.space/2017/03/15/XGBoost-介绍/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="在路上，慢慢走！">
+<meta property="og:description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
+XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
+$$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
+$$where \Omega(f) = \gamma T + \frac{1}{2">
+<meta property="og:updated_time" content="2017-03-15T12:39:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="小沙文的博客">
-<meta name="twitter:description" content="在路上，慢慢走！">
+<meta name="twitter:title" content="XGBoost 介绍">
+<meta name="twitter:description" content="目标函数我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。
+XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。
+$$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$
+$$where \Omega(f) = \gamma T + \frac{1}{2">
 
 
 
@@ -113,9 +123,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/categories/数据挖掘/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/03/15/XGBoost-介绍/"/>
 
-  <title> 分类: 数据挖掘 | 小沙文的博客 </title>
+  <title> XGBoost 介绍 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -136,7 +146,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -234,131 +244,200 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        数据挖掘
-        <small>分类</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/" itemprop="url">
-              
-                <span itemprop="name">Kaggle 比赛: 德国信用卡违约数据分析</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-11-26T11:35:38+08:00"
-              content="2016-11-26" >
-          11-26
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2016/08/12/K-means简介/" itemprop="url">
-              
-                <span itemprop="name">K-means算法简介</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-08-12T22:26:21+08:00"
-              content="2016-08-12" >
-          08-12
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/11/06/HITS算法的Java实现/" itemprop="url">
-              
-                <span itemprop="name">HITS算法的Java实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-11-06T22:33:46+08:00"
-              content="2015-11-06" >
-          11-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2015/10/27/K-means算法java实现/" itemprop="url">
-              
-                <span itemprop="name">K-means算法java实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2015-10-27T14:09:30+08:00"
-              content="2015-10-27" >
-          10-27
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </section>
 
   
+  
 
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                XGBoost 介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-15T19:28:38+08:00" content="2017-03-15">
+              2017-03-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/15/XGBoost-介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/15/XGBoost-介绍/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/15/XGBoost-介绍/" class="leancloud_visitors" data-flag-title="XGBoost 介绍">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<h3 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h3><p>我之前的博客提到过，Boosting 是一种将弱分类器转化为强分类器的方法，它的函数模型具有叠加性。</p>
+<p>XGBoost 的目标函数由损失函数和复杂度组成。复杂度又由叶子数量和 L2 正则组成。</p>
+<p>$$L(\phi) = \sum_i l(y^{*}_i, y_i) + \sum_k \Omega(f_k) $$</p>
+<p>$$where \Omega(f) = \gamma T + \frac{1}{2}\lambda||w||^2$$</p>
+<p>其中 i 是样本 id，k 是树 id（轮数），由于 loss 和复杂度项都是凸函数，所以有最小值。w 是与真实值的残差，将 w 的 L2 正则项加在目标函数中，可以有效的防止过拟合。叶子节点的数目的线性项也加在了目标函数中，一定程度上限制了叶子数量，防止过拟合。而传统 GBDT 防止过拟合的手段是预剪枝或者后剪枝。</p>
+<h3 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h3><p>对于每次迭代过程，可以将一颗树的训练目标函数写成形式如下：</p>
+<p>$$L^{(t)} = \sum_{i=1}^n l(y_i, y_i^{*(t-1)} + f_t(x_i)) + \Omega(f_t)$$</p>
+<p>输入是 \(t-1\) 轮后预测的值和真实值，用来拟合残差 \(f(x)\)。对于这个式子，因为无法对 \(f(x)\) 进行有效的最优估计，所以要进行如下推导：</p>
+<p>首先将目标函数泰勒二阶展开：</p>
+<p>$$L^{(t)} = \sum_{i=1}^n [ l(y_i, y_i^{*(t-1)}) + g_i f_i(x_i) + \frac{1}{2} h_if^2_t(x_i)] + \Omega(f_t)$$</p>
+<p>去掉常数项，</p>
+<p>$$L^{(t)} = \sum_{i=1}^n [g_i f_i(x_i) + \frac{1}{2} h_if^2_t(x_i)] + \Omega(f_t)$$</p>
+<p>正则项展开，</p>
+<p>$$L^{(t)} = \sum_{i=1}^n [g_i f_i(x_i) + \frac{1}{2} h_if^2_t(x_i)] + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^T w_j^2$$</p>
+<p>首先做一下转换，</p>
+<p>$$w_j = f(x_i) \, \, i \in _jI$$</p>
+<p>所以，公式可以转化为：</p>
+<p>$$L^{(t)} = \sum_{j=1}^T [(\sum_{i \in I_j}g_i)w_j + \frac{1}{2}(\sum_{i \in I_j}h_i + \lambda) w_j^2] + \gamma T$$</p>
+<p>这是一个二次项形式，所以最后使得目标函数最小的 w 为，</p>
+<p>$$w^*_j = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$</p>
+<p>带入原方程最小值为：</p>
+<p>$$L^{t}(q) = - \frac{1}{2} \sum_{j=1}^T \frac{(\sum_{i \in I_j} g_i)^2}{\sum_{i \in I_j} h_i + \lambda} + \gamma T$$</p>
+<p>最后求得的w就是目标函数在一个样本集合条件下的最优解。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>为何要对目标函数进行推导。</p>
+<ol>
+<li>为了适应各种损失函数。</li>
+<li>正则项的加入对参数估计产生了影响。</li>
+<li>如果只考虑平方损失的条件下，在没有正则项的情况下参数的最优估计为样本均值。在没有指定损失函数情况下，我们也很容易想到均值是给定样本条件下的误差最小的最优估计。但是损失函数换成绝对值损失，那么最优估计就为中位数。可见不同损失函数下，结果并不想我们想的那么简单。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/13/线性回归家族一览/" rel="next" title="线性回归家族一览">
+                <i class="fa fa-chevron-left"></i> 线性回归家族一览
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/03/15/XGBoost-介绍/"
+     data-title="XGBoost 介绍"
+     data-content=""
+     data-url="http://pengshuang.space/2017/03/15/XGBoost-介绍/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
 
 
           </div>
@@ -366,6 +445,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/15/XGBoost-介绍/"
+           data-title="XGBoost 介绍" data-url="http://pengshuang.space/2017/03/15/XGBoost-介绍/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -385,8 +472,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -478,6 +574,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标函数"><span class="nav-number">1.</span> <span class="nav-text">目标函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程"><span class="nav-number">2.</span> <span class="nav-text">推导过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -583,6 +690,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
