@@ -258,164 +258,6 @@
             
               
                 
-                <a class="post-title-link" href="/2016/10/26/Google-Chubby-学习-基本概念/" itemprop="url">
-                  Google Chubby 学习: 基本概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-26T15:14:36+08:00" content="2016-10-26">
-              2016-10-26
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
-                    <span itemprop="name">分布式系统</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/26/Google-Chubby-学习-基本概念/" class="leancloud_visitors" data-flag-title="Google Chubby 学习: 基本概念">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Google Chubby 是一个很有名的分布式锁服务，GFS 和 Big Table 等大型系统都用它解决分布式协作、元数据存储和 Master 选举等一系列与分布式锁服务相关的问题。Chubby 的底层一致性实现就是以 Paxos 算法为基础。</p>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Chubby 是一个面向松耦合分布式系统的锁服务，通常用于为一个由大量小型计算机构成的松耦合分布式系统提供可用的分布式锁服务。一个分布式锁服务的目的是允许它的客户端进程同步彼此的操作，并对当前所处环境的基本状态信息达成一致。针对这个目的，Chubby 提供了粗粒度的分布式锁服务，开发人员不需要使用复杂的同学协议，而是直接调用 Chubby 的锁服务接口即可实现分布式系统中多个进程粗粒度的同步控制，从而保证分布式数据的一致性。</p>
-<p>Chubby 的客户端接口设计类似于 Unix 文件系统结构，应用程序通过 Chubby 的客户端接口，不仅能够对 Chubby 服务器上的整个文件进行读写操作，还能够添加对文件节点的锁控制，并且能够订阅 Chubby 服务端发出的一系列文件变动的事件通知。</p>
-<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>Chubby 最典型的应用是 机器中服务器的 Master 选举。例如 GFS 中使用 Chubby 锁服务来实现对 GFS Master 服务器的选举。而在 Bigtable 中，Chubby 同样被用于 Master 选举，并且借助 Chubby，Master 能够非常方便地感知到其所控制的那些服务器。同时，通过 Chubby，Bigtable 的客户端还能够方便地定位到当前 Bigtable 集群的 Master 服务器。此外，在 GFS 和 Bigtable 中，都使用 Chubby 来进行系统运行时元数据的存储。</p>
-<h3 id="Chubby-技术架构"><a href="#Chubby-技术架构" class="headerlink" title="Chubby 技术架构"></a>Chubby 技术架构</h3><h4 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h4><p>Chubby 的整个系统结构主要由服务端和客户端两部分组成，客户端通过 RPC 调用与服务端进行通信。</p>
-<p>一个典型的 Chubby 集群，或称为 Chubby cell，通常由 5 台服务器组成。这些副本服务器采用 Paxos 协议，通过投票的方式来选举产生一个获得过半投票的服务器作为 Master。一旦某台服务器成为了 Master， Chubby 就会保证在一段时间内不会再有其他服务器成为 Master —- 这段时期成为 Master 租期。在运行过程中，Master 服务器会通过不断续租的方式来延长 Master 租期，而如果 Master 服务器出现故障，那么余下的服务器就会进行新一轮的 Master 选举，最终产生新的 Master 服务器，开始新的租期。</p>
-<p>集群中的每个服务器都维护这一份服务端数据库的副本，但在实际运行过程中，只有 Master 可以对数据库进行写操作，而其他服务器都是使用 Paxos 协议从 Master 服务器上同步数据库数据的更新。</p>
-<p>Chubby 客户端通过向记录有 Chubby 服务端机器列表的 DNS 来请求获取所有的 Chubby 服务器列表，然后逐个发起请求获取所有的 Chubby 服务器列表，然后逐个发起请求询问该服务器是否是 Master。在这个询问过程中，那些非 Master 的服务器，则会将当前 Master 所在的服务器标识反馈给客户端，这样客户端就能够非常快地定位到 Master 服务器了。</p>
-<p>一旦客户端定位到 Master 服务器之后，只要该 Master 正常运行，那么客户端就会将所有的请求都发送到该 Master 服务器上。针对写请求，Chubby Master 会采用一致性协议将其广播给集群中所有的副本服务器，并且在过半的服务器接受了该写请求之后，再响应给客户端正确的应答。而对于读请求，则不需要在集群内部进行广播处理，直接由 Master 服务器单独处理即可。</p>
-<p>在 Chubby 运行过程中，服务器难免会发生故障，如果当前的 Master 服务器崩溃了，那么集群中的其他服务器会在 Master 租期到期后，重新开始新一轮 Master 选举。而如果是任意一台非 Master 服务器崩溃，那么整个集群是不会停止工作的，这个崩溃的服务器会在恢复之后自动加入 Chubby 集群中。</p>
-<p>如果集群中的一个服务器发送崩溃并在几小时后仍然无法恢复正常，那么就需要加入新的机器，并同时更新 DNS 列表。</p>
-<h3 id="目录与文件"><a href="#目录与文件" class="headerlink" title="目录与文件"></a>目录与文件</h3><p>Chubby 的数据结构可以看作是一个由文件和目录组成的树，其中每一个节点都可以表示为一个使用斜杠分割的字符串，典型的节点路径如下：</p>
-<pre><code>/ls/foo/wombat/pouch
-</code></pre><p>其中 ls 是所有 Chubby 节点所共有的前缀，代表着锁服务；foo 则指定了 Chubby 机器的名字；剩余部分 /wombat/pouch 则是一个真正包含业务含义的节点名字，由 Chubby 服务器内部解析并定位到数据节点。</p>
-<h3 id="锁与锁序列器"><a href="#锁与锁序列器" class="headerlink" title="锁与锁序列器"></a>锁与锁序列器</h3><p>在分布式系统中，锁是一个非常复杂的问题，由于网络通信的不确定性，导致在分布式系统中锁机制变得非常复杂，消息的延迟或是乱序都有可能会引起锁的失效。一个典型的分布式锁错乱案例是，一个客户端 C1 获取到了互斥锁 L，并且在锁 L 的保护下发出请求 R，但请求 R 迟迟没有到达服务端（可能出现网络延时或反复重发等），这时应用程序会认为该客户端进程已经失败，于是便会为另一个客户端 C2 分配锁 L，然后再重新发起之前的请求 R，并成功地应用到了服务器上。此时，如果客户端 C1 发起的请求 R 经过一波三折也到达了服务端，此时，它可能会在不受任何锁控制的情况下被服务端处理，从而覆盖客户端 C2 的操作，于是导致系统数据出现不一致。解决此类问题的方案主要包括虚拟时间和虚拟同步。</p>
-<p>在 Chubby 中，任意一个数据节点都可以充当一个读写锁来使用：一种是单个客户端以排他（写）模式持有这个锁，另一种则是任意数目的客户端以共享（读）模式持有这个锁同时，在 Chubby 的锁机制中需要注意，Chubby 舍弃了严格的强制锁，客户端可以在没有获取任何锁的情况下访问 Chubby 的文件，即，持有锁 F 既不是访问文件 F 的必要条件，也不会阻止其他客户端访问文件 F。</p>
-<p>在 Chubby 中，主要采用锁延迟和锁序列两种策略来解决上面我们提到的由于消息延迟和重排序引起的分布式锁问题。其中锁延迟是一种比较简单的策略，使用 Chubby 的应用几乎不需要进行任何的代码修改。具体的，如果一个客户端以正常的方式主动释放了一个锁，那么 Chubby 服务端将会允许其他客户端能够立即获取到该锁。而如果一个锁是因为客户端的异常情况（如客户端无响应）而被释放的话，那么 Chubby 服务器会为该锁保留一定的时间，称之为“锁延迟”，在这段时间内，其他客户端无法获取这个锁。锁延迟措施能够很好地防止一些客户端由于网络闪断等原因而与服务器暂时断开的场景出现。另外一种方式称为锁序列器，当然该策略需要 Chubby 的上层应用配合在代码中加入相应的修改逻辑。任何时候，锁的持有者都可以向 Chubby 请求一个锁序列器，包括锁的名字、锁模式，以及锁序号。当客户端应用程序在进行一些需要锁机制保护的操作时，可以将该锁序列一并发送给服务端。Chubby 服务端接收到这样的请求后，会首先检测该序列器是否有效，以及检查客户端是否处于恰当的锁模式；如果没有通过检查，那么服务端就会拒绝该客户端请求。</p>
-<h3 id="Chubby-中的事件通知机制"><a href="#Chubby-中的事件通知机制" class="headerlink" title="Chubby 中的事件通知机制"></a>Chubby 中的事件通知机制</h3><p>为了避免大量客户端轮询 Chubby 服务端状态所带来的压力，Chubby 提供了事件通知机制。Chubby 的客户端可以向服务端注册事件通知，当触发这些事件的时候，服务端就会向客户端发送对应的事件通知。在 Chubby 的事件通知机制中，消息通知都是通过异步的方式发送给客户端的，常用的 Chubby 事件如下：</p>
-<h4 id="文件内容变更"><a href="#文件内容变更" class="headerlink" title="文件内容变更"></a>文件内容变更</h4><p>BigTable 集群使用 Chubby 锁来确定集群中的哪台 BigTable 机器是 Master；获得锁的 BigTable Master 会将自身信息写入 Chubby 上对应的文件中。 BigTable机器中的其他客户端可以通过监视这个 Chubby 文件的变化来确定新的 BigTable Master 机器。</p>
-<h4 id="节点删除"><a href="#节点删除" class="headerlink" title="节点删除"></a>节点删除</h4><p>当 Chubby 上指定节点被删除的时候，会产生“节点删除”事件，通常是临时节点，可以利用该特性来间接判断该临时节点对应的客户端会话是否有效。</p>
-<h4 id="子结点新增、删除"><a href="#子结点新增、删除" class="headerlink" title="子结点新增、删除"></a>子结点新增、删除</h4><p>当 Chubby 上指定节点的子节点新增或是减少时，会产生”子节点新增、删除“事件。</p>
-<h4 id="Master-服务器转移"><a href="#Master-服务器转移" class="headerlink" title="Master 服务器转移"></a>Master 服务器转移</h4><p>当 Chubby 服务器发生 Master 转移时，会以事件的形式通知客户端。</p>
-<h3 id="Chubby-中的缓存"><a href="#Chubby-中的缓存" class="headerlink" title="Chubby 中的缓存"></a>Chubby 中的缓存</h3><p>为了提高 Chubby 的性能，同时也是为了减少客户端和服务端之间频繁的读请求对服务端的压力，Chubby 除了提供事件通知机制之外，还在客户端中实现了缓存，会在客户端对文件内容和元数据信息进行缓存。使用缓存机制在提高系统整体性能的同时，也为系统带来了一定的复杂性，最大的问题是如何保证缓存的一致性。</p>
-<p>Chubby 保证缓存一致性的主要方法是使用了缓存的生命周期这一概念。具体的，每个客户端的缓存都有一个租期，一旦该租期到期，客户端就需要向服务端续订租期以继续维持缓存的有效性。当文件数据或元数据信息被修改时，Chubby服务端首先会阻塞该修改操作，然后由 Master 向所有可能缓存了该数据的客户端发送缓存过期信号，以使其缓存失效，等到 Master 在接收到所有相关客户端针对该过期信号的应答后（1. 客户端明确要求更新缓存；2. 客户端允许缓存租期过期。），再继续进行之前的修改操作。</p>
-<h3 id="会话和会话激活"><a href="#会话和会话激活" class="headerlink" title="会话和会话激活"></a>会话和会话激活</h3><p>Chubby 客户端和服务端之间通过创建一个 TCP 连接来进行所有的网络通信操作，我们将这一连接称为会话（Session）。会话有生命周期，并且存在一个超时时间，在超时时间内，Chubby客户端和服务端之间可以通过心跳检测来保持会话的活性。</p>
-<h3 id="Chubby-Master-故障恢复"><a href="#Chubby-Master-故障恢复" class="headerlink" title="Chubby Master 故障恢复"></a>Chubby Master 故障恢复</h3><p>Chubby 的 Master 服务器上会运行着会话租期计时器，用来管理所有会话的生命周期。如果在运行过程中 Master 出现了故障，那么该计时器会停止，直到新的 Master 选举产生后，计时器才会继续计时，</p>
-<p>新的 Master 会设法将上一个 Master 服务器的内存状态构造出来。具体的，由于本地数据库记录了每个客户端的会话信息，以及其持有的锁和临时文件等信息，因此 Chubby 会通过读取本地磁盘上的数据来恢复一部分状态。总的来讲，一个新的 Chubby Master 服务器选举产生以后会进行如下几个主要处理：</p>
-<ol>
-<li>新的 Master 选举产生之后，首先需要确定 Master 周期。Master 周期用来唯一标识一个 Chubby 集群的 Master 统治轮次，以便区分不同的 Master。一旦新的 Master 周期确定下来之后，Master 就会拒绝所有携带其他 Master 周期编号的客户端请求，同时告知其最新的 Master 周期编号。</li>
-<li>选举产生的新 Master 能够立即对客户端的 Master 寻址请求进行响应，但是不会立即开始处理客户端会话相关的请求操作。</li>
-<li>Master 根据本地数据库中存储的会话和锁信息，来构建服务器的内存状态。</li>
-<li>到现在为止，Master 已经能够处理客户端的 KeepAlive 请求了，但依然无法处理其他会话相关的操作。</li>
-<li>Master 会发生一个”Master 故障切换”事件给每一个会话，客户端接收到这个事件后，会清空它的本地缓存，并警告上层应用程序可能已经丢失了别的事件，之后再向 Master反馈应答。</li>
-<li>此时，Master会一致等待客户端的应答，直到每一个会话都应答了这个切换事件。</li>
-<li>在 Master 接收到了所有客户端的应答之后，就能够开始处理所有的请求操作。</li>
-<li>如果客户端使用了一个在故障切换之前创建的句柄，Master 会重新为其创建这个句柄的内存对象，并执行调用。而如果该句柄在之前的 Master 周期中已经被关闭了，那么它就不能在这个 Master 周期内再次被重建了。这样就确保了即使由于网络原因使得 Master 接收到那些延迟或重发的网络数据包，也不会错误地重建一个已经关闭的句柄。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/2016/10/25/Linux常用命令-find-和-ping/" itemprop="url">
                   Linux常用命令: find 和 ping
                 </a>
@@ -2335,11 +2177,172 @@ def _siftdown(self, index):
 
 
     
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/10/20/数据库系统实现-散列表/" itemprop="url">
+                  数据库系统实现: 散列表
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-20T16:03:50+08:00" content="2016-10-20">
+              2016-10-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/20/数据库系统实现-散列表/" class="leancloud_visitors" data-flag-title="数据库系统实现: 散列表">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>有许多涉及散列表的数据结构可用作索引。假定一个<em>散列函数 h</em>， 它以查找键（散列键）为参数并计算出一个介于0到B-1的整数，其中B是桶的数目。桶数组，即一个序号从0到B-1的数组，其中包含B个链表的头，每一个对应于数组中的一个桶。如果记录的查找键为K，那么我们通过将该记录链接为<em>h(K)</em>的桶表中来存储它。</p>
+<h3 id="辅助散列表"><a href="#辅助散列表" class="headerlink" title="辅助散列表"></a>辅助散列表</h3><p>有的散列表包含大量记录，以至于它们主要存放在辅助存储器上，这样的散列表在一些细小而重要的方面与主存中的散列表存在区别。首先，<strong>桶数组由存储块组成而不是由指向链表头的指针组成</strong>。通过散列函数 <em>h</em> 散列到某个桶中的记录被放到该桶的存储块中，如果桶中有太多的记录，那么可以给该桶加溢出块的链以存放更多的记录。</p>
+<p>我们将假定，只要给一个 <em>i</em>，桶 <em>i</em> 的第一个存储块的位置就可以被找到。例如，主存中可以有一个指向存储块的指针数组，数组项以桶号为序号。另一种可能是把每个桶第一个存储块存放在磁盘上某固定的、连续的位置，这样我们就可以根据整数i计算出桶 <em>i</em> 的位置。</p>
+<h3 id="散列表的插入"><a href="#散列表的插入" class="headerlink" title="散列表的插入"></a>散列表的插入</h3><p>当一个查找键为K的新纪录需要被插入时，我们计算<em>h(K)</em>。如果桶号为<em>h(K)</em>的桶还有空间，我们就把该记录放到此桶的存储块中或在其存储块没有空间时存储到块链上的某个溢出块中。如果桶的所有存储块都没有空间，我们就增加一个新的溢出块到该桶的链上，并把新记录存入该块。</p>
+<h3 id="散列表的删除"><a href="#散列表的删除" class="headerlink" title="散列表的删除"></a>散列表的删除</h3><p>删除查找键值为K的记录与插入操作的方式相同。我们找到桶号为<em>h(K)</em>的桶且从中搜索查找键为K的记录，继而将找到的记录删除。如果我们可以将记录在块中移动，那么删除记录后，我们可选择合并同一链上的存储块。</p>
+<h3 id="散列表索引的效率"><a href="#散列表索引的效率" class="headerlink" title="散列表索引的效率"></a>散列表索引的效率</h3><p>理想的情况是有足够的桶，绝大多数桶都只由单个块组成。如果这样，那么一般的查询只需一次磁盘I/O，且文件的插入和删除也只需两次磁盘I/O。这样的结果比直接用稀疏索引、稠密索引或<strong>B - 树</strong>好的多（尽管散列表不能像<strong>B - 树</strong>那样支持范围查询）</p>
+<p>但是如果文件不断增长，那么最终就会出现一般的桶的链表中都有许多块的情况。如果这样，我们就需要在块的长链表中查找，每个块至少需要一次磁盘I/O。因此，我们就必须设法减少每个桶的块数。所要进而就要引入<strong>动态散列表</strong>，他们允许B改变，使B近似于记录总数除以块中能容纳的记录数所得到的商。即每个桶大约有一个存储块。</p>
+<h3 id="可扩展散列表"><a href="#可扩展散列表" class="headerlink" title="可扩展散列表"></a>可扩展散列表</h3><p>可扩展散列表是动态散列表的一种，相比静态散列表，它主要增加了：</p>
+<ol>
+<li>为桶引入了一个间接层，即用一个指向块的指针数组来表示桶，而不是用数据块本身组成的数组来表示桶。</li>
+<li>指针数组能增长，它的长度总是2的幂，因而数组没增长一次，桶的数目就翻倍。</li>
+<li>不过，并非每个桶都有一个数据块；如果某些桶中的所有记录可以放到一个块中，那么这些桶可能共享一个块。</li>
+<li>散列函数<em>h</em>为每个键计算一个K位二进制序列，该K足够大，比如32。但是，桶的数目总是使用从序列第一位或最后一位算起的若干位，此位数小于K，比如说是第 <em>i</em> 位。也就是说，当 <em>i</em> 是使用的位数时，桶数组将有2的i次方个项。</li>
+</ol>
+<p>下图为一个小的可扩展散列表，</p>
+<p><img src="/img/hash1.png" alt=""> </p>
+<p>为简单起见，我们假设 K = 4，即散列函数 h 只产生4位二进制序列。当前使用的只有其中一位。正如桶上标记的，i = 1。因此桶数组只有2个项，一个对应 0，一个对应 1。</p>
+<p>桶数组中的项指向两个块。第一块存放当前所有查找键被散列成以 0 开头的二进制序列的记录；第二个块存放所有查找键被散列成以 1 开头的二进制序列的记录。其中每个存储块的”小方块”中都出现了数字 1 ， 这个数字表明由散列函数得到的位序列中有多少位用于确定记录在该块中的成员资格。随着散列表的增长，不同块中需要考虑的位数可能不同。也就是说，桶数组的大小由我们正在使用的最大二进制位数来决定，但有些块可能使用较少的位数。</p>
+<h3 id="可扩展散列表的插入"><a href="#可扩展散列表的插入" class="headerlink" title="可扩展散列表的插入"></a>可扩展散列表的插入</h3><p>可扩展散列表的插入开始时类似静态散列表的插入。为了插入键值为K的记录，我们计算出 <em>h(k)</em>，取出这一二进制位序列的前 <em>i</em> 位，并找到桶数组中序号为 <em>i</em> 的项。注意，因为 <em>i</em> 作为数据结构的一部分保存，我们能确定 <em>i</em>。</p>
+<p>我们根据同数组中该项的指针找到某个存储块 B。如果B 中还有存放新记录的空间，我们就把心记录存入，而插入也就完成了。如果B 中没有空间，那么视数字 <em>j</em> 的不同有两种可能，数组 <em>j</em>表明散列值中有多少位用于确定存储块B的成员资格， <em>j</em>的值即那个在每个存储块的小方块中可以找到的那个值。</p>
+<p>插入的步骤如下：</p>
+<p>如果 j &lt; i，那么不必对桶数组做什么变化。我们：</p>
+<p>a) 将块B分裂成两个存储块。</p>
+<p>b) 根据记录散列值的第( j+1) 位，将B中记录分配到这两个存储块中，该位为 0 的记录保留在B中，而该位为 1 的记录则放入到新块中。</p>
+<p>c) 把( j+1) 存入这两个存储块的小方块中，以表明用于确定成员资格的二进制位数字。</p>
+<p>d) 调整桶数组中的指针，使原来指向块 B的项指向块B 或新块， 这由项的第( j+1)位决定。</p>
+<p>如果  j = i，那么我们必须先将 i 加 1。我们使桶数组长度翻一倍，因此数组中现有2的( i+1)次方个项。假定 w 是以前的桶数组中作为某项序号的 i 位二进制位序列。在新桶数组中，序号为w0 和 w1的项都指向原 w 项指向的块。也就是，这2个新项共享一个存储块，而存储块本身没有变化。该块的存储资格仍然按原先的位数确定。最后，仍然按第一种情况来分裂B。</p>
+<h3 id="线性散列表"><a href="#线性散列表" class="headerlink" title="线性散列表"></a>线性散列表</h3><p>可扩展散列表最大的好处在于当查找一个记录时，我们总是只需要查找一个数据块。我们还需要查找到一个桶数组的项，但如果桶数组小到可以存放在主存中，那么访问桶数组就不需要进行磁盘 I/O。然而，可扩展散列表也有一些缺点：</p>
+<ol>
+<li>当桶数组需要翻倍时，要做大量的工作。这些工作会阻碍对数据文件的访问，或是使某些插入看来花费很长的时间。</li>
+<li>当桶数翻倍后，它在主存中可能就装不下了，或者把其他的一些我们需要保存在主存的数据挤出去。其结果是，一个运行良好的系统可能突然之间每个操作所需磁盘I/O开始大增。</li>
+<li>如果每块的记录数很少，那么很有可能某一块的分裂比在逻辑上讲需要分裂的时间提前许多。例如，如果像我们使用的例子，块中可以存放2个记录，即使记录的总数远小于2的20次方，也有可能出现三个记录的前20位二进制位序列一样。在这种情况下，我们不得不使用 i = 20 和 100万个桶数组项，尽管存有记录的块数远小于100万。</li>
+</ol>
+<p>有一种线性散列的策略，桶的增长较为缓慢。它的特点主要有：</p>
+<ul>
+<li>桶数 n 的选择总是使存储块的平均记录数保持与存储块所能容纳的记录总数成一个固定的比例，如 80%。</li>
+<li>由于存储块并不总是可以分裂，所以允许有溢出块，尽管每个桶的平均溢出块数远下于1。</li>
+<li>用来作桶数组项序号的二进制位数是[log2n]，其中 n 是当前的桶数。这些位总是从散列函数得到的位序列的右(低位)端开始取。</li>
+<li>假定散列函数值的 i 位正在用来给桶数组项编号，且有一个键值为 K 的记录想要插入到编号为a1a2….ai的桶中；即a1a2…ai是h(K)的后 i 位。那么，把 a1a2…ai 当作二进制整数，设它为m。如果 m &lt; n，那么编号为 m 的桶存在并把记录存入该桶中。如果 n &lt;= m &lt; 2^i，那么 m 桶还不存在，因此我们把记录存入桶 m - 2^i-1，也就是当把我们a1(它肯定是1)改为0时对应的桶。</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2380,7 +2383,7 @@ def _siftdown(self, index):
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-count">70</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2388,7 +2391,7 @@ def _siftdown(self, index):
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
