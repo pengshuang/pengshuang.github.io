@@ -258,6 +258,255 @@
             
               
                 
+                <a class="post-title-link" href="/2016/08/30/Python中的heapq模块学习/" itemprop="url">
+                  Python中的heapq模块学习
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-30T09:05:52+08:00" content="2016-08-30">
+              2016-08-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/编程语言/" itemprop="url" rel="index">
+                    <span itemprop="name">编程语言</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/30/Python中的heapq模块学习/" class="leancloud_visitors" data-flag-title="Python中的heapq模块学习">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天在leetcode上刷题的时候，偶然看到一个人的解法用到了python里面的heap模块，特此学习记录一下。</p>
+<pre><code># coding: utf-8
+from heapq import *
+
+&apos;&apos;&apos;
+heappush(heap, item): 将item压入堆数组heap中。
+必须先进行此步操作,后面的heappop才有效。
+
+heappop(heap): 从堆数组heap中取出最小的值,并返回。
+&apos;&apos;&apos;
+def heapsort(iterable):
+    h = []
+    for value in iterable:
+        heappush(h, value)
+    return [heappop(h) for i in range(len(h))]
+
+
+# 输出: [1, 2, 3, 3, 7]
+print heapsort([1, 3, 7, 3, 2])
+
+
+&apos;&apos;&apos;
+heappushpop(heap, item)
+增加item的同时删除最小值,并且返回该堆的最小值
+&apos;&apos;&apos;
+def example(iterable):
+    h = []
+    for value in iterable:
+        heappush(h, value)
+    a = heappop(h)
+    # 增加4的同时删除最小值,并且返回该最小值
+    b = heappushpop(h, 4)
+    print a
+    print b
+    print h
+
+# 输出: 1
+# 输出: 2
+# 输出: [4, 5, 9]
+example([1, 2, 9, 5])
+
+&apos;&apos;&apos;
+heapify(x)
+x必须是list，此函数将list变成堆，实时操作。从而能够在任何情况下使用堆的函数。
+&apos;&apos;&apos;
+def example2(iterable):
+    h = []
+    for value in iterable:
+        heappush(h, value)
+    heapify(h)
+    print h
+
+# 输出: [1, 6, 3]
+example2([3, 6, 1])
+
+&apos;&apos;&apos;
+heapreplace(heap, item)
+先进行删除,后压入栈
+&apos;&apos;&apos;
+def example3():
+    a = []
+    heappush(a, 3)
+    # 输出: [3]
+    print a
+    # 先执行删除（heappop(a)-&gt;3),再执行加入（heappush(a,4))
+    heapreplace(a, 4)
+    # 输出: [4]
+    print a
+
+&apos;&apos;&apos;
+归并排序
+merge(*iterables)
+&apos;&apos;&apos;
+def example4():
+    a = [2,4,6]
+    b = [1,3,5]
+    c = merge(a, b)
+    # 输出: [1, 2, 3, 4, 5, 6]
+    print list(c)
+
+&apos;&apos;&apos;
+nlargest(n, iterable[, key]), nsmallest(n, iterable[, key])
+获取列表中最大、最小的几个值。
+&apos;&apos;&apos;
+def example5():
+    a = [1, 3, 4, 2]
+    # 输出: [4, 3]
+    print nlargest(2, a)
+    # 输出: [1, 2]
+    print nsmallest(2, a)
+</code></pre><h3 id="leetcode上面的题目："><a href="#leetcode上面的题目：" class="headerlink" title="leetcode上面的题目："></a>leetcode上面的题目：</h3><p>Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.</p>
+<p>Note that it is the kth smallest element in the sorted order, not the kth distinct element.</p>
+<p><strong>Example:</strong></p>
+<pre><code>matrix = [
+   [ 1,  5,  9],
+   [10, 11, 13],
+   [12, 13, 15]
+],
+k = 8,
+
+return 13.
+</code></pre><p>我之前不用heap的解法（耗时200ms)…当时对heap模块不了解</p>
+<pre><code>class Solution(object):
+    def kthSmallest(self, matrix, k):
+        &quot;&quot;&quot;
+        :type matrix: List[List[int]]
+        :type k: int
+        :rtype: int
+        &quot;&quot;&quot;
+        arr = []
+        for item in matrix:
+            for son in item:
+                arr.append(son)
+        arr = sorted(arr)
+        return arr[k-1]
+</code></pre><p>后来看了discussion里面的做法，恍然大悟…(这个方法耗时180ms）</p>
+<pre><code>class Solution2(object):
+    def kthSmallest(self, matrix, k):
+        result, heap = None, []
+        heapq.heappush(heap, (matrix[0][0], 0, 0))
+        while k &gt; 0:
+            result, i, j = heapq.heappop(heap)
+            if i == 0 and j + 1 &lt; len(matrix):
+                heapq.heappush(heap, (matrix[i][j+1], i, j+1))
+            if i + 1 &lt; len(matrix):
+                heapq.heappush(heap, (matrix[i+1][j], i+1, j))
+            k -= 1
+        return result
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="url">
                   Flask中向前端传递或者接收Json文件的方法
                 </a>
@@ -299,13 +548,6 @@
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/19/flask中向前端传递或者接收Json文件的方法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/19/flask中向前端传递或者接收Json文件的方法/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -499,13 +741,6 @@ return jsonify(data)
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/14/Hadoop-Restful-Api总结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/14/Hadoop-Restful-Api总结/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -875,13 +1110,6 @@ return jsonify(data)
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/12/K-means简介/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/12/K-means简介/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1066,13 +1294,6 @@ return jsonify(data)
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/11/06/HITS算法的Java实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/06/HITS算法的Java实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -1375,13 +1596,6 @@ public class Operation {
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/27/K-means算法java实现/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/27/K-means算法java实现/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1659,13 +1873,6 @@ public static void main(String[] args) throws IOException {
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/PageRank-的三种实现方式-3/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-3/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -1958,13 +2165,6 @@ ctx.stop()
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/PageRank-的三种实现方式-2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-2/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -2211,13 +2411,6 @@ public static void main(String[] args) {
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/25/PageRank-的三种实现方式-1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/25/PageRank-的三种实现方式-1/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -2361,13 +2554,6 @@ public static void main(String[] args) {
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/24/用Java实现类似linux下的wget工具/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/24/用Java实现类似linux下的wget工具/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -2550,121 +2736,11 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/10/24/开篇/" itemprop="url">
-                  开篇
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-10-24T09:58:03+08:00" content="2015-10-24">
-              2015-10-24
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/10/24/开篇/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/24/开篇/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2015/10/24/开篇/" class="leancloud_visitors" data-flag-title="开篇">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>一直都想写个博客，记录一下平时生活学习过程中的点点滴滴，包括一些在学习过程遇到的问题，学习某个技术的一点感悟以及一些零零碎碎的读书笔记，希望自己能坚持下去。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2705,7 +2781,7 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">70</span>
+              <span class="site-state-item-count">71</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2713,7 +2789,7 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2901,30 +2977,9 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
 
   
 
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"pengshuang"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
-  
 
 
+  
 
 
 

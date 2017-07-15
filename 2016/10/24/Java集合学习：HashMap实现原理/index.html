@@ -92,7 +92,7 @@ Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其�
 <meta property="og:site_name" content="小沙文的博客">
 <meta property="og:description" content="HashMap概述HashMap 是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用 null 值 和 null 键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。
 Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其中至少一个线程从结构上（指添加或者删除一个或多个映射关系的任何操作）修改了，则必须保持外部同步，以防止对映射进行意外的非同步访">
-<meta property="og:updated_time" content="2016-10-24T06:34:11.000Z">
+<meta property="og:updated_time" content="2017-03-16T07:21:08.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java集合学习：HashMap实现原理">
 <meta name="twitter:description" content="HashMap概述HashMap 是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用 null 值 和 null 键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。
@@ -299,13 +299,6 @@ Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其�
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/10/24/Java集合学习：HashMap实现原理/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/24/Java集合学习：HashMap实现原理/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -337,39 +330,20 @@ Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其�
         <h3 id="HashMap概述"><a href="#HashMap概述" class="headerlink" title="HashMap概述"></a>HashMap概述</h3><p>HashMap 是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用 null 值 和 null 键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
 <p>Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其中至少一个线程从结构上（指添加或者删除一个或多个映射关系的任何操作）修改了，则必须保持外部同步，以防止对映射进行意外的非同步访问。</p>
 <h3 id="HashMap的数据结构"><a href="#HashMap的数据结构" class="headerlink" title="HashMap的数据结构"></a>HashMap的数据结构</h3><p>HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新键一个 HashMap 的时候，就会初始化一个数组。下面看下HashMap的构造函数：</p>
-<pre><code>public HashMap(int initialCapacity, float loadFactor) {
-        if (initialCapacity &lt; 0)
-            throw new IllegalArgumentException(&quot;Illegal initial capacity: &quot; +
-                                               initialCapacity);
-        if (initialCapacity &gt; MAXIMUM_CAPACITY)
-            initialCapacity = MAXIMUM_CAPACITY;
-        if (loadFactor &lt;= 0 || Float.isNaN(loadFactor))
-            throw new IllegalArgumentException(&quot;Illegal load factor: &quot; +
-                                               loadFactor);
-
-        // Find a power of 2 &gt;= initialCapacity
-        int capacity = 1;
-        while (capacity &lt; initialCapacity)
-            capacity &lt;&lt;= 1;
-
-        this.loadFactor = loadFactor;
-        threshold = (int)Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + 1);
-        table = new Entry[capacity];
-        useAltHashing = sun.misc.VM.isBooted() &amp;&amp;
-                (capacity &gt;= Holder.ALTERNATIVE_HASHING_THRESHOLD);
-        init();
-}
-</code></pre><p>注意，这里有一个新键 entry 的过程：</p>
-<pre><code>table = new Entry[capacity];
-</code></pre><p>那什么是entry呢，我们看下 Entry 的源码实现：</p>
-<pre><code>static class Entry&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; {
-    final K key;
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal initial capacity: "</span> +</span><br><span class="line">                                               initialCapacity);</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">            initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">        <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                               loadFactor);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Find a power of 2 &gt;= initialCapacity</span></span><br><span class="line">        <span class="keyword">int</span> capacity = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (capacity &lt; initialCapacity)</span><br><span class="line">            capacity &lt;&lt;= <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">        threshold = (<span class="keyword">int</span>)Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + <span class="number">1</span>);</span><br><span class="line">        table = <span class="keyword">new</span> Entry[capacity];</span><br><span class="line">        useAltHashing = sun.misc.VM.isBooted() &amp;&amp;</span><br><span class="line">                (capacity &gt;= Holder.ALTERNATIVE_HASHING_THRESHOLD);</span><br><span class="line">        init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，这里有一个新键 entry 的过程：</p>
+<pre><code class="java">table = <span class="keyword">new</span> Entry[capacity];
+</code></pre>
+<p>那什么是entry呢，我们看下 Entry 的源码实现：</p>
+<pre><code class="java"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>{
+    <span class="keyword">final</span> K key;
     V value;
     Entry&lt;K,V&gt; next;
-    final int hash;
+    <span class="keyword">final</span> <span class="keyword">int</span> hash;
     ……
 }
-</code></pre><p>我们目前还是只着重核心的部分，Entry 是一个 static class，其中包含了 key 和 value，也就是键值对，另外还包含了一个 next 的 Entry 指针。我们可以总结出：Entry 就是数组中的元素，每个 Entry 其实就是一个 key-value 对，它持有一个指向下一个元素的引用，这就构成了链表。</p>
+</code></pre>
+<p>我们目前还是只着重核心的部分，Entry 是一个 static class，其中包含了 key 和 value，也就是键值对，另外还包含了一个 next 的 Entry 指针。我们可以总结出：Entry 就是数组中的元素，每个 Entry 其实就是一个 key-value 对，它持有一个指向下一个元素的引用，这就构成了链表。</p>
 <h3 id="HashMap-的核心方法解读"><a href="#HashMap-的核心方法解读" class="headerlink" title="HashMap 的核心方法解读"></a>HashMap 的核心方法解读</h3><pre><code>/**
      * Associates the specified value with the specified key in this map.
      * If the map previously contained a mapping for the key, the old
@@ -657,25 +631,6 @@ while (capacity &lt; initialCapacity)
 
     <div class="post-spread">
       
-        <div class="ds-share flat" data-thread-key="2016/10/24/Java集合学习：HashMap实现原理/"
-     data-title="Java集合学习：HashMap实现原理"
-     data-content=""
-     data-url="http://pengshuang.space/2016/10/24/Java集合学习：HashMap实现原理/">
-  <div class="ds-share-inline">
-    <ul  class="ds-share-icons-16">
-
-      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
-      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
-      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
-      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
-      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-
-    </ul>
-    <div class="ds-share-icons-more">
-    </div>
-  </div>
-</div>
-      
     </div>
   </div>
 
@@ -686,10 +641,6 @@ while (capacity &lt; initialCapacity)
 
           
   <div class="comments" id="comments">
-    
-      <div class="ds-thread" data-thread-key="2016/10/24/Java集合学习：HashMap实现原理/"
-           data-title="Java集合学习：HashMap实现原理" data-url="http://pengshuang.space/2016/10/24/Java集合学习：HashMap实现原理/">
-      </div>
     
   </div>
 
@@ -733,7 +684,7 @@ while (capacity &lt; initialCapacity)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">70</span>
+              <span class="site-state-item-count">71</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -741,7 +692,7 @@ while (capacity &lt; initialCapacity)
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -944,30 +895,9 @@ while (capacity &lt; initialCapacity)
 
   
 
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"pengshuang"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
-  
 
 
+  
 
 
 

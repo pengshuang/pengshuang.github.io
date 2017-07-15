@@ -258,6 +258,180 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/21/谷歌三篇论文学习-MapReduce/" itemprop="url">
+                  谷歌三篇论文学习(一): MapReduce
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-21T15:05:34+08:00" content="2016-09-21">
+              2016-09-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/论文/" itemprop="url" rel="index">
+                    <span itemprop="name">论文</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/21/谷歌三篇论文学习-MapReduce/" class="leancloud_visitors" data-flag-title="谷歌三篇论文学习(一): MapReduce">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h3><p><strong>MapReduce</strong>  是一个编程模型，也是一个处理和生产超大数据集的算法模型的相关实现。用户首先创建一个 <strong>Map</strong> 函数处理一个基于 <strong>key/value pair</strong> 的数据集合，输出中间的基于 <strong>key/value pair</strong> 的数据集合；然后再创建一个 <strong>Reduce</strong> 函数来用来合并所有的具有相同中间<strong>key</strong>值的中间<strong>values</strong>值。现实世界中有很多满足上述处理模型的例子。</p>
+<p><strong>MapReduce</strong> 编程模型的原理是:利用一个输入 <strong>key/value pair</strong> 集合来产生一个输出的 <strong>key/value pair</strong> 集合。 <strong>MapReduce</strong>  库的用户用两个函数表达这个计算: <strong>Map</strong> 和 <strong>Reduce</strong>。</p>
+<p>用户自定义的 <strong>Map</strong> 函数接受一个输入的 <strong>key/value pair</strong> 值,然后产生一个中间 <strong>key/value pair</strong> 值的集合。 <strong>MapReduce</strong> 库把所有具有相同中间 key 值的中间 <strong>value</strong> 值集合在一起后传递给 <strong>Reduce</strong> 函数。</p>
+<p>用户自定义的 <strong>Reduce</strong> 函数接受一个中间 <strong>key</strong> 的值和相关的一个 <strong>value</strong> 值的集合。 <strong>Reduce</strong> 函数合并这些 <strong>value</strong> 值，形成一个较小的 <strong>value</strong> 值的集合。一般的，每次 <strong>Reduce</strong> 函数调用只产生 0 或 1 个输出 <strong>value</strong> 值。通 常我们通过一个迭代器把中间 <strong>value</strong> 值提供给 <strong>Reduce</strong> 函数，这样我们就可以处理无法全部放入内存中的大量的 <strong>value</strong> 值的集合。</p>
+<pre><code>map(String key, String value):
+    // key: document name
+    // value: document contents 
+    for each word w in value:
+        EmitIntermediate(w, 1);
+
+reduce(String key, Iterator values): 
+    // key: a word
+    // values: a list of counts 
+    int result = 0;
+    for each v in values:
+        result += ParseInt(v); 
+    Emit(AsString(result));
+</code></pre><p><strong>Map</strong> 函数输出文档中的每个词、以及这个词的出现次数（在这个简单的例子里就是1）。<strong>Reduce</strong> 函数把Map函数产生的每一个特定的词的计数累加起来。</p>
+<h3 id="MapReduce编程模型应用"><a href="#MapReduce编程模型应用" class="headerlink" title="MapReduce编程模型应用"></a>MapReduce编程模型应用</h3><p>分布式的Grep：Map函数输出匹配模式的一行，Reduce函数是一个恒等函数，即把中间数据复制到输出。</p>
+<p>计算URL访问频率：Map函数处理日志中web页面请求的记录，然后输出(URL,1)。Reduce 函数把相同的value值都累加起来，产生(URL，记录总数)结果。</p>
+<p>倒转网络链接图：Map函数在源页面(source)中搜索所有的链接目标(target)并输出为(target, source)。Reduce 函数把给定链接目标(target)的链接组合成一个列表，输出(target, list(source))。</p>
+<p>其他的一些应用场景有，每个主机的检索词向量，倒排索引以及分布式排序。</p>
+<h3 id="MapReduce实现"><a href="#MapReduce实现" class="headerlink" title="MapReduce实现"></a>MapReduce实现</h3><p>上图展示了<strong>MapReduce</strong> 实现中操作的全部流程。当用户调用 <strong>MapReduce</strong> 函数时，将发生下面的一 系列动作(下面的序号和图中的序号一一对应):</p>
+<ol>
+<li><p>用户程序首先调用的 <strong>MapReduce</strong> 库将输入文件分成 M 个数据片度,每个数据片段的大小一般从 16MB 到 64MB(可以通过可选的参数来控制每个数据片段的大小)。然后用户程序在集群中创建大量的程序副本。</p>
+</li>
+<li><p>这些程序副本中的有一个特殊的程序——<strong>master</strong>。副本中其它的程序都是 <strong>worker</strong> 程序，由 <strong>master</strong> 分配 任务。有 M 个 <strong>Map</strong> 任务和 R 个 <strong>Reduce</strong> 任务将被分配，<strong>master</strong> 将一个 <strong>Map</strong> 任务或 <strong>Reduce</strong> 任务分配给一个空闲的 <strong>worker</strong>。</p>
+</li>
+<li><p>被分配了 <strong>Map</strong> 任务的 <strong>worker</strong> 程序读取相关的输入数据片段，从输入的数据片段中解析出 <strong>key/value pair</strong>，然后把 <strong>key/value pair</strong> 传递给用户自定义的 <strong>Map</strong> 函数，由 <strong>Map</strong> 函数生成并输出的中间 <strong>key/value pair</strong>，并缓存在内存中。</p>
+</li>
+<li><p>缓存中的 <strong>key/value pair</strong> 通过分区函数分成 R 个区域,之后周期性的写入到本地磁盘上。缓存的 <strong>key/value pair</strong> 在本地磁盘上的存储位置将被回传给 <strong>master</strong>，由 <strong>master</strong> 负责把这些存储位置再传送给 <strong>Reduce worker</strong>。</p>
+</li>
+<li><p>当 <strong>Reduce worker</strong> 程序接收到 <strong>master</strong> 程序发来的数据存储位置信息后，使用 RPC 从 <strong>Map worker</strong> 所在主机的磁盘上读取这些缓存数据。当 <strong>Reduce worker</strong> 读取了所有的中间数据后，通过对 <strong>key</strong> 进行排序后使得具有相同 <strong>key</strong> 值的数据聚合在一起。由于许多不同的 <strong>key</strong> 值会映射到相同的 <strong>Reduce</strong> 任务上，因此必须进行排序。如果中间数据太大无法在内存中完成排序,那么就要在外部进行排序。</p>
+</li>
+<li><p><strong>Reduce worker</strong> 程序遍历排序后的中间数据,对于每一个唯一的中间 <strong>key</strong> 值，<strong>Reduce worker</strong> 程序将这 个 <strong>key</strong> 值和它相关的中间 <strong>value</strong> 值的集合传递给用户自定义的 <strong>Reduce</strong> 函数。<strong>Reduce</strong> 函数的输出被追加到所属分区的输出文件。</p>
+</li>
+<li><p>当所有的 <strong>Map</strong> 和 <strong>Reduce</strong> 任务都完成之后，<strong>master</strong> 唤醒用户程序。在这个时候,在用户程序里的对 <strong>MapReduce</strong> 调用才返回。</p>
+</li>
+</ol>
+<p>在成功完成任务之后，<strong>Mapreduce</strong> 的输出存放在R个输出文件中（对应每个 <strong>Reduce</strong> 任务产生一个输出文件，文件名由用户指定）。一般情况下，用户不需要将这R个输出文件合并成一个文件——他们经常把这些文件作为另外一个 <strong>Mapreduce</strong> 的输入， 或者在另外一个可以处理多个分割文件的分布式应用中使用。</p>
+<h3 id="Master的数据结构"><a href="#Master的数据结构" class="headerlink" title="Master的数据结构"></a>Master的数据结构</h3><p><strong>Master</strong> 持有一些数据结构，它存储每一个Map和Reduce任务（空闲、工作中或完成），以及Worker机器（非空闲任务的机器）的标识。</p>
+<p><strong>Master</strong> 就像一个数据管道，中间文件存储区域的位置信息通过这个管道从Map传递到Reduce。因此，对于每个已经完成的Map任务，<strong>Master</strong> 存储了Map任务产生的R个中间文件存储区域的大小和位置。当Map任务完成时，<strong>Master</strong>接收到位置和大小的更新信息，这些信息被逐步递增的推送给那些正在工作的Reduce任务。</p>
+<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p><strong>Master</strong> 周期性的 ping 每个 <strong>worker</strong>。如果在一个约定的时间范围内没有收到 <strong>worker</strong> 返回的消息，<strong>Master</strong> 将把这个任务标记为失效。所有由这个失效的 <strong>worker</strong> 完成的 <strong>Map</strong> 任务被重设为初始的空闲状态，之后这些任务就可以被安排给其他的 <strong>worker</strong>。 同样的，<strong>worker</strong> 失效时正在运行的 <strong>Map</strong> 或 <strong>Reduce</strong> 任务也将被重新置为空闲状态，等待重新调度。</p>
+<p>当 <strong>worker</strong> 故障时，由于已经完成的 <strong>Map</strong> 任务的输出存储在这台机器上，<strong>Map</strong> 任务的输出已不接访问了，因此需要重新执行。而已经完成的 Reduce 任务的输出存储在全局文件系统上， 因此不需要再次执行。</p>
+<p>当一个 <strong>Map</strong> 任务首先被 <strong>worker A</strong> 执行，之后由于 <strong>worker A</strong> 失效了又被调度到 <strong>worker B</strong> 执行，这个“重新执行”的动作会被通知给所有执行 <strong>Reduce</strong> 任务的 <strong>worker</strong>。任何还没有从 <strong>worker A</strong> 读取数据的 <strong>Reduce</strong> 任务 将从 <strong>worker B</strong> 读取数据。</p>
+<p><strong>MapReduce</strong> 可以处理大规模 <strong>worker</strong> 失效的情况。比如，在一个 <strong>MapReduce</strong> 操作执行期间，在正在运行的集群上进行网络维护引起80台机器在几分钟内不可访问了，<strong>MapReduce master</strong> 只需要简单的再次执行那些不可访问的 <strong>worker</strong> 完成的工作，之后继续执行未完成的任务，直到最终完成这个 <strong>MapReduce</strong>  操作。</p>
+<h3 id="失效方面的处理机制"><a href="#失效方面的处理机制" class="headerlink" title="失效方面的处理机制"></a>失效方面的处理机制</h3><p>当用户提供的 <strong>Map</strong> 和 <strong>Reduce</strong> 操作是输入确定性函数(即相同的输入产生相同的输出)时，我们的分布式实现在任何情况下的输出都和所有程序没有出现任何错误、顺序的执行产生的输出是一样的。</p>
+<p>我们依赖对 <strong>Map</strong> 和 <strong>Reduce</strong> 任务的输出是原子提交的来完成这个特性。每个工作中的任务把它的输出写到私有的临时文件中。每个 <strong>Reduce</strong> 任务生成一个这样的文件，而每个 <strong>Map</strong> 任务则生成 R 个这样的文件(一个 <strong>Reduce</strong> 任务对应一个文件)。当一个 <strong>Map</strong> 任务完成的时，<strong>worker</strong> 发送一个包含 R 个临时文件名的完成消息给 <strong>master</strong>。如果 <strong>master</strong> 从一个已经完成的 <strong>Map</strong> 任务再次接收到到一个完成消息，<strong>master</strong> 将忽略这个消息；否则，<strong>Master</strong> 将这 R 个文件的名字记录在数据结构里。</p>
+<p>当 <strong>Reduce</strong> 任务完成时，<strong>Reduce worker</strong> 进程以原子的方式把临时文件重命名为最终的输出文件。如果同 一个 <strong>Reduce</strong> 任务在多台机器上执行,针对同一个最终的输出文件将有多个重命名操作执行。我们依赖底层文 件系统提供的重命名操作的原子性来保证最终的文件系统状态仅仅包含一个 <strong>Reduce</strong> 任务产生的数据。</p>
+<h3 id="分区函数"><a href="#分区函数" class="headerlink" title="分区函数"></a>分区函数</h3><p><strong>MapReduce</strong> 的使用者通常会指定 <strong>Reduce</strong> 任务和 <strong>Reduce</strong> 任务输出文件的数量(R)。我们在中间 key 上使用分区函数来对数据进行分区，之后再输入到后续任务执行进程。一个缺省的分区函数是使用 <strong>hash</strong> 方法(比如，hash(key) mod R)进行分区。hash方法能产生非常平衡的分区。然而，有的时候，其它的一些分区函数对 <strong>key</strong> 值进行的分区将非常有用。比如，输出的 <strong>key</strong> 值是 <strong>URLs</strong>，我们希望每个主机的所有条目保持在同一个输出文件中。为了支持类似的情况，<strong>MapReduce</strong> 库的用户需要􏰁供专门的分区函数。例如，使用“hash(Hostname(urlkey)) mod R”作为分区函数就可以把所有来自同一个主机的 <strong>URLs</strong> 保存在同一个输出文件中。</p>
+<h3 id="顺序保证"><a href="#顺序保证" class="headerlink" title="顺序保证"></a>顺序保证</h3><p>我们确保在给定的分区中，中间 <strong>key/value pair</strong> 数据的处理顺序是按照 <strong>key</strong> 值增量顺序处理的。这样的顺序保证对每个分区生成一个有序的输出文件，这对于需要对输出文件按 <strong>key</strong> 值随机存取的应用非常有意义，对在排序输出的数据集也很有帮助。</p>
+<h3 id="Combiner-函数"><a href="#Combiner-函数" class="headerlink" title="Combiner 函数"></a>Combiner 函数</h3><p>在某些情况下，<strong>Map</strong> 函数产生的中间 <strong>key</strong> 值的重复数据会占很大的比重，并且，用户自定义的 <strong>Reduce</strong> 函数满足结合律和交换律。之前举例过的词频统计中，每个 <strong> Map </strong> 任务将产生成千上万个这样的任务<the, 1="">。所有的这些记录将通过网络被发送到一个单独的 <strong>Reduce</strong> 任务，然后这个 <strong>Reduce</strong> 任务把所有这些记录累加起来产生一个数字。我们允许用户指定一个可选的 <strong>combiner</strong> 函数，<strong>combiner</strong> 函数首先在本地将这些记录进行一次合并，然后将合并的结果再通过网络发送出去。</the,></p>
+<p><strong>Combiner</strong> 函数在每台执行 <strong>Map</strong> 任务的机器上都会被执行一次。 一般情况下，<strong>Combiner</strong> 和 <strong>Reduce</strong> 函数是一样的。<strong>Combiner</strong> 函数和 <strong>Reduce</strong>函数之间唯一的区别是 <strong>MapReduce</strong> 库怎样控制函数的输出。<strong>Reduce</strong> 函数的输出被保存在最终的输出文件里，而 <strong>Combiner</strong> 函数的输出被写到中间文件里，然后被发送给 <strong>Reduce</strong> 任务。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/20/IP协议/" itemprop="url">
                   IP协议学习(一):IP基础知识
                 </a>
@@ -299,13 +473,6 @@
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/20/IP协议/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/20/IP协议/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -448,13 +615,6 @@
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/20/hive模式设计/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/20/hive模式设计/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -666,13 +826,6 @@ hive&gt; SELECT * from weblogs
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/16/HiveQL-视图/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/16/HiveQL-视图/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -852,13 +1005,6 @@ REBUILD
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/15/TCP-IP基础知识/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/TCP-IP基础知识/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1006,13 +1152,6 @@ REBUILD
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/15/理解有连接和无连接/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/15/理解有连接和无连接/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1147,13 +1286,6 @@ REBUILD
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/14/OSI7层通信模型/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/14/OSI7层通信模型/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1284,13 +1416,6 @@ REBUILD
           
 
           
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/13/Hive编程指南笔记1/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/13/Hive编程指南笔记1/" itemprop="commentsCount"></span>
-                </a>
-              </span>
             
           
 
@@ -1595,13 +1720,6 @@ SORT BY log.ymd ASC
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/09/01/同步与异步的区别/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/01/同步与异步的区别/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1739,13 +1857,6 @@ SORT BY log.ymd ASC
 
           
             
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/31/进程和线程的区别/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/31/进程和线程的区别/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
           
 
           
@@ -1838,267 +1949,11 @@ SORT BY log.ymd ASC
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/08/30/Python中的heapq模块学习/" itemprop="url">
-                  Python中的heapq模块学习
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-30T09:05:52+08:00" content="2016-08-30">
-              2016-08-30
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/编程语言/" itemprop="url" rel="index">
-                    <span itemprop="name">编程语言</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/08/30/Python中的heapq模块学习/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/30/Python中的heapq模块学习/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/08/30/Python中的heapq模块学习/" class="leancloud_visitors" data-flag-title="Python中的heapq模块学习">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>今天在leetcode上刷题的时候，偶然看到一个人的解法用到了python里面的heap模块，特此学习记录一下。</p>
-<pre><code># coding: utf-8
-from heapq import *
-
-&apos;&apos;&apos;
-heappush(heap, item): 将item压入堆数组heap中。
-必须先进行此步操作,后面的heappop才有效。
-
-heappop(heap): 从堆数组heap中取出最小的值,并返回。
-&apos;&apos;&apos;
-def heapsort(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    return [heappop(h) for i in range(len(h))]
-
-
-# 输出: [1, 2, 3, 3, 7]
-print heapsort([1, 3, 7, 3, 2])
-
-
-&apos;&apos;&apos;
-heappushpop(heap, item)
-增加item的同时删除最小值,并且返回该堆的最小值
-&apos;&apos;&apos;
-def example(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    a = heappop(h)
-    # 增加4的同时删除最小值,并且返回该最小值
-    b = heappushpop(h, 4)
-    print a
-    print b
-    print h
-
-# 输出: 1
-# 输出: 2
-# 输出: [4, 5, 9]
-example([1, 2, 9, 5])
-
-&apos;&apos;&apos;
-heapify(x)
-x必须是list，此函数将list变成堆，实时操作。从而能够在任何情况下使用堆的函数。
-&apos;&apos;&apos;
-def example2(iterable):
-    h = []
-    for value in iterable:
-        heappush(h, value)
-    heapify(h)
-    print h
-
-# 输出: [1, 6, 3]
-example2([3, 6, 1])
-
-&apos;&apos;&apos;
-heapreplace(heap, item)
-先进行删除,后压入栈
-&apos;&apos;&apos;
-def example3():
-    a = []
-    heappush(a, 3)
-    # 输出: [3]
-    print a
-    # 先执行删除（heappop(a)-&gt;3),再执行加入（heappush(a,4))
-    heapreplace(a, 4)
-    # 输出: [4]
-    print a
-
-&apos;&apos;&apos;
-归并排序
-merge(*iterables)
-&apos;&apos;&apos;
-def example4():
-    a = [2,4,6]
-    b = [1,3,5]
-    c = merge(a, b)
-    # 输出: [1, 2, 3, 4, 5, 6]
-    print list(c)
-
-&apos;&apos;&apos;
-nlargest(n, iterable[, key]), nsmallest(n, iterable[, key])
-获取列表中最大、最小的几个值。
-&apos;&apos;&apos;
-def example5():
-    a = [1, 3, 4, 2]
-    # 输出: [4, 3]
-    print nlargest(2, a)
-    # 输出: [1, 2]
-    print nsmallest(2, a)
-</code></pre><h3 id="leetcode上面的题目："><a href="#leetcode上面的题目：" class="headerlink" title="leetcode上面的题目："></a>leetcode上面的题目：</h3><p>Given a n x n matrix where each of the rows and columns are sorted in ascending order, find the kth smallest element in the matrix.</p>
-<p>Note that it is the kth smallest element in the sorted order, not the kth distinct element.</p>
-<p><strong>Example:</strong></p>
-<pre><code>matrix = [
-   [ 1,  5,  9],
-   [10, 11, 13],
-   [12, 13, 15]
-],
-k = 8,
-
-return 13.
-</code></pre><p>我之前不用heap的解法（耗时200ms)…当时对heap模块不了解</p>
-<pre><code>class Solution(object):
-    def kthSmallest(self, matrix, k):
-        &quot;&quot;&quot;
-        :type matrix: List[List[int]]
-        :type k: int
-        :rtype: int
-        &quot;&quot;&quot;
-        arr = []
-        for item in matrix:
-            for son in item:
-                arr.append(son)
-        arr = sorted(arr)
-        return arr[k-1]
-</code></pre><p>后来看了discussion里面的做法，恍然大悟…(这个方法耗时180ms）</p>
-<pre><code>class Solution2(object):
-    def kthSmallest(self, matrix, k):
-        result, heap = None, []
-        heapq.heappush(heap, (matrix[0][0], 0, 0))
-        while k &gt; 0:
-            result, i, j = heapq.heappop(heap)
-            if i == 0 and j + 1 &lt; len(matrix):
-                heapq.heappush(heap, (matrix[i][j+1], i, j+1))
-            if i + 1 &lt; len(matrix):
-                heapq.heappush(heap, (matrix[i+1][j], i+1, j))
-            k -= 1
-        return result
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2139,7 +1994,7 @@ return 13.
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">70</span>
+              <span class="site-state-item-count">71</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2147,7 +2002,7 @@ return 13.
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2335,30 +2190,9 @@ return 13.
 
   
 
-  
-    
-  
-
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"pengshuang"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.id = 'duoshuo-script';
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0]
-      || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-
-  
-    
-    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
-    <script src="/js/src/hook-duoshuo.js"></script>
-  
 
 
+  
 
 
 
