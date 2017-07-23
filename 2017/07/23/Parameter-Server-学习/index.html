@@ -103,9 +103,10 @@
 
 为了解决这些问题，大神们提出了一种新的架构 - Parameter Server (简称">
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server.png">
+<meta property="og:image" content="http://pengshuang.space/img/parameter-server4.png">
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server3.png">
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server2.png">
-<meta property="og:updated_time" content="2017-07-23T10:02:08.000Z">
+<meta property="og:updated_time" content="2017-07-23T11:46:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Parameter Server 学习">
 <meta name="twitter:description" content="大数据机器学习系统，通常数据在 1 TB 到 1 PB 之间，参数在 10 的 9 次方和 10 的 12 次方左右，很多算法的参数只能采用分布式存储。这样的话会带来下面几个问题：
@@ -364,6 +365,10 @@
 <li>参数部分即模型部分，有一致性的要求，参数服务器也可以是一个集群。</li>
 <li>训练部分需要并行化。因为参数服务器的存在，每个计算节点在拿到新的一批batch数据之后，都要从参数服务器上取下最新的参数，然后计算梯度，再将梯度更新会参数服务器。</li>
 </ol>
+<p>在 PS 中，每个 server 实际上都只负责分到的部分参数（servers共同维持一个全局的共享参数），而每个 work 也只分到部分数据和处理任务；每个子节点都只维护自己分配到的参数，自己部分更新之后，将计算结果（例如：梯度）传回到主节点，进行全局的更新（比如平均操作之类的），主节点再向子节点传送新的参数；</p>
+<p>server 节点可以跟其他 server 节点通信，每个 server 负责自己分到的参数，server group 共同维持所有参数的更新。</p>
+<p>server manager node 负责维护一些元数据的一致性，比如各个节点的状态，参数的分配情况等；</p>
+<p>worker 节点之间没有通信，只跟自己对应的 server 进行通信。每个 worker group 有一个 task scheduler，负责向 worker 分配任务，并且监控 worker 的运行情况。当有新的 worker 加入或者退出，task scheduler 负责重新分配任务。</p>
 <h3 id="PS-架构有-5-个特点"><a href="#PS-架构有-5-个特点" class="headerlink" title="PS 架构有 5 个特点"></a>PS 架构有 5 个特点</h3><ol>
 <li><p>高效的通信</p>
 <p> 异步通信，使得计算不会被拖累</p>
@@ -372,22 +377,46 @@
 <p> 允许用户自定义一致性: 比如 Sequential（序列式的，即完全同步）、Eventual（完全不同步的）和 Bounded Delay（有条件的限制，可以允许用户在限制的次数内异步，比如限制为 3 次，如果某个节点已经超前了其他节点四次迭代了，那么要停下等待同步。在整个训练的过程中，Delay 可能是动态的，即 delay 的参数在训练过程中可以变大或变小）</p>
 </li>
 <li><p>扩展性强</p>
+<p> 使用了一个分布式 hash 表使得新的 server 节点可以随时动态的插入到集合中；因此，新增一个节点不需要重新运行系统。</p>
 </li>
-<li>错误容忍</li>
-<li>易用性</li>
+<li><p>错误容忍</p>
+<p> 在大规模商用服务器集群中。从非灾难性机器故障中恢复，只需要 1 秒，而且不需要中断计算。Vector Clocks 保证了经历故障之后还是能运行良好；</p>
+</li>
+<li><p>易用性</p>
+<p> 全局共享的参数可以被表示成各种形式：vector，matrices 或者相应的 sparse 类型，这大大方便了机器学习算法的开发。并且提供的线性代数的数据类型都具有高性能的多线程库。</p>
+</li>
 </ol>
-<h3 id="PS-的一些关键概念"><a href="#PS-的一些关键概念" class="headerlink" title="PS 的一些关键概念"></a>PS 的一些关键概念</h3><p><strong>Key-value vectors</strong></p>
-<p>赋予每个 key 所对应的 value 一个向量概念或矩阵概念。</p>
-<p><strong>Range Push and Pull</strong></p>
-<p>当参数的存储是向量或者矩阵的形式时，网络通信也做相应的调整。</p>
-<p><strong>User-Defined Functions on the Server</strong></p>
-<p>服务器端更新参数的时候还有计算正则项，这样的操作可以由用户自定义。</p>
-<p><strong>Asychronous Tasks and Dependency</strong></p>
-<p><img src="/img/parameter-server3.png" alt=""></p>
-<p>参数服务器和工作节点之间的通信都属于远程调用。远程调用相对而言要比较耗时，因而 PS 框架让远程调用成为异步调用，比如参数的 push 和 pull 发出之后，立即使用当前值开始进行下一步的梯度计算。（失去了模型的一致性，但提升了速度）</p>
-<p><strong>User-Defined Filters</strong></p>
-<p>在工作节点这一端对梯度进行过滤，如果梯度并不是影响那么大，就不占用网络去更新，等积累一段时间之后再去做更新。</p>
-<h3 id="PS-的实现"><a href="#PS-的实现" class="headerlink" title="PS 的实现"></a>PS 的实现</h3><p><strong>Vector Block</strong></p>
+<h3 id="PS-的一些关键概念"><a href="#PS-的一些关键概念" class="headerlink" title="PS 的一些关键概念"></a>PS 的一些关键概念</h3><h4 id="1-key-value-，Range-Push-and-Pull"><a href="#1-key-value-，Range-Push-and-Pull" class="headerlink" title="1. (key, value)，Range Push and Pull"></a>1. (key, value)，Range Push and Pull</h4><p><img src="/img/parameter-server4.png" alt=""></p>
+<p>parameter server 中，参数都是可以被表示成(key, value)的集合，比如一个最小化损失函数的问题，key就是feature ID，而value就是它的权值。对于稀疏参数，不存在的key，就可以认为是0。</p>
+<p>把参数表示成 k-v， 形式更自然， 易于理，更易于编程解；</p>
+<p>workers 跟 servers 之间通过 push 跟 pull 来通信。worker 通过 push 将计算好的梯度发送到 server，然后通过 pull 从 server 更新参数。为了提高计算性能和带宽效率，parameter server 允许用户使用 Range Push 跟 Range Pull 操作；</p>
+<h4 id="2-Key-value-vectors"><a href="#2-Key-value-vectors" class="headerlink" title="2. Key-value vectors"></a>2. Key-value vectors</h4><p>赋予每个 key 所对应的 value 一个向量概念或矩阵概念。</p>
+<h4 id="3-Range-Push-and-Pull"><a href="#3-Range-Push-and-Pull" class="headerlink" title="3. Range Push and Pull"></a>3. Range Push and Pull</h4><p>当参数的存储是向量或者矩阵的形式时，网络通信也做相应的调整。</p>
+<h4 id="4-User-Defined-Functions-on-the-Server"><a href="#4-User-Defined-Functions-on-the-Server" class="headerlink" title="4. User-Defined Functions on the Server"></a>4. User-Defined Functions on the Server</h4><p>服务器端更新参数的时候还有计算正则项，这样的操作可以由用户自定义。</p>
+<h4 id="5-Asychronous-Tasks-and-Dependency"><a href="#5-Asychronous-Tasks-and-Dependency" class="headerlink" title="5. Asychronous Tasks and Dependency"></a>5. Asychronous Tasks and Dependency</h4><p><img src="/img/parameter-server3.png" alt=""></p>
+<p>如图，如果 iter1 需要在 iter0 computation，push 跟 pull 都完成后才能开始，那么就是 Synchronous，反之就是Asynchronous.</p>
+<p>参数服务器和工作节点之间的通信都属于远程调用。远程调用相对而言要比较耗时，因而 PS 框架让远程调用成为异步调用，比如参数的 push 和 pull 发出之后，立即使用当前值开始进行下一步的梯度计算。（失去了模型的一致性，但提升了速度）。</p>
+<p>Asychronous 的优点是能够提高系统的效率（因为节省了很多等待的过程），但是，它的缺点就是容易降低算法的收敛速率；</p>
+<p>所以，系统性能跟算法收敛速率之间是存在一个trade-off的，你需要同时考虑：</p>
+<ol>
+<li><p>算法对于参数非一致性的敏感度；</p>
+</li>
+<li><p>训练数据特征之间的关联度；</p>
+</li>
+<li><p>硬盘的存储容量</p>
+</li>
+</ol>
+<h4 id="6-User-Defined-Filters（用户自定义过滤）"><a href="#6-User-Defined-Filters（用户自定义过滤）" class="headerlink" title="6. User-Defined Filters（用户自定义过滤）"></a>6. User-Defined Filters（用户自定义过滤）</h4><p>在工作节点这一端对梯度进行过滤，如果梯度并不是影响那么大，就不占用网络去更新，等积累一段时间之后再去做更新。</p>
+<p>对于机器学习优化问题比如梯度下降来说，并不是每次计算的梯度对于最终优化都是有价值的，用户可以通过自定义的规则过滤一些不必要的传送，再进一步压缩带宽 cost：</p>
+<ol>
+<li>发送很小的梯度值是低效的：</li>
+</ol>
+<p>因此可以自定义设置，只在梯度值较大的时候发送；</p>
+<ol>
+<li>更新接近最优情况的值是低效的：</li>
+</ol>
+<p>因此，只在非最优的情况下发送，可通过KKT来判断；</p>
+<h3 id="PS-的实现"><a href="#PS-的实现" class="headerlink" title="PS 的实现"></a>PS 的实现</h3><p><strong>Vector Clock</strong></p>
 <p>为参数服务器中的每个参数加一个时间戳来跟踪参数的更新，防止重复发送数据。如果每个参数都有一个时间戳，那么参数众多，时间戳也众多。但借助于Vector概念，很多的参数可以作为向量存在k-v中，因而，时间戳的数量大大减少。</p>
 <p>在刚开始的时候，所有的参数都是一个大向量，时间戳为0，每次来一个范围的更新，如果能找到对应的key，那么直接更新那个key的时间戳就可以了。否则，就可能会对某些向量进行切分，一次更新请求，最多能把一个区间切分为三个区间。</p>
 <p><strong>一致性哈希</strong></p>
@@ -396,7 +425,14 @@
 <p>使用类似 hadoop 的 chain 备份方式，对于一个 master 节点，如果有更新，先更新它，然后再去更新备份的服务器。</p>
 <p><img src="/img/parameter-server2.png" alt=""></p>
 <p>在更新的时候，由于机器学习算法的特点，可以将多次梯度聚合之后再去更新备份服务器，从而减少带宽。</p>
-<p><strong>Server Management</strong></p>
+<p><strong>Messages</strong></p>
+<p>一条 message 包括：时间戳，len(range) 对 k-v。</p>
+<p>这是 parameter server 中最基本的通信格式，不仅仅是共享的参数才有，task 的message 也是这样的格式，只要把这里的 (key, value) 改成 (task ID, 参数/返回值)。</p>
+<p>由于机器学习问题通常都需要很高的网络带宽，因此信息的压缩是必须的。</p>
+<p>key 的压缩：因为训练数据通常在分配之后都不会发生改变，因此worker没有必要每次都发送相同的key，只需要接收方在第一次接收的时候缓存起来就行了。第二次，worker不再需要同时发送key和value，只需要发送value 和 key list的hash就行。这样瞬间减少了一般的通信量。</p>
+<p>value的压缩： 假设参数时稀疏的，那么就会有大量的0存在。因此，为了进一步压缩，我们只需要发送非0值。parameter server使用 Snappy 快速压缩库来压缩数据、高效去除 0 值。</p>
+<pre><code>key 的压缩和 value 的压缩可以同时进行。
+</code></pre><p><strong>Server Management</strong></p>
 <p>由于 key 的 range 特性，当参数服务器集群中增加一个节点时，步骤如下：</p>
 <ul>
 <li>server manager 节点给新节点分配一个 key range，这可能会导致其他节点上的 key range 切分。</li>
@@ -601,7 +637,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构分为两个部分："><span class="nav-number">1.</span> <span class="nav-text">PS 架构分为两个部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构有-5-个特点"><span class="nav-number">2.</span> <span class="nav-text">PS 架构有 5 个特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的一些关键概念"><span class="nav-number">3.</span> <span class="nav-text">PS 的一些关键概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的实现"><span class="nav-number">4.</span> <span class="nav-text">PS 的实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构分为两个部分："><span class="nav-number">1.</span> <span class="nav-text">PS 架构分为两个部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构有-5-个特点"><span class="nav-number">2.</span> <span class="nav-text">PS 架构有 5 个特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的一些关键概念"><span class="nav-number">3.</span> <span class="nav-text">PS 的一些关键概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-key-value-，Range-Push-and-Pull"><span class="nav-number">3.1.</span> <span class="nav-text">1. (key, value)，Range Push and Pull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Key-value-vectors"><span class="nav-number">3.2.</span> <span class="nav-text">2. Key-value vectors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Range-Push-and-Pull"><span class="nav-number">3.3.</span> <span class="nav-text">3. Range Push and Pull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-User-Defined-Functions-on-the-Server"><span class="nav-number">3.4.</span> <span class="nav-text">4. User-Defined Functions on the Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Asychronous-Tasks-and-Dependency"><span class="nav-number">3.5.</span> <span class="nav-text">5. Asychronous Tasks and Dependency</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-User-Defined-Filters（用户自定义过滤）"><span class="nav-number">3.6.</span> <span class="nav-text">6. User-Defined Filters（用户自定义过滤）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的实现"><span class="nav-number">4.</span> <span class="nav-text">PS 的实现</span></a></li></ol></div>
             
           </div>
         </section>
