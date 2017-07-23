@@ -258,6 +258,127 @@
             
               
                 
+                <a class="post-title-link" href="/2017/07/23/Parameter-Server-学习/" itemprop="url">
+                  Parameter Server 学习
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-07-23T16:36:58+08:00" content="2017-07-23">
+              2017-07-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/系统架构/" itemprop="url" rel="index">
+                    <span itemprop="name">系统架构</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/07/23/Parameter-Server-学习/" class="leancloud_visitors" data-flag-title="Parameter Server 学习">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/15/XGBoost-介绍/" itemprop="url">
                   XGBoost 介绍
                 </a>
@@ -1758,169 +1879,11 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/27/数据挖掘-评分卡模型/" itemprop="url">
-                  数据挖掘: 评分卡模型
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-02-27T17:24:27+08:00" content="2017-02-27">
-              2017-02-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/02/27/数据挖掘-评分卡模型/" class="leancloud_visitors" data-flag-title="数据挖掘: 评分卡模型">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>信用评分卡模型在国外是一种成熟的预测方法，尤其在信用风险评估以及金融风险控制领域更是得到了比较广泛的使用，其原理是将模型变量 WOE 编码方式离散化之后运用 logistic 回归模型进行的一种二分类变量的广义线性模型。本文重点介绍模型变量 WOE 以及 IV 原理.</p>
-<h3 id="WOE"><a href="#WOE" class="headerlink" title="WOE"></a>WOE</h3><p>WOE的全称是 “Weight of Evidence”，即证据权重。WOE 是对原始自变量的一种编码形式。要对一个变量进行 WOE 编码，需要首先把这个变量进行分组处理。分组后，对于第 i 组，WOE的计算公式如下：</p>
-<p>$$woe_i = ln\frac{P_{y_i}}{P_{n_i}} = ln\frac{y_i/y_s}{n_i/n_s}$$</p>
-<p>其中，\(p_{y_i}\) 是这个组中响应客户，风险模型中，对应的是违约客户，指的是模型中预测变量取值为 1 的个体占所有样本中所有响应客户的比例，\(p_{n_i}\) 是这个组中未响应客户占样本中所有未响应客户的比例，\(y_i\) 是这个组中响应客户的数量，\(n_i\) 是这个组中未响应客户的数量，\(y_s\) 是样本中所有响应客户的数量，\(n_s\) 是样本中所有未响应客户的数量。</p>
-<p>简单来说， WOE 表示的是<strong>当前分组中响应的用户占所有响应用户的比例</strong>和<strong>当前分组中没有响应的用户占所有没有响应用户的比例</strong>的差异。</p>
-<p>WOE 也可以这么来理解，</p>
-<p>$$woe_i = ln\frac{P_{y_i}}{P_{n_i}} = ln\frac{y_i/y_s}{n_i/n_s}$$</p>
-<p>WOE 同时也等于：</p>
-<p>$$woe_i = ln\frac{y_i/n_i}{y_s/n_s}$$</p>
-<p>可以看出，WOE 也可以表示<strong>当前这个组中响应的客户和未响应的客户的比例</strong>和<strong>所有样本中这个比例</strong>的差异。这个差异是用这两个比值的比值，再取对数来表示的。WOE 越大，这种差异越大，这个分组里的样本响应的可能性就越大，WOE 越小，差异越小，这个分组里的样本响应的可能性就越小。WOE 蕴含了自变量取值对应目标变量（违约概率）的影响。再加上 WOE 计算形式与 logistic 回归中目标变量的 logistic 转换很相似，因此可以将自变量 WOE 替代原先的自变量值。</p>
-<h3 id="IV"><a href="#IV" class="headerlink" title="IV"></a>IV</h3><p>其实 IV 衡量的是某一个变量的信息量，从公式来看的话，相当于是自变量 WOE 值的一个加权求和，其值的大小决定了自变量对于目标变量的影响程度；从另一个角度来看的话，IV 公式与信息熵的公式极其相似。</p>
-<p>IV 公式如下：</p>
-<p>$$IV_i = (P_{yi} - P_{ni}) \ast WOE_i $$</p>
-<p>$$= (P_{yi} - P_{ni}) \ast ln \frac{P_{y_i}}{P_{n_i}}$$</p>
-<p>$$= (y_i / y_s - n_i / n_s) ln \frac{y_i/y_s}{n_i/n_s}$$</p>
-<p>计算了一个变量各个组的 IV 值之后，我们就可以计算整个变量的 IV 值：</p>
-<p>$$IV = \sum_i^n IV_i$$</p>
-<p>其中 n 为变量的分组个数。</p>
-<ul>
-<li>对于变量的一个分组，这个分组的响应和未响应的比例与样本整体响应和未响应的比例相差越大，IV 值越大，否则，IV 值越小；</li>
-<li>极端情况下，当前分组的响应和未响应的比例和样本整体的响应和未响应的比例相等时，IV 值为0；</li>
-<li>IV 值的取值范围是[0, 正无穷)，且当当前分组中只包含响应客户或者未响应客户时，IV = 正无穷。</li>
-</ul>
-<p>如果想要对变量的预测能力进行排序的话，可以按 IV 值从高到第去筛选。</p>
-<h3 id="WOE-和-IV-的区别"><a href="#WOE-和-IV-的区别" class="headerlink" title="WOE 和 IV 的区别"></a>WOE 和 IV 的区别</h3><p>WOE 和 IV 都能表达着这个分组对目标变量的预测能力。但实际中是选择 IV 而不是 WOE 的和来衡量变量预测的能力，这是为什么呢？首先，因为我们在衡量一个变量的预测能力时，我们所使用的指标值不应该是负数。从这意义上来说，IV 比 WOE 多乘以前面那个因子，就保证了它不会是负数；然后，乘以 \((P_{yi} - P_{ni})\) 这个因子，体现出了变量当前分组中个体的数量占整体的比例，从而很好考虑了这个分组中样本占整体的比例，比例越低，这个分组对变量整体预测能力的贡献越低。相反，如果直接用 WOE 的绝对值加和，会因为该分组出现次数偏少的影响而得到一个很高的指标。</p>
-<h3 id="IV-对极端情况的处理"><a href="#IV-对极端情况的处理" class="headerlink" title="IV 对极端情况的处理"></a>IV 对极端情况的处理</h3><p>IV 依赖 WOE，并且 IV 是一个很好的衡量自变量对目标变量影响程度的指标。但是，使用过程中应该注意一个问题：变量的任何分组中，不应该出现响应数为 0 或非响应数为 0 的情况。</p>
-<p>当变量的一个分组中的响应数为 0 时，对应的 WOE 就为负无穷。此时 IV 为正无穷。</p>
-<p>当变量的一个分组中的响应不为 0 时，道理也类似。</p>
-<p>所以 IV 不能自动处理变量的分组中出现响应比例为 0 或 100% 的情况。遇到这种情况：</p>
-<ul>
-<li>如果可能，直接把这个分组做成一个规则，作为模型的前置条件或补充条件；</li>
-<li>重新对变量进行离散化或分组，使每个分组的响应比例都不为0且不为100%，尤其是当一个分组个体数很小时（比如小于100个），强烈建议这样做，因为本身把一个分组个体数弄得很小就不是太合理。</li>
-<li>如果上面两种方法都无法使用，建议人工把该分组的响应数和非响应的数量进行一定的调整。如果响应数原本为 0，可以人工调整响应数为 1，如果非响应数原本为 0，可以人工调整非响应数为 1。</li>
-</ul>
-<h3 id="信用卡模型"><a href="#信用卡模型" class="headerlink" title="信用卡模型"></a>信用卡模型</h3><p>因为 IV 是衡量自变量对目标变量的指标之一，也可以看做是单个自变量的评分模型，可以直接将这个自变量的取值当做事某种信用评分</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1961,7 +1924,7 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">70</span>
+              <span class="site-state-item-count">71</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1978,7 +1941,7 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
