@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server4.png">
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server3.png">
 <meta property="og:image" content="http://pengshuang.space/img/parameter-server2.png">
-<meta property="og:updated_time" content="2017-07-23T11:46:09.000Z">
+<meta property="og:updated_time" content="2017-07-23T11:55:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Parameter Server 学习">
 <meta name="twitter:description" content="大数据机器学习系统，通常数据在 1 TB 到 1 PB 之间，参数在 10 的 9 次方和 10 的 12 次方左右，很多算法的参数只能采用分布式存储。这样的话会带来下面几个问题：
@@ -387,17 +387,16 @@
 </li>
 </ol>
 <h3 id="PS-的一些关键概念"><a href="#PS-的一些关键概念" class="headerlink" title="PS 的一些关键概念"></a>PS 的一些关键概念</h3><h4 id="1-key-value-，Range-Push-and-Pull"><a href="#1-key-value-，Range-Push-and-Pull" class="headerlink" title="1. (key, value)，Range Push and Pull"></a>1. (key, value)，Range Push and Pull</h4><p><img src="/img/parameter-server4.png" alt=""></p>
-<p>parameter server 中，参数都是可以被表示成(key, value)的集合，比如一个最小化损失函数的问题，key就是feature ID，而value就是它的权值。对于稀疏参数，不存在的key，就可以认为是0。</p>
-<p>把参数表示成 k-v， 形式更自然， 易于理，更易于编程解；</p>
-<p>workers 跟 servers 之间通过 push 跟 pull 来通信。worker 通过 push 将计算好的梯度发送到 server，然后通过 pull 从 server 更新参数。为了提高计算性能和带宽效率，parameter server 允许用户使用 Range Push 跟 Range Pull 操作；</p>
+<p>parameter server 中，参数都是可以被表示成(key, value)的集合，比如一个最小化损失函数的问题，key 就是 feature ID，而 value 就是它的权值。对于稀疏参数，不存在的key，就可以认为是0。</p>
+<p>把参数表示成 k-v， 形式更自然，易于理解，更易于编程解；</p>
+<p>workers 跟 servers 之间通过 push 跟 pull 来通信。worker 通过 push 将计算好的梯度发送到 server，然后通过 pull 从 server 更新参数。为了提高计算性能和带宽效率，parameter server 允许用户使用 Range Push 跟 Range Pull 操作（使用区间更新的方式）。</p>
 <h4 id="2-Key-value-vectors"><a href="#2-Key-value-vectors" class="headerlink" title="2. Key-value vectors"></a>2. Key-value vectors</h4><p>赋予每个 key 所对应的 value 一个向量概念或矩阵概念。</p>
-<h4 id="3-Range-Push-and-Pull"><a href="#3-Range-Push-and-Pull" class="headerlink" title="3. Range Push and Pull"></a>3. Range Push and Pull</h4><p>当参数的存储是向量或者矩阵的形式时，网络通信也做相应的调整。</p>
-<h4 id="4-User-Defined-Functions-on-the-Server"><a href="#4-User-Defined-Functions-on-the-Server" class="headerlink" title="4. User-Defined Functions on the Server"></a>4. User-Defined Functions on the Server</h4><p>服务器端更新参数的时候还有计算正则项，这样的操作可以由用户自定义。</p>
-<h4 id="5-Asychronous-Tasks-and-Dependency"><a href="#5-Asychronous-Tasks-and-Dependency" class="headerlink" title="5. Asychronous Tasks and Dependency"></a>5. Asychronous Tasks and Dependency</h4><p><img src="/img/parameter-server3.png" alt=""></p>
+<h4 id="3-User-Defined-Functions-on-the-Server"><a href="#3-User-Defined-Functions-on-the-Server" class="headerlink" title="3. User-Defined Functions on the Server"></a>3. User-Defined Functions on the Server</h4><p>服务器端更新参数的时候还有计算正则项，这样的操作可以由用户自定义。</p>
+<h4 id="4-Asychronous-Tasks-and-Dependency"><a href="#4-Asychronous-Tasks-and-Dependency" class="headerlink" title="4. Asychronous Tasks and Dependency"></a>4. Asychronous Tasks and Dependency</h4><p><img src="/img/parameter-server3.png" alt=""></p>
 <p>如图，如果 iter1 需要在 iter0 computation，push 跟 pull 都完成后才能开始，那么就是 Synchronous，反之就是Asynchronous.</p>
 <p>参数服务器和工作节点之间的通信都属于远程调用。远程调用相对而言要比较耗时，因而 PS 框架让远程调用成为异步调用，比如参数的 push 和 pull 发出之后，立即使用当前值开始进行下一步的梯度计算。（失去了模型的一致性，但提升了速度）。</p>
 <p>Asychronous 的优点是能够提高系统的效率（因为节省了很多等待的过程），但是，它的缺点就是容易降低算法的收敛速率；</p>
-<p>所以，系统性能跟算法收敛速率之间是存在一个trade-off的，你需要同时考虑：</p>
+<p>所以，系统性能跟算法收敛速率之间是存在一个 trade-off 的，你需要同时考虑：</p>
 <ol>
 <li><p>算法对于参数非一致性的敏感度；</p>
 </li>
@@ -637,7 +636,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构分为两个部分："><span class="nav-number">1.</span> <span class="nav-text">PS 架构分为两个部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构有-5-个特点"><span class="nav-number">2.</span> <span class="nav-text">PS 架构有 5 个特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的一些关键概念"><span class="nav-number">3.</span> <span class="nav-text">PS 的一些关键概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-key-value-，Range-Push-and-Pull"><span class="nav-number">3.1.</span> <span class="nav-text">1. (key, value)，Range Push and Pull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Key-value-vectors"><span class="nav-number">3.2.</span> <span class="nav-text">2. Key-value vectors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Range-Push-and-Pull"><span class="nav-number">3.3.</span> <span class="nav-text">3. Range Push and Pull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-User-Defined-Functions-on-the-Server"><span class="nav-number">3.4.</span> <span class="nav-text">4. User-Defined Functions on the Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Asychronous-Tasks-and-Dependency"><span class="nav-number">3.5.</span> <span class="nav-text">5. Asychronous Tasks and Dependency</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-User-Defined-Filters（用户自定义过滤）"><span class="nav-number">3.6.</span> <span class="nav-text">6. User-Defined Filters（用户自定义过滤）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的实现"><span class="nav-number">4.</span> <span class="nav-text">PS 的实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构分为两个部分："><span class="nav-number">1.</span> <span class="nav-text">PS 架构分为两个部分：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-架构有-5-个特点"><span class="nav-number">2.</span> <span class="nav-text">PS 架构有 5 个特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的一些关键概念"><span class="nav-number">3.</span> <span class="nav-text">PS 的一些关键概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-key-value-，Range-Push-and-Pull"><span class="nav-number">3.1.</span> <span class="nav-text">1. (key, value)，Range Push and Pull</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Key-value-vectors"><span class="nav-number">3.2.</span> <span class="nav-text">2. Key-value vectors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-User-Defined-Functions-on-the-Server"><span class="nav-number">3.3.</span> <span class="nav-text">3. User-Defined Functions on the Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Asychronous-Tasks-and-Dependency"><span class="nav-number">3.4.</span> <span class="nav-text">4. Asychronous Tasks and Dependency</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-User-Defined-Filters（用户自定义过滤）"><span class="nav-number">3.5.</span> <span class="nav-text">6. User-Defined Filters（用户自定义过滤）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PS-的实现"><span class="nav-number">4.</span> <span class="nav-text">PS 的实现</span></a></li></ol></div>
             
           </div>
         </section>
