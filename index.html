@@ -368,6 +368,7 @@
 <p><strong>User-Defined Functions on the Server</strong></p>
 <p>服务器端更新参数的时候还有计算正则项，这样的操作可以由用户自定义。</p>
 <p><strong>Asychronous Tasks and Dependency</strong></p>
+<p><img src="/img/parameter-server3.png" alt=""></p>
 <p>参数服务器和工作节点之间的通信都属于远程调用。远程调用相对而言要比较耗时，因而 PS 框架让远程调用成为异步调用，比如参数的 push 和 pull 发出之后，立即使用当前值开始进行下一步的梯度计算。（失去了模型的一致性，但提升了速度）</p>
 <p><strong>User-Defined Filters</strong></p>
 <p>在工作节点这一端对梯度进行过滤，如果梯度并不是影响那么大，就不占用网络去更新，等积累一段时间之后再去做更新。</p>
@@ -380,6 +381,24 @@
 <p>使用类似 hadoop 的 chain 备份方式，对于一个 master 节点，如果有更新，先更新它，然后再去更新备份的服务器。</p>
 <p><img src="/img/parameter-server2.png" alt=""></p>
 <p>在更新的时候，由于机器学习算法的特点，可以将多次梯度聚合之后再去更新备份服务器，从而减少带宽。</p>
+<p><strong>Server Management</strong></p>
+<p>由于 key 的 range 特性，当参数服务器集群中增加一个节点时，步骤如下：</p>
+<ul>
+<li>server manager 节点给新节点分配一个 key range，这可能会导致其他节点上的 key range 切分。</li>
+<li>新节点从其他节点上将属于它的 key range 数据取过来，然后也将 slave 信息取过来。</li>
+<li>server manager广播节点变动，其他节点得知消息后将不属于自己 key range 的数据删掉</li>
+</ul>
+<p>在第二步，从其他节点上取数据的时候，其他节点上的操作也分为两步，第一是拷贝数据，这可能也会导致 key range 的切分。第二是不再接受和这些数据有关的消息，而是进行转发，转发到新节点。</p>
+<p>在第三步，收到广播信息后，节点会删除对应区间的数据，然后，扫描所有的和R有关发送出去的还没收到回复的消息，当这些消息回复时，转发到新节点。</p>
+<p>节点的离开与节点的加入类似。</p>
+<p><strong>Worker Management</strong></p>
+<p>添加工作节点比添加服务器节点要简单一些，步骤如下：</p>
+<ul>
+<li>task scheduler 给新节点分配一些数据</li>
+<li>节点从网络文件系统中载入数据，然后从服务器端拉取参数</li>
+<li>task scheduler 广播变化，其他节点 free 掉一些训练数据</li>
+</ul>
+<p>当一个节点离开的时候，task scheduler 可能会寻找一个替代，但恢复节点是十分耗时的工作，同时，损失一些数据对最后的结果可能影响并不是很大。所以，系统会让用户进行选择，是恢复节点还是不做处理。这种机制甚至可以允许用户删掉跑的最慢的节点来提升速度。</p>
 
           
         
