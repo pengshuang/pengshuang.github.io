@@ -258,6 +258,151 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/01/数据库中视图的作用/" itemprop="url">
+                  数据库中视图的作用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-01T15:42:55+08:00" content="2017-08-01">
+              2017-08-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/01/数据库中视图的作用/" class="leancloud_visitors" data-flag-title="数据库中视图的作用">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>视图是从一个或几个基本表（或视图）导出的表。它与基本表不同，是一个虚表。数据库只存放视图的定义，而不存放视图对应的数据，这些数据仍存放在原来的基本表中。所以基本表中的数据发生变化，从视图中查询出的数据也就随之改变了。从这个意义上讲，视图就像一个窗口，透过它可以看到数据库中自己感兴趣的数据及其变化。</p>
+<p>这是因为合理地使用视图能够带来许多好处：</p>
+<h3 id="1-视图能简化用户操作"><a href="#1-视图能简化用户操作" class="headerlink" title="1. 视图能简化用户操作"></a>1. 视图能简化用户操作</h3><p>视图机制使用户可以将注意力集中在所关心地数据上。如果这些数据不是直接来自基本表，则可以通过定义视图，使数据库看起来结构简单、清晰，并且可以简化用户的的数据查询操作。例如，那些定义了若干张表连接的视图，就将表与表之间的连接操作对用户隐藏起来了。换句话说，用户所作的只是对一个虚表的简单查询，而这个虚表是怎样得来的，用户无需了解。</p>
+<h3 id="2-视图使用户能以多种角度看待同一数据"><a href="#2-视图使用户能以多种角度看待同一数据" class="headerlink" title="2. 视图使用户能以多种角度看待同一数据"></a>2. 视图使用户能以多种角度看待同一数据</h3><p>视图机制能使不同的用户以不同的方式看待同一数据，当许多不同种类的用户共享同一个数据库时，这种灵活性是非常必要的。</p>
+<h3 id="3-视图对重构数据库提供了一定程度的逻辑独立性"><a href="#3-视图对重构数据库提供了一定程度的逻辑独立性" class="headerlink" title="3. 视图对重构数据库提供了一定程度的逻辑独立性"></a>3. 视图对重构数据库提供了一定程度的逻辑独立性</h3><p>数据的物理独立性是指用户的应用程序不依赖于数据库的物理结构。数据的逻辑独立性是指当数据库重构造时，如增加新的关系或对原有的关系增加新的字段，用户的应用程序不会受影响。层次数据库和网状数据库一般能较好地支持数据的物理独立性，而对于逻辑独立性则不能完全的支持。</p>
+<p>在关许数据库中，数据库的重构造往往是不可避免的。重构数据库最常见的是将一个基本表“垂直”地分成多个基本表。例如：将学生关系Student（Sno，Sname，Ssex，Sage，Sdept），</p>
+<p>分为SX（Sno，Sname，Sage）和SY（Sno，Ssex，Sdept）两个关系。这时原表Student为SX表和SY表自然连接的结果。如果建立一个视图Student：</p>
+<pre><code>CREATE VIEW Student（Sno，Sname，Ssex，Sage，Sdept）
+AS
+SELECT SX.Sno，SX.Sname，SY.Ssex，SX.Sage，SY.Sdept
+FROM SX，SY
+WHERE SX.Sno=SY.Sno;
+</code></pre><p>这样尽管数据库的逻辑结构改变了（变为SX和SY两个表了），但应用程序不必修改，因为新建立的视图定义为用户原来的关系，使用户的外模式保持不变，用户的应用程序通过视图仍然能够查找数据。</p>
+<p>当然，视图只能在一定程度上提供数据的逻辑独立，比如由于视图的更新是有条件的，因此应用程序中修改数据的语句可能仍会因为基本表构造的改变而改变。</p>
+<h3 id="4-视图能够对机密数据提供安全保护"><a href="#4-视图能够对机密数据提供安全保护" class="headerlink" title="4. 视图能够对机密数据提供安全保护"></a>4. 视图能够对机密数据提供安全保护</h3><p>有了视图机制，就可以在设计数据库应用系统时，对不同的用户定义不同的视图，使机密数据不出现在不应该看到这些数据的用户视图上。这样视图机制就自动提供了对机密数据的安全保护功能。例如，Student 表涉及全校 15 个院系学生数据，可以在其上定义15个视图，每个视图只包含一个院系的学生数据，并只允许每个院系的主任查询和修改本原系学生视图。</p>
+<h3 id="5-适当的利用视图可以更清晰地表达查询"><a href="#5-适当的利用视图可以更清晰地表达查询" class="headerlink" title="5. 适当的利用视图可以更清晰地表达查询"></a>5. 适当的利用视图可以更清晰地表达查询</h3><p>例如经常需要执行这样的查询“对每个学生找出他获得最高成绩的课程号”。可以先定义一个视图，求出每个同学获得的最高成绩：</p>
+<pre><code>CREATE VIEW VMGRADE
+AS
+SELECT Sno，MAX(Grade) Mgrade
+FROM SC
+GROUP BY Sno;
+</code></pre><p>然后用如下的查询语句完成查询：</p>
+<pre><code>SELECT SC.Sno，Cno FROM SC，VMGRADE WHERE SC.Sno = VMGRADE.Sno AND 
+SC.Grade = VMGRADE.Mgrade;
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/07/23/Parameter-Server-学习/" itemprop="url">
                   Parameter Server 学习
                 </a>
@@ -1817,171 +1962,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/02/28/问答社区的回答排序算法/" itemprop="url">
-                  问答社区的回答排序算法(一）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-02-28T15:50:26+08:00" content="2017-02-28">
-              2017-02-28
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/02/28/问答社区的回答排序算法/" class="leancloud_visitors" data-flag-title="问答社区的回答排序算法(一）">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>正好研究生的研究方向是问答社区的专家发现，所以，看过很多关于专家发现的 paper 以及一些工业界实践的经验。一直没有机会好好总结一下，借此机会梳理一下。问答社区的专家用户的发现有助于问题的顺利解决，并且也有助于提高问答社区的用户体验，有利于问答社区的长期发展。</p>
-<p>现有的专家发现方法主要分为两种，一种是基于用户投票，另一种是基于用户之间的社交网络，本文将先介绍前一种。</p>
-<h2 id="基于用户投票的排序算法"><a href="#基于用户投票的排序算法" class="headerlink" title="基于用户投票的排序算法"></a>基于用户投票的排序算法</h2><p>顾名思义，就是利用用户的反馈，即投票数（又细分为赞成和反对）来对答案进行排名。下面介绍三种方法，分别被 <strong>Urban Dictionary</strong>、<strong>Amazon</strong> 和 <strong>知乎</strong> 采用。</p>
-<h3 id="得分-赞成票-反对票"><a href="#得分-赞成票-反对票" class="headerlink" title="得分 = 赞成票 - 反对票"></a>得分 = 赞成票 - 反对票</h3><p>假定有两个项目，项目 A 是 30 张赞成票，10 张反对票，项目 B 是 200 张赞成票，150 张反对票。如果按照上面的公式，B会排在前面，因为它的得分（200 - 150 = 50）高于 A（30 - 10 = 20）。但是实际上，B 的好评率只有 57%（200 / 350），而 A 为 75%（30 / 40），所以正确的结果应该是A排在前面。</p>
-<p><strong>Urban Dictionary</strong> 就是这种错误算法的实例。</p>
-<p><img src="/img/p1.png" alt=""></p>
-<h3 id="得分-赞成票-总票数"><a href="#得分-赞成票-总票数" class="headerlink" title="得分 = 赞成票 / 总票数"></a>得分 = 赞成票 / 总票数</h3><p>如果总票数很大，这种算法其实是对的。问题出在如果总票数很少，这时就会出错。假定 A 有 2 张赞成票、0 张反对票，B 有 100 张赞成票、1 张反对票。这种算法会使得 A 排在 B 前面。这显然错误。</p>
-<p><strong>Amazon</strong> 便采用的是这种做法。</p>
-<p><img src="/img/p2.png" alt=""></p>
-<h3 id="威尔逊得分"><a href="#威尔逊得分" class="headerlink" title="威尔逊得分"></a>威尔逊得分</h3><p>威尔逊得分的思想是，如果把一个回答展示给很多人看并让他们投票，内容质量不同的回答会得到不同比例的赞同和反对票数，最终得到一个反映内容质量的得分。当投票的人比较少时，可以根据已经获得的票数估计这个回答的质量得分，投票的人越多则估计结果越接近真实得分。</p>
-<p>如果新一个回答获得了 1 票赞同 0 票反对，也就是说参与投票的用户 100% 都选了赞同，但是因为数量太少，所以得分也不会太高。如果一小段时间后这个回答获得了 20 次赞同 1 次反对，那么基于新算法，我们就有较强的信心把它排在另一个有 50 次赞同 20 次反对的回答前面。原因是我们预测当这个回答同样获得 50 次赞同时，它获得的反对数应该会小于 20。威尔逊得分算法最好的特性就是，即使前一步我们错了，现在这个新回答排到了前面，获得了更多展示，在它得到更多投票后，算法便会自我修正，基于更多的投票数据更准确地计算得分，从而让排序最终能够真实地反映内容的质量。</p>
-<p>它有着很多优良特性：</p>
-<ol>
-<li>投票总数趋向于正无穷时，得分也趋向正反馈占总反馈的比例，对于内容质量的解释下很强。</li>
-<li>在数据比较少的情况，总票数较少和极端参数的情况下，结果也能保持很好的鲁棒性。</li>
-<li>置信区间大学可以通过参数保证。</li>
-<li>虽然二项分布是离散类型，但是由于得分表达式关于正负反馈次数的函数是连续的，因此可以引入非整数的投票（加权投票），同时不改变算法性质。</li>
-<li>得分的取值范围是（0，1），与投票总数无关，间接的做了归一化。</li>
-</ol>
-<p>威尔逊得分的计算公式如下：</p>
-<p>$$score = \frac{\phi + \frac{z^2}{2n} - z * \sqrt{(\frac{\phi\ast (1 - \phi)}{n} + \frac{z^2}{4n^2}}}{(1 + \frac{z^2}{n})}$$</p>
-<p>\(\phi\) 表示样本的赞成票比例，\(n\) 表示样本的大小，\(z_{1- \alpha/2}\) 表示对应某个置信水平的 \(z\) 统计量，这是一个常数，可以通过查表或统计软件包得到。一般情况下，在 95% 的置信水平下，z 统计量的值为 1.96。</p>
-<p>威尔逊得分计算过程 (JavaScript 版本)：</p>
-<pre><code>n = Up + Down
-if (n==0) {
-score = 0;
-}
-else {
-z = 1.96
-phat = Up / n
-score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
-}
-</code></pre><p>可以看到，当 \(n\) 的值足够大时，这个下限值会趋向。如果 \(n\) 非常小（投票人很少），这个下限值会大大小于。实际上，起到了降低 “赞成票比例” 的作用，使得该项目的得分变小、排名下降。</p>
-<p>知乎采用的就是这种方法，下面摘一段<strong><a href="https://zhuanlan.zhihu.com/p/19902495?columnSlug=zhihu-product" target="_blank" rel="external">知乎产品总监</a></strong>对这个算法评价的一段话：</p>
-<pre><code>  因此未来我们会看到更多新创作的优质内容，快速获得靠前的排序，低质内容则会长期
-保持在底部。细心的你可能也想到了，并不是所有的回答最终都会获得很多投票，大体上
-获得投票总数较多的回答仍然会排在投票较少的回答前面。
-</code></pre><p>需要提一下，这个威尔逊算法在 x = 0 时函数取值收敛为 0，无法对赞同为 0，但反对票数不一样的回答进行排序。为了方便，知乎默认所有回答者对自己的投票投了一票赞同。这样不仅解决了这个问题，而且让回答者也将自身权重参与到排序的计算中。</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><a href="http://www.ruanyifeng.com/blog/2012/03/ranking_algorithm_wilson_score_interval.html" target="_blank" rel="external">基于用户投票的排名算法（五）：威尔逊区间</a></li>
-<li><a href="https://www.zhihu.com/question/26933554" target="_blank" rel="external">如何评价知乎的回答排序算法？</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2027,7 +2007,7 @@ score = (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-count">72</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

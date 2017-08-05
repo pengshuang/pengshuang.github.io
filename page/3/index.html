@@ -258,6 +258,154 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" itemprop="url">
+                  IP协议相关技术: ICMP、DHCP 和 NAT
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-18T21:20:37+08:00" content="2016-11-18">
+              2016-11-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" class="leancloud_visitors" data-flag-title="IP协议相关技术: ICMP、DHCP 和 NAT">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="辅助-IP-的-ICMP"><a href="#辅助-IP-的-ICMP" class="headerlink" title="辅助 IP 的 ICMP"></a>辅助 IP 的 ICMP</h3><p>架构 IP 网络时需要特别注意：1. 确认网络是否正常工作；2. 遇到异常时进行问题诊断，而这一切需要 ICMP 来提供。</p>
+<p>ICMP 的主要功能包括，确认 IP 包是否成功送达目标地址，通知在发送过程当中 IP 包被废弃的具体原因，改善网络设置等。</p>
+<p>在 IP 通信中如果某个 IP 包因为某种原因未能达到目标地址，那么这个具体的原因将由 ICMP 负责通知。主机 A 向主机 B 发送了数据包，由于某种原因，途中的路由器 2 未能发现主机 B 的存在，这时，路由器 2 就会向主机 A 发送一个 ICMP 包，说明发往主机 B 的包未能成功。</p>
+<p>ICMP 的消息大致可以分为两类：一类是通知出错原因的错误消息，另一类是用于诊断的查询消息。</p>
+<h3 id="主要的-ICMP-消息"><a href="#主要的-ICMP-消息" class="headerlink" title="主要的 ICMP 消息"></a>主要的 ICMP 消息</h3><h4 id="ICMP-目标不可达消息（类型3）"><a href="#ICMP-目标不可达消息（类型3）" class="headerlink" title="ICMP 目标不可达消息（类型3）"></a>ICMP 目标不可达消息（类型3）</h4><p>IP 路由器无法将 IP 数据包发送给目标地址时，会给发送端主机返回一个目标不可达的 ICMP 消息，并在这个消息中显示不可达的具体原因。</p>
+<p>在实际通信中经常遇到的错误代码是 1，表示主机不可达，它是指路由表中没有该主机的信息，或该主机没有连接到网络的意思。其他的错误号都可以通过查阅得知具体的错误信息，这里不再赘述。</p>
+<h4 id="ICMP-重定向消息（类型5）"><a href="#ICMP-重定向消息（类型5）" class="headerlink" title="ICMP 重定向消息（类型5）"></a>ICMP 重定向消息（类型5）</h4><p>如果路由器发现发送端主机使用了次优的路径发送数据，那么它会返回一个 ICMP 重定向（ICMP Redirect Message）的消息给这个主机。在这个消息中包含了最合适的路由信息和源数据。这主要发生在路由器持有更好的路由信息的情况下。路由器会通过这样的 ICMP 消息给发送端主机一个更合适的发送路由。</p>
+<h4 id="ICMP-超时消息（类型11）"><a href="#ICMP-超时消息（类型11）" class="headerlink" title="ICMP 超时消息（类型11）"></a>ICMP 超时消息（类型11）</h4><p>IP 包中有一个字段叫做 TTL (生存周期），它的值随着每经过一次路由器就会减 1，直到减到 0 时该 IP 包会被丢弃。此时，IP 路由器将会发送一个 ICMP 超时的消息给发送端主机，并通知该包已被丢弃。</p>
+<p>设置 IP 包生存周期的主要目的，是为了在路由控制遇到问题发送循环状况时，避免 IP 包无休止地在网络上被转发。此外，有时可以用 TTL 控制包的到达范围，例如设置一个较小的 TTL 值。</p>
+<p>有一个重复利用 ICMP 超时消息的应用叫 traceroute。他可以显示由执行程序的主机到达特定主机之前经历多少路由器。它的原理就是利用 IP 包的生存期限从 1 开始按照顺序递增的同时发送 UDP 包，强制接收 ICMP 超时消息的一种方法。这样可以将所有路由器的 IP 地址逐一呈现。这个过去常用于进行问题诊断。</p>
+<h4 id="ICMP-回送消息（类型0、8）"><a href="#ICMP-回送消息（类型0、8）" class="headerlink" title="ICMP 回送消息（类型0、8）"></a>ICMP 回送消息（类型0、8）</h4><p>用于进行通信的主机或路由器之间，判断所发送的数据包是否已经成功到达对端的一种消息。可以向对端主机发送回送请求的消息，也可以接收对端主机发回来的回送应答消息，网络上最常用的 ping 命令就是利用这个消息实现的。</p>
+<h3 id="ICMPv6"><a href="#ICMPv6" class="headerlink" title="ICMPv6"></a>ICMPv6</h3><h4 id="ICMPv6-的作用"><a href="#ICMPv6-的作用" class="headerlink" title="ICMPv6 的作用"></a>ICMPv6 的作用</h4><p>IPv4 中 ICMP 仅作为一个辅助作用支持 IPv4.即在 IPv4 中，即使没有 ICMP，仍然可以实现 IP 通信。然而，在 IPv6 中，ICMP 的作用被扩大，如果没有 ICMPv6，IPv6 就无法进行正常通信。</p>
+<p>在 IPv6 中， 从 IP 地址定位 MAC 地址的协议从 ARP 转为 ICMP 的邻居探索消息。这种邻居探索消息融合了 IPv4 的 ARP、ICMP 重定向以及 ICMP 路由器选择消息等功能于一体，甚至还提供自动设置 IP 地址的功能。</p>
+<p>ICMPv6 中将 ICMP 大致分为两类：一类是错误消息，另一类是信息消息。类型 0 ~ 127 属于错误消息，128~255 属于信息消息。</p>
+<h4 id="邻居探索"><a href="#邻居探索" class="headerlink" title="邻居探索"></a>邻居探索</h4><p>ICMPv6 中从类型 133 至类型 137 的消息叫做邻居探索消息。这种邻居探索消息对于 IPv6 通信起着举足轻重的作用。邻居请求消息用于查询 IPv6 的地址与 MAC 地址的对应关系，并由邻居宣告消息得知 MAC 地址。邻居请求消息利用 IPv6 的多播地址实现传输。</p>
+<h3 id="DHCP"><a href="#DHCP" class="headerlink" title="DHCP"></a>DHCP</h3><p>如果为每一台主机设置 IP 地址会非常繁琐。所以，为了实现自动设置 IP 地址、同一管理 IP 地址分配，就产生了 DHCP 协议。有了 DHCP，计算机只要连接到网络，就可以进行 TCP/IP 通信。</p>
+<h4 id="DHCP-的工作机制"><a href="#DHCP-的工作机制" class="headerlink" title="DHCP 的工作机制"></a>DHCP 的工作机制</h4><p>使用 DHCP 之前，首先要架设一台 DHCP 服务器。然后将 DHCP 所要分配的 IP 地址设置到服务器上。此外，还需要将相应的子网掩码、路由控制信息以及 DNS 服务器的地址等设置到服务器上。</p>
+<p>为了检查所要分配的 IP 地址以及已经分配了的 IP 地址是否可用，DHCP 服务器或 DHCP 客户端必须具备以下功能：</p>
+<ul>
+<li><p>DHCP 服务器</p>
+<p>  在分配 IP 地址前发送 ICMP 回送请求包，确认没有返回应答。</p>
+</li>
+<li><p>DHCP 客户端</p>
+<p>  针对从 DHCP 那里获得的 IP 地址发送 ARP 请求包，确认没有返回应答。</p>
+</li>
+</ul>
+<h3 id="NAT"><a href="#NAT" class="headerlink" title="NAT"></a>NAT</h3><p>NAT 用于在本地网络中使用私有地址，在连接互联网时转而使用全局 IP 地址的技术。除转换 IP 地址外，还出现了可以转换 TCP、UDP 的端口号的 NAPT 技术，由此可以实现用一个全局 IP 地址与多个主机的通信。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/17/IP协议相关技术-DNS-和-ARP/" itemprop="url">
                   IP协议相关技术: DNS 和 ARP
                 </a>
@@ -1955,132 +2103,6 @@ boolean containsColumn(byte[] family, byte[] qualifier);
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/" itemprop="url">
-                  Google Chubby 学习: Paxos 协议实现
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-27T14:12:31+08:00" content="2016-10-27">
-              2016-10-27
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/27/Google-Chubby-学习-Paxos-协议实现/" class="leancloud_visitors" data-flag-title="Google Chubby 学习: Paxos 协议实现">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Chubby-中-Paxos-协议实现"><a href="#Chubby-中-Paxos-协议实现" class="headerlink" title="Chubby 中 Paxos 协议实现"></a>Chubby 中 Paxos 协议实现</h3><p>Chubby 服务端的基本架构大致分为三层：</p>
-<ul>
-<li>最底层是容错日志系统，通过 Paxos 算法能够保证集群所有机器上的日志完全一致，同时具备较好的容错性。</li>
-<li>日志层上是的 Key - Value 类型的容错数据库，其通过下层的日志来保证一致性和容错性。</li>
-<li>存储层之上就是 Chubby 对外提供的分布式锁和小文件存储服务。</li>
-</ul>
-<p>Paxos 算法的作用在于保证集群内各个副本节点的日志能够保证一致。Chubby 事务日志中的每一个 Value 对应 Paxos 算法中的一个 Instance，由于 Chubby 需要对外提供不间断的服务，因此事务日志会无限增长，于是整个 Chubby 运行过程中，会存在多个 Paxos Instance。同时，Chubby 会为每一个 Paxos Instance 都按序分配一个全局唯一的 Instance 编号，并将其顺序写入到事务日志中去。</p>
-<p>在多 Paxos Instance 的模式下，为了提升算法执行的性能，就必须选举一个副本节点作为 Paxos 算法的主节点，以避免因为每一个 Paxos Instance 都提出提案而陷入多个 Paxos Round 并存的情况。同时，Paxos 会保证在 Master 重启或出现故障而进行切换的时候，允许出现短暂的多个 Master 共存却不影响副本之间的一致性。</p>
-<p>在 Paxos 中，每一个 Paxos Instance 都需要进行一轮或多轮 “ Prepare -&gt; Promise -&gt; Propose -&gt; Accept “ 这样完整的二阶段请求过程来完成对一个提案值的选定，而多个 Instance 之间是完全独立的，每个 Instance 可以自己决定每一个 Round 的序号，仅仅只需要保证在 Instance 内部不会出现序号重复即可。为了在保证正确性的前提下尽可能地提高算法运行性能，可以让多个 Instance 共用一套序号分配机制，并将 “Prepare -&gt; Promise” 合并为一个阶段，具体做法如下。</p>
-<ul>
-<li>当某个副本节点通过选举成为 Master 后，就会使用新分配的编号 N 来广播一个 Prepare 消息，该 Prepare 消息会被所有未达成一致的 Instance 和目前还未开始的 Instance 共用。</li>
-<li>当 Acceptor 接收到 Prepare 消息后，必须对多个 Instance 同时做出回应，这通常可以通过将反馈信息封装在一个数据包中来实现。假设最多允许 K 个 Instance 同时进行提案值的选定，那么：<ul>
-<li>当前至多存在 K 个 未达成一致的 Instance，将这些未决的 Instance 各自最后接受的提案值封装进一个数据包，并作为 Promise 消息返回。</li>
-<li>同时，判断 N 是否大于当前 Acceptor 的 highestPromiseNum 值，如果大于该值的话，那么就标记这些未决 Instance 和所有未来的 Instance 的 highestPromisedNum 指为 N — 这样，这些未决 Instance 和所有未来 Instance 都不能再接受任何编号小于 N 的提案。</li>
-</ul>
-</li>
-<li>然后 Master 就可以对所有未决 Instance 和所有未来 Instance 分别执行 “Propose -&gt; Accept” 阶段的处理。如果当前 Master 能够一直稳定运行的话，那么在接下来的算法运行过程中，就不再需要进行 “Prepare -&gt; Promise” 的处理了。但是，一旦 Master 发现 Acceptor 返回了一个 Reject 消息，说明集群中存在另一个 Master，并且试图使用更大的提案编号发送了 Prepare 消息。碰到这种情况，当前 Master 就需要重新分配新的提案编号并再次进行 “Prepare -&gt; Promise” 阶段的逻辑处理。</li>
-</ul>
-<p>利用上述改进的 Paxos 算法，在 Master 稳定运行的情况下，只需要使用同一个编号来依次执行每一个 Instance 的 “Promise -&gt; Accept” 阶段逻辑处理。在每个 Instance 的运行过程中，一旦接收到多数派的 Accept 反馈后，就可以将对应的提案值写入本地事务日志并广播 COMMIT 消息给集群中的其他副本节点，其他副本节点在接收到这个 COMMIT 消息之后也会将提案值写入到事务日志中去。如果某个副本节点因为宕机或者网络原因没有接收到 COMMIT 消息，可以主动向集群中的其他副本节点进行查询。因此，我们可以看到，在 Chubby 的 Paxos 算法实现中，只要维持集群中存在多数派的机器能够正常运行，即使其他机器在任意时刻发生宕机，也能保证已经提交的提案的安全性。</p>
-<h3 id="Hypertable"><a href="#Hypertable" class="headerlink" title="Hypertable"></a>Hypertable</h3><p>Hypertable 以 Google 的 Bigtable 相关论文为基础指导，采用与 HBase 非常相似的分布式模型，其目的是构建一个针对分布式海量数据的高并发数据库。</p>
-<p>Hypertable 的核心组件包括 Hyperspace、RangeServer、Master 和 DFS Broker 四部分。其中 Hyperspace 是 Hypertable 中最重要的组件之一，其提供了对分布式锁服务的支持以及对元数据的管理，是保证 Hypertable 数据一致性的核心。Hyperspace 类似于 Chubby，它存储一些元数据信息，同时提供分布式锁服务，另外还负责提供高效、可靠的主机选举服务。</p>
-<p>RangeServer 是实际对外提供服务的组件单元，负责数据的读取和写入。在 Hypertable的设计中，对每一张表都按照主键进行切分，形成多个 Range，每个 Range 由一个 RangeServer 负责管理。在 Hypertable 中，通常会部署多个 RangeServer，每个 RangeServer 都负责管理部分数据，由 Master 来负责进行 RangeServer 的集群管理。</p>
-<p>Master 是元数据管理中心，管理包括创建表、删除表或是其他表空间变更在内的所有元数据操作，同时负责检测 RangeServer 的工作状态，一旦某一个 RangeServer 宕机或是重启，能够自动进行 Range 的重新分配，从而实现对 RangeServer 集群的管理和负责均衡。</p>
-<p>DFS Broker 则是底层分布式文件系统的抽象层，用于衔接上层 Hypertable 和底层文件存储。所有对文件系统的读写操作，都是通过 DFS Broker 来完成的。目前已经可以接入 Hypertable 中的分布式文件系统包括 HDFS、MapR，Ceph 和 KFS。针对任何其他的新文件系统，只需实现一个对应的 DFS Broker，就可以将其快速接入到整个 Hypertable 系统中。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2126,7 +2148,7 @@ boolean containsColumn(byte[] family, byte[] qualifier);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-count">72</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

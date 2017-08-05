@@ -258,6 +258,250 @@
             
               
                 
+                <a class="post-title-link" href="/2015/10/24/用Java实现类似linux下的wget工具/" itemprop="url">
+                  用Java实现类似linux下的wget工具
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-24T19:38:18+08:00" content="2015-10-24">
+              2015-10-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/24/用Java实现类似linux下的wget工具/" class="leancloud_visitors" data-flag-title="用Java实现类似linux下的wget工具">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>wget是linux下的一个命令行工具，熟悉linux的同学应该都知道，执行wget后可以从一个http服务器上下载一个文件，这次我们用Java实现的wget功能类似，只需要支持接收一个http的url参数就可以下载对应资源。关于wget的更多信息可以google它。</p>
+<p>   简单说明一下，我们需要做的就是将服务器运行之后，通过控制台去输入一行URL，然后服务器自动根据URL去获取互联网上的资源。功能类似下图。<br>   <img src="/img/1" alt=""></p>
+<blockquote>
+<p>上面这张图片代表的意思是通过控制台输入想要获取的url，然后我们的wget实现将对应url上的资源存放在指定的位置。</p>
+<p>获取<a href="https://www.google.co.jp/images/srpr/logo11w.png" target="_blank" rel="external">https://www.google.co.jp/images/srpr/logo11w.png</a> 这个HTTP_URL的logo11w.png图片，并将它保在/Users/pengshuang/Documents/workspace/succeez位置上。</p>
+</blockquote>
+<p>   下面附上java实现代码，主要过程我已经注释详细了,应该看懂没问题。</p>
+<pre><code>import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Scanner;
+
+public class Wget {
+    /*
+     * get url of the file you wanted get the path to save your file
+     */
+    public static void main(String[] args) {
+        // 创建一个scanner，获取URL和用户指定存放路径
+        Scanner sc = new Scanner(System.in);
+        System.out.println(&quot;Please input the file&apos;s Http_URL:&quot;);
+        String url = sc.nextLine();
+        System.out.println(&quot;please input the path to save the file:&quot;);
+        String path = sc.nextLine();
+        // 调用downloadFromUrl来从URL上下载指定文件
+        String res = downloadFromUrl(url, path);
+        sc.close();// 关闭scanner
+        System.out.println(res);
+}
+
+/*
+ * download file from url returns success/failure message if succeed,returns
+ * file&apos;s absolute path
+ */
+public static String downloadFromUrl(String url, String dir) {
+    try {
+        // 创建新的URL类型
+        URL httpurl = new URL(url);
+        // 获取文件名
+        String fileName = getFileNameFromUrl(url);
+        // 输出文件名
+        System.out.println(fileName);
+        // 在文件名之前加上路径创建文件
+        File f = new File(dir + &apos;/&apos; + fileName);
+        // 将URL内容拷贝到文件
+        copyURLToFile(httpurl, f);
+        String absolutepath = f.getAbsolutePath();
+        // 输出成功信息以及存储路径名
+        return &quot;Successfully saved to &quot; + absolutepath;
+    } catch (Exception e) {
+        e.printStackTrace();
+        // 异常时输出错误信息
+        return &quot;Error!&quot;;
+    }
+}
+
+/*
+ * get filename from url such as get a string &quot;logo11w.html&quot; from
+ * https://www.google.co.jp/images/srpr/logo11w.png
+ */
+public static String getFileNameFromUrl(String url) {
+    // 初始化文件名
+    String name = &quot;&quot;;
+    // 获取最后一个“/“前的字符数
+    int index = url.lastIndexOf(&quot;/&quot;);
+    if (index &gt; 0) {
+        // 将最后一个”/“和之前的所有字符都剔除，剩余的字符串作为文件名
+        name = url.substring(index + 1);
+        // 将文件名首尾的空格字符删去，获取规范的文件名
+        if (name.trim().length() &gt; 0) {
+            return name;
+        }
+    }
+    return name;
+}
+
+/*
+ * copy URL file&apos;s content to local file by get an InputStream from URL and
+ * an OutputStream to local file using a buffer to transport bytes
+ */
+public static void copyURLToFile(URL source, File dest) throws IOException {
+    // 如果目标文件不存在
+    if (!dest.exists()) {
+        // 创建父目录，然后创建新文件
+        dest.getParentFile().mkdirs();
+        dest.createNewFile();
+    }
+    // 关键点就在此，通过URL类的openStream函数获得一个输入流
+    InputStream in = source.openStream();
+
+    try {
+        // 创建一个输出流
+        FileOutputStream out = new FileOutputStream(dest);
+        try {
+            /*
+             * 创建一个固定大小的buffer通过buffer将输入流内容写入输出流
+             */
+            int numread = 0;
+            int buf_size = 1024;
+            byte[] buffer = new byte[buf_size];
+            while ((numread = in.read(buffer, 0, buf_size)) != -1)
+                // 如果缓冲区没满，继续写
+                out.write(buffer, 0, numread);
+        } finally {
+            try {
+                if (out != null)
+                    out.close();
+            } catch (IOException oe) {
+                System.out.println(&quot;Output file is null&quot;);
+            }
+        }
+    } finally {
+        try {
+            if (in != null)
+                in.close();
+        } catch (IOException ie) {
+            System.out.println(&quot;Input file is null&quot;);
+            }
+        }
+    }
+}
+</code></pre><p><br>实现这个wget可以有助于我们理解Java的输入输出，为以后的Java web 编程打基础。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/24/开篇/" itemprop="url">
                   开篇
                 </a>
@@ -385,7 +629,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">71</span>
+              <span class="site-state-item-count">72</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

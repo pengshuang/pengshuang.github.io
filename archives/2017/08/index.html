@@ -84,22 +84,15 @@
 
 
 
-<meta name="description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
-<meta property="og:type" content="article">
-<meta property="og:title" content="HBase学习: 专用过滤器">
-<meta property="og:url" content="http://pengshuang.space/2016/11/08/HBase学习-专用过滤器/index.html">
+<meta name="description" content="在路上，慢慢走！">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小沙文的博客">
+<meta property="og:url" content="http://pengshuang.space/archives/2017/08/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
-<meta property="og:updated_time" content="2016-11-08T14:07:09.000Z">
+<meta property="og:description" content="在路上，慢慢走！">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HBase学习: 专用过滤器">
-<meta name="twitter:description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
+<meta name="twitter:title" content="小沙文的博客">
+<meta name="twitter:description" content="在路上，慢慢走！">
 
 
 
@@ -120,9 +113,9 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/11/08/HBase学习-专用过滤器/"/>
+  <link rel="canonical" href="http://pengshuang.space/archives/2017/08/"/>
 
-  <title> HBase学习: 专用过滤器 | 小沙文的博客 </title>
+  <title> 归档 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -143,7 +136,7 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
     
   
 
-  <div class="container one-collumn sidebar-position-left page-post-detail ">
+  <div class="container one-collumn sidebar-position-left  page-archive  ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -241,247 +234,65 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-collapse">
+    <span class="archive-move-on"></span>
+
+    <span class="archive-page-counter">
+      
+      
+       
+        
+      好! 目前共计 72 篇日志。 继续努力。
+    </span>
+
     
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                HBase学习: 专用过滤器
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-08T17:25:26+08:00" content="2016-11-08">
-              2016-11-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/08/HBase学习-专用过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 专用过滤器">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
-      
-        <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
-<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
-<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, byte[] value)
-SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, ByteArrayComparable comparator)
-</code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
-<p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
-<pre><code>boolean getFilterIfMissing()
-void setFilterIfMissing(boolean filterIfMissing)
-boolean getLatestVersionOnly()
-void setLatestVersionOnly(boolean latestVersionOnly)
-</code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
-<p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-SingleColumnValueFilter filter = new SingleColumnValueFilter(
-        Bytes.toBytes(&quot;colfam1&quot;),
-        Bytes.toBytes(&quot;col-5&quot;),
-        CompareFilter.CompareOp.NOT_EQUAL,
-        new SubstringComparator(&quot;val-5&quot;));
-filter.setFilterIfMissing(true);
-
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result: scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
-<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
-<pre><code>Public PrefixFilter(byte[] prefix)
-</code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result : scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
-
-Scan scan = new Scan();
-scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result:scanner){
-    System.out.println(result);
-}
-scanner.close();
-</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
-<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
-</code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
-// 向列表中添加时间戳
-ts.add(new Long(5));
-ts.add(new Long(10));
-ts.add(new Long(15));
-Filter filter = new TimestampsFilter(ts);
-
-Scan scan1 = new Scan();
-// 向scan实例中添加过滤器
-scan1.setFilter(filter);
-ResultScanner scanner1 = hTable.getScanner(scan1);
-for(Result result:scanner1){
-    System.out.println(result);
-}
-scanner1.close();
-
-Scan scan2 = new Scan();
-scan2.setFilter(filter);
-// 添加时间范围限制
-scan2.setTimeRange(8,12);
-ResultScanner scanner2 = hTable.getScanner(scan2);
-for(Result result:scanner2){
-    System.out.println(result);
-}
-scanner2.close();
-</code></pre>
-      
-    </div>
-
-    <div>
       
         
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2016/11/07/HBase学习-比较过滤器/" rel="next" title="HBase学习: 比较过滤器">
-                <i class="fa fa-chevron-left"></i> HBase学习: 比较过滤器
-              </a>
-            
-          </div>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/09/分布式系统学习-ZooKeeper与Paxos/" rel="prev" title="分布式系统学习: ZooKeeper与Paxos">
-                分布式系统学习: ZooKeeper与Paxos <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
+        <div class="collection-title">
+          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
         </div>
       
+      
 
       
-      
-    </footer>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h1 class="post-title">
+        
+            <a class="post-title-link" href="/2017/08/01/数据库中视图的作用/" itemprop="url">
+              
+                <span itemprop="name">数据库中视图的作用</span>
+              
+            </a>
+        
+      </h1>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2017-08-01T15:42:55+08:00"
+              content="2017-08-01" >
+          08-01
+        </time>
+      </div>
+
+    </header>
   </article>
 
 
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+    
+
+  </section>
+
+  
+
 
 
           </div>
@@ -489,10 +300,6 @@ scanner2.close();
 
 
           
-  <div class="comments" id="comments">
-    
-  </div>
-
 
         </div>
         
@@ -512,17 +319,8 @@ scanner2.close();
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel ">
+      <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.jpg"
@@ -614,17 +412,6 @@ scanner2.close();
 
       </section>
 
-      
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-            
-              
-            
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单列值过滤器"><span class="nav-number">1.</span> <span class="nav-text">单列值过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单列排除过滤器"><span class="nav-number">2.</span> <span class="nav-text">单列排除过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前缀过滤器"><span class="nav-number">3.</span> <span class="nav-text">前缀过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#包含结束的过滤器"><span class="nav-number">4.</span> <span class="nav-text">包含结束的过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳过滤器"><span class="nav-number">5.</span> <span class="nav-text">时间戳过滤器</span></a></li></ol></div>
-            
-          </div>
-        </section>
       
 
     </div>
@@ -730,9 +517,11 @@ scanner2.close();
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
-
+  
+    <script type="text/javascript" id="motion.page.archive">
+      $('.archive-year').velocity('transition.slideLeftIn');
+    </script>
+  
 
 
   

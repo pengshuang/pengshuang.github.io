@@ -84,22 +84,22 @@
 
 
 
-<meta name="description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
+<meta name="description" content="视图是从一个或几个基本表（或视图）导出的表。它与基本表不同，是一个虚表。数据库只存放视图的定义，而不存放视图对应的数据，这些数据仍存放在原来的基本表中。所以基本表中的数据发生变化，从视图中查询出的数据也就随之改变了。从这个意义上讲，视图就像一个窗口，透过它可以看到数据库中自己感兴趣的数据及其变化。
+这是因为合理地使用视图能够带来许多好处：
+1. 视图能简化用户操作视图机制使用户可以将注意力集中在所">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HBase学习: 专用过滤器">
-<meta property="og:url" content="http://pengshuang.space/2016/11/08/HBase学习-专用过滤器/index.html">
+<meta property="og:title" content="数据库中视图的作用">
+<meta property="og:url" content="http://pengshuang.space/2017/08/01/数据库中视图的作用/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
-<meta property="og:updated_time" content="2016-11-08T14:07:09.000Z">
+<meta property="og:description" content="视图是从一个或几个基本表（或视图）导出的表。它与基本表不同，是一个虚表。数据库只存放视图的定义，而不存放视图对应的数据，这些数据仍存放在原来的基本表中。所以基本表中的数据发生变化，从视图中查询出的数据也就随之改变了。从这个意义上讲，视图就像一个窗口，透过它可以看到数据库中自己感兴趣的数据及其变化。
+这是因为合理地使用视图能够带来许多好处：
+1. 视图能简化用户操作视图机制使用户可以将注意力集中在所">
+<meta property="og:updated_time" content="2017-08-05T07:48:21.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HBase学习: 专用过滤器">
-<meta name="twitter:description" content="HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。
-单列值过滤器当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：
-SingleColumnValueFilter(byte[] family, byte[] qualifier,">
+<meta name="twitter:title" content="数据库中视图的作用">
+<meta name="twitter:description" content="视图是从一个或几个基本表（或视图）导出的表。它与基本表不同，是一个虚表。数据库只存放视图的定义，而不存放视图对应的数据，这些数据仍存放在原来的基本表中。所以基本表中的数据发生变化，从视图中查询出的数据也就随之改变了。从这个意义上讲，视图就像一个窗口，透过它可以看到数据库中自己感兴趣的数据及其变化。
+这是因为合理地使用视图能够带来许多好处：
+1. 视图能简化用户操作视图机制使用户可以将注意力集中在所">
 
 
 
@@ -120,9 +120,9 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/11/08/HBase学习-专用过滤器/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/08/01/数据库中视图的作用/"/>
 
-  <title> HBase学习: 专用过滤器 | 小沙文的博客 </title>
+  <title> 数据库中视图的作用 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -262,7 +262,7 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
             
             
               
-                HBase学习: 专用过滤器
+                数据库中视图的作用
               
             
           </h1>
@@ -274,8 +274,8 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-08T17:25:26+08:00" content="2016-11-08">
-              2016-11-08
+            <time itemprop="dateCreated" datetime="2017-08-01T15:42:55+08:00" content="2017-08-01">
+              2017-08-01
             </time>
           </span>
 
@@ -288,8 +288,8 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -308,7 +308,7 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
 
           
           
-             <span id="/2016/11/08/HBase学习-专用过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 专用过滤器">
+             <span id="/2017/08/01/数据库中视图的作用/" class="leancloud_visitors" data-flag-title="数据库中视图的作用">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -330,106 +330,30 @@ SingleColumnValueFilter(byte[] family, byte[] qualifier,">
       
 
       
-        <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
-<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
-<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, byte[] value)
-SingleColumnValueFilter(byte[] family, byte[] qualifier,
-    CompareOp compareOp, ByteArrayComparable comparator)
-</code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
-<p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
-<pre><code>boolean getFilterIfMissing()
-void setFilterIfMissing(boolean filterIfMissing)
-boolean getLatestVersionOnly()
-void setLatestVersionOnly(boolean latestVersionOnly)
-</code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
-<p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-SingleColumnValueFilter filter = new SingleColumnValueFilter(
-        Bytes.toBytes(&quot;colfam1&quot;),
-        Bytes.toBytes(&quot;col-5&quot;),
-        CompareFilter.CompareOp.NOT_EQUAL,
-        new SubstringComparator(&quot;val-5&quot;));
-filter.setFilterIfMissing(true);
-
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result: scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
-<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
-<pre><code>Public PrefixFilter(byte[] prefix)
-</code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result : scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
-get.setFilter(filter);
-Result result = hTable.get(get);
-System.out.println(result);
-</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
-
-Scan scan = new Scan();
-scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result:scanner){
-    System.out.println(result);
-}
-scanner.close();
-</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
-<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
-</code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
-// 向列表中添加时间戳
-ts.add(new Long(5));
-ts.add(new Long(10));
-ts.add(new Long(15));
-Filter filter = new TimestampsFilter(ts);
-
-Scan scan1 = new Scan();
-// 向scan实例中添加过滤器
-scan1.setFilter(filter);
-ResultScanner scanner1 = hTable.getScanner(scan1);
-for(Result result:scanner1){
-    System.out.println(result);
-}
-scanner1.close();
-
-Scan scan2 = new Scan();
-scan2.setFilter(filter);
-// 添加时间范围限制
-scan2.setTimeRange(8,12);
-ResultScanner scanner2 = hTable.getScanner(scan2);
-for(Result result:scanner2){
-    System.out.println(result);
-}
-scanner2.close();
+        <p>视图是从一个或几个基本表（或视图）导出的表。它与基本表不同，是一个虚表。数据库只存放视图的定义，而不存放视图对应的数据，这些数据仍存放在原来的基本表中。所以基本表中的数据发生变化，从视图中查询出的数据也就随之改变了。从这个意义上讲，视图就像一个窗口，透过它可以看到数据库中自己感兴趣的数据及其变化。</p>
+<p>这是因为合理地使用视图能够带来许多好处：</p>
+<h3 id="1-视图能简化用户操作"><a href="#1-视图能简化用户操作" class="headerlink" title="1. 视图能简化用户操作"></a>1. 视图能简化用户操作</h3><p>视图机制使用户可以将注意力集中在所关心地数据上。如果这些数据不是直接来自基本表，则可以通过定义视图，使数据库看起来结构简单、清晰，并且可以简化用户的的数据查询操作。例如，那些定义了若干张表连接的视图，就将表与表之间的连接操作对用户隐藏起来了。换句话说，用户所作的只是对一个虚表的简单查询，而这个虚表是怎样得来的，用户无需了解。</p>
+<h3 id="2-视图使用户能以多种角度看待同一数据"><a href="#2-视图使用户能以多种角度看待同一数据" class="headerlink" title="2. 视图使用户能以多种角度看待同一数据"></a>2. 视图使用户能以多种角度看待同一数据</h3><p>视图机制能使不同的用户以不同的方式看待同一数据，当许多不同种类的用户共享同一个数据库时，这种灵活性是非常必要的。</p>
+<h3 id="3-视图对重构数据库提供了一定程度的逻辑独立性"><a href="#3-视图对重构数据库提供了一定程度的逻辑独立性" class="headerlink" title="3. 视图对重构数据库提供了一定程度的逻辑独立性"></a>3. 视图对重构数据库提供了一定程度的逻辑独立性</h3><p>数据的物理独立性是指用户的应用程序不依赖于数据库的物理结构。数据的逻辑独立性是指当数据库重构造时，如增加新的关系或对原有的关系增加新的字段，用户的应用程序不会受影响。层次数据库和网状数据库一般能较好地支持数据的物理独立性，而对于逻辑独立性则不能完全的支持。</p>
+<p>在关许数据库中，数据库的重构造往往是不可避免的。重构数据库最常见的是将一个基本表“垂直”地分成多个基本表。例如：将学生关系Student（Sno，Sname，Ssex，Sage，Sdept），</p>
+<p>分为SX（Sno，Sname，Sage）和SY（Sno，Ssex，Sdept）两个关系。这时原表Student为SX表和SY表自然连接的结果。如果建立一个视图Student：</p>
+<pre><code>CREATE VIEW Student（Sno，Sname，Ssex，Sage，Sdept）
+AS
+SELECT SX.Sno，SX.Sname，SY.Ssex，SX.Sage，SY.Sdept
+FROM SX，SY
+WHERE SX.Sno=SY.Sno;
+</code></pre><p>这样尽管数据库的逻辑结构改变了（变为SX和SY两个表了），但应用程序不必修改，因为新建立的视图定义为用户原来的关系，使用户的外模式保持不变，用户的应用程序通过视图仍然能够查找数据。</p>
+<p>当然，视图只能在一定程度上提供数据的逻辑独立，比如由于视图的更新是有条件的，因此应用程序中修改数据的语句可能仍会因为基本表构造的改变而改变。</p>
+<h3 id="4-视图能够对机密数据提供安全保护"><a href="#4-视图能够对机密数据提供安全保护" class="headerlink" title="4. 视图能够对机密数据提供安全保护"></a>4. 视图能够对机密数据提供安全保护</h3><p>有了视图机制，就可以在设计数据库应用系统时，对不同的用户定义不同的视图，使机密数据不出现在不应该看到这些数据的用户视图上。这样视图机制就自动提供了对机密数据的安全保护功能。例如，Student 表涉及全校 15 个院系学生数据，可以在其上定义15个视图，每个视图只包含一个院系的学生数据，并只允许每个院系的主任查询和修改本原系学生视图。</p>
+<h3 id="5-适当的利用视图可以更清晰地表达查询"><a href="#5-适当的利用视图可以更清晰地表达查询" class="headerlink" title="5. 适当的利用视图可以更清晰地表达查询"></a>5. 适当的利用视图可以更清晰地表达查询</h3><p>例如经常需要执行这样的查询“对每个学生找出他获得最高成绩的课程号”。可以先定义一个视图，求出每个同学获得的最高成绩：</p>
+<pre><code>CREATE VIEW VMGRADE
+AS
+SELECT Sno，MAX(Grade) Mgrade
+FROM SC
+GROUP BY Sno;
+</code></pre><p>然后用如下的查询语句完成查询：</p>
+<pre><code>SELECT SC.Sno，Cno FROM SC，VMGRADE WHERE SC.Sno = VMGRADE.Sno AND 
+SC.Grade = VMGRADE.Mgrade;
 </code></pre>
       
     </div>
@@ -455,17 +379,13 @@ scanner2.close();
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/11/07/HBase学习-比较过滤器/" rel="next" title="HBase学习: 比较过滤器">
-                <i class="fa fa-chevron-left"></i> HBase学习: 比较过滤器
+              <a href="/2017/07/23/Parameter-Server-学习/" rel="next" title="Parameter Server 学习">
+                <i class="fa fa-chevron-left"></i> Parameter Server 学习
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/11/09/分布式系统学习-ZooKeeper与Paxos/" rel="prev" title="分布式系统学习: ZooKeeper与Paxos">
-                分布式系统学习: ZooKeeper与Paxos <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -621,7 +541,7 @@ scanner2.close();
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#单列值过滤器"><span class="nav-number">1.</span> <span class="nav-text">单列值过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单列排除过滤器"><span class="nav-number">2.</span> <span class="nav-text">单列排除过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前缀过滤器"><span class="nav-number">3.</span> <span class="nav-text">前缀过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#包含结束的过滤器"><span class="nav-number">4.</span> <span class="nav-text">包含结束的过滤器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳过滤器"><span class="nav-number">5.</span> <span class="nav-text">时间戳过滤器</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-视图能简化用户操作"><span class="nav-number">1.</span> <span class="nav-text">1. 视图能简化用户操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-视图使用户能以多种角度看待同一数据"><span class="nav-number">2.</span> <span class="nav-text">2. 视图使用户能以多种角度看待同一数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-视图对重构数据库提供了一定程度的逻辑独立性"><span class="nav-number">3.</span> <span class="nav-text">3. 视图对重构数据库提供了一定程度的逻辑独立性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-视图能够对机密数据提供安全保护"><span class="nav-number">4.</span> <span class="nav-text">4. 视图能够对机密数据提供安全保护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-适当的利用视图可以更清晰地表达查询"><span class="nav-number">5.</span> <span class="nav-text">5. 适当的利用视图可以更清晰地表达查询</span></a></li></ol></div>
             
           </div>
         </section>
