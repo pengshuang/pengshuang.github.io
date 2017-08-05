@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://pengshuang.space/img/resnet2.jpeg">
 <meta property="og:image" content="http://pengshuang.space/img/resnet3.jpeg">
 <meta property="og:image" content="http://pengshuang.space/img/resnet4.png">
-<meta property="og:updated_time" content="2017-08-05T11:51:10.000Z">
+<meta property="og:updated_time" content="2017-08-05T12:02:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Resnet 学习笔记">
 <meta name="twitter:description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
@@ -337,9 +337,12 @@
 <p>常规的神经网络结构如上图所示。</p>
 <p><img src="/img/resnet2.jpeg" alt=""></p>
 <p>ResNet 引入了残差网络结构（residual network），通过残差网络，可以把网络层弄的很深，据说可以达到了1000多层，最终的网络分类的效果也是非常好，残差网络的基本结构如上图所示。</p>
-<p>通过在输出个输入之间引入一个 shortcut connection，而不是简单的堆叠网络，这样可以解决网络由于很深出现梯度消失的问题，从而可可以把网络做的很深，ResNet其中一个网络结构如下图所示：</p>
+<p>通过增加一个恒等映射（identity mapping），同时在输出个输入之间引入一个 shortcut connection，而不是简单的堆叠网络。将原始所需要学习的函数 <strong>H(x)</strong> 转换成 <strong>F(x) + x</strong>。这样可以解决网络由于很深出现梯度消失的问题，从而可以把网络做的很深，ResNet 其中一个网络结构如下图所示：</p>
 <p><img src="/img/resnet3.jpeg" alt=""></p>
-<p>残差网络的精美之处在于那个 shortcut 的设计</p>
+<p>残差网络的精美之处在于那个 shortcut 的设计。</p>
+<p>增加一个恒等映射这一步，将原始所需要学的函数 H(x) 转换成 F(x) + x。论文认为这两种表达的效果是相同的，但是优化的难度却并不相同。</p>
+<p>首先作者假设 F(x) 的优化会比H(x)简单的多。这一想法也是源于图像处理中的残差向量编码，通过一个 reformulation，将一个问题分解成多个尺度直接的残差问题，能够很好的起到优化训练的效果。</p>
+<p>这个 Residual block 通过 shortcut connection 实现，通过 shortcut 将这个 block 的输入和输出进行一个 element-wise 的加叠，这个简单的加法并不会给网络增加额外的参数和计算量，同时却可以大大增加模型的训练速度、提高训练效果，并且当模型的层数加深时，这个简单的结构能够很好的解决退化问题。</p>
 <h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p><img src="/img/resnet4.png" alt=""></p>
 <p>残差网络可以从另一个角度来理解，如上图所示。</p>
 <p>残差网络单元其中可以分解成右边的形式，从图中可以看出，残差网络其实是由多种路径组合的一个网络，即，残差网络其实是很多并行子网络的组合，整个残差网络其实相当于一个多人投票系统（Ensembling）。</p>
