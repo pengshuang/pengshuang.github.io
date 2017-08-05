@@ -93,7 +93,10 @@
 <meta property="og:description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
 产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallo">
 <meta property="og:image" content="http://pengshuang.space/img/resnet1.jpeg">
-<meta property="og:updated_time" content="2017-08-05T11:38:59.000Z">
+<meta property="og:image" content="http://pengshuang.space/img/resnet2.jpeg">
+<meta property="og:image" content="http://pengshuang.space/img/resnet3.jpeg">
+<meta property="og:image" content="http://pengshuang.space/img/resnet4.png">
+<meta property="og:updated_time" content="2017-08-05T11:51:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Resnet 学习笔记">
 <meta name="twitter:description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
@@ -331,7 +334,16 @@
         <h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。<strong>这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。</strong></p>
 <p>产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallower network）又无法明显提升网络的识别效果了，所以 Resnet（残差网络）的目标是在网络深度加深的情况下解决梯度消失的问题。</p>
 <h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><img src="/img/resnet1.jpeg" alt=""></p>
+<p>常规的神经网络结构如上图所示。</p>
+<p><img src="/img/resnet2.jpeg" alt=""></p>
 <p>ResNet 引入了残差网络结构（residual network），通过残差网络，可以把网络层弄的很深，据说可以达到了1000多层，最终的网络分类的效果也是非常好，残差网络的基本结构如上图所示。</p>
+<p>通过在输出个输入之间引入一个 shortcut connection，而不是简单的堆叠网络，这样可以解决网络由于很深出现梯度消失的问题，从而可可以把网络做的很深，ResNet其中一个网络结构如下图所示：</p>
+<p><img src="/img/resnet3.jpeg" alt=""></p>
+<p>残差网络的精美之处在于那个 shortcut 的设计</p>
+<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p><img src="/img/resnet4.png" alt=""></p>
+<p>残差网络可以从另一个角度来理解，如上图所示。</p>
+<p>残差网络单元其中可以分解成右边的形式，从图中可以看出，残差网络其实是由多种路径组合的一个网络，即，残差网络其实是很多并行子网络的组合，整个残差网络其实相当于一个多人投票系统（Ensembling）。</p>
+<h3 id="为了证明，如果删除残差网络的一部分"><a href="#为了证明，如果删除残差网络的一部分" class="headerlink" title="为了证明，如果删除残差网络的一部分"></a>为了证明，如果删除残差网络的一部分</h3><p>如果把残差网络理解成一个Ensambling系统，那么网络的一部分就相当于少一些投票的人，如果只是删除一个基本的残差单元，对最后的分类结果应该影响很小；而最后的分类错误率应该是和删除的残差单元的个数成正比的，这个结论也被学者实验证明。</p>
 
       
     </div>
@@ -519,7 +531,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解"><span class="nav-number">3.</span> <span class="nav-text">理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为了证明，如果删除残差网络的一部分"><span class="nav-number">4.</span> <span class="nav-text">为了证明，如果删除残差网络的一部分</span></a></li></ol></div>
             
           </div>
         </section>
