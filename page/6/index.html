@@ -258,6 +258,172 @@
             
               
                 
+                <a class="post-title-link" href="/2016/09/26/TCP学习-三/" itemprop="url">
+                  IP协议学习(三):路由控制和IPv4数据包
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-26T18:47:11+08:00" content="2016-09-26">
+              2016-09-26
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/09/26/TCP学习-三/" class="leancloud_visitors" data-flag-title="IP协议学习(三):路由控制和IPv4数据包">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-路由控制表"><a href="#1-路由控制表" class="headerlink" title="1. 路由控制表"></a>1. 路由控制表</h3><p>路由控制表中记录着网络地址与下一步应该发送至路由器的地址。在发送IP包时，首先要确定IP包首部中的目标地址，再从路由控制表中找到与该地址具有相同网络地址的记录，根据该记录将IP包转发给相应的下一个路由器。如果路由控制表中存在多条相同网络地址的记录，就选择一个最为吻合的网络地址，即最长匹配。</p>
+<h3 id="2-默认路由"><a href="#2-默认路由" class="headerlink" title="2. 默认路由"></a>2. 默认路由</h3><p>如果一张路由表中包含所有的网络及其子网的信息，将会造成无端的浪费。这时，默认路由是不错的选择。默认路由是指路由表中任何一个地址都能与之匹配的记录。</p>
+<h3 id="3-主机路由"><a href="#3-主机路由" class="headerlink" title="3. 主机路由"></a>3. 主机路由</h3><p>“IP地址/32” 也被称为主机路由。例如，192.168.153.15/32 就是一种主机路由。它的意思是整个IP地址的所有位都将参与路由。进行主机路由，意味着要基于主机上网卡上配置的IP地址本身，而不是基于该地址的网络地址部分进行路由。</p>
+<h3 id="4-环回地址"><a href="#4-环回地址" class="headerlink" title="4. 环回地址"></a>4. 环回地址</h3><p>环回地址是同一台计算机上的程序之间进行网络通信时所使用的一个默认地址。计算机使用一个特殊的IP地址127.0.0.1作为环回地址。与该地址具有相同意义的一个叫做localhost的主机名。使用这个IP或主机名时，数据包不会流向网络。</p>
+<h3 id="5-路由控制表的聚合"><a href="#5-路由控制表的聚合" class="headerlink" title="5. 路由控制表的聚合"></a>5. 路由控制表的聚合</h3><p>利用网络地址的比特分布可以有效地进行分层配置。对内即使有多个子网掩码，对外呈现出的也是同一个网络地址。这样可以更好的构建网络，通过路由信息的聚合可以有效地减少路由表的条目。下图展示一个简单的路由聚合的例子。</p>
+<p><img src="/img/juhe.png" alt=""></p>
+<h3 id="6-IPv4首部"><a href="#6-IPv4首部" class="headerlink" title="6. IPv4首部"></a>6. IPv4首部</h3><p>IP首部包含着用于IP协议进行发包控制时所有的必要信息。下图展示了一个IP数据包格式(IPv4)。</p>
+<p><img src="/img/ipv4.png" alt=""></p>
+<p>下面对IP首部各部分一一进行介绍。</p>
+<h4 id="（1）版本"><a href="#（1）版本" class="headerlink" title="（1）版本"></a>（1）版本</h4><p>没什么实际意义。。。忽略</p>
+<h4 id="（2）首部长度"><a href="#（2）首部长度" class="headerlink" title="（2）首部长度"></a>（2）首部长度</h4><p>由4比特构成，表明IP首部的大小，单位为4字节(32比特)，对应没有可选项的IP包，首部长度则设置为5，即没有可选项时，IP首部的长度为20字节(4*5=20)。</p>
+<h4 id="（3）区分服务（TOS）"><a href="#（3）区分服务（TOS）" class="headerlink" title="（3）区分服务（TOS）"></a>（3）区分服务（TOS）</h4><p>由8比特构成，用来表明服务质量。用0、1、2这三位来表示0~7的优先度。从0到7表示优先度从低到高。每一位具体含义如下所示。</p>
+<p><img src="/img/tos.png" alt=""></p>
+<h4 id="（4）总长度（Total-Length）"><a href="#（4）总长度（Total-Length）" class="headerlink" title="（4）总长度（Total Length）"></a>（4）总长度（Total Length）</h4><p>表示IP首部与数据部分合起来的总字节数。该字段长16比特。因此IP包的最大长度为65535。</p>
+<h4 id="（5）标识-（ID：Identification）"><a href="#（5）标识-（ID：Identification）" class="headerlink" title="（5）标识 （ID：Identification）"></a>（5）标识 （ID：Identification）</h4><p>由16比特构成，用于分片重组。同一个分片的标识值相同，不同分片的标识值不同。通常，没发送一个IP包，它的值也逐渐递增。此外，即使ID相同，如果目标地址、源地址或协议不同的话，也会被认为是不同的分片。</p>
+<h4 id="（6）标志（Flags）"><a href="#（6）标志（Flags）" class="headerlink" title="（6）标志（Flags）"></a>（6）标志（Flags）</h4><p>由3比特构成，表示包被分片的相关信息。每一位的具体含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>比特</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>未使用</td>
+</tr>
+<tr>
+<td>1</td>
+<td>指示是否进行分片。0-可以分片；1-不能分片</td>
+</tr>
+<tr>
+<td>2</td>
+<td>包被分片的情况下，表示是否为最后一个包。0-最后一个分片的包；1-分片中段的包</td>
+</tr>
+</tbody>
+</table>
+<h4 id="（7）片偏移（FO-Fragment-Offset"><a href="#（7）片偏移（FO-Fragment-Offset" class="headerlink" title="（7）片偏移（FO: Fragment Offset)"></a>（7）片偏移（FO: Fragment Offset)</h4><p>由13比特构成，用来标识被分片的每一个分段相对于原始数据的位置。第一个分片对应的值为0.由于FO域占13位，因此最多可以表示8192个相对位置。单位为8字节，因此最大可以表示原始数据为65536字节。</p>
+<h4 id="（8）生存时间-TTL"><a href="#（8）生存时间-TTL" class="headerlink" title="（8）生存时间 (TTL)"></a>（8）生存时间 (TTL)</h4><p>由8比特构成，在实际中表示可以中转多少个路由器。每经过一个路由器，TTL会减少1，直到变成0则丢弃该包。</p>
+<h4 id="（9）协议（Protocol）"><a href="#（9）协议（Protocol）" class="headerlink" title="（9）协议（Protocol）"></a>（9）协议（Protocol）</h4><p>由8比特构成，表示IP首部的下一个首部隶属于哪个协议。</p>
+<h4 id="（10）首部校验和"><a href="#（10）首部校验和" class="headerlink" title="（10）首部校验和"></a>（10）首部校验和</h4><p>由16比特（2个字节构成），也叫IP首部校验和。该字段只校验数据报的首部，不校验数据部分。它主要用来确保IP数据报不被破坏。校验和的计算过程，首先要将校验和的所有位置设置为0，然后以16比特为单位划分IP首部，并用1补数计算所有16位字的和。最后将所得到这个和1的补数赋给首部校验和字段。</p>
+<h4 id="（11）源地址"><a href="#（11）源地址" class="headerlink" title="（11）源地址"></a>（11）源地址</h4><p>由32位比特（4个字节）构成，表示发送端IP地址。</p>
+<h4 id="（12）目标地址"><a href="#（12）目标地址" class="headerlink" title="（12）目标地址"></a>（12）目标地址</h4><p>由32位比特（4个字节）构成，表示接收端IP地址。 </p>
+<h4 id="（13）数据"><a href="#（13）数据" class="headerlink" title="（13）数据"></a>（13）数据</h4><p>存入数据。将IP上层协议的首部也作为数据进行处理。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/09/25/IP地址基础知识/" itemprop="url">
                   IP协议学习(二):IP地址基础知识
                 </a>
@@ -1802,143 +1968,6 @@ SORT BY log.ymd ASC
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/01/同步与异步的区别/" itemprop="url">
-                  同步与异步的区别(总结)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-01T10:06:54+08:00" content="2016-09-01">
-              2016-09-01
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/01/同步与异步的区别/" class="leancloud_visitors" data-flag-title="同步与异步的区别(总结)">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>同步与异步是面试中经常会被问到的问题，特此总结一下：</p>
-<h3 id="同步和异步的区别"><a href="#同步和异步的区别" class="headerlink" title="同步和异步的区别"></a>同步和异步的区别</h3><p>简单而言，同步是指：发送方发出数据后，等接收方发回响应以后才发下一个数据包的通讯方式。异步是指：发送方发出数据后，不等接收方发回响应，接着发送下个数据包的通讯方式。 </p>
-<p>举个例子：普通B/S模式（同步）Ajax技术（异步）</p>
-<p>同步：提交请求-&gt;等待服务器处理-&gt;处理完毕返回（这个期间客户端浏览器不能干任何事）</p>
-<p>异步: 请求通过事件触发-&gt;服务器处理（这是浏览器仍然可以作其他事情）-&gt;处理完毕</p>
-<p>线程同步是多个线程同时访问同一资源，等待资源访问结束，浪费时间，效率低    线程异步：访问资源时在空闲等待时同时访问其他资源，实现多线程机制</p>
-<p>异步处理就是,你现在问我问题,我可以不回答你,等我用时间了再处理你这个问题.同步不就反之了，同步信息被立即处理 – 直到信息处理完成才返回消息句柄;异步信息收到后将在后台处理一段时间, 而早在信息处理结束前就返回消息句柄</p>
-<h3 id="同步、异步、阻塞和非阻塞的概念"><a href="#同步、异步、阻塞和非阻塞的概念" class="headerlink" title="同步、异步、阻塞和非阻塞的概念"></a>同步、异步、阻塞和非阻塞的概念</h3><p>在进行网络编程时，我们常常见到同步、异步、阻塞和非阻塞四种调用方式。这些方式彼此概念并不好理解。下面是我对这些术语的理解。</p>
-<h3 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h3><p>所谓同步，就是在发出一个功能调用时，在没有得到结果之前，该调用就不返回。按照这个定义，其实绝大多数函数都是同步调用（例如sin, isdigit等）。但是一般而言，我们在说同步、异步的时候，特指那些需要其他部件协作或者需要一定时间完成的任务。最常见的例子就是 SendMessage。该函数发送一个消息给某个窗口，在对方处理完消息之前，这个函数不返回。当对方处理完毕以后，该函数才把消息处理函数所返回的 LRESULT值返回给调用者。</p>
-<h3 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h3><p>异步的概念和同步相对。当一个异步过程调用发出后，调用者不能立刻得到结果。实际处理这个调用的部件在完成后，通过状态、通知和回调来通知调用者。以CAsycSocket类为例（注意，CSocket从CAsyncSocket派生，但是起功能已经由异步转化为同步），当一个客户端通过调用 Connect函数发出一个连接请求后，调用者线程立刻可以朝下运行。当连接真正建立起来以后，socket底层会发送一个消息通知该对象。这里提到执行部件和调用者通过三种途径返回结果：状态、通知和回调。可以使用哪一种依赖于执行部件的实现，除非执行部件提供多种选择，否则不受调用者控制。如果执行部件用状态来通知，那么调用者就需要每隔一定时间检查一次，效率就很低（有些初学多线程编程的人，总喜欢用一个循环去检查某个变量的值，这其实是一种很严重的错误）。如果是使用通知的方式，效率则很高，因为执行部件几乎不需要做额外的操作。至于回调函数，其实和通知没太多区别。</p>
-<h3 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h3><p>阻塞调用是指调用结果返回之前，当前线程会被挂起。函数只有在得到结果之后才会返回。有人也许会把阻塞调用和同步调用等同起来，实际上他是不同的。对于同步调用来说，很多时候当前线程还是激活的，只是从逻辑上当前函数没有返回而已。例如，我们在CSocket中调用Receive函数，如果缓冲区中没有数据，这个函数就会一直等待，直到有数据才返回。而此时，当前线程还会继续处理各种各样的消息。如果主窗口和调用函数在同一个线程中，除非你在特殊的界面操作函数中调用，其实主界面还是应该可以刷新。socket接收数据的另外一个函数recv则是一个阻塞调用的例子。当socket工作在阻塞模式的时候，如果没有数据的情况下调用该函数，则当前线程就会被挂起，直到有数据为止。</p>
-<h3 id="非阻塞"><a href="#非阻塞" class="headerlink" title="非阻塞"></a>非阻塞</h3><p>非阻塞和阻塞的概念相对应，指在不能立刻得到结果之前，该函数不会阻塞当前线程，而会立刻返回。</p>
-<h3 id="对象的阻塞模式和阻塞函数调用"><a href="#对象的阻塞模式和阻塞函数调用" class="headerlink" title="对象的阻塞模式和阻塞函数调用"></a>对象的阻塞模式和阻塞函数调用</h3><p>对象是否处于阻塞模式和函数是不是阻塞调用有很强的相关性，但是并不是一一对应的。阻塞对象上可以有非阻塞的调用方式，我们可以通过一定的API去轮询状态，在适当的时候调用阻塞函数，就可以避免阻塞。而对于非阻塞对象，调用特殊的函数也可以进入阻塞调用。函数select就是这样的一个例子。</p>
-<h4 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h4><ol>
-<li><a href="http://blog.csdn.net/ohfish/article/details/2948740" target="_blank" rel="external">理解同步与异步</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1984,7 +2013,7 @@ SORT BY log.ymd ASC
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">72</span>
+              <span class="site-state-item-count">73</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1992,7 +2021,7 @@ SORT BY log.ymd ASC
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

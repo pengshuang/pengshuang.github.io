@@ -258,6 +258,172 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/22/一致性-Hash-学习/" itemprop="url">
+                  一致性 Hash 学习
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-22T10:00:39+08:00" content="2016-11-22">
+              2016-11-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/22/一致性-Hash-学习/" class="leancloud_visitors" data-flag-title="一致性 Hash 学习">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>一致性 Hash 算法为了解决因特网中的热点问题，它提出了在动态变化的 Cache 环境中，判定 Hash 算法好坏的四个定义：</p>
+<ol>
+<li><p><strong>平衡性</strong>：平衡性是指哈希的结果能够尽可能分不到所有的缓冲中去，这样可以使得所有的缓冲都得到利用。</p>
+</li>
+<li><p><strong>单调性</strong>：单调性是指如果已经有一些内容通过哈希分派到了相应的缓冲中，又有新的缓冲加入到系统中。哈希的结果应能够保证原有已分配的内容可以被映射到原有的或者新的缓冲中去，而不会被映射到旧的缓冲集合中的其他缓冲区。 </p>
+</li>
+<li><p><strong>分散性</strong>：在分布式环境中，终端有可能看不到所有的缓冲，而是只能看到其中的一部分。当终端希望通过哈希过程将内容映射到缓冲上时，由于不同终端所见的缓冲范围有可能不同，从而导致哈希的结果不一致，最终的结果是相同的内容被不同的终端映射到不同的缓冲区中。这种情况显然是应该避免的，因为它导致相同内容被存储到不同缓冲中去，降低了系统存储的效率。分散性的定义就是上述情况发生的严重程度。好的哈希算法应能够尽量避免不一致的情况发生，也就是尽量降低分散性。 </p>
+</li>
+<li><p><strong>负载</strong>：负载问题实际上是从另一个角度看待分散性问题。既然不同的终端可能将相同的内容映射到不同的缓冲区中，那么对于一个特定的缓冲区而言，也可能被不同的用户映射为不同 的内容。与分散性一样，这种情况也是应当避免的，因此好的哈希算法应能够尽量降低缓冲的负荷。</p>
+</li>
+</ol>
+<p>在分布式集群中，对机器的添加删除，或者机器故障后自动脱离集群这些操作是分布式集群管理最基本的功能。如果采用常用的 <strong>hash(object)%N</strong> 算法，那么在有机器添加或者删除后，很多原有的数据就无法找到了，这样严重的违反了单调性原则。</p>
+<h4 id="环形Hash空间"><a href="#环形Hash空间" class="headerlink" title="环形Hash空间"></a>环形Hash空间</h4><p>按照常用的hash算法来将对应的key哈希到一个具有2^32次方个桶的空间中，即0~(2^32)-1的数字空间中。现在我们可以将这些数字头尾相连，想象成一个闭合的环形。</p>
+<p><img src="/img/h1.png" alt=""></p>
+<p><strong>把数据通过一定的hash算法处理后映射到环上</strong></p>
+<p>现在我们将object1、object2、object3、object4四个对象通过特定的Hash函数计算出对应的key值，然后散列到Hash环上。如下图：</p>
+<pre><code>Hash(object1) = key1；
+Hash(object2) = key2；
+Hash(object3) = key3；
+Hash(object4) = key4；
+</code></pre><p><img src="/img/h2.JPG" alt=""></p>
+<p><strong>将机器通过hash算法映射到环上</strong></p>
+<p>在采用一致性哈希算法的分布式集群中将新的机器加入，其原理是通过使用与对象存储一样的Hash算法将机器也映射到环中（一般情况下对机器的hash计算是采用机器的IP或者机器唯一的别名作为输入值），然后以顺时针的方向计算，将所有对象存储到离自己最近的机器中。<br>假设现在有 Cache A，Cache B，Cache C 三台机器，通过 Hash 算法得到对应的 KEY 值，映射到环中，其示意图如下：</p>
+<pre><code>Hash(NODE1) = KEY1;
+Hash(NODE2) = KEY2;
+Hash(NODE3) = KEY3;
+</code></pre><p><img src="/img/h3.JPG" alt=""></p>
+<p>通过上图可以看出对象与机器处于同一哈希空间中，这样按顺时针转动 object1 存储到了Cache A 中，object3 存储到了 Cache B 中，object2、object4 存储到了 Cache C中。在这样的部署环境中，hash 环是不会变更的，因此，通过算出对象的hash值就能快速的定位到对应的机器中，这样就能找到对象真正的存储位置了。</p>
+<p><strong>机器的删除与添加</strong></p>
+<p>普通hash求余算法最为不妥的地方就是在有机器的添加或者删除之后会照成大量的对象存储位置失效，这样就大大的不满足单调性了。下面来分析一下一致性哈希算法是如何处理的。</p>
+<ol>
+<li><p>节点（机器）的删除<br> 以上面的分布为例，如果 Cache B 出现故障被删除了，那么按照顺时针迁移的方法，object3将会被迁移到 Cache C 中，这样仅仅是object3的映射位置发生了变化，其它的对象没有任何的改动。如下图：</p>
+<p> <img src="/img/h4.JPG" alt=""></p>
+</li>
+<li><p>节点（机器）的添加<br> 如果往集群中添加一个新的节点 Cache D，通过对应的哈希算法得到KEY4，并映射到环中，如下图：</p>
+<p> <img src="/img/h5.JPG" alt=""></p>
+</li>
+</ol>
+<p>通过按顺时针迁移的规则，那么object2被迁移到了 Cache D 中，其它对象还保持这原有的存储位置。通过对节点的添加和删除的分析，一致性哈希算法在保持了单调性的同时，还是数据的迁移达到了最小，这样的算法对分布式集群来说是非常合适的，避免了大量数据迁移，减小了服务器的的压力。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li><p><a href="http://www.codeproject.com/Articles/56138/Consistent-hashing" target="_blank" rel="external">Consistent hashing</a></p>
+</li>
+<li><p><a href="http://blog.csdn.net/cywosp/article/details/23397179/#comments" target="_blank" rel="external">五分钟理解一致性哈希算法</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/18/IP协议相关技术-ICMP、DHCP-和-NAT/" itemprop="url">
                   IP协议相关技术: ICMP、DHCP 和 NAT
                 </a>
@@ -1862,247 +2028,6 @@ void unlockRow(RowLock r1) throws IOException
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/27/HBase-学习-Put-和-Get“/" itemprop="url">
-                  HBase 学习: Put 和 Get
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-27T19:53:24+08:00" content="2016-10-27">
-              2016-10-27
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/27/HBase-学习-Put-和-Get“/" class="leancloud_visitors" data-flag-title="HBase 学习: Put 和 Get">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="单行-Put"><a href="#单行-Put" class="headerlink" title="单行 Put"></a>单行 Put</h3><pre><code>void put(Put put) throws IOException
-</code></pre><p>这个方法以单个 Put 或存储在列表中的一组 Put 对象作为输入参数。</p>
-<p>创建 Put 实例时用户需要提供一个行健 row，在 HBase 中每行数据都有唯一的行健作为标识，跟 HBase 的大多数数据类型一样，它是一个 Java 的 byte[] 数组。用户可以按自己的需求来指定每行的行健。</p>
-<p>下面是一个简单的 HBase 插入数据的实例应用。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test1&quot;);
-//指定一行来创建一个 Put
-Put put = new Put(Bytes.toBytes(&quot;row1&quot;));
-//向 Put 中添加一个名为 &quot;colfam1:qual1&quot; 的列
-put.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), 
-Bytes.toBytes(&quot;val1&quot;));
-//将这一行存储到 HBase 表中
-table.put(put);
-// 关闭表
-table.close();
-</code></pre><h3 id="客户端的写缓存区"><a href="#客户端的写缓存区" class="headerlink" title="客户端的写缓存区"></a>客户端的写缓存区</h3><p>每一个put操作实际上都是一个 RPC 操作，它将客户端数据传送到服务器然后返回。这只适合小数据量的操作，如果有个应用程序需要每秒存储上千行数据到 HBase 表中，就不太合适，</p>
-<p>HBase 的 api 配备了一个客户端的写缓冲区，缓冲区负责收集 put 操作，然后调用 RPC 操作一次性将 put 送往服务器。全局交换机控制着该缓冲区是否在使用。默认情况下，客户端缓冲区是禁用的。可以通过将 自动刷写（autoflush）设置为 false 来激活缓冲区。</p>
-<p>下面举一个客户端写缓冲区的例子，这样比较好理解一些：</p>
-<p>Configuration conf = HBaseConfiguration.create();</p>
-<pre><code>HTable table = new HTable(conf, &quot;test1&quot;);
-//检查自动刷写标识位的设置
-System.out.println(&quot;Auto flush: &quot; + table.isAutoFlush());
-//将一些行和列数据存入 HBase
-table.setAutoFlushTo(false);
-
-Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
-put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
-table.put(put1);
-
-Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
-put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val2&quot;));
-table.put(put2);
-
-Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
-//试图加载先前存储的行,结果会打印出 &quot; Restful: keyvalues=NONE &quot;
-Result res1 = table.get(get);
-System.out.println(&quot;Result: &quot; + res1);
-// 强制刷写缓冲区,会导致产生一个 RPC 请求
-table.flushCommits();
-// 现在,这一行被持久化了,可以被读取了
-Result res2 = table.get(get);
-System.out.println(&quot;Result: &quot; + res2);
-</code></pre><h3 id="Put-列表"><a href="#Put-列表" class="headerlink" title="Put 列表"></a>Put 列表</h3><p>客户端的 api 可以插入单个 Put 实例，同时也有批量处理操作的高级特性。请看下面的例子：</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test1&quot;);
-
-List&lt;Put&gt; puts = new ArrayList&lt;Put&gt;();
-
-Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
-put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
-puts.add(put1);
-
-Put put2 = new Put(Bytes.toBytes(&quot;row2&quot;));
-put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
-puts.add(put2);
-
-table.put(puts);
-</code></pre><p> 上面这个例子使用列表向 HBase 中添加数据。当使用基于列表的 put 调用时，用户需要特别注意：用户无法控制服务器执行 put 的顺序，这意味着服务器被调用的顺序也不受用户控制。如果要保证写入的顺序，需要小心地使用这个操作，最坏的情况，要减少每一批量的操作数，并显示地刷写客户端写缓冲区，强制把操作发送到远程服务器。</p>
-<h3 id="原子性操作-compare-and-set"><a href="#原子性操作-compare-and-set" class="headerlink" title="原子性操作 compare-and-set"></a>原子性操作 compare-and-set</h3><p>有一种特别的 put 调用，其能保证自身操作的原子性：检查写。有了这种带有检查功能的方法，就能保证服务器端 put 操作的原子性。如果检查成功通过，就执行 put 操作，否则就彻底放弃修改操作。这种方法可用来检查现有相关值，并决定是否修改数据的操作。</p>
-<pre><code>boolean checkAndPut(Byte[] row, byte[] family, byte[] qualifier, 
-    byte[] value, Put put) throws IOException
-</code></pre><p>这种有原子性保证的操作经常被用于账户结余、状态转换或数据处理等场景。这些应用场景的共同点是，在读取数据的同时需要处理数据。一旦你想把一个处理好的结果写回 HBase，并保证没有其他客户端已经做了同样的事情，你就可以使用这个有原子性保证的操作，先比较原值，再做修改。</p>
-<p>有一种特别的检查通过 <strong>checkAndPut()</strong> 调用来完成，即只有在另外一个值不存在的情况下，才执行这个修改。要执行这种操作只需要将参数 value 设置为 <strong>null</strong> 即可，只要指定列不存在，就可以成功执行修改操作。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test1&quot;);
-
-Put put1 = new Put(Bytes.toBytes(&quot;row1&quot;));
-put1.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;), Bytes.toBytes(&quot;val1&quot;));
-//检查指定列是否存在,按检查的结果决定是否执行 put 操作
-boolean res1 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
-        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
-//输出结果应为: &quot;Put applied: true&quot;
-System.out.println(&quot;Put applied: &quot; + res1);
-//再次向同一单元格写入数据
-boolean res2 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
-        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),null,put1);
-//因为那个列的值已经存在,此时的输出结果应为 &quot;Put applied:false&quot;
-System.out.println(&quot;Put applied: &quot; + res2);
-
-Put put2 = new Put(Bytes.toBytes(&quot;row1&quot;));
-//创建一个新的 Put 实例,这次使用一个不同的列限定符
-put2.add(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual2&quot;), Bytes.toBytes(&quot;val2&quot;));
-//当上一次的put值存在时,写入新的值
-boolean res3 = table.checkAndPut(Bytes.toBytes(&quot;row1&quot;),
-        Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;),Bytes.toBytes(&quot;val1&quot;),put2);
-//因为已经存在,所以输出的结果应当为 &quot;Put applied: true&quot;
-System.out.println(&quot;Put applied: &quot; + res3);
-</code></pre><h3 id="单行-Get"><a href="#单行-Get" class="headerlink" title="单行 Get"></a>单行 Get</h3><p>get 方法分为两类：一类是一次获取一行数据；另一类是一次获取多行数据。</p>
-<p>与 Put 操作一样。用户有许多方法可用，可用通过多种标准筛选目标数据，也可以指定精确的坐标获取某个单元格的数据:</p>
-<pre><code>Get addFamily(byte[] family)
-Get addColumn(bytep[] family, byte[] qualifier)
-Get setTimeRange(long minStamp,long maxStamp) throws IOException
-Get setTimeStamp(long timeStamp)
-Get getMaxVersions() 
-Get setMaxVersions(int maxVersions) throws IOException
-</code></pre><p>下面一个例子展示了从 HBase 中获取数据的整个过程</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable table = new HTable(conf, &quot;test1&quot;);
-// 使用一个指定的行健构建一个 Get 实例
-Get get = new Get(Bytes.toBytes(&quot;row1&quot;));
-// 向 Get 实例中添加一个列
-get.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
-// 从 HBase 中获取指定列的行数据
-Result result = table.get(get);
-// 从返回的结果中获取对应列的数据
-byte[] val = result.getValue(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;qual1&quot;));
-// 将数据转换为字符串打印输出
-System.out.println(&quot;Value: &quot; + Bytes.toString(val));
-</code></pre><p>get 方法调用后返回一个 Result 类的实例。这里着重介绍一下 Restful 类一些面向列的存取函数：</p>
-<pre><code>List&lt;KeyValue&gt; getColumn(byte[] family, byte[] qualifier);
-KeyValue getColumnLatest(byte[] family, byte[] qualifier);
-boolean containsColumn(byte[] family, byte[] qualifier);
-</code></pre><p>这个方法返回一个特定列的多个值，返回值中的版本数取决于用户调用 get()方法之前，创建 Get 实例时设置的最大版本数，默认是1.换句话说，getColumn() 返回的列表中包括 0 或 1 个条目，这一条目是该列最新版本的值，如果用户指定了一个比默认值 1 大的版本数，返回的列表中就可能会有多个条目。getColumnLatest() 方法返回对应列的最新版本值。containsColumn() 是一个检查返回值中是否有对应的列的方法。</p>
-<h3 id="Get-列表"><a href="#Get-列表" class="headerlink" title="Get 列表"></a>Get 列表</h3><p>和 put() 方法对应，用户可以用一次请求获取多行数据。</p>
-<pre><code>Result[] get(List&lt;Get&gt; gets) throws IOException
-</code></pre><p>和之前一样，用户需要创建一个列表，并把之前准备好的 Get 实例添加到其中。然后将这个列表传给 get()，会返回一个与列表大小相等的 Result 数组。</p>
-<h3 id="获取数据的相关方法"><a href="#获取数据的相关方法" class="headerlink" title="获取数据的相关方法"></a>获取数据的相关方法</h3><p>还有一些方法可以用来获取或检查存储的数据，第一个是：</p>
-<pre><code>boolean exists(Get get) throws IOException
-</code></pre><p>可以和使用 HTable 的 get() 方法一样，先创建一个 Get 类的实例。exists()方法通过 RPC 验证请求的数据是否存在，但不会从远程服务器返回请求的数据，只返回一个布尔指。</p>
-<p>用户在检索数据时可能需要查找一个特定的行，或者某个请求行之前的一行。通过使用 <strong>getRowOrBefore(byte[] row, byte[] family)</strong> 方法来实现。可以是从 getRowOrBefore() 返回的 Result 实例中得到要查找的行键。这个行键要么与用户设定的行一致，要么刚好是设定行键之前的一行。如果没有匹配的结果，则返回 null。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2148,7 +2073,7 @@ boolean containsColumn(byte[] family, byte[] qualifier);
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">72</span>
+              <span class="site-state-item-count">73</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2156,7 +2081,7 @@ boolean containsColumn(byte[] family, byte[] qualifier);
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
