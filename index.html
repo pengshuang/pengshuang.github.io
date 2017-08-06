@@ -258,6 +258,172 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/06/CTR-中-LR、GBDT-LR、FM-DNN-比较/" itemprop="url">
+                  CTR 中 LR、GBDT + LR、FM 和 DNN 比较
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-06T19:03:59+08:00" content="2017-08-06">
+              2017-08-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/06/CTR-中-LR、GBDT-LR、FM-DNN-比较/" class="leancloud_visitors" data-flag-title="CTR 中 LR、GBDT + LR、FM 和 DNN 比较">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近在知乎上看到这个问题，觉得很有意思，顺便整理总结了一下各位大佬的回答。</p>
+<h3 id="LR"><a href="#LR" class="headerlink" title="LR"></a>LR</h3><ul>
+<li><p>优点</p>
+<p>  LR，算法简单，容易并行和工程化实现。FTRL 是 LR 在线学习版本，目前广泛应用在工业界。优点就是简单，能够处理超高纬度稀疏问题，能够做到实时。</p>
+</li>
+<li><p>缺点</p>
+<p>  因为 LR 是线性模型，基本靠人工特征工程，来选择交叉特征。一般都是 wrapper 方法选择，每轮可能都要进行很长时间的运算，理论上要进行 2 的 n 次方轮(n 是特征数)，但因为离线分析的指标和线上效果不一定是强相关的，所以分析起来有些痛苦。更头疼的是点击率预估的数据变化是比较大的，线上线下结果不一定对应，离线选出来的特征，参数都不一定适用于未来。而且在线预测时，因为大量的特征都要与广告ID交叉，所以在线拼装特征的成本很高，可能会存在性能问题。</p>
+</li>
+</ul>
+<h3 id="GBDT-LR"><a href="#GBDT-LR" class="headerlink" title="GBDT + LR"></a>GBDT + LR</h3><ul>
+<li><p>优点</p>
+<p>  GBDT 加 LR。GBDT 对连续特征划分能力超强，主要来提取特征，再加上一些稀疏特征，补足了 LR 的不足。优点是把 LR 中人工构造特征的大部分工作给做了。</p>
+</li>
+<li><p>缺点</p>
+<p>  离线处理和在线处理都复杂。不同于比赛，在实践中 ID 类特征还是非常重要的，广告 ID 可能就有几十万个，树的深度很难控制，模型实现也很难。另外，在点击率预估中如果特征本身没问题，加上去一般都不会降效果，所以这种做法有待验证。</p>
+</li>
+</ul>
+<h3 id="DNN"><a href="#DNN" class="headerlink" title="DNN"></a>DNN</h3><ul>
+<li><p>优点</p>
+<p>  优点是拟合能力强，样本足够的情况下一般效果都不会差。本质上讲，该方法是通过前面多层的隐藏网络学习抽象特征（特征之间的组合），由数据驱动的模式学习到了人工特征工程难以学到的隐含特征，并在最后输出层使用上述抽象得到的特征完成最终的学习任务（全连接层）。</p>
+</li>
+<li><p>缺点</p>
+<p>  计算复杂，工程化和实时化难度大。而且模型如果哪天出问题了（线上 AUC 突降），难以排查。</p>
+</li>
+</ul>
+<h3 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h3><ul>
+<li><p>优点</p>
+<p>  相较与 LR，能够捕捉特征之间的交叉关系。原理是在一阶拟合的基础上加入二阶拟合，可以自动的学习任意两维特征的交叉。而且，交叉是以 embedding 向量的形式表达。跟 LR 一样，他可以吞吐超大规模的稀疏特征空间的样本集合。这种形式可以比较好的提高模型的表达能力，把性能和学习非线性结构的能力结合在一起，在工业界应用的也很广泛。</p>
+</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://www.zhihu.com/question/62109451" target="_blank" rel="external">广告点击率模型中，LR, GBDT+LR, FM, DNN等模型的优点和缺点？实际效果如何?</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/05/Resnet-学习笔记/" itemprop="url">
                   Resnet 学习笔记
                 </a>
@@ -1781,144 +1947,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/03/线性模型和非线性模型的区别/" itemprop="url">
-                  线性模型和非线性模型的区别
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-03T21:59:49+08:00" content="2017-03-03">
-              2017-03-03
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/03/线性模型和非线性模型的区别/" class="leancloud_visitors" data-flag-title="线性模型和非线性模型的区别">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？</p>
-<p>其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。</p>
-<h3 id="线性回归的等式"><a href="#线性回归的等式" class="headerlink" title="线性回归的等式"></a>线性回归的等式</h3><p>线性回归需要一个线性的模型。这到底意味着什么呢？</p>
-<p>一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。</p>
-<pre><code>Response = constant + parameter * predictior1 + ... + parameter * predictior2
-</code></pre><p>下是个典型的线性模型：</p>
-<p>$$Y = b + w_1x_1 + w_2x_2 + … + w_kx_k$$</p>
-<p>在统计意义上，如果一个回归等式是线性的，那么它的相对于参数就必须也是线性的。如果相对于参数是线性，那么即使性对于样本变量的特征是二次方或者多次方，这个回归模型也是线性的 (例如下面的公式)。</p>
-<p>$$Y = b + w_1x_1 + w_2x_2^2$$</p>
-<p>你甚至可以使用 log 或者指数去形式化特征</p>
-<p>$$Y = b + w_1e^{-x_1} + w_2e^{-x_2}$$</p>
-<h3 id="非线性回归的等式"><a href="#非线性回归的等式" class="headerlink" title="非线性回归的等式"></a>非线性回归的等式</h3><p>最简单的判断一个模型是不是非线性，就是关注非线性本身，判断它的参数是不是非线性的。非线性有很多种形象，这也是为什么非线性模型能够那么好的拟合那些曲折的函数曲线的原因。比如下面这个：</p>
-<p>$$Y = \theta_1 \ast x^{\theta_2}$$</p>
-<p>$$Y = \theta_1 + (\theta_3 - \theta_2) \ast e^{- \theta_4 X}$$</p>
-<p>与线性模型不一样的是，这些非线性模型的特征因子对应的参数不止一个。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1964,7 +1992,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-count">74</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1972,7 +2000,7 @@ SC.Grade = VMGRADE.Mgrade;
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

@@ -258,6 +258,144 @@
             
               
                 
+                <a class="post-title-link" href="/2017/03/03/线性模型和非线性模型的区别/" itemprop="url">
+                  线性模型和非线性模型的区别
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-03T21:59:49+08:00" content="2017-03-03">
+              2017-03-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/03/线性模型和非线性模型的区别/" class="leancloud_visitors" data-flag-title="线性模型和非线性模型的区别">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>在机器学习的回归问题中，线性模型和非线性模型都可以去对曲线进行建模，那么线性模型和非线性模型有什么区别呢？</p>
+<p>其实，线性模型和非线性模型的区别并不在于能不能去拟合曲线。下面我们来详细介绍一下它们两个的区别。</p>
+<h3 id="线性回归的等式"><a href="#线性回归的等式" class="headerlink" title="线性回归的等式"></a>线性回归的等式</h3><p>线性回归需要一个线性的模型。这到底意味着什么呢？</p>
+<p>一个模型如果是线性的，就意味着它的参数项要么是常数，要么是原参数和要预测的特征之间的乘积加和就是我们要预测的值。</p>
+<pre><code>Response = constant + parameter * predictior1 + ... + parameter * predictior2
+</code></pre><p>下是个典型的线性模型：</p>
+<p>$$Y = b + w_1x_1 + w_2x_2 + … + w_kx_k$$</p>
+<p>在统计意义上，如果一个回归等式是线性的，那么它的相对于参数就必须也是线性的。如果相对于参数是线性，那么即使性对于样本变量的特征是二次方或者多次方，这个回归模型也是线性的 (例如下面的公式)。</p>
+<p>$$Y = b + w_1x_1 + w_2x_2^2$$</p>
+<p>你甚至可以使用 log 或者指数去形式化特征</p>
+<p>$$Y = b + w_1e^{-x_1} + w_2e^{-x_2}$$</p>
+<h3 id="非线性回归的等式"><a href="#非线性回归的等式" class="headerlink" title="非线性回归的等式"></a>非线性回归的等式</h3><p>最简单的判断一个模型是不是非线性，就是关注非线性本身，判断它的参数是不是非线性的。非线性有很多种形象，这也是为什么非线性模型能够那么好的拟合那些曲折的函数曲线的原因。比如下面这个：</p>
+<p>$$Y = \theta_1 \ast x^{\theta_2}$$</p>
+<p>$$Y = \theta_1 + (\theta_3 - \theta_2) \ast e^{- \theta_4 X}$$</p>
+<p>与线性模型不一样的是，这些非线性模型的特征因子对应的参数不止一个。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/02/天池ijcai比赛总结/" itemprop="url">
                   IJCAI SocInf'16 Contest-Brick-and-Mortar Store Recommendation 天池大数据比赛总结
                 </a>
@@ -2125,295 +2263,6 @@ A14: 13
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/23/Elasticsearch-学习-Java-API-一/" itemprop="url">
-                  Elasticsearch 学习: Java API (一)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-23T10:51:30+08:00" content="2016-11-23">
-              2016-11-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
-                    <span itemprop="name">Elasticsearch</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/23/Elasticsearch-学习-Java-API-一/" class="leancloud_visitors" data-flag-title="Elasticsearch 学习: Java API (一)">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近在学习 Elasticsearch，这是一个分布式的大数据搜索引擎，其实也可以看作是一个分布式的数据库。我使用的 Elasticsearch 的版本是 2.4.1，鉴于网上相关的中文资料较少，所以自己看官方文档学习一下。</p>
-<p>使用 Maven 工程，我的 pom 文件如下所示：</p>
-<pre><code>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.elasticsearch&lt;/groupId&gt;
-        &lt;artifactId&gt;elasticsearch&lt;/artifactId&gt;
-        &lt;version&gt;2.4.1&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;
-        &lt;version&gt;2.6.2&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
-        &lt;version&gt;2.6.2&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre><h3 id="连接机器"><a href="#连接机器" class="headerlink" title="连接机器"></a>连接机器</h3><pre><code>TransportClient client = TransportClient.builder()
-    .build()
-    .addTransportAddress(new InetSocketTransportAddress(InetAddress
-    .getByName(&quot;localhost&quot;), 9300));       
-</code></pre><h3 id="Index-API-创建-Index-并且插入-Document"><a href="#Index-API-创建-Index-并且插入-Document" class="headerlink" title="Index API 创建 Index 并且插入 Document"></a>Index API 创建 Index 并且插入 Document</h3><p>创建索引有很多种方法，这里列举常用的 2 种：</p>
-<pre><code>HashMap&lt;String, Object&gt; json = new HashMap&lt;String, Object&gt;();
-json.put(&quot;first_name&quot;,&quot;Shuang&quot;);
-json.put(&quot;last_name&quot;, &quot;Peng&quot;);
-json.put(&quot;age&quot;, 24);
-json.put(&quot;about&quot;, &quot;I love coding&quot;);
-IndexResponse response = client
-    .prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
-    .setSource(json).get();
-
-IndexResponse response = client.prepareIndex(&quot;tseg&quot;,&quot;students&quot;,&quot;1&quot;)
-   .setSource(jsonBuilder()
-   .startObject()
-   .field(&quot;first_name&quot;, &quot;Shuang&quot;)
-   .field(&quot;first_name&quot;, &quot;Peng&quot;)
-   .field(&quot;age&quot;, 24)
-   .field(&quot;about&quot;, &quot;I love coding&quot;)
-   .endObject())
-   .get();
-</code></pre><p><strong>注意</strong>：Index API 只能用于创建 index，类似于关系型数据库里面的 create table，他不能对已有的数据库进行添加。追加操作可以用后面会提到的 Update 或者 Bulk 来完成。    </p>
-<h3 id="Get-API-获取-Document"><a href="#Get-API-获取-Document" class="headerlink" title="Get API 获取 Document"></a>Get API 获取 Document</h3><pre><code>GetResponse response2 = client.prepareGet(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;).get();
-Map&lt;String, Object&gt; res = response2.getSource();
-for (Map.Entry&lt;String, Object&gt; entry: res.entrySet()){
-     System.out.println(entry.getKey() + &quot; : &quot; + entry.getValue());
-     }
-</code></pre><h3 id="Delete-API-删除-Index-或者-Document"><a href="#Delete-API-删除-Index-或者-Document" class="headerlink" title="Delete API 删除 Index 或者 Document"></a>Delete API 删除 Index 或者 Document</h3><pre><code>// 用来删除对应的 document 
-DeleteResponse response3 = 
-    client.prepareDelete(&quot;tesg&quot;,&quot;students&quot;,&quot;1&quot;).get();
-// 用来删除对应的 index
-DeleteIndexResponse response4 = 
-    client.admin().indices().prepareDelete(&quot;facebook&quot;).execute().actionGet();
-</code></pre><h3 id="Update-API-更新操作"><a href="#Update-API-更新操作" class="headerlink" title="Update API 更新操作"></a>Update API 更新操作</h3><p>更新操作也有两种方法。建议使用第一种，第二种太复杂了。。。看看就好。</p>
-<p>第一种</p>
-<pre><code>client.prepareUpdate(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
-    .setDoc(jsonBuilder()
-    .startObject().field(&quot;age&quot;, 32)
-    .endObject())
-    .get();
-</code></pre><p>第二种</p>
-<pre><code>IndexRequest indexRequest = new IndexRequest(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
-    .source(jsonBuilder()
-    .startObject()
-    .field(&quot;first_name&quot;, &quot;Shuang&quot;)
-    .field(&quot;last_name&quot;, &quot;Peng&quot;)
-    .field(&quot;age&quot;, 32)
-    .field(&quot;about&quot;, &quot;I loving coding&quot;)
-    .endObject());
-
-UpdateRequest updateRequest = new UpdateRequest(&quot;tseg&quot;,&quot;students&quot;, &quot;1&quot;)
-    .doc(jsonBuilder()
-    .startObject().field(&quot;age&quot;, 32)
-    .endObject())
-    .upsert(indexRequest);
- client.update(updateRequest).get();
-</code></pre><p>不过这里提一下第二种方法，如果对应的 <strong>field</strong> 不存在的话，则更新操作自动变为插入操作，否则，就是正常的修改操作。</p>
-<h3 id="Multi-Get-API-多查找"><a href="#Multi-Get-API-多查找" class="headerlink" title="Multi Get API 多查找"></a>Multi Get API 多查找</h3><p><strong>MultiGetResponse</strong> API 可以一次返回多个要查找的值。下面介绍了两种方法，一种是返回一个 Map，我们可以按照不同的 field 取值；第二种方法是直接返回一个字符串（Json格式）。</p>
-<pre><code>MultiGetResponse multiGetItemResponses = client.prepareMultiGet()
-    .add(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;).get();
-
-for (MultiGetItemResponse itemResponses : multiGetItemResponses) {
-    GetResponse response5 = itemResponses.getResponse();
-    if (response5.isExists()) {
-
-// 第一种用法
-    Map&lt;String, Object&gt; fields = response5.getSource();
-    System.out.println(fields.get(&quot;first_name&quot;));
-
-// 第二种用法
-    String json2 = response5.getSourceAsString();
-    System.out.println(json2);
-}
-</code></pre><h3 id="Bulk-API-批量操作"><a href="#Bulk-API-批量操作" class="headerlink" title="Bulk API 批量操作"></a>Bulk API 批量操作</h3><p>Bulk API允许批量提交index和delete请求， 如下：</p>
-<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;1&quot;)
-           .setSource(jsonBuilder()
-           .startObject()
-           .field(&quot;first_name&quot;, &quot;Allen&quot;)
-           .field(&quot;last_name&quot;, &quot;Peng&quot;)
-           .field(&quot;age&quot;, &quot;22&quot;)
-           .endObject()))
-           .get();
-
-bulkRequest.add(client.prepareIndex(&quot;tseg&quot;, &quot;students&quot;, &quot;2&quot;))
-            .setSource(jsonBuilder()
-            .startObject()
-            .field(&quot;first_name&quot;, &quot;Hou&quot;)
-            .field(&quot;last_name&quot;, &quot;Xue&quot;)
-            .field(&quot;age&quot;, &quot;30&quot;)
-            .endObject()))
-            .get();
-
-HashMap&lt;String, Object&gt; json2 = new HashMap&lt;String, Object&gt;();
-List&lt;String&gt; list = new ArrayList&lt;String&gt;();
-list.add(&quot;music&quot;);
-list.add(&quot;football&quot;);
-json2.put(&quot;first_name&quot;, &quot;Peng&quot;);
-json2.put(&quot;last_name&quot;, &quot;Peng&quot;);
-json2.put(&quot;interests&quot;, list);
-BulkRequestBuilder bulkRequest2 = client.prepareBulk();
-
-// 两种执行方法，个人倾向于第一种
-bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, &quot;info&quot;, 
-    &quot;3&quot;).setSource(json2)).get();
-// 第二种方法
-bulkRequest2.add(client.prepareIndex(&quot;facebook&quot;, 
-    &quot;info&quot;,&quot;1&quot;).setSource(json2)).execute().actionGet();
-</code></pre><p>还可以这样做：</p>
-<pre><code>BulkRequestBuilder bulkRequest = client.prepareBulk();
-bulkRequest.add(client.prepareIndex(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;)
-    .setSource(source);
-bulkRequest.add(client.prepareIndex(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;)
-    .setSource(source);
-BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-</code></pre><h3 id="Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作"><a href="#Bulk-Processor-API-可在批量操作完成之前和之后进行相应的操作" class="headerlink" title="Bulk Processor API 可在批量操作完成之前和之后进行相应的操作"></a>Bulk Processor API 可在批量操作完成之前和之后进行相应的操作</h3><pre><code>BulkProcessor bulkProcessor = BulkProcessor.builder(
-        client,  
-        new BulkProcessor.Listener() {
-            @Override
-            public void beforeBulk(long executionId,
-                                  BulkRequest request) { ... } 
-
-            @Override
-            public void afterBulk(long executionId,
-                                  BulkRequest request,
-                                  BulkResponse response) { ... } 
-
-            @Override
-            public void afterBulk(long executionId,
-                                  BulkRequest request,
-                                  Throwable failure) { ... } 
-        })
-        .setBulkActions(10000) 
-        .setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)) 
-        .setFlushInterval(TimeValue.timeValueSeconds(5)) 
-        .setConcurrentRequests(1) 
-         .build();
-
-bulkProcessor.add(new IndexRequest(&quot;index1&quot;, &quot;type1&quot;, &quot;id1&quot;).source(source1));  
-bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot;id2&quot;);        
-</code></pre><ol>
-<li>beforeBulk 会在批量提交之前执行，可以从 BulkRequest 中获取请求信息request.requests() 或者请求数量 request.numberOfActions()。 </li>
-<li>第一个 afterBulk 会在批量成功后执行，可以跟 beforeBulk 配合计算批量所需时间。 </li>
-<li>第二个 afterBulk 会在批量失败后执行。 </li>
-<li>在例子中，当请求超过 10000 个（default=1000）或者总大小超过1GB（default=5MB）时，触发批量提交动作。</li>
-</ol>
-<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>项目代码已经共享至 <a href="https://github.com/pengshuang/LearnElastic/blob/master/src/main/java/Part1.java" target="_blank" rel="external">GitHub</a>。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2459,7 +2308,7 @@ bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">73</span>
+              <span class="site-state-item-count">74</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -2467,7 +2316,7 @@ bulkProcessor.add(new DeleteRequest(&quot;index2&quot;, &quot;type2&quot;, &quot
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
