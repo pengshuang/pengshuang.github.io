@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://pengshuang.space/2017/03/04/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84L1-%E5%92%8C-L2/</loc>
+    <lastmod>2017-08-16T09:06:42.000Z</lastmod>
+    <data>
+        <display>
+        <title>机器学习中的L1 和 L2</title>
+        <pubTime>2017-03-04T03:07:05.000Z</pubTime>
+        
+        <tag>数据挖掘</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://pengshuang.space/2017/08/06/CTR-%E4%B8%AD-LR%E3%80%81GBDT-LR%E3%80%81FM-DNN-%E6%AF%94%E8%BE%83/</loc>
     <lastmod>2017-08-06T14:51:12.000Z</lastmod>
     <data>
@@ -256,26 +276,6 @@
         <title>集成学习：从随机森林到 GBDT</title>
         <pubTime>2017-03-05T07:23:15.000Z</pubTime>
         
-         
-           
-             
-              <breadCrumb title="机器学习" url="http://pengshuang.space/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://pengshuang.space/2017/03/04/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84L1-%E5%92%8C-L2/</loc>
-    <lastmod>2017-03-05T07:33:58.000Z</lastmod>
-    <data>
-        <display>
-        <title>机器学习中的L1 和 L2</title>
-        <pubTime>2017-03-04T03:07:05.000Z</pubTime>
-        
-        <tag>数据挖掘</tag>
-         
          
            
              
