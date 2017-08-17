@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pengshuang.space/about/index.html</loc>
+    
+    <lastmod>2017-08-17T08:39:04.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://pengshuang.space/2017/03/04/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84L1-%E5%92%8C-L2/</loc>
     
     <lastmod>2017-08-16T09:06:42.000Z</lastmod>
@@ -19,13 +26,6 @@
     <loc>http://pengshuang.space/2017/08/05/Resnet-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2017-08-05T12:18:29.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://pengshuang.space/about/index.html</loc>
-    
-    <lastmod>2017-08-05T08:28:37.000Z</lastmod>
     
   </url>
   
