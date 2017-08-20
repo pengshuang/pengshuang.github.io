@@ -95,7 +95,7 @@ KS（Kolmogorov-Smirnov）检验：K-S 检验主要是验证模型的区分能�
 <meta property="og:image" content="http://pengshuang.space/img/roc.png">
 <meta property="og:image" content="http://pengshuang.space/img/fpr-and-tpr.png">
 <meta property="og:image" content="http://pengshuang.space/img/roc-and-precall.png">
-<meta property="og:updated_time" content="2017-08-20T06:54:03.000Z">
+<meta property="og:updated_time" content="2017-08-20T06:56:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="AUC、ROC 以及 KS 介绍">
 <meta name="twitter:description" content="ROC（Receiver Operating Characteristic）曲线和 AUC 常被用来评价一个二值分类器（binary classifier）的优劣。
@@ -343,7 +343,7 @@ KS（Kolmogorov-Smirnov）检验：K-S 检验主要是验证模型的区分能�
 <h3 id="AUC-值"><a href="#AUC-值" class="headerlink" title="AUC 值"></a>AUC 值</h3><p>AUC（Area Under Curve）被定义为 ROC 曲线下的面积，显然这个面积的数值不会大于 1。又由于 ROC 曲线一般都处于 y = x 这条直线的上方，所以 AUC 的取值范围在 0.5 和 1 之间。使用 AUC 值作为评价标准是因为很多时候 ROC 曲线并不能清晰的说明哪个分类器的效果更好，而作为一个数值，对应 AUC 更大的分类器效果更好。</p>
 <h3 id="为什么使用-ROC-曲线"><a href="#为什么使用-ROC-曲线" class="headerlink" title="为什么使用 ROC 曲线"></a>为什么使用 ROC 曲线</h3><p>相比其他评价指标，ROC 曲线有个很好的特性：当测试集中的正负样本的分布变化的时候，ROC 曲线能够保持不变。在实际的数据集中经常会出现类不平衡现象，即负样本比正样本多很多（或者相反），而且测试数据中的正负样本的分布也可能随着时间变化。下图对比了 ROC 图和其他评价指标图：</p>
 <p><img src="/img/roc-and-precall.png" alt=""></p>
-<p>在上图中，(a) 和 (c) 为ROC曲线，(b) 和 (d) 为Precision-Recall曲线。(a) 和 (b) 展示的是分类其在原始测试集（正负样本分布平衡）的结果，(c) 和 (d) 是将测试集中负样本的数量增加到原来的 10 倍后，分类器的结果。可以明显的看出，ROC 曲线基本保持原貌，而 Precision-Recall 曲线则变化较大。</p>
+<p>在上图中，(a) 和 (c) 为ROC曲线，(b) 和 (d) 为 Precision-Recall 曲线。(a) 和 (b) 展示的是分类其在原始测试集（正负样本分布平衡）的结果，(c) 和 (d) 是将测试集中负样本的数量增加到原来的 10 倍后，分类器的结果。可以明显的看出，ROC 曲线基本保持原貌，而 Precision-Recall 曲线则变化较大。</p>
 <h3 id="K-S-曲线绘制方法"><a href="#K-S-曲线绘制方法" class="headerlink" title="K-S 曲线绘制方法"></a>K-S 曲线绘制方法</h3><p>K-S 也可以作为常用的模型评价指标。它和 ROC 曲线的画法有很大不同。以 LR 模型为例，首先把 LR 模型输出的概率从大到小排序，然后取前 10% 的值（也就是概率值）作为阀值，同理把 10% * k（k=1,2,3, … ,9）处的值作为阀值，计算出不同的 FPR 和 TPR 值，以10% * k（k=1,2,3, … ,9）为横坐标，分别以 TPR 和 FPR 的值为纵坐标，就可以画出两个曲线，这就是K-S曲线。</p>
 <p>从 K-S 曲线就能衍生出 KS 值，KS = max(TPR - FPR)，即是两条曲线之间的最大间隔距离。当 (TPR - FPR) 最大时，即 ΔTPR - ΔFPR = 0，这和 ROC 曲线上找最优阀值的条件 ΔTPR = ΔFPR 是一样的。从这点也可以看出，ROC 曲线、K-S 曲线、KS 值的本质是相同的。</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
