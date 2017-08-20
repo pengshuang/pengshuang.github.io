@@ -258,6 +258,146 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/20/AUC、ROC-以及-KS-介绍/" itemprop="url">
+                  AUC、ROC 以及 KS 介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-20T09:37:36+08:00" content="2017-08-20">
+              2017-08-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/20/AUC、ROC-以及-KS-介绍/" class="leancloud_visitors" data-flag-title="AUC、ROC 以及 KS 介绍">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>ROC（Receiver Operating Characteristic）曲线和 AUC 常被用来评价一个二值分类器（binary classifier）的优劣。</p>
+<h3 id="ROC-曲线"><a href="#ROC-曲线" class="headerlink" title="ROC 曲线"></a>ROC 曲线</h3><p>对于分类器，或者说分类算法，评价指标主要有 precision，recall，F-score1，以及我们今天要讨论的 ROC 和 AUC。下图是一个 ROC 曲线的示例：</p>
+<p><img src="/img/roc.png" alt=""></p>
+<p>ROC 曲线的横坐标为 false positive rate（FPR），纵坐标为true positive rate（TPR），关于 FPR 和 TPR 的定义如下：</p>
+<p><img src="/img/fpr-and-tpr.png" alt=""></p>
+<p>ROC 曲线图中有四个特殊的点和一条特殊的线。第一个点，(0,1)，即 FPR = 0, TPR = 1，这意味着 FN = 0，并且 FP = 0。这是一个完美的分类器，它将所有的样本都正确分类。第二个点，(1,0)，即 FPR = 1，TPR = 0，类似地分析可以发现这是一个最糟糕的分类器，因为它成功避开了所有的正确答案。第三个点，(0,0)，即 FPR = TPR = 0，即 FP = TP = 0，可以发现该分类器预测所有的样本都为负样本（negative）。类似的，第四个点（1,1），分类器实际上预测所有的样本都为正样本。经过以上的分析，我们可以断言，ROC曲线越接近左上角，该分类器的性能越好。</p>
+<p>ROC 曲线图中的特殊的线是 y = x。这条对角线上的点其实表示的是一个采用随机猜测策略的分类器的结果，例如 (0.5，0.5)，表示该分类器随机对于一半的样本猜测其为正样本，另外一半的样本为负样本。</p>
+<h3 id="绘制-ROC-曲线"><a href="#绘制-ROC-曲线" class="headerlink" title="绘制 ROC 曲线"></a>绘制 ROC 曲线</h3><p>对于一个特定的分类器和测试数据集，显然只能得到一个分类结果，即一组 FPR 和 TPR 结果，而要得到一个曲线，则需要一系列 FPR 和 TPR 的值。如何得到这么一系列的值，我们需要去调整分类器的阈值，这里的阈值指的是大于这个阈值则判为正，小于则判为负，然后计算得到的 FPR 和 TPR。</p>
+<p>当我们将阈值设置为 1 和 0 时，分别可以得到 ROC 曲线上的 (0,0) 和 (1,1) 两个点。将这些 (FPR, TPR) 对连接起来，就得到了 ROC 曲线。当阈值取值越多，ROC 曲线越平滑。</p>
+<h3 id="AUC-值"><a href="#AUC-值" class="headerlink" title="AUC 值"></a>AUC 值</h3><p>AUC（Area Under Curve）被定义为 ROC 曲线下的面积，显然这个面积的数值不会大于 1。又由于 ROC 曲线一般都处于 y = x 这条直线的上方，所以 AUC 的取值范围在 0.5 和 1 之间。使用 AUC 值作为评价标准是因为很多时候 ROC 曲线并不能清晰的说明哪个分类器的效果更好，而作为一个数值，对应 AUC 更大的分类器效果更好。</p>
+<h3 id="为什么使用-ROC-曲线"><a href="#为什么使用-ROC-曲线" class="headerlink" title="为什么使用 ROC 曲线"></a>为什么使用 ROC 曲线</h3><p>相比其他评价指标，ROC 曲线有个很好的特性：当测试集中的正负样本的分布变化的时候，ROC 曲线能够保持不变。在实际的数据集中经常会出现类不平衡现象，即负样本比正样本多很多（或者相反），而且测试数据中的正负样本的分布也可能随着时间变化。下图对比了 ROC 图和其他评价指标图：</p>
+<p><img src="/img/roc-and-precall.png" alt=""></p>
+<p>在上图中，(a) 和 (c) 为ROC曲线，(b) 和 (d) 为Precision-Recall曲线。(a) 和 (b) 展示的是分类其在原始测试集（正负样本分布平衡）的结果，(c) 和 (d) 是将测试集中负样本的数量增加到原来的 10 倍后，分类器的结果。可以明显的看出，ROC 曲线基本保持原貌，而 Precision-Recall 曲线则变化较大。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><p><a href="http://alexkong.net/2013/06/introduction-to-auc-and-roc/" target="_blank" rel="external">ROC和AUC介绍以及如何计算AUC</a></p>
+</li>
+<li><p><a href="https://zhuanlan.zhihu.com/p/24327437" target="_blank" rel="external">关于模型检验的ROC值和KS值的异同_ROC曲线和KS值</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/06/CTR-中-LR、GBDT-LR、FM-DNN-比较/" itemprop="url">
                   CTR 中 LR、GBDT + LR、FM 和 DNN 比较
                 </a>
@@ -1737,182 +1877,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/04/机器学习中的L1-和-L2/" itemprop="url">
-                  机器学习中的L1 和 L2
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-04T11:07:05+08:00" content="2017-03-04">
-              2017-03-04
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/04/机器学习中的L1-和-L2/" class="leancloud_visitors" data-flag-title="机器学习中的L1 和 L2">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>有监督的学习方法，比如说我们平常说的 LR，SVM 等，它们的目标是在规则化参数的同时最小化误差。最小化误差是为了让我们的模型拟合我们的训练数据，而规则化参数是防止我们的模型过分拟合我们的训练数据。参数太多的话，模型自然而言会对训练数据拟合的更好，训练误差会很小，但是我们的目的并不是在训练数据上表现好，而是在未知的测试数据上依然有很好的表现。所以，我们需要保证模型 ”简单“ 的基础上去最小化训练误差，这样得到的模型才能有很好的 “泛化” 能力。著名的 “奥卡姆剃刀” 原理说的就是这个东西，模型简单主要是通过规则项来实现，规则项的实现相当于将我们对这个模型的先验知识加入，强行的让学习到的模型具有人想要的特性，例如稀疏、低秩或者平滑等。</p>
-<p>加入了规则项之后的有监督模型的目标函数都可以写成下面这中形式：</p>
-<p>$$w^* = arg min_w \sum_i L(y_i, f(x_i , w)) + \lambda \Omega(w)$$</p>
-<p>其中第一项 \(L(y_i, f(x_i , w))\) 衡量我们的模型对第 i 个样本的预测值 \(f(x_i , w))\) 和真实的标签 \(y_i\) 之间的误差。因为我们的模型是要拟合我们的训练样本。为了提升我们模型的泛化能力，我们需要加上第二项去限制，即对参数 w 的规则化函数 \(\Omega(w)\) 去约束我们的模型尽量的简单。</p>
-<p>规则化 \(\Omega(w)\) 函数有很多种选择，一般是模型复杂度的单调递增函数，模型越复杂，规则化值就越大。比如，规则化项可以是模型参数向量的范数。然而，不同的选择对参数 w 的约束不同，取得的效果也不同。今天我这篇文章主要介绍最常见的 L1 和 L2。</p>
-<h3 id="L1-范数"><a href="#L1-范数" class="headerlink" title="L1 范数"></a>L1 范数</h3><p>说到 L1 范数，就不得不先提一下 L0 范数，L1 是经 L0 发展而来的。如果我们用 L0 范数去规则化一个参数矩阵 W 的话，就是希望 W 的大部分元素都是 0，即希望参数尽可能稀疏；而 L1 范数值指向量中各个元素的绝对值加和，常称 “lasso”。L1 也可以实现特征权值稀疏。那这是为什么呢？因为 L1 是 L0 范数的最优凸近似。对于任何的规则化算子，如果它在 Wi = 0 的地方不可微，并且可以分解为一个 “求和” 的形式，那么这个规则化算子就可以实现稀疏。参数矩阵 W 的 L1 范数是绝对值，|w| 在 w = 0 处是不可微的，并且可以分解为一个求和的形式。那么为什么要用 L1 而不是 L0 去实现特征稀疏呢，因为 L0 范数很难优化求解。</p>
-<h4 id="为什么要特征稀疏"><a href="#为什么要特征稀疏" class="headerlink" title="为什么要特征稀疏"></a>为什么要特征稀疏</h4><p>特征稀疏有一个很大的好处是它可以实现特征的自动选择。一般而言，特征矩阵中的大部元素，也就是特征都是和最终的输出 yi 没有关系或者不提供任何信息的，在最小化目标函数的时候考虑 xi 这些额外的特征，虽然可以获得更小的训练误差，但是在预测新样本的时候，可能会干扰正常的预测。故特征稀疏是为了帮助我们去更好的完成特征选择而设定的。</p>
-<h4 id="特征稀疏的可解释性"><a href="#特征稀疏的可解释性" class="headerlink" title="特征稀疏的可解释性"></a>特征稀疏的可解释性</h4><p>经过特征稀疏之后，模型更容易解释。因为，当特征稀疏之后，大部分的特征权重都是 0，我们可以相信，那些特征权重不为 0 的特征才是对模型起关键意义的。</p>
-<h3 id="L2-范数"><a href="#L2-范数" class="headerlink" title="L2 范数"></a>L2 范数</h3><p>L2 范数常为称为 “Ridge”。 它的形式是 \(||w||_2\)。当用于线性回归中时，它常被称为 “岭回归”。它的主要作用是去解决机器学习中的过拟合问题。那为什么呢？</p>
-<p>L2 范数是指向量各元素的平方和然后求平方根。我们让 L2 范数的规则项 \(||w||_2\) 最小，可以使得 W 的每个元素都很小，通常很解决 0。越小的参数说明模型越简单，越简单的模型则不容易产生过拟合现象。因为当限制了参数很小时，实际上就限制了多项式模型分量的影响很小。</p>
-<h4 id="L2-的好处"><a href="#L2-的好处" class="headerlink" title="L2 的好处"></a>L2 的好处</h4><p>L2 除了可以避免模型陷入过拟合的困境外，还可以处理 <strong>condition number</strong> 不好情况下矩阵求逆很困难的问题。</p>
-<p>在机器学习中，去最优化目标函数时，有 2 个很头疼的问题：</p>
-<ol>
-<li>局部最小值，如果要优化的目标的函数不是凸函数的时候，我们用梯度下降或者其他方法去优化时，可能会得到局部最小值而不是全局最小值。</li>
-<li>ill condition：ill-condition对应的是 well-condition。那他们分别代表什么？假设我们有个方程组 \(AX = b\)，我们需要求解 X。如果A或者b稍微的改变，会使得X的解发生很大的改变，那么这个方程组系统就是 ill-condition 的，反之就是 well-condition 的。ill-condition 是指 \(AX = b\) 的解对于系数矩阵 A 或者 b 很敏感，A 或 b 微小的变化都可能影响解。</li>
-</ol>
-<p><strong>condition number</strong> 就是用来衡量 ill-condition 系统的可行度。condition number 衡量的是输入发生微小变化的时候，输出会发生多大的变化。也就是系统对微小变化的敏感度。condition number 值小的就是 well-conditioned 的，大的就是 ill-conditioned 的。</p>
-<p>如果方阵 A 是非奇异的，那么 A 的 <strong>condition number</strong> 定义为：</p>
-<p>$$\sigma (A) = ||A||\, ||A^{-1}||$$</p>
-<p>也就是矩阵A的 norm 乘以它的逆的 norm。所以具体的值是多少，就要看你选择的 norm 是什么了。如果方阵 A 是奇异的，那么A的 condition number 就是正无穷大了。实际上，每一个可逆方阵都存在一个 condition number。但如果要计算它，我们需要先知道这个方阵的 norm（范数）和 Machine Epsilon（机器的精度）。为什么要范数？范数就相当于衡量一个矩阵的大小，我们知道矩阵是没有大小的，刚才不是要衡量一个矩阵 A 或者向量 b 变化的时候，我们的解 x 变化的大小吗？所以肯定得要有一个东西来度 量矩阵和向量的大小吧？这个东西就是范数，表示矩阵大小或者向量长度。OK，经过比较简单的证明，对于 \(AX = b\)，我们可以得到以下的结论：</p>
-<p>$$\frac{||\Delta x||}{||x||} \leq ||A|| \cdot ||A^{-1}|| \cdot  \frac{||\Delta b||}{||b||}$$</p>
-<p>$$\frac{||\Delta x||}{||x||} \leq \sigma (A) \cdot  \frac{||\Delta b||}{||b||}$$</p>
-<p>$$\frac{||\Delta x||}{||x + \Delta x||} \leq \sigma (A) \cdot  \frac{||\Delta A||}{||b||}$$</p>
-<p>也就是我们的解 x 的相对变化和 A 或者 b 的相对变化是有像上面那样的关系的，其中 \(\sigma (A)\) 的值就相当于倍率，看到了吗？相当于 x 变化的界。</p>
-<p>对 condition number 来个一句话总结：condition number 是一个矩阵（或者它所描述的线性系统）的稳定性或者敏感度的度量，如果一个矩阵的 condition number 在 1 附近，那么它就是 well-conditioned 的，如果远大于 1，那么它就是 ill-conditioned 的，如果一个系统是 ill-conditioned 的，它的输出结果就不是很可信。</p>
-<p>从优化或者数值计算的角度来说，L2 范数有助于处理 condition number 不好的情况下矩阵求逆很困难的问题。因为目标函数如果是二次的，对于线性回归来说，那实际上是有解析解的，求导并令导数等于零即可得到最优解为：</p>
-<p>$$w^* = (X^TX)^{-1}X^Ty$$</p>
-<p>然而，如果当我们的样本 X 的数目比每个样本的维度还要小的时候，矩阵 \(X^TX\) 将会不是满秩的，也就是 \(X^TX\) 会变得不可逆，所以 \(w^*\) 就没办法直接计算出来了。或者更确切地说，将会有无穷多个解（因为我们方程组的个数小于未知数的个数）。也就是说，我们的数据不足以确定一个解，如果我们从所有可行解里随机选一个的话，很可能并不是真正好的解，总而言之，我们过拟合了。</p>
-<p>但是如果加上 L2 规则项，就可以直接求逆，</p>
-<p>$$w^* = (X^TX + \lambda I)^{-1}X^Ty$$</p>
-<p>这里面，要得到这个解，我们通常并不直接求矩阵的逆，而是通过解线性方程组的方式（例如高斯消元法）来计算。考虑没有规则项的时候，也就是 λ=0 的情况，如果矩阵 \(X^TX\) 的 condition number 很大的话，解线性方程组就会在数值上相当不稳定，而这个规则项的引入则可以改善 condition number。</p>
-<p>另外，如果使用迭代优化的算法，condition number 太大仍然会导致问题：它会拖慢迭代的收敛速度，而规则项从优化的角度来看，实际上是将目标函数变成 λ-strongly convex（λ 强凸）的了。</p>
-<p>关于什么是 λ 强凸，如图说一个函数是凸函数，指函数曲线位于改点处的切线之上，而强凸则进一步要求位于该处的一个二次函数之上，也就是说要求函数不要太“平坦”而是可以保证有一定的 “向上弯曲” 的趋势。如果我们有“强凸”的话，我们就可以得到一个更好的近似解。效果的好坏取决于 strongly convex性质中的常数 λ 的大小。</p>
-<p>所以，如果我们想要获得 λ 强凸的话，就是往目标函数里面加上 \(\frac{\alpha}{2} ||w||^{2}\)</p>
-<p>在梯度下降中，目标函数收敛速率的上界实际上是和矩阵 \(X^TX\) 的 condition number 有关，\(X^TX\) 的 condition number 越小，上界就越小，也就是收敛速度会越快。L2 范数不但可以防止过拟合，还可以让我们的优化求解变得稳定和快速。</p>
-<p>在机器学习中，常用的正则化项多是 L2，除了防止过拟合的问题，还有一个好处就是能否改善 ill-condition 问题。尤其是当训练样本相对于特征数非常少时，其矩阵便是非满秩的，往往倾向于有无数个解，且是不可逆的。其 condition number 便会很大。一方面，根据此得到的最优化值很不稳定，往往某个特征变量很小的变动都会引发最终结果较大的偏差。另外通过矩阵求逆从而求的最优解就会变的非常困难。</p>
-<h3 id="L1-和-L2-的区别"><a href="#L1-和-L2-的区别" class="headerlink" title="L1 和 L2 的区别"></a>L1 和 L2 的区别</h3><p>L1 和 L2，一个让绝对值最小，一个让平方最小，他们的差距大吗？其实，L2 相对于 L1 具有更为平滑的特性，在模型预测中，往往比L1具有更好的预测特性。当遇到两个对预测有帮助的特征时，L1倾向于选择一个更大的特征。而L2更倾向把两者结合起来。</p>
-<h4 id="下降速度"><a href="#下降速度" class="headerlink" title="下降速度"></a>下降速度</h4><p>我们知道，L1 和 L2 都是规则化的方式，我们将权值参数以 L1 或者 L2 了的方式放到代价函数里面去。然后模型就会尝试去最小化这些权值参数。而这个最小化就像一个下坡的过程，L1 和 L2 的差别就在于这个“坡”不同，如下图：L1就是按绝对值函数的“坡”下降的，而L2是按二次函数的“坡”下降。所以实际上在 0 附近，L1 的下降速度比 L2 的下降速度要快。所以会非常快得降到0。</p>
-<p><img src="/img/l1l2.png" width="500" height="520" alt="图片名称" align="center"></p>
-<h4 id="模型空间的限制"><a href="#模型空间的限制" class="headerlink" title="模型空间的限制"></a>模型空间的限制</h4><p>$$Lasso: min_w \frac{1}{n} ||y - Xw||^2,  s.t ||w||_1 \leq C$$</p>
-<p>$$Ridge: min_w \frac{1}{n} ||y - Xw||^2,  s.t ||w||_2 \leq C$$</p>
-<p>也就是说，我们将模型空间限制在 w 的一个L1-ball 中。为了便于可视化，我们考虑两维的情况，在(w1, w2) 平面上可以画出目标函数的等高线，而约束条件则成为平面上半径为 C 的一个 norm ball。等高线与 norm ball 首次相交的地方就是最优解：如下图：</p>
-<p><img src="/img/l1l2p.png" width="800" height="420" alt="图片名称" align="center"></p>
-<p>可以看到，L1-ball 与 L2-ball 的不同就在于 L1 在和每个坐标轴相交的地方都有“角”出现，而目标函数的测地线除非位置摆得非常好，大部分时候都会在角的地方相交。注意到在角的位置就会产生稀疏性，例如图中的相交点就有 w1=0，而更高维的时候（想象一下三维的L1-ball 是什么样的？）除了角点以外，还有很多边的轮廓也是既有很大的概率成为第一次相交的地方，又会产生稀疏性。</p>
-<p>相比之下，L2-ball 就没有这样的性质，因为没有角，所以第一次相交的地方出现在具有稀疏性的位置的概率就变得非常小了。这就从直观上来解释了为什么 L1-regularization 能产生稀疏性，而 L2-regularization 不行的原因了。</p>
-<h4 id="贝叶斯先验"><a href="#贝叶斯先验" class="headerlink" title="贝叶斯先验"></a>贝叶斯先验</h4><p>正则化项从贝叶斯学习理论的角度来看，其相当于一种先验函数。即当你训练一个模型时，仅仅依靠当前的训练集数据是不够的，为了实现更好的预测（泛化）效果，我们还应该加上先验项。而 L1 则相当于设置一个Laplacean先验，去选择 MAP（maximum a posteriori）假设。而 L2 则类似于 Gaussian先验。</p>
-<p>因此，一句话总结就是：L1会趋向于产生少量的特征，而其他的特征都是0，而L2会选择更多的特征，这些特征都会接近于0。Lasso 在特征选择时候非常有用，而 Ridge 就只是一种规则化而已。</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><p><a href="http://blog.csdn.net/zouxy09/article/details/24971995" target="_blank" rel="external">机器学习中的范数规则化之（一）L0、L1与L2范数</a></p>
-</li>
-<li><p><a href="http://t.hengwei.me/post/%E6%B5%85%E8%B0%88l0l1l2%E8%8C%83%E6%95%B0%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8.html" target="_blank" rel="external">浅谈L0,L1,L2范数及其应用</a></p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1958,7 +1922,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">74</span>
+              <span class="site-state-item-count">75</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -258,6 +258,146 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/22/数据库系统实现-索引结构小结/" itemprop="url">
+                  数据库系统实现: 索引结构小结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-22T15:22:02+08:00" content="2016-10-22">
+              2016-10-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/22/数据库系统实现-索引结构小结/" class="leancloud_visitors" data-flag-title="数据库系统实现: 索引结构小结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>顺序文件</strong>：几种简单的文件组织，其产生方式是将数据文件按某个排序键排序并在该文件上建立索引。</p>
+<p><strong>稠密索引和稀疏索引</strong>：稠密索引为数据文件的每个记录设一个键 - 指针对，而稀疏索引为数据文件的每个存储块设一个键 - 指针对。</p>
+<p><strong>多级索引</strong>：在索引文件上再建立索引，在索引的索引上再建索引……这在有时候是很有用的。高级索引必须是稀疏的。</p>
+<p><strong>辅助索引</strong>：即使数据文件没有按查找键 K 排序，我们也可以在键 K 上建立索引。这样的索引必须是稠密的。</p>
+<p><strong>倒排索引</strong>：文件及其包含的词之间的关系通常可通过一个词 - 指针对的索引结构来表示。指针指向“桶”文件的某个位置，该位置上有一个指向文件中该词出现的地方的指针列表。</p>
+<p><strong>B - 树</strong>：这些结构实质上是有着很好的扩充性能的多级索引。带有 N 个键和 N + 1 个指针的存储块被组织成一棵树。叶结点指向记录。任何时候所有非根索引块都在半满与全满之间。</p>
+<p><strong>散列表</strong>：同我们创建主存散列表一样，我们也可以基于辅存的存储块来建立散列表。散列函数将键值映射到桶，有效地将数据文件的记录分配到多个小组（桶）。桶用一个存储块和可能出现的溢出块表示。</p>
+<p><strong>可扩展散列</strong>：这种方法允许在存在记录数太多的桶时将桶的数目加倍。它使用指向块的指针数组来表示同。为了避免块过多，几个桶可以用同一个块表示。</p>
+<p><strong>线性散列</strong>：这种方法每当桶中的记录比例超出阈值时增加一个桶。由于单个桶的记录不会引起表的扩展，所以在某些情形下需要溢出块。</p>
+<p><strong>需要多维索引的查询</strong>：在多维数据上需要被支持的查询种类有：部分匹配、范围查询、最近邻查询和 where-am-I(包含一个给定点的区域或区域集)查询。</p>
+<p><strong>最近邻查询的执行</strong>：许多数据结构允许通过执行一个围绕给定点的范围查询来执行最近邻查询。要是在该范围内不存在点，则扩大这个范围。因为在矩形范围内找到了点并不排除在矩形外有更近点的可能性，所以我们必须小心。</p>
+<p><strong>网格文件</strong>：网格文件在每一维上切分点空间。网格线间的距离可以不同，且每一维上的网格线也可以不同。只有数据分布得相当均匀，网格文件就能很好的支持范围查询、部分匹配查询和最近邻查询。</p>
+<p><strong>分段散列表</strong>：分段散列函数从每一维上构造桶号的一些二进制位。它们支持部分匹配查询较好，且不依赖于数据的均匀分布。</p>
+<p><strong>多键索引</strong>：一个简单的多维结构有一个根，根是某个属性的索引，它导入第二个属性上的索引集合，而第二个属性的索引又导入第三个属性的索引集合等等。它们对于范围和最近邻查询有用。</p>
+<p><strong>kd - 树</strong>：kd - 树像二叉搜索树，但它们按不同层次在不同属性上分支。它们较好地支持部分匹配、范围和最近邻查询。为了使该结构适合二维辅存操作，需要把多个树结点压缩到一个块。</p>
+<p><strong>四叉树</strong>：四叉树划分多维立方体成四个象限，且若它们有太多的点，则递归地用同样的方式划分这些象限。它们支持部分匹配、范围和最近邻查询。</p>
+<p><strong>R - 树</strong>：这种树的结构通常表示成区域的集合，且通过聚集它们成一个更大区域的层次结构。它对 where-am-I 查询有帮助。</p>
+<p><strong>位图索引</strong>：这种索引结构支持多维查询。它排序点或记录并且通过位向量表示记录的位置。这些索引支持范围、最近邻和部分匹配查询。</p>
+<p><strong>压缩位图</strong>：为了节省由很少个 1 的向量组成位的图索引的空间，通过采用分段长度编码来对位图索引进行压缩。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/22/Hash-Heap详解/" itemprop="url">
                   Hash Heap详解
                 </a>
@@ -1899,190 +2039,6 @@ facts.collect.foreach(println(_))
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/07/实现-memcpy-函数/" itemprop="url">
-                  实现 memcpy 函数
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-07T11:10:09+08:00" content="2016-10-07">
-              2016-10-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/面试总结/" itemprop="url" rel="index">
-                    <span itemprop="name">面试总结</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/07/实现-memcpy-函数/" class="leancloud_visitors" data-flag-title="实现 memcpy 函数">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="1-接口设计"><a href="#1-接口设计" class="headerlink" title="1. 接口设计"></a>1. 接口设计</h4><pre><code>void mymemcpy(void* dst, const void* src, size_t num)
-</code></pre><h4 id="2-边界条件"><a href="#2-边界条件" class="headerlink" title="2. 边界条件"></a>2. 边界条件</h4><p><strong>典型错误</strong></p>
-<pre><code>void mymemcpy(void* dst, const void* src, size_t num){
-    assert((dst != NULL)&amp;&amp;(src != NULL));
-
-    const char * psrc = (const char *)src;
-    char * pdst = (char *)dst;
-    while(num-- &gt; 0)
-    {
-        *pdst++ = *psrc++;
-    }
-}
-</code></pre><p><strong>情况1</strong>：不重合， 没问题</p>
-<p><strong>情况2</strong>：重合，且dst &lt; src，也没问题</p>
-<p><strong>情况3</strong>：重合，且dst &gt;= src，oops！</p>
-<p>解决方法：从后向前拷贝</p>
-<p><strong>正确解法</strong></p>
-<pre><code>void mymemcpy(void *dst, const void *src, size_t num)
-{
-    assert((dst != NULL)&amp;&amp;(src != NULL));
-
-    const char* psrc = (const char*)src;
-    char* pdst = (char*)dst;
-
-    if (pdst &gt; psrc &amp;&amp; pdst &lt; psrc + num)
-    {
-        for (size_t i = num - 1; i != -1; --i)
-        {
-            pdest[i] = psrc[i];
-        }
-    else
-    {
-        for (size_t i = 0; i &lt; num; ++i)
-        {
-            pdst[i] = psrc[i];
-        }
-    }
-}
-</code></pre><h4 id="3-如何对memcpy函数进行优化"><a href="#3-如何对memcpy函数进行优化" class="headerlink" title="3. 如何对memcpy函数进行优化"></a>3. 如何对memcpy函数进行优化</h4><p><strong>关键点</strong>：没有必要一个字节一个字节拷贝</p>
-<p><strong>优化</strong>:</p>
-<pre><code>void mymemcpy(void *dst, const void *src, size_t num)
-{
-    assert((dst != NULL)&amp;&amp;(src != NULL));
-
-    int wordnum = num / 4;
-    int slice = num % 4;
-    const int* psrc = (const int*)src;
-    int* pintdst = (int*)dst;
-
-    // 一次拷贝 4 bytes
-    while(wordnum--)
-    {
-        *pintdst++ = *pintsrc++;    
-    }
-
-    // 拷贝剩下的bytes
-    const char* pcharsrc = (const char*)pintsrc;
-    char* pchardst = (char*)pintdst;
-    while (slice--)
-    {
-        *pchardst++ = *pcharsrc++;
-    }
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2128,7 +2084,7 @@ facts.collect.foreach(println(_))
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">74</span>
+              <span class="site-state-item-count">75</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

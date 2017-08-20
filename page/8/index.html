@@ -258,6 +258,297 @@
             
               
                 
+                <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-3/" itemprop="url">
+                  PageRank-的三种实现方式(3)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-25T15:16:25+08:00" content="2015-10-25">
+              2015-10-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
+                    <span itemprop="name">Hadoop</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/25/PageRank-的三种实现方式-3/" class="leancloud_visitors" data-flag-title="PageRank-的三种实现方式(3)">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这篇文章我们来介绍一下用并行的思想来实现PageRank，分别用Hadoop和Spark来实现。</p>
+<p>之前我们介绍了Google的PageRank算法模型，实现了对全互联网网页的打分。也实现一个Java版单机的PageRank算法，但是，我们需要注意的是，对于互联网上海量数据的处理，在单机下是不可能实现的，所以如何将PageRank并行计算，将是本文的重点。</p>
+<p>我们的测试用例为：</p>
+<p><img src="/img/test1.png" alt=""></p>
+<p>第1列为测试集中的所有网页序号，第二列表示每个网页的初始权重，之后的每列代表链接关系。</p>
+<p>首先，我们来介绍一下Hadoop的MapReduce计算框架实现方法，和以前一样，讲解我会穿插在代码注释中。</p>
+<p>首先是Map类：</p>
+<pre><code>package org.tseg.pagerank;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class MyMapper extends Mapper&lt;Object, Text, IntWritable, Text&gt; {
+
+//IntWritable 即是Hadoop里面的int，其他类似
+private IntWritable id;
+private String pr;
+private int count;
+private float average_pr;
+
+public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+
+    //StringTokenizer方法自动以空格为间隔，返回值为Enumeration&lt;Object&gt;类型的一个容器，容器中的每个元素为之前由空格分开后的元素组成
+    StringTokenizer str = new StringTokenizer(value.toString());
+    //遍历整个容器，第一步取id为测试网页的序号
+    if(str.hasMoreTokens()) {
+        id = new IntWritable(Integer.parseInt(str.nextToken()));
+    }else{
+        return;
+    }
+    //pr代表测试网页的初始权值
+    pr = str.nextToken();
+    //count代表每个网页链接其他网页的个数
+    count = str.countTokens();
+    //average_pr 为平均贡献值
+    average_pr = Float.parseFloat(pr) / count ;
+    while(str.hasMoreTokens()) {
+        String nextId = str.nextToken();
+        IntWritable next_id = new IntWritable(Integer.parseInt(nextId));
+        //Map函数输出给Reduce函数的类型有2种，第一种为（链接网页序号，“@”+对链接网页的平均贡献值）
+        Text t = new Text(&quot;@&quot;+average_pr);
+        context.write(next_id, t);
+        //第二种为（网页序号，&quot;&amp;&quot;+它所链接的网页）
+        Text tt = new Text(&quot;&amp;&quot;+nextId);
+        context.write(id,tt);
+        }
+
+    }
+
+}
+</code></pre><p>然后是我们的Reduce类，Reduce类简单一些，</p>
+<pre><code>package org.tseg.pagerank;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+public class MyReducer extends Reducer&lt;IntWritable, Text, IntWritable, Text&gt; {
+
+public void reduce(IntWritable key, Iterable&lt;Text&gt; values, Context context) throws IOException, InterruptedException {
+
+    ArrayList&lt;String&gt; idlist = new ArrayList&lt;String&gt;();
+    String link = &quot; &quot;;
+    float pr = 0;
+    //提取贡献值，并累加起来，用pr保存
+    for(Text id : values) {
+        String id2 = id.toString();
+        if(id2.substring(0, 1).equals(&quot;@&quot;)){
+            pr += Float.parseFloat(id2.substring(1));
+        }
+        //把所有链接的节点存放于idlist中
+        else if (id2.substring(0,1).equals(&quot;&amp;&quot;)) {
+            idlist.add(nextid);
+        }
+    }
+
+    pr = pr * 0.85f + 0.15f;
+    for(int i = 0; i&lt; idlist.size();i++){
+        link += idlist.get(i) + &quot; &quot;;
+    }
+
+    String result = String.valueOf(pr);
+    System.out.println(&quot;Reduce  result= &quot; + result);
+    context.write(key, new Text(result));
+    }
+}
+</code></pre><p>最后是我们的PageRank主函数，</p>
+<pre><code>package org.tseg.pagerank;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class rank {
+    public static void main(String[] args) throws IOException,
+    InterruptedException, ClassNotFoundException {
+
+    Configuration conf = new Configuration();
+    String pathIn = &quot;/Users/pengshuang/Desktop/pagerank/input&quot;;//输入路径  
+    String pathOut =&quot;/Users/pengshuang/Desktop/pagerank/1&quot;;//输出路径  
+    //迭代10次
+        Job job = Job.getInstance(conf, &quot;rank&quot;);
+        job.setJarByClass(rank.class);
+        job.setMapperClass(MyMapper.class);
+        job.setReducerClass(MyReducer.class);
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
+        FileInputFormat.addInputPath(job, new Path(pathIn));
+        FileOutputFormat.setOutputPath(job, new Path(pathOut));
+        job.waitForCompletion(true);
+    }
+}
+</code></pre><p>得到结果如下：</p>
+<p><img src="/img/test2.png" alt=""></p>
+<p>接下来我们介绍用spark来实现PageRank，这次我们改变一下我们的测试文件，如图</p>
+<p><img src="/img/test3.png" alt=""></p>
+<p>这是推特上用户之间的关注关系，我们用PageRank算法实现用户影响力分析。</p>
+<p>代码如下：</p>
+<pre><code>/**
+ * Created by pengshuang on 15/10/21.
+ */
+package spark
+
+import org.apache.spark.{SparkConf, SparkContext}
+
+
+object SparkPageRank {
+
+  def main(args: Array[String]) {
+
+      //设置测试环境为本地测试
+    val sparkConf = new SparkConf().setAppName(&quot;PageRank&quot;).setMaster(&quot;local&quot;)
+    val iters = if (args.length &gt; 1) args(1).toInt else 10
+    val ctx = new SparkContext(sparkConf)
+    //读取测试文件
+    val lines = ctx.textFile(&quot;file:///Users/pengshuang/Desktop/pagerank/input/twitter_combined.txt&quot;, 1)
+    //每行用空格隔开
+    val links = lines.map { s =&gt;
+      val parts = s.split(&quot;\\s+&quot;)
+      (parts(0), parts(1))
+    }.distinct().groupByKey().cache()
+    var ranks = links.mapValues(v =&gt; 1.0)
+
+for (i &lt;- 1 to iters) {
+  val contribs = links.join(ranks).values.flatMap { case (urls, rank) =&gt;
+    val size = urls.size
+    urls.map(url =&gt; (url, rank / size))
+  }
+  ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
+}
+ranks.map(x =&gt; (x._2,x._1)).sortByKey(false).map(x =&gt; (x._2,x._1)).saveAsTextFile(&quot;file:///Users/pengshuang/Desktop/pagerank/output&quot;)
+ctx.stop()
+    }
+}
+</code></pre><p>结果如下：</p>
+<p><img src="/img/test4.png" alt=""></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-2/" itemprop="url">
                   PageRank的三种实现方式(2)
                 </a>
@@ -1019,7 +1310,7 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">74</span>
+              <span class="site-state-item-count">75</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
