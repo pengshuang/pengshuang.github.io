@@ -333,6 +333,9 @@
             <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。</p>
 <p>MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 Reduce 过程的高度可并行化；过程间耦合度低，单个过程的失败后可以重新计算，而不会导致整体失败；最重要的是数据处理中的计算逻辑可以很好的转换为 Map 和 Reduce 操作。对于一个数据集来说，Map 对每条数据做相同的转换操作，Reduce 可以按条件对数据分组，然后在分组上做操作。除了 Map 和 Reduce 操作之外，Spark 还延伸出了如 filter，flatMap，count，distinct 等更丰富的操作。</p>
 <p>RDD 是 Spark 中最基本也是最重要的数据结构，可以直观的认为 RDD 就是要处理的数据集。RDD 是分布式的数据集，每个 RDD 都支持 MapReduce 类操作，经过 MapReduce 操作后会产生新的 RDD，而不会修改原有 RDD。RDD 的数据集是分区的，因此可以把每个数据分区放到不同的分区上进行计算，而实际上大多数 MapReduce 操作都是在分区上进行计算的。Spark 不会把每一个 MapReduce 操作都发起计算，而是尽量的把操作累计起来一起计算。Spark 把操作划分为转换和动作，对 RDD 进行的转换操作会叠加起来，直到对 RDD 进行动作操作时才会发起计算。这种特性使得 Spark 可以减少中间结果的吞吐，可以快速的进行多次迭代计算。</p>
+<h3 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h3><p>Spark 自身只对计算负责，其计算资源的管理和调度由第三方框架来实现。常用的有 Yarn 和 Mesos。Spark on Yarn 的系统结构图如下:</p>
+<p><img src="/img/yarn.png" alt=""></p>
+<p>图中共分为三大部分：Spark Driver，Worker，Cluster manager。其中 Driver program 负责将 RDD 转换为任务，并进行任务调度。Worker 负责任务的执行。Yarn 负责计算资源的维护和分配。</p>
 
           
         
