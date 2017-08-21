@@ -258,6 +258,194 @@
             
               
                 
+                <a class="post-title-link" href="/2017/02/04/Spark实践-1-Spark-工作机制/" itemprop="url">
+                  Spark实践 (1): Spark 工作机制
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-04T15:07:57+08:00" content="2017-02-04">
+              2017-02-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/02/04/Spark实践-1-Spark-工作机制/" class="leancloud_visitors" data-flag-title="Spark实践 (1): Spark 工作机制">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Spark 工作机制主要包括调度管理、内存管理、容错机制。</p>
+<h3 id="调度管理"><a href="#调度管理" class="headerlink" title="调度管理"></a>调度管理</h3><p>Spark 调度管理按照场景可以分为2类，一类是Spark程序之间的调度，这是最主要的调度场景；另外一类是Spark程序内部的调度。</p>
+<h4 id="Driver-程序"><a href="#Driver-程序" class="headerlink" title="Driver 程序"></a>Driver 程序</h4><p>在集群模式下，用户编写的 Spark 程序称为 Driver 程序。每个 Driver 程序包含一个代表集群环境的 SparkContenxt 对象并与之连接，程序的执行从 Driver 程序开始，中间过程会调用 RDD 操作，这些操作通过集群资源管理器来调度执行，一般在 Worker 节点上执行，所有操作执行结束后回到 Driver 程序中，在 Driver 程序中结束。</p>
+<h4 id="SparkContext-对象"><a href="#SparkContext-对象" class="headerlink" title="SparkContext 对象"></a>SparkContext 对象</h4><p>每个驱动程序里都有一个 SparkContext 对象，担负着与集群沟通的职责，其工作过程如下：</p>
+<ol>
+<li>SaprkContext 对象联系集群管理器、分配CPU、内存等资源。</li>
+<li>集群管理器在工作节点上启动一个执行器。</li>
+<li>程序代码会被分发到相应的工作节点上。</li>
+<li>SparkContext 分发任务（Task）至各执行器执行。</li>
+</ol>
+<h4 id="集群管理器"><a href="#集群管理器" class="headerlink" title="集群管理器"></a>集群管理器</h4><p>集群管理器负责集群的资源调度。Spark 支持 3 种集群部署方式，每种部署对应一种资源管理器。</p>
+<ol>
+<li>Standalone 模式（资源管理器是Master结点）。最简单的一种集群模式，不依赖于其他系统，调度策略相对单一，只支持先出先进。</li>
+<li>Hadoop Yarn。</li>
+<li>Apache Mesos。</li>
+</ol>
+<h4 id="其他相关名称"><a href="#其他相关名称" class="headerlink" title="其他相关名称"></a>其他相关名称</h4><ul>
+<li>Job： 一次 RDD Action 对应一次 Job，会提交至资源管理器调度执行。</li>
+<li>Stage： Job 在执行过程中被分为多个阶段。介于 Job 和 Task 之间，是按 Shuffle 分隔的 Task 集合。</li>
+<li>执行器： 每个 Spark 程序在每个节点上启动一个进程，专属于一个 Spark 程序，与 Spark 程序有相同的生命周期，负责 Spark 在节点上启动的 Task，管理内存和磁盘。如果一个节点上有多个 Spark 程序在执行，那么相应的就会启动多个执行器。</li>
+<li>Task： 在执行器上执行的最小单元。比如 RDD Transformation 操作时对 RDD 内每个分区计算都会对应一个 Task。</li>
+</ul>
+<h4 id="Spark-程序之间的调度"><a href="#Spark-程序之间的调度" class="headerlink" title="Spark 程序之间的调度"></a>Spark 程序之间的调度</h4><p>主要分为两种，</p>
+<ol>
+<li>静态资源分配</li>
+<li>动态资源分配</li>
+</ol>
+<h4 id="Spark-程序内部的调度"><a href="#Spark-程序内部的调度" class="headerlink" title="Spark 程序内部的调度"></a>Spark 程序内部的调度</h4><p>当 Spark 为多个用户同时提供服务时，我们可以考虑配置 Spark 程序内部的调度。</p>
+<p>在 Spark 程序内部，不同线程提交的 Job 可以并行执行。Spark 的调度器是线程安全的，因此可以支持这种需要同时处理多个请求的服务型应用。</p>
+<p>默认情况下，Spark的调度器以 FIFO 的方式运行 Job，前面运行的 Job 优先获得所有资源。从 Spark 0.8 开始，可以开始采用“循环”（round robin）的方式为不同 Job 之间的 Task 分配资源，这样所有的 Job 可以获取差不多相同的资源。这种模式特别适用于多用户的场景。</p>
+<p>如果想要开启程序的公平调度，只需要在 SparkContext 中设置 Spark.scheduler.mode 的值为 FAIR：</p>
+<pre><code>var conf = new SparkConf().setMaster(...).setAppName(...)
+conf.set(&quot;spark.scheduler.mode&quot;, &quot;FAIR&quot;)
+var sc = new SparkContext(conf);
+</code></pre><h4 id="公平调度池"><a href="#公平调度池" class="headerlink" title="公平调度池"></a>公平调度池</h4><p>公平调度支持对多个 Job 进行分组，这个分组称为调度池，每个调度池可以设置不同的调度选项，当我们想要为一些更重要的 Job 设置更高的优先级时，这个功能就非常有用了。我们可以为不同的用户设置不同的调度池。然后让各个调度池平等地共享资源，而不是按 Job 来共享资源。</p>
+<p>指定让 Job 进入那个调度池的具体方法是提交任务的线程在 SparkContext 中设置 spark.scheduler.pool </p>
+<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;, &quot;pool1&quot;)
+</code></pre><p>这样设置之后，这个线程提交的所有 Job 会使用这个调度池。设置按线程来进行，这样可以很方便地让一个线程下的所有 Job 都在同一个用户下。如果要清空当前线程的调度池设置，可以这样设置</p>
+<pre><code>sc.setLocalProperty(&quot;spark.scheduler.pool&quot;,null)
+</code></pre><h4 id="调度池的默认行为"><a href="#调度池的默认行为" class="headerlink" title="调度池的默认行为"></a>调度池的默认行为</h4><p>默认情况下，所有调度池平均共享集群的资源，默认调度池也是。但在每个调度池内部，各个 Job 是按 FIFO 的顺序来执行的。</p>
+<h4 id="调度池的配置"><a href="#调度池的配置" class="headerlink" title="调度池的配置"></a>调度池的配置</h4><ul>
+<li>schedulingMode。（FIFO 或者 FAIR）</li>
+<li>weight。（用于控制调度池相对于其他调度池的权重）</li>
+<li>minShare。（最小资源值( core 的数量)）</li>
+</ul>
+<h3 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h3><p>相比 Hadoop MapReduce，Spark 计算具有巨大的性能优势，其中很大一部分是因为 Spark  对于内存的充分利用，以及提供的缓存机制。</p>
+<h4 id="RDD-持久化"><a href="#RDD-持久化" class="headerlink" title="RDD 持久化"></a>RDD 持久化</h4><p>如果一个 RDD 不止一次被用到，那么就可以持久化它，以大幅提升程序的性能。持久化的方法是调用 persist() 函数，除了持久化至内存中，还可以在 persist() 中指定 storage level 参数使用其他的类型。</p>
+<h4 id="共享变量"><a href="#共享变量" class="headerlink" title="共享变量"></a>共享变量</h4><p>Spark 大部分操作都是 RDD 操作，通过传入函数给 RDD 操作函数来计算。这些函数在不同的节点上并发执行，内部的变量有不同的作用域，不能互相访问。Spark 提供 2 种共享变量–广播变量和计数器。</p>
+<ol>
+<li>广播变量</li>
+</ol>
+<p>一个只读对象，在所有节点上都有一份缓存，创建方法如下：</p>
+<pre><code>val broadcastVar = sc.broadcast(Array(1, 2, 3))
+</code></pre><ol>
+<li>计数器</li>
+</ol>
+<p>计数器只能增加，可以用于计算或者求和。计数器变量的创建方法是:</p>
+<pre><code>SparkContext.accumulator(v, name) 
+</code></pre><p>v 是初始值，name 是名称。注意，只有 Driver 程序可以读这个计算器变量，RDD 操作中读取计数器变量是无意义的。</p>
+<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p>Spark  以前的集群容错处理模型，像 MapReduce，将计算转换为一个有向无环图（DAG）的任务集合，这样可以通过重复执行 DAG 里的一部分任务来完成容错恢复。但是由于主要的数据存储在分布式文件系统中，没有提供其他存储的概念，容错过程中需要在网络上进行数据复制，从而增加了大量的消耗。所以，分布式编程中经常需要做检查点，即将某个时机的中间数据写到存储（通常是分布式文件系统）中。</p>
+<p>RDD 也是一个 DAG，每一个 RDD 都会记住创建该数据集需要哪些操作，跟踪记录 RDD 的继承关系，这个关系在 Spark 里面叫 lineage。由于创建 RDD 的操作是相对粗粒度的变换，即单一的操作应用于许多数据元素，而不需存储真正的数据。当一个 RDD 的某个分区丢失时， RDD 有足够的信息记录其如何通过其他 RDD 进行计算，且只需重新计算该分区。</p>
+<p>RDD 之间的依赖分为两种。</p>
+<ul>
+<li>窄依赖。父分区对应一个子分区。</li>
+<li>宽依赖。父分区对应多个子分区。</li>
+</ul>
+<p>对应窄依赖，只需要通过重新计算丢失的那一块数据来恢复，容错成本较小。但如果是宽依赖，则当容错重算分区时，因为父分区数据只有一部分是需要重算子分区的，其余数据重算则成了冗余计算。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/26/Kaggle-比赛-德国信用卡违约数据分析/" itemprop="url">
                   Kaggle 比赛: 德国信用卡违约数据分析
                 </a>
@@ -1866,283 +2054,6 @@ scanner2.close();
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/11/07/HBase学习-比较过滤器/" itemprop="url">
-                  HBase学习: 比较过滤器
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-11-07T16:55:42+08:00" content="2016-11-07">
-              2016-11-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/HBase/" itemprop="url" rel="index">
-                    <span itemprop="name">HBase</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/11/07/HBase学习-比较过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 比较过滤器">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>HBase 提供的第一种过滤器实现就是<strong>比较过滤器</strong>。用户创建一个实例时需要一个比较运算符和一个比较器实例。每个比较过滤器的构造方法都有一个从 CompareFilter 继承来的签名方法。</p>
-<pre><code>CompareFilter(CompareOp valueCompareOp,
-    WritableByteArrayCompareable valueComparator)
-</code></pre><p>用户需要提供比较运算符和比较类来让过滤器工作。</p>
-<p>HBase 中过滤器本来的目的是为了筛掉无用的信息，被过滤掉的信息不会被传递到客户端，过滤器不能用来指定用户需要哪些信息，而是在读取数据的过程中不返回用户不想要的信息。</p>
-<p>相反，所有基于 CompareFilter 的过滤处理过程与上述描述正好相反，它们返回匹配的值</p>
-<h3 id="行过滤器"><a href="#行过滤器" class="headerlink" title="行过滤器"></a>行过滤器</h3><p>行过滤器基于行键来过滤数据。下面一个例子展示了使用不同的过滤器来获得需要的行。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Scan scan = new Scan();
-scan.addColumn(Bytes.toBytes(&quot;colfam1&quot;), Bytes.toBytes(&quot;col-0&quot;));
-// 指定比较运算符和比较器
-Filter filter1 = new RowFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
-        new BinaryComparator(Bytes.toBytes(&quot;row-22&quot;)));
-scan.setFilter(filter1);
-ResultScanner scanner1 = hTable.getScanner(scan);
-for(Result res: scanner1){
-    System.out.println(res);
-}
-scanner1.close();
-
-// 用正则表达式来匹配行键
-Filter filter2 = new RowFilter(CompareFilter.CompareOp.EQUAL,
-        new RegexStringComparator(&quot;.*-.5&quot;));
-scan.setFilter(filter2);
-ResultScanner scanner2 = hTable.getScanner(scan);
-for(Result res: scanner2){
-    System.out.println(res);
-}
-scanner2.close();
-
-// 子串匹配方法
-Filter filter3 = new RowFilter(CompareFilter.CompareOp.EQUAL,
-        new SubstringComparator(&quot;-5&quot;));
-scan.setFilter(filter3);
-ResultScanner scanner3 = hTable.getScanner(scan);
-for(Result res: scanner3){
-    System.out.println(res);
-}
-scanner3.close();
-</code></pre><h3 id="列族过滤器"><a href="#列族过滤器" class="headerlink" title="列族过滤器"></a>列族过滤器</h3><p>和行过滤器类似，它通过比较列族而不是行键来返回结果。通过使用不同组合的运算符和比较器，用户可以在列族一级筛选所需的数据。下面一个例子展示了如何使用它。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-// 创建一个过滤器, 指定比较运算符和比较器, 使用过滤器来返回特定的列族
-Filter filter1 = new FamilyFilter(CompareFilter.CompareOp.LESS,
-        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
-Scan scan = new Scan();
-scan.setFilter(filter1);
-// 使用扫描器扫描
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result res: scanner){
-    System.out.println(res);
-}
-scanner.close();
-
-Get get1 = new Get(Bytes.toBytes(&quot;row-5&quot;));
-// 使用和之前相同的过滤器获取同一行的数据
-get1.setFilter(filter1);
-Result result1 = hTable.get(get1);
-System.out.println(&quot;Result of get(): &quot; + result1);
-
- // 在一个列族上创建一个过滤器，同时获取另一行的数据
-Filter filter2 = new FamilyFilter(CompareFilter.CompareOp.EQUAL,
-        new BinaryComparator(Bytes.toBytes(&quot;colfam3&quot;)));
-Get get2 = new Get(Bytes.toBytes(&quot;row-5&quot;));
-get2.addFamily(Bytes.toBytes(&quot;colfam1&quot;));
-get2.setFilter(filter2);
-// 使用新的过滤器获取同一行数据，此时返回的结果为 None 
-Result result2 = hTable.get(get2);
-System.out.print(&quot;Result of get(): &quot; + result2);
-</code></pre><h4 id="列名过滤器"><a href="#列名过滤器" class="headerlink" title="列名过滤器"></a>列名过滤器</h4><p>通过列名筛选特定的列。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Filter filter = new QualifierFilter(CompareFilter.CompareOp.LESS_OR_EQUAL,
-        new BinaryComparator(Bytes.toBytes(&quot;col-2&quot;)));
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result: scanner){
-    System.out.println(result);
-}
-scanner.close();
-
-Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
-get.setFilter(filter);
-Result result2 = hTable.get(get);
-System.out.print(result2);
-</code></pre><h4 id="值过滤器"><a href="#值过滤器" class="headerlink" title="值过滤器"></a>值过滤器</h4><p>值过滤器可以筛选某个特定值的单元格。</p>
-<pre><code>Configuration conf = HBaseConfiguration.create();
-HTable hTable = new HTable(conf, &quot;temp2&quot;);
-
-Filter filter = new ValueFilter(CompareFilter.CompareOp.EQUAL,
-        new SubstringComparator(&quot;.4&quot;));
-Scan scan = new Scan();
-scan.setFilter(filter);
-ResultScanner scanner = hTable.getScanner(scan);
-for(Result result : scanner){
-    System.out.println(result);
-}
-scanner.close();
-</code></pre><h3 id="参考列过滤器"><a href="#参考列过滤器" class="headerlink" title="参考列过滤器"></a>参考列过滤器</h3><p>参考列过滤器允许用户指定一个参考列或者引用列，并使用参考列控制其他列的过滤。参考列过滤器使用参考列的时间戳，并在过滤时包括所有与引用时间戳相同的列。</p>
-<p>下面是它们的构造方法：</p>
-<pre><code>DependentColumnFilter(byte[] family, byte[] qualifier)
-DependentColumnFilter(byte[] family, byte[] qualifier,
-    boolean dropDependentColumn)
-DependentColumnFilter(byte[] family, byte[] qualifier,
-    boolean dropDependentColumn, CompareOp valueCompareOp,
-    ByteArrayComparable valueComparator)
-</code></pre><p>由于参考过滤器也是继承自 CompareFilter，所以它也可以帮助用户筛选列，不过这个过滤器是基于这些列值进行筛选的。用户可以把他理解为一个 ValueFilter 和 一个时间戳过滤器的组合。用户可以传入比较运算符和基准值来启用 ValueFilter 的功能。</p>
-<p>下面这个例子展示了参考过滤器的用法：</p>
-<pre><code>public class Filter5 {
-    private static void filter(boolean drop,
-                               CompareFilter.CompareOp operator,
-                               ByteArrayComparable comparator)
-    throws IOException {
-        Filter filter;
-        if(comparator != null){
-            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
-                    Bytes.toBytes(&quot;col-5&quot;), drop, operator, comparator);
-        } else {
-            filter = new DependentColumnFilter(Bytes.toBytes(&quot;colfam1&quot;),
-                    Bytes.toBytes(&quot;col-5&quot;), drop);
-        }
-
-    Configuration conf = HBaseConfiguration.create();
-    HTable hTable = new HTable(conf, &quot;temp2&quot;);
-    Scan scan = new Scan();
-    scan.setFilter(filter);
-    ResultScanner scanner = hTable.getScanner(scan);
-    for(Result result : scanner){
-        System.out.println(result);
-    }
-    scanner.close();
-
-    Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
-    get.setFilter(filter);
-    Result result = hTable.get(get);
-    System.out.println(result);
-
-}
-public static void main(String[] args) throws IOException
-{
-    filter(true, CompareFilter.CompareOp.NO_OP, null);
-    filter(false, CompareFilter.CompareOp.NO_OP, null);
-    filter(true, CompareFilter.CompareOp.EQUAL,
-            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
-    filter(false, CompareFilter.CompareOp.EQUAL,
-            new BinaryPrefixComparator(Bytes.toBytes(&quot;val-5&quot;)));
-    filter(true, CompareFilter.CompareOp.EQUAL,
-            new RegexStringComparator(&quot;.*\\.5&quot;));
-    filter(false, CompareFilter.CompareOp.EQUAL,
-            new RegexStringComparator(&quot;.*\\.5&quot;));
-    }
-}
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2188,7 +2099,7 @@ public static void main(String[] args) throws IOException
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">75</span>
+              <span class="site-state-item-count">76</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

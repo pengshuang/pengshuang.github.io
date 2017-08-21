@@ -258,6 +258,220 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/23/分布式系统学习-事务处理与数据一致性/" itemprop="url">
+                  分布式系统学习: 事务处理与数据一致性
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-23T19:21:47+08:00" content="2016-10-23">
+              2016-10-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/分布式系统/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式系统</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/23/分布式系统学习-事务处理与数据一致性/" class="leancloud_visitors" data-flag-title="分布式系统学习: 事务处理与数据一致性">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。</p>
+<p>事务具有四个特征，分别是原子性、一致性，隔离性和持久性。</p>
+<h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><p>事务的原子性是指事务必须是一个原子的操作序列单元。事务中包含的各项操作在一次执行过程中，只允许出现以下两种状态之一。</p>
+<ul>
+<li>全部执行成功</li>
+<li>全部不执行</li>
+</ul>
+<p>任何一项操作失败都将导致整个事务失败，同时其他已经被执行的操作都将被撤销并回滚，只有所有的操作全部成功，整个事务才算是成功完成。</p>
+<h4 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h4><p>事务的一致性是指事务的执行不能破坏数据库数据的完整性和一致性，一个事务在执行之前和执行之后，数据库都必须处于一致性状态。即，事务执行的结果必须是使数据库从一个一致性状态转变到另一个一致性状态。而如果数据库系统在运行过程中发生故障，有些事务尚未完成就被迫中断，这些未完成事务对数据库所做的修改有一半已经写入物理数据库，这时数据库就处于一种不正确的状态，或者是不一致的状态。</p>
+<h4 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h4><p>事务的隔离性是指在并发环境中、并发的事务是相互隔离的，一个事务的执行不能被其他事务干扰。也就是说，不同的事务并发操纵相同的数据时，每个事务都有各自完整的数据空间。即一个事务内部的操作及使用的数据对其他并发事务是隔离的，并发执行的各个事务之间不能相互干扰。</p>
+<p>在标准 SQL 规范中，定义了4个事务隔离级别，不同的隔离级别对事务的处理不同，如未授权读取、授权读取、可重复读取和串行化。</p>
+<p><strong>未授权读取</strong></p>
+<p>未授权读取也被称为读未提交，该隔离级别允许脏读取，其隔离级别最低。比如，事务 A 和 事务 B 同时进行，事务 A 在整个执行阶段，会将某数据项的值从 1 开始，做一些列加法操作直到变成 10 之后进行事务提交，此时，事务 B 能够看到这个数据项在事务 A 操作过程中的所有中间值（如 1 变成 2、2 变成 3等），而对这一系列的中间值的读取就是未授权读取。</p>
+<p><strong>授权读取</strong></p>
+<p>授权读取也叫读已提交，它和未授权读取很像，唯一的区别就是授权读取只允许获取已经被提交的数据。以上面那个为例，事务 A 和 事务 B 同时进行，事务 A 进行与上述同样的操作，此时，事务 B 无法看到这个数据项在事务 A 操作过程中的所有中间值，只看到最终的 10。另外，如果说有一个事务 C，和事务 A 进行非常类似的操作，只是事务 C 是将数据项从 10 加到 20，此时事务 B 也同样可以读取到 20，即授权读取允许不可重复读取。</p>
+<p><strong>可重复读取</strong></p>
+<p>可重复读取，就是保证在事务处理过程中，多次读取同一个数据时，其值都和事务开始时刻是一致的，因此该事务级别禁止了不可重复读取和脏读取，但是有可能出现幻影数据，就是指同样的事务操作，在前后两个时间段内执行对同一个数据项的读取，可能出现不一致的结果。以上面为例，事务 B 第一次事务操作的过程中，始终对数据项读取到 1，但是在下一次事务操作中，即使事务 B 采用同样的查询方式，就可能会读取到10 或 20。</p>
+<p><strong>串行化</strong></p>
+<p>串行化是最严格的事务隔离级别。它要求所有事务都被串行执行，即事务只能一个接一个地进行处理，不能并发执行。</p>
+<p>事务隔离级别越高，就越能保证数据的完整性和一致性，但同时对并发性能的影响也越大。通常，对绝大多数的应用程序来说，可以优先考虑将数据库系统的隔离级别设置为授权读取，这能够在避免脏读取的同时保证较好的并发性能。</p>
+<h4 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h4><p>事务的持久性也被称为永久性，是指一个事务一旦提交，它对数据库中对应数据的状态的变更就应该是永久性的。换句话说，一旦某个事务成功结束，那么它对数据库所做的更新就必须被永久保存下来</p>
+<h3 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h3><p>在单机数据库中，我们很容易就能够实现一套满足 ACID 特性的事务处理系统，但在分布式数据库中，时间分散在各台不同的机器上，如何对这些数据进行分布式的事务处理具有非常大的挑战。</p>
+<p>我们可以设想一个最典型的分布式事务场景：一个跨银行的转账操作涉及调用两个异地的银行服务，其中一个是本地银行提供的取款服务，另一个则是目标银行提供的存款服务，这两个服务本身是无状态并且是互相独立的，共同构成一个完整的分布式事务。如果从本地银行取款成功，但是因为某种原因存款服务失败了，那么就必须回滚到取款前的状态，否则用户可能会发现自己的钱不翼而飞了。</p>
+<h3 id="CAP-和-BASE-理论"><a href="#CAP-和-BASE-理论" class="headerlink" title="CAP 和 BASE 理论"></a>CAP 和 BASE 理论</h3><h4 id="CAP-定理"><a href="#CAP-定理" class="headerlink" title="CAP 定理"></a>CAP 定理</h4><p>CAP 理论告诉我们，一个人分布式系统不可能同时满足一致性 (C：Consistency)、可用性(A：Availability)和分区容错性(P：Partition tolerance)这三个基本需求，最多同时满足其中的两项。</p>
+<p><strong>一致性</strong></p>
+<p>在分布式环境中，一致性是指数据在多个副本之间是否能够保持一致的特性。在一致性的需求下，当一个系统在数据一致的状态下更新操作后，应该保证系统的数据仍然处于一致的状态。</p>
+<p><strong>可用性</strong></p>
+<p>可用性是指系统提供的服务必须一直处于可用的状态，对于用户的每个操作请求总是能够在有限的时间内返回结果。这里我们重点看下“有限的时间内”和“返回结果”。</p>
+<p>“有限的时间内”是指，对于用户的一个操作请求，系统必须能够在指定的时间内返回对应的处理结果，如果超过了这个时间范围，那么系统就被认为是不可用的。</p>
+<p><strong>分区容错性</strong></p>
+<p>分区容错性约束了一个分布式系统需要具有如下特性：分布式系统在遇到任何网络分区故障的时候，仍然需要能够保证对外提供满足一致性和可用性的服务，除非是整个网络环境都发生了故障。</p>
+<p>网络分区是指在分布式系统中，不同的结点分布在不同的子网络中，由于一些特殊的原因导致这些子网络之间出现网络不连通的状况，但各个子网络的内部网络是正常的，从而导致整个系统的网络环境被切分成了若干个孤立的区域。</p>
+<h4 id="CAP-定理应用"><a href="#CAP-定理应用" class="headerlink" title="CAP 定理应用"></a>CAP 定理应用</h4><table>
+<thead>
+<tr>
+<th>放弃CAP定理</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>放弃P</td>
+<td>如果希望能够避免系统出现分区容错性问题，一种较为简单的做法是将所有的数据（或者仅仅是那些与事务相关的数据）都放在一个分布式结点上。这样的做法虽然无法100%保证系统不会出错，但至少不会碰到由于网络分区带来的负面影响。但这样也放弃了系统的可扩展性</td>
+</tr>
+<tr>
+<td>放弃A</td>
+<td>相对于放弃“分区容错性”来说，放弃可用性则正好相反，其做法是一旦系统遇到网络分区或其他故障时，那么受到影响的服务需要等待一定的时间，因此在等待期间系统无法对外提供正常的服务，即不可用</td>
+</tr>
+<tr>
+<td>放弃C</td>
+<td>这里是放弃数据的强一致性。这样的系统无法保证数据实时的一致性，但是能够承诺的是，数据最终会达到一个一致的状态。</td>
+</tr>
+</tbody>
+</table>
+<p>需要明确说明的是，对于一个分布式系统而言，分区容错性是一个最基本的要求。</p>
+<h4 id="BASE-理论"><a href="#BASE-理论" class="headerlink" title="BASE 理论"></a>BASE 理论</h4><p>BASE 是 Basically Available（基本可用）、Soft state（软状态）和 Eventually consistent（最终一致性）三个短语的简写。</p>
+<p>BASE 是对 CAP 中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的总结，是基于 CAP 定理逐步演化而来的，其核心思想是即使无法做到强一致性，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性。</p>
+<p><strong>基本可用</strong></p>
+<p>基本可用是指分布式系统在出现不可预知故障的时候，允许损失部分可用性，如</p>
+<ul>
+<li>响应时间上的损失</li>
+</ul>
+<p>正常情况下，一个在线搜索引擎在0.5秒之内返回查询结果，但由于出现故障，查询结果变为2秒</p>
+<ul>
+<li>功能上的损失</li>
+</ul>
+<p>正常情况下，在一个电子商务网站上进行购物，消费者几乎能够顺利的完成每一笔订单，但是在高峰的时候，由于购物行为激增，部分消费者可能会被引导到一个降级页面。</p>
+<p><strong>弱状态</strong></p>
+<p>弱状态也称为软状态，和硬状态相对，是指允许系统中的数据存在的中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<p><strong>最终一致性</strong></p>
+<p>最终一致性强调的是系统中所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要实时保证系统数据的强一致性。</p>
+<p>在实际的工程实践中，最终一致性存在以下五类主要变种：</p>
+<ul>
+<li>因果一致性</li>
+</ul>
+<p>因果一致性是指，如果进程 A 在更新完某个数据项后通知了进程 B，那么进程 B 之后对该数据项的访问都应该能够获取到进程 A 更新后的最新值，即不能发生丢失更新情况。但与进程 A 无因果关系的进程 C 的数据访问则没有这样的限制。</p>
+<ul>
+<li>读已之所写</li>
+</ul>
+<p>读已之所写是指，进程 A 更新一个数据项之后，它自己总是能够访问到更新过的最新值，而不会看到旧值。也就是说，对于单个数据获取者来说，其读取到的数据，一定不会比自己上次写入的值旧。</p>
+<ul>
+<li>会话一致性</li>
+</ul>
+<p>会话一致性将对系统数据的访问过程框定在了一个会话当中：系统能保证在同一个有效的会话中实现“读已之所写”的一致性，即，执行更新操作之后，客户端能够在同一个会话中始终读取到该数据项的最新值。</p>
+<ul>
+<li>单调读一致性</li>
+</ul>
+<p>单调读一致性是指如果一个进程从系统中读取出一个数据项的某个值后，那么系统对该进程后续的任何数据访问都不应该返回更旧的值。</p>
+<ul>
+<li>单调写一致性</li>
+</ul>
+<p>单调写一致性是指，一个系统需要能够保证来自同一个进程的写操作被顺序地执行。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>事实上，最终一致性并不是只有那些大型分布式系统才涉及的特性，许多现代的关系型数据库都采用了最终一致性模型。在现代关系型数据库中，大多数都会采用同步和异步方式来实现主备数据复制技术。在同步方式中，数据的复制通常是更新事务的一部分，因此在事务完成后，主备数据库的数据就会达到一致。而在异步方式中，备库的更新往往会存在延时，这取决于事务日志在主备数据库之间传输的时间长短，如果时间过长，那么显然，会出现数据不一致的情况，所以，这里就会用到最终一致性模型。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/22/数据库系统实现-索引结构小结/" itemprop="url">
                   数据库系统实现: 索引结构小结
                 </a>
@@ -1850,195 +2064,6 @@ avg: Int = 2.5
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/08/GraphX学习/" itemprop="url">
-                  GraphX学习:基础知识
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-08T14:25:44+08:00" content="2016-10-08">
-              2016-10-08
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Spark/" itemprop="url" rel="index">
-                    <span itemprop="name">Spark</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/08/GraphX学习/" class="leancloud_visitors" data-flag-title="GraphX学习:基础知识">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><p>GraphX是Spark用于解决图和并行图计算问题的新组件。通过RDD（Resilient Distributed Datasets，弹性分布式数据集）的扩展，GraphX在其中引入了一个新的图抽象，即顶点和边带有特性的有向多重图。Graph提供了一些基本运算符和优化了的Pregel API，来支持图计算。另外，Graph包含了大量的图算法和构造器来简化图的分析任务，并且这个数量还在增加。</p>
-<h3 id="2-GraphX使用"><a href="#2-GraphX使用" class="headerlink" title="2. GraphX使用"></a>2. GraphX使用</h3><p>第一步，引入Spark和GraphX相关的包：</p>
-<pre><code>import org.apache.spark._
-import org.apache.spark.graphx._
-
-// 此处仍然需要用到RDD来让一些例子正常运行
-import org.apache.spark.rdd.RDD
-</code></pre><p>如果你没有使用Spark Shell（例如在外部的IDE中编辑项目），那么你还需要引入SparkContext。具体方法请参阅Spark官方文档，此处不再赘述。</p>
-<h3 id="3-属性图"><a href="#3-属性图" class="headerlink" title="3. 属性图"></a>3. 属性图</h3><p>属性图是一个有向多重图，它的每个顶点和每条边都附有用户定义的对象。作为有向图，有向多重图可能有多个平行的边来共享相同的源顶点和目标顶点。作为多重图，它支持并行边，这个特性简化了许多涉及多重关系的建模场景。每个顶点的主键是一个长度为64 bit的唯一标识符<strong>（VertexID）</strong>。<strong>GraphX</strong>没有为顶点添加任何顺序的约束。类似地，每一条边有对应的源顶点和目标顶点的标识符。</p>
-<p>因此，属性图的参数是通过顶点（VD）和边的类型（ED）来决定的。</p>
-<p>在某些情况下，你可能希望在同一个图里面，顶点能够有不同的属性类型。这个想法可以通过继承实现。举个例子，我们可以对用户和产品进行建模，将其作为一个二分图，然后进行如下的定义（请在Spark Shell中输入语句）：</p>
-<pre><code>class VertexProperty()
-case class UserProperty(val name: String) extends VertexProperty
-case class ProductProperty(val name: String, val price: Double) extends VertexProperty
-
-// 图可能会有这个类型:
-var graph: Graph[VertexProperty, String] = null
-</code></pre><p>类似于RDD，属性图是不可变的、分布式的，并且具有容错性。对于图而言，它的值或者结构上的改变，是通过产生带有预期改变的新图来完成的。主要注意的是，原始图的主要部分（即不受影响的结构、属性和索引等）在新图中被重用，以减少固有功能的数据结构成本。通过使用大量的启发式顶点分区，图在不同的执行器里被划分。就像RDD一样，图的每个分区可以在发生故障时被不同的机器重建。</p>
-<p>属性图在逻辑上对应于一对类型化集合（RDD），该集合编码了每个顶点和每条边属性。因而，图类包含了可以访问图的顶点和边的成员，它的定义如下（该定义仅作了解，无需自己手动定义该类）：</p>
-<pre><code>class Graph[VD, ED] {
-  val vertices: VertexRDD[VD]
-  val edges: EdgeRDD[ED]
-}
-</code></pre><p><strong>VertexRDD[VD]</strong>类和<strong>EdgeRDD[ED]</strong>类分别继承和优化了<strong>RDD[(VertexID, VD)]</strong>类和<strong>RDD[Edge[ED]]</strong>类。两者都提供基于图计算和内部优化构建的额外功能。在此你可将其简单地理解为以<strong>RDD[(VertexID, VD)]</strong>和<strong>RDD[Edge[ED]]</strong>形式定义的<strong>RDD</strong>。</p>
-<h3 id="4-一个属性图的例子"><a href="#4-一个属性图的例子" class="headerlink" title="4. 一个属性图的例子"></a>4. 一个属性图的例子</h3><p>现在假设我们要构建一个由许多来自GraphX项目组的协作者组成的属性图。顶点的属性可能包含用户名和职业。我们应该用一个可以描述协作者间的关系的字符串来注释图的边。</p>
-<p>这段话可以用下图来表示（图片来自GraphX官方文档）：</p>
-<p><img src="/img/graphx.png" alt=""></p>
-<p>由这些因素构成的图将有下面的类型定义（该定义仅作了解即可，无需输入该语句）：</p>
-<pre><code>val userGraph: Graph[(String, String), String]
-</code></pre><p>有很多办法可以由原始文件、RDD或者综合生成器来构建一个属性图。可能最常用的方法还是使用一个<strong>Graph Object</strong>。下面的代码展示了如何通过一个RDD的集合来构建图，你可以尝试在<strong>Spark Shell</strong>中输入下面的代码来完成构建。</p>
-<pre><code>// 在Spark Shell中，这里的SparkContext已经默认给出了。可略过此步。
-val sc: SparkContext
-
-// 创建一个RDD用于表示顶点
-val users: RDD[(VertexId, (String, String))] =
-  sc.parallelize(Array((3L, (&quot;rxin&quot;, &quot;student&quot;)), (7L, (&quot;jgonzal&quot;, &quot;postdoc&quot;)),
-                       (5L, (&quot;franklin&quot;, &quot;prof&quot;)), (2L, (&quot;istoica&quot;, &quot;prof&quot;))))
-// 创建一个RDD用于表示边
-val relationships: RDD[Edge[String]] =
-  sc.parallelize(Array(Edge(3L, 7L, &quot;collab&quot;),    Edge(5L, 3L, &quot;advisor&quot;),
-                       Edge(2L, 5L, &quot;colleague&quot;), Edge(5L, 7L, &quot;pi&quot;)))
-
-// 定义默认的用户，用于建立与缺失的用户之间的关系
-val defaultUser = (&quot;John Doe&quot;, &quot;Missing&quot;)
-
-// 构造图对象，即初始化过程
-val graph = Graph(users, relationships, defaultUser)
-</code></pre><p>在这个例子中，我们用到了名为<strong>Edge</strong>的<strong>case</strong>类。<strong>Edge</strong>类有<strong>srcId</strong>和<strong>dstId</strong>，它们对应于源顶点和目标庆典的标识符。另外，<strong>Edge</strong>类有一个名为<strong>attr</strong>的成员，用于存储边的属性。</p>
-<p>我们也可以使用<strong>graph.vertices</strong>和<strong>graph.edges</strong>函数来解构一个图，将其转化为各个顶点和边的视图。用法如下，请尝试在Shell中输入这些语句：</p>
-<pre><code>// 统计是博士后的用户数量
-graph.vertices.filter { case (id, (name, pos)) =&gt; pos == &quot;postdoc&quot; }.count
-
-// 统计符合 src &gt; dst 条件的边的数量 
-graph.edges.filter(e =&gt; e.srcId &gt; e.dstId).count
-</code></pre><p>注意，<strong>graph.vertices</strong>函数的返回值类型是 <strong>VertexRDD[(String, String)]</strong>，它继承了 <strong>RDD[(VertexID, (String, String))]</strong>，所以我们可以用<strong>Scala</strong>的<strong>case</strong>表达式来解构这个元组。另外，<strong>graph.edges</strong>函数的返回值类型是<strong>EdgeRDD</strong>，它包含了<strong>Edge[String]</strong>对象。我们同样可以使用<strong>case</strong>类的类型构造器，请尝试在<strong>Shell</strong>中输入下面的代码：</p>
-<pre><code>graph.edges.filter { case Edge(src, dst, prop) =&gt; src &gt; dst }.count
-</code></pre><p>对于属性类的顶点和边视图，GraphX还提供了三重视图<strong>（Triplet View）</strong>。这个三重视图从逻辑上联合了顶点和边的属性，产生了一个<strong>RDD[EdgeTriplet[VD, ED]]</strong>，它包含了<strong>DegeTriplet</strong>类的实例。这个<strong>join</strong>联合操作可以由下面的<strong>SQL</strong>表达式解释：</p>
-<pre><code>SELECT src.id, dst.id, src.attr, e.attr, dst.attr
-FROM edges AS e LEFT JOIN vertices AS src, vertices AS dst
-ON e.srcId = src.Id AND e.dstId = dst.Id
-</code></pre><p>如果看不懂这段SQL代码，没关系，下图也能帮助你理解该操作的含义：</p>
-<p><img src="/img/graphx2.png" alt=""></p>
-<p><strong>EdgeTriplet</strong>类继承了<strong>Edge</strong>类，并且添加了<strong>srcAttr</strong>和<strong>dstAttr</strong>两个成员。这两个成员分别包含了源属性和目标属性。我们可以用一个图的三重视图来渲染一个描述用户间关系的字符串集合，就像下面这样：</p>
-<pre><code>// 使用 triplets view 来创建一个事实（facts）的RDD
-val facts: RDD[String] =
-  graph.triplets.map(triplet =&gt;
-    triplet.srcAttr._1 + &quot; is the &quot; + triplet.attr + &quot; of &quot; + triplet.dstAttr._1)
-facts.collect.foreach(println(_))
-</code></pre>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2084,7 +2109,7 @@ facts.collect.foreach(println(_))
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">75</span>
+              <span class="site-state-item-count">76</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

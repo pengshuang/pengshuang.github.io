@@ -258,6 +258,195 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/08/GraphX学习/" itemprop="url">
+                  GraphX学习:基础知识
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-08T14:25:44+08:00" content="2016-10-08">
+              2016-10-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/08/GraphX学习/" class="leancloud_visitors" data-flag-title="GraphX学习:基础知识">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><p>GraphX是Spark用于解决图和并行图计算问题的新组件。通过RDD（Resilient Distributed Datasets，弹性分布式数据集）的扩展，GraphX在其中引入了一个新的图抽象，即顶点和边带有特性的有向多重图。Graph提供了一些基本运算符和优化了的Pregel API，来支持图计算。另外，Graph包含了大量的图算法和构造器来简化图的分析任务，并且这个数量还在增加。</p>
+<h3 id="2-GraphX使用"><a href="#2-GraphX使用" class="headerlink" title="2. GraphX使用"></a>2. GraphX使用</h3><p>第一步，引入Spark和GraphX相关的包：</p>
+<pre><code>import org.apache.spark._
+import org.apache.spark.graphx._
+
+// 此处仍然需要用到RDD来让一些例子正常运行
+import org.apache.spark.rdd.RDD
+</code></pre><p>如果你没有使用Spark Shell（例如在外部的IDE中编辑项目），那么你还需要引入SparkContext。具体方法请参阅Spark官方文档，此处不再赘述。</p>
+<h3 id="3-属性图"><a href="#3-属性图" class="headerlink" title="3. 属性图"></a>3. 属性图</h3><p>属性图是一个有向多重图，它的每个顶点和每条边都附有用户定义的对象。作为有向图，有向多重图可能有多个平行的边来共享相同的源顶点和目标顶点。作为多重图，它支持并行边，这个特性简化了许多涉及多重关系的建模场景。每个顶点的主键是一个长度为64 bit的唯一标识符<strong>（VertexID）</strong>。<strong>GraphX</strong>没有为顶点添加任何顺序的约束。类似地，每一条边有对应的源顶点和目标顶点的标识符。</p>
+<p>因此，属性图的参数是通过顶点（VD）和边的类型（ED）来决定的。</p>
+<p>在某些情况下，你可能希望在同一个图里面，顶点能够有不同的属性类型。这个想法可以通过继承实现。举个例子，我们可以对用户和产品进行建模，将其作为一个二分图，然后进行如下的定义（请在Spark Shell中输入语句）：</p>
+<pre><code>class VertexProperty()
+case class UserProperty(val name: String) extends VertexProperty
+case class ProductProperty(val name: String, val price: Double) extends VertexProperty
+
+// 图可能会有这个类型:
+var graph: Graph[VertexProperty, String] = null
+</code></pre><p>类似于RDD，属性图是不可变的、分布式的，并且具有容错性。对于图而言，它的值或者结构上的改变，是通过产生带有预期改变的新图来完成的。主要注意的是，原始图的主要部分（即不受影响的结构、属性和索引等）在新图中被重用，以减少固有功能的数据结构成本。通过使用大量的启发式顶点分区，图在不同的执行器里被划分。就像RDD一样，图的每个分区可以在发生故障时被不同的机器重建。</p>
+<p>属性图在逻辑上对应于一对类型化集合（RDD），该集合编码了每个顶点和每条边属性。因而，图类包含了可以访问图的顶点和边的成员，它的定义如下（该定义仅作了解，无需自己手动定义该类）：</p>
+<pre><code>class Graph[VD, ED] {
+  val vertices: VertexRDD[VD]
+  val edges: EdgeRDD[ED]
+}
+</code></pre><p><strong>VertexRDD[VD]</strong>类和<strong>EdgeRDD[ED]</strong>类分别继承和优化了<strong>RDD[(VertexID, VD)]</strong>类和<strong>RDD[Edge[ED]]</strong>类。两者都提供基于图计算和内部优化构建的额外功能。在此你可将其简单地理解为以<strong>RDD[(VertexID, VD)]</strong>和<strong>RDD[Edge[ED]]</strong>形式定义的<strong>RDD</strong>。</p>
+<h3 id="4-一个属性图的例子"><a href="#4-一个属性图的例子" class="headerlink" title="4. 一个属性图的例子"></a>4. 一个属性图的例子</h3><p>现在假设我们要构建一个由许多来自GraphX项目组的协作者组成的属性图。顶点的属性可能包含用户名和职业。我们应该用一个可以描述协作者间的关系的字符串来注释图的边。</p>
+<p>这段话可以用下图来表示（图片来自GraphX官方文档）：</p>
+<p><img src="/img/graphx.png" alt=""></p>
+<p>由这些因素构成的图将有下面的类型定义（该定义仅作了解即可，无需输入该语句）：</p>
+<pre><code>val userGraph: Graph[(String, String), String]
+</code></pre><p>有很多办法可以由原始文件、RDD或者综合生成器来构建一个属性图。可能最常用的方法还是使用一个<strong>Graph Object</strong>。下面的代码展示了如何通过一个RDD的集合来构建图，你可以尝试在<strong>Spark Shell</strong>中输入下面的代码来完成构建。</p>
+<pre><code>// 在Spark Shell中，这里的SparkContext已经默认给出了。可略过此步。
+val sc: SparkContext
+
+// 创建一个RDD用于表示顶点
+val users: RDD[(VertexId, (String, String))] =
+  sc.parallelize(Array((3L, (&quot;rxin&quot;, &quot;student&quot;)), (7L, (&quot;jgonzal&quot;, &quot;postdoc&quot;)),
+                       (5L, (&quot;franklin&quot;, &quot;prof&quot;)), (2L, (&quot;istoica&quot;, &quot;prof&quot;))))
+// 创建一个RDD用于表示边
+val relationships: RDD[Edge[String]] =
+  sc.parallelize(Array(Edge(3L, 7L, &quot;collab&quot;),    Edge(5L, 3L, &quot;advisor&quot;),
+                       Edge(2L, 5L, &quot;colleague&quot;), Edge(5L, 7L, &quot;pi&quot;)))
+
+// 定义默认的用户，用于建立与缺失的用户之间的关系
+val defaultUser = (&quot;John Doe&quot;, &quot;Missing&quot;)
+
+// 构造图对象，即初始化过程
+val graph = Graph(users, relationships, defaultUser)
+</code></pre><p>在这个例子中，我们用到了名为<strong>Edge</strong>的<strong>case</strong>类。<strong>Edge</strong>类有<strong>srcId</strong>和<strong>dstId</strong>，它们对应于源顶点和目标庆典的标识符。另外，<strong>Edge</strong>类有一个名为<strong>attr</strong>的成员，用于存储边的属性。</p>
+<p>我们也可以使用<strong>graph.vertices</strong>和<strong>graph.edges</strong>函数来解构一个图，将其转化为各个顶点和边的视图。用法如下，请尝试在Shell中输入这些语句：</p>
+<pre><code>// 统计是博士后的用户数量
+graph.vertices.filter { case (id, (name, pos)) =&gt; pos == &quot;postdoc&quot; }.count
+
+// 统计符合 src &gt; dst 条件的边的数量 
+graph.edges.filter(e =&gt; e.srcId &gt; e.dstId).count
+</code></pre><p>注意，<strong>graph.vertices</strong>函数的返回值类型是 <strong>VertexRDD[(String, String)]</strong>，它继承了 <strong>RDD[(VertexID, (String, String))]</strong>，所以我们可以用<strong>Scala</strong>的<strong>case</strong>表达式来解构这个元组。另外，<strong>graph.edges</strong>函数的返回值类型是<strong>EdgeRDD</strong>，它包含了<strong>Edge[String]</strong>对象。我们同样可以使用<strong>case</strong>类的类型构造器，请尝试在<strong>Shell</strong>中输入下面的代码：</p>
+<pre><code>graph.edges.filter { case Edge(src, dst, prop) =&gt; src &gt; dst }.count
+</code></pre><p>对于属性类的顶点和边视图，GraphX还提供了三重视图<strong>（Triplet View）</strong>。这个三重视图从逻辑上联合了顶点和边的属性，产生了一个<strong>RDD[EdgeTriplet[VD, ED]]</strong>，它包含了<strong>DegeTriplet</strong>类的实例。这个<strong>join</strong>联合操作可以由下面的<strong>SQL</strong>表达式解释：</p>
+<pre><code>SELECT src.id, dst.id, src.attr, e.attr, dst.attr
+FROM edges AS e LEFT JOIN vertices AS src, vertices AS dst
+ON e.srcId = src.Id AND e.dstId = dst.Id
+</code></pre><p>如果看不懂这段SQL代码，没关系，下图也能帮助你理解该操作的含义：</p>
+<p><img src="/img/graphx2.png" alt=""></p>
+<p><strong>EdgeTriplet</strong>类继承了<strong>Edge</strong>类，并且添加了<strong>srcAttr</strong>和<strong>dstAttr</strong>两个成员。这两个成员分别包含了源属性和目标属性。我们可以用一个图的三重视图来渲染一个描述用户间关系的字符串集合，就像下面这样：</p>
+<pre><code>// 使用 triplets view 来创建一个事实（facts）的RDD
+val facts: RDD[String] =
+  graph.triplets.map(triplet =&gt;
+    triplet.srcAttr._1 + &quot; is the &quot; + triplet.attr + &quot; of &quot; + triplet.dstAttr._1)
+facts.collect.foreach(println(_))
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/07/实现-memcpy-函数/" itemprop="url">
                   实现 memcpy 函数
                 </a>
@@ -1900,140 +2089,6 @@ REBUILD
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/15/理解有连接和无连接/" itemprop="url">
-                  理解计算机网络中的传输方式
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-15T09:05:01+08:00" content="2016-09-15">
-              2016-09-15
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/15/理解有连接和无连接/" class="leancloud_visitors" data-flag-title="理解计算机网络中的传输方式">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-面向有连接型与面向无连接型"><a href="#1-面向有连接型与面向无连接型" class="headerlink" title="1. 面向有连接型与面向无连接型"></a>1. 面向有连接型与面向无连接型</h3><p>通过网络发送数据，大致可以分为面向有连接与面向无连接类型</p>
-<p>(1) 面向无连接型包括以太网、IP、UDP等协议。</p>
-<p>(2) 面向有连接型包括ATM、帧中继、TCP。</p>
-<h4 id="面向有连接型"><a href="#面向有连接型" class="headerlink" title="面向有连接型"></a>面向有连接型</h4><p>面向有连机型中，在发送数据之前，需要在收发主机之间连接一条通信线路。并且必须在通信传输前后，专门进行建立和断开连接的处理。如果与对端之间无法通信，就可以避免发送无谓的数据</p>
-<h4 id="面向无连接型"><a href="#面向无连接型" class="headerlink" title="面向无连接型"></a>面向无连接型</h4><p>面向无连接型则不要求建立和断开连接。发送端可于任何时候自由发送数据。反之，接收端也永远不知道自己会在何时从哪里接收到数据。</p>
-<h3 id="2-电路交换与分组交换"><a href="#2-电路交换与分组交换" class="headerlink" title="2. 电路交换与分组交换"></a>2. 电路交换与分组交换</h3><h4 id="电路交换"><a href="#电路交换" class="headerlink" title="电路交换"></a>电路交换</h4><p>计算机之间在发送数据时，需要通过交换机与目标主机建立通信电路。我们将连接电路称为建立连接。建立好连接以后，用户就可以一直使用这条电路，直到该连接被断开为止。</p>
-<h4 id="分组交换"><a href="#分组交换" class="headerlink" title="分组交换"></a>分组交换</h4><p>在分组交换中，由分组交换机（路由器）连接通信线路。分组交换的大致处理过程是：发送端计算机将数据分组发送给路由器，路由器收到这些分组数据以后，缓存到自己的缓冲区，然后再转发给目标计算机。因此，分组交换也有另一个名称：蓄积交换。</p>
-<p>在分组交换中，计算机与路由器之间以及路由器与路由器之间通常只有一条通信线路。因此，这条线路其实是一条共享线路。</p>
-<h3 id="3-根据接收端数量分类"><a href="#3-根据接收端数量分类" class="headerlink" title="3. 根据接收端数量分类"></a>3. 根据接收端数量分类</h3><p>网络通信中，也可以根据目标地址的个数以及后续的行为对通信进行分类。如广播、多播等。</p>
-<h4 id="单播（Unicast）"><a href="#单播（Unicast）" class="headerlink" title="单播（Unicast）"></a>单播（Unicast）</h4><p>1对1通信</p>
-<h4 id="广播（Broadcast）"><a href="#广播（Broadcast）" class="headerlink" title="广播（Broadcast）"></a>广播（Broadcast）</h4><p>广播指将消息从1台主机发送给与之相连的所有其他主机。典型的例子是电视播放。</p>
-<h4 id="多播（Multicast）"><a href="#多播（Multicast）" class="headerlink" title="多播（Multicast）"></a>多播（Multicast）</h4><p>多播与广播类似，也是将消息发送给多个接收主机。不同之处在于多播要限定某一组作为接收端。多播通信最典型的例子是电视会议。</p>
-<h4 id="任播-（Anycast）"><a href="#任播-（Anycast）" class="headerlink" title="任播 （Anycast）"></a>任播 （Anycast）</h4><p>任播是指在特定的多台主机中选出一台作为接收端的一种通信方式。任播通信从目标主机群中选择一台最符合网络条件的主机作为目标主机发送消息。通常被选中的那台特定主机将返回一个单播信号，随后发送端主机会只跟这台主机进行通信。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2079,7 +2134,7 @@ REBUILD
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">75</span>
+              <span class="site-state-item-count">76</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

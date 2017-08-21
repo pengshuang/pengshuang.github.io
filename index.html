@@ -258,6 +258,130 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/21/Spark-计算过程解读/" itemprop="url">
+                  Spark 计算过程解读
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-21T08:53:03+08:00" content="2017-08-21">
+              2017-08-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/21/Spark-计算过程解读/" class="leancloud_visitors" data-flag-title="Spark 计算过程解读">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。</p>
+<p>MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 Reduce 过程的高度可并行化；过程间耦合度低，单个过程的失败后可以重新计算，而不会导致整体失败；最重要的是数据处理中的计算逻辑可以很好的转换为 Map 和 Reduce 操作。对于一个数据集来说，Map 对每条数据做相同的转换操作，Reduce 可以按条件对数据分组，然后在分组上做操作。除了 Map 和 Reduce 操作之外，Spark 还延伸出了如 filter，flatMap，count，distinct 等更丰富的操作。</p>
+<p>RDD 是 Spark 中最基本也是最重要的数据结构，可以直观的认为 RDD 就是要处理的数据集。RDD 是分布式的数据集，每个 RDD 都支持 MapReduce 类操作，经过 MapReduce 操作后会产生新的 RDD，而不会修改原有 RDD。RDD 的数据集是分区的，因此可以把每个数据分区放到不同的分区上进行计算，而实际上大多数 MapReduce 操作都是在分区上进行计算的。Spark 不会把每一个 MapReduce 操作都发起计算，而是尽量的把操作累计起来一起计算。Spark 把操作划分为转换和动作，对 RDD 进行的转换操作会叠加起来，直到对 RDD 进行动作操作时才会发起计算。这种特性使得 Spark 可以减少中间结果的吞吐，可以快速的进行多次迭代计算。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/20/AUC、ROC-以及-KS-介绍/" itemprop="url">
                   AUC、ROC 以及 KS 介绍
                 </a>
@@ -1687,200 +1811,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/05/随机森林和GBDT/" itemprop="url">
-                  集成学习：从随机森林到 GBDT
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-05T15:23:15+08:00" content="2017-03-05">
-              2017-03-05
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/05/随机森林和GBDT/" class="leancloud_visitors" data-flag-title="集成学习：从随机森林到 GBDT">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>研究生期间参加了很多数据挖掘比赛，比赛的题目各不相同，但其实每次用的模型都差不多，其中用的最多的就是随机森林和 GBDT。所以今天打算总结一下这两个模型。</p>
-<p>随机森林是一种 bagging 的方法，而 GBDT 则是一种 boosting 的方法。这两类方法统称为集成学习。</p>
-<h3 id="什么是集成学习"><a href="#什么是集成学习" class="headerlink" title="什么是集成学习"></a>什么是集成学习</h3><p>集成学习是一种技术框架，其按照不同的思路来组合基础模型，从而达到比单一模型更好的效果。常见的集成学习框架有：bagging，boosting和stacking。南京大学的周志华老师曾经对这三种方法有很明确的定义：</p>
-<ul>
-<li><strong>bagging</strong>：从训练集从进行子抽样组成每个基模型所需要的子训练集，对所有基模型预测的结果进行综合产生最终的预测结果。</li>
-</ul>
-<p><img src="/img/bagging.jpg" width="500" height="200" alt="图片名称" align="center"></p>
-<ul>
-<li><strong>boosting</strong>：训练过程为阶梯状，基模型按次序一一进行训练（实现上可以做到并行），基模型的训练集按照某种策略每次都进行一定的转化。对所有基模型预测的结果进行线性综合产生最终的预测结果。</li>
-</ul>
-<p><img src="/img/boosting.jpg" width="500" height="300" alt="图片名称" align="center"></p>
-<ul>
-<li><strong>stack</strong>：将训练好的所有基模型对训练基进行预测，第j个基模型对第i个训练样本的预测值将作为新的训练集中第i个样本的第j个特征值，最后基于新的训练集进行训练。同理，预测的过程也要先经过所有基模型的预测形成新的测试集，最后再对测试集进行预测。</li>
-</ul>
-<p><img src="/img/stack.jpg" width="500" height="400" alt="图片名称" align="center"></p>
-<p>有了集成学习的思想，模型便有了 “集思广益” 的能力，也就不容易产生过拟合现象。但是，为什么这样就可以防止过拟合呢，这就不得不先从模型的偏差和方差入手。</p>
-<h3 id="偏差和方差"><a href="#偏差和方差" class="headerlink" title="偏差和方差"></a>偏差和方差</h3><p>广义的偏差（bias）描述的是预测值和真实值之间的差异，方差（variance）描述距的是预测值作为随机变量的离散程度。《Understanding the Bias-Variance Tradeoff》当中有一副图形象地向我们展示了偏差和方差的关系：</p>
-<p><img src="/img/varience.png" width="500" height="400" alt="图片名称" align="center"></p>
-<h4 id="模型的偏差和方差"><a href="#模型的偏差和方差" class="headerlink" title="模型的偏差和方差"></a>模型的偏差和方差</h4><p>模型的偏差：训练出来的模型在训练集上的误差。</p>
-<p>模型的方差：假设模型是随机变量。设样本容量为 n 的训练集为随机变量的集合 \(X_1, X_2,…,X_n\)。那么模型是以这些随机变量为输入的随机变量函数。抽样的随机性会带来模型的随机性。</p>
-<p>定义随机变量的值的差异是计算方差的前提条件，通常来说，我们遇到的都是数值型的随机变量，数值之间的差异很好量化，那么对于模型，它们的差异性是指模型的结构差异，例如：线性模型中权值向量的差异，树模型中树的结构差异等。</p>
-<p>我们认为方差越大的模型越容易过拟合：假设有两个训练集 A 和 B，经过 A 训练的模型 Fa 与经过 B 训练的模型Fb差异很大，这意味着 Fa 在类 A 的样本集合上有更好的性能，而 Fb 反之，则出现了过拟合。</p>
-<p>集成模型中的基模型一般都是弱模型，通常而言，弱模型的偏差很大，方差小，虽然在训练集上效果不好，但是不容易过拟合。有些集成模型中的基模型不是弱模型，bagging 和 stacking 中的基模型为强模型（偏差低，方差高），boosting 中的基模型为弱模型。</p>
-<p>在 bagging 和 boosting 框架中，通过计算基模型的期望和方差，我们可以得到模型整体的期望和方差。为了简化模型，我们假设基模型的权重、方差及两两间的相关系数相等。由于bagging 和 boosting 的基模型都是线性组成的，那么有：</p>
-<p><img src="/img/m1.png" width="400" height="400" alt="图片名称" align="center"></p>
-<h4 id="bagging-的偏差和方差"><a href="#bagging-的偏差和方差" class="headerlink" title="bagging 的偏差和方差"></a>bagging 的偏差和方差</h4><p>对于 bagging 来说，每个基模型的权重等于 1/m 且期望近似相等（子训练集都是从原训练集中进行子抽样），故我们可以进一步化简得到：</p>
-<p><img src="/img/m2.png" width="400" height="300" alt="图片名称" align="center"></p>
-<p>根据上式我们可以看到，<strong>整体模型的期望近似于基模型的期望，这也就意味着整体模型的偏差和基模型的偏差近似</strong>。同时，整体模型的方差小于等于基模型的方差（当相关性为 1 时取等号），随着基模型数（m）的增多，整体模型的方差减少，从而防止过拟合的能力增强，模型的准确度得到提高。但是，模型的准确度一定会无限逼近于 1 吗？并不一定，当基模型数增加到一定程度时，方差公式第二项的改变对整体方差的作用很小，防止过拟合的能力达到极限，这便是准确度的极限了。<strong>另外，在此我们还知道了为什么 bagging 中的基模型一定要为强模型，否则就会导致整体模型的偏差度低，即准确度低。</strong></p>
-<p>随机森林是典型的 bagging 模型，在 bagging 的基础上，进一步降低了模型的方差。随机森林中的基模型是树模型，在树的内部节点分裂过程中，不再是将所有特征，而是随机抽样一部分特征纳入分裂的候选项。这样一来，基模型之间的相关性降低，从而在方差公式中，第一项显著减小，第二项稍微增加，整体方差仍然是减少。</p>
-<p>随机森林的子模型都拥有较低的偏差，在 sklearn 中，整体模型的训练过程旨在降低方差，故其需要较少的子模型（n_estimators默认值为10）且子模型不为弱模型（max_depth的默认值为None），同时，降低子模型间的相关度可以起到减少整体模型的方差的效果（max_features的默认值为auto。</p>
-<h4 id="boosting-的偏差和方差"><a href="#boosting-的偏差和方差" class="headerlink" title="boosting 的偏差和方差"></a>boosting 的偏差和方差</h4><p>对于 boosting 来说，基模型的训练集抽样是强相关的，那么模型的相关系数近似等于 1，故我们也可以针对 boosting 化简公式为：</p>
-<p><img src="/img/m3.png" width="400" height="140" alt="图片名称" align="center"></p>
-<p>通过观察整体方差的表达式，我们容易发现，<strong>若基模型不是弱模型，其方差相对较大，这将导致整体模型的方差很大，即无法达到防止过拟合的效果。</strong> 因此，boosting框架中的基模型必须为弱模型。</p>
-<p>因为基模型为弱模型，导致了每个基模型的准确度都不是很高（因为其在训练集上的准确度不高）。随着基模型数的增多，整体模型的期望值增加，更接近真实值，因此，整体模型的准确度提高。但是准确度一定会无限逼近于 1 吗？仍然并不一定，因为训练过程中准确度的提高的主要功臣是整体模型在训练集上的准确度提高，而随着训练的进行，整体模型的方差变大，导致防止过拟合的能力变弱，最终导致了准确度反而有所下降。</p>
-<p>基于 boosting 框架的 GBDT 模型中基模型也为树模型，和随机森林一样，我们也可以对特征进行随机抽样来使基模型间的相关性降低，从而达到减少方差的效果。</p>
-<p>在 sklearn 中，GBDT 的子模型都拥有较低的方差，整体模型的训练过程旨在降低偏差，故其需要较多的子模型（n_estimators默认值为100）且子模型为弱模型（max_depth的默认值为3），但是降低子模型间的相关度不能显著减少整体模型的方差（max_features的默认值为None）。</p>
-<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><ol>
-<li><p>使用模型的偏差和方差来描述其在训练集上的准确度和防止过拟合的能力。</p>
-</li>
-<li><p>对于 bagging 来说，整体模型的偏差和基模型近似，随着训练的进行，整体模型的方差降低</p>
-</li>
-<li><p>对于 boosting 来说，整体模型的初始偏差较高，方差较低，随着训练的进行，整体模型的偏差降低（虽然也不幸地伴随着方差增高），当训练过度时，因方差增高，整体模型的准确度反而降低</p>
-</li>
-<li><p>整体模型的偏差和方差与基模型的偏差和方差息息相关</p>
-</li>
-</ol>
-<h3 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h3><p>我们先讲 GBDT 模型的损失函数。</p>
-<p>基于 boosting 框架的整体模型可以用线性组成式来描述，其中 \(h_{i}(x)\) 为基模型与其权值的乘积：</p>
-<p>$$F(x) = \sum_i^m h_{i}(x)$$</p>
-<p>根据上式，整体模型的训练目标是使预测值 \(F(x)\) 逼近真实值 y，也就是说要让每一个基模型的预测值逼近各自要预测的部分真实值。由于要同时考虑所有基模型，导致了整体模型的训练变成了一个非常复杂的问题。所以，研究者们想到了一个贪心的解决手段：每次只训练一个基模型。那么，现在改写整体模型为迭代式：</p>
-<p>$$F^i(x) = f^{i-1}(x) + h_i(x)$$</p>
-<p>这样一来，每一轮迭代中，只要集中解决一个基模型的训练问题：使 \(F^i(x)\) 逼近真实值y。</p>
-<h4 id="拟合残差"><a href="#拟合残差" class="headerlink" title="拟合残差"></a>拟合残差</h4><p>使 \(F^i(x)\) 逼近真实值，其实就是使 \(h_i(x)\) 逼近真实值和上一轮迭代的预测值 \(F^{i-1}(x)\) 之差，即残差 (\( y - F^{i-1}(x))\) 。最直接的做法是构建基模型来拟合残差。</p>
-<p>研究者发现，残差其实是最小均方损失函数的关于预测值的反向梯度：</p>
-<p>$$- \frac{\partial (\frac{1}{2} \ast (y - F_{i-1}(x))^2)}{\partial F(x)} = y - F_{i-1}(x)$$</p>
-<p>即，\(F^{i-1}(x)\) 加上反向梯度的 \(h_i(x)\) 得到 \(F^i(x)\)，该值可能导致平方差损失函数降低，预测的准确度降低。</p>
-<h4 id="拟合反向梯度"><a href="#拟合反向梯度" class="headerlink" title="拟合反向梯度"></a>拟合反向梯度</h4><p>引入任意损失函数后，我们可以定义整体模型的迭代式如下：</p>
-<p>$$F^i(x) = F^{i-1}(x) + argmin \sum_j^n L(y_j, F^{i-1}(x_j) + h_i(x_j))$$</p>
-<h4 id="常见的损失函数"><a href="#常见的损失函数" class="headerlink" title="常见的损失函数"></a>常见的损失函数</h4><ul>
-<li>最小均方误差函数：sklearn 中 GBDT 回归中的默认损失函数，刚才介绍的拟合残差其实就是改损失函数的反向梯度值。</li>
-<li>logit 函数：LR 中常用的损失函数。逻辑回归的本质是求极大似然解，其认为样本服从几何分布，样本属于某类别的概率可以用 logistics 函数表达。sklean 中 GBDT 分类模型默认采用这个损失函数。</li>
-<li>指数损失函数：<br>$$L(y_j, F^{i-1}(x_j) = e^{-y_j \ast F^{i-1}(x_j)}$$<br>对该损失函数求反向梯度得：<br>$$- \frac{\partial ( y_j, F^{i-1}(x_j))}{\partial ^{i-1} F^{i-1}(x)} = y_j \ast e^{-y_j \ast F^{i-1}(x_j)}$$<br>这时，第 i 轮迭代中，新训练集如下：<br>$${(x_j, y_j \ast e^{-y_j \ast F^{i-1}(x_j)})}$$<br>这表明当损失函数是指数损失时，GBDT 相当于二分类的 Adaboost 算法。是的，指数损失仅能用于二分类的情况。</li>
-</ul>
-<h4 id="shrinkage"><a href="#shrinkage" class="headerlink" title="shrinkage"></a>shrinkage</h4><p>使用 GBDT 时，每次学习的步长缩减一点。这有什么好处呢？缩减思想认为每次走一小步，多走几次，更容易逼近真实值。如果步子迈大了，使用最速下降法时，容易迈过最优点。</p>
-<h4 id="初始模型"><a href="#初始模型" class="headerlink" title="初始模型"></a>初始模型</h4><p>我们定义损失模型为：</p>
-<p>$$ F^0 (x) = argmin \sum_j^n L(y_j, \gamma)$$</p>
-<p>根据上式可知，对于不同的损失函数来说，初始模型也是不一样的。</p>
-<h4 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h4><p><strong>偏差描述了模型在训练集准确度，而损失函数则是描述该准确度的间接量纲。</strong> 也就是说，模型采用不同的损失函数，其训练过程会朝着不同的方向进行！</p>
-<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><ul>
-<li><a href="http://www.jianshu.com/p/28604e0870d7" target="_blank" rel="external">Random Forest和Gradient Tree Boosting参数详解</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1926,7 +1856,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">75</span>
+              <span class="site-state-item-count">76</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

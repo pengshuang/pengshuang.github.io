@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="C++," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -84,31 +84,19 @@
 
 
 
-<meta name="description" content="1. 接口设计void mymemcpy(void* dst, const void* src, size_t num)
-2. 边界条件典型错误
-void mymemcpy(void* dst, const void* src, size_t num){
-    assert((dst != NULL)&amp;amp;&amp;amp;(src != NULL));
-
-    const char * psrc">
+<meta name="description" content="引言Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。
+MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 R">
 <meta property="og:type" content="article">
-<meta property="og:title" content="实现 memcpy 函数">
-<meta property="og:url" content="http://pengshuang.space/2016/10/07/实现-memcpy-函数/index.html">
+<meta property="og:title" content="Spark 计算过程解读">
+<meta property="og:url" content="http://pengshuang.space/2017/08/21/Spark-计算过程解读/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="1. 接口设计void mymemcpy(void* dst, const void* src, size_t num)
-2. 边界条件典型错误
-void mymemcpy(void* dst, const void* src, size_t num){
-    assert((dst != NULL)&amp;amp;&amp;amp;(src != NULL));
-
-    const char * psrc">
-<meta property="og:updated_time" content="2016-10-07T03:11:41.000Z">
+<meta property="og:description" content="引言Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。
+MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 R">
+<meta property="og:updated_time" content="2017-08-21T03:34:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="实现 memcpy 函数">
-<meta name="twitter:description" content="1. 接口设计void mymemcpy(void* dst, const void* src, size_t num)
-2. 边界条件典型错误
-void mymemcpy(void* dst, const void* src, size_t num){
-    assert((dst != NULL)&amp;amp;&amp;amp;(src != NULL));
-
-    const char * psrc">
+<meta name="twitter:title" content="Spark 计算过程解读">
+<meta name="twitter:description" content="引言Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。
+MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 R">
 
 
 
@@ -129,9 +117,9 @@ void mymemcpy(void* dst, const void* src, size_t num){
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2016/10/07/实现-memcpy-函数/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/08/21/Spark-计算过程解读/"/>
 
-  <title> 实现 memcpy 函数 | 小沙文的博客 </title>
+  <title> Spark 计算过程解读 | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +259,7 @@ void mymemcpy(void* dst, const void* src, size_t num){
             
             
               
-                实现 memcpy 函数
+                Spark 计算过程解读
               
             
           </h1>
@@ -283,8 +271,8 @@ void mymemcpy(void* dst, const void* src, size_t num){
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-07T11:10:09+08:00" content="2016-10-07">
-              2016-10-07
+            <time itemprop="dateCreated" datetime="2017-08-21T08:53:03+08:00" content="2017-08-21">
+              2017-08-21
             </time>
           </span>
 
@@ -297,8 +285,8 @@ void mymemcpy(void* dst, const void* src, size_t num){
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/面试总结/" itemprop="url" rel="index">
-                    <span itemprop="name">面试总结</span>
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
                   </a>
                 </span>
 
@@ -317,7 +305,7 @@ void mymemcpy(void* dst, const void* src, size_t num){
 
           
           
-             <span id="/2016/10/07/实现-memcpy-函数/" class="leancloud_visitors" data-flag-title="实现 memcpy 函数">
+             <span id="/2017/08/21/Spark-计算过程解读/" class="leancloud_visitors" data-flag-title="Spark 计算过程解读">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -339,70 +327,10 @@ void mymemcpy(void* dst, const void* src, size_t num){
       
 
       
-        <h4 id="1-接口设计"><a href="#1-接口设计" class="headerlink" title="1. 接口设计"></a>1. 接口设计</h4><pre><code>void mymemcpy(void* dst, const void* src, size_t num)
-</code></pre><h4 id="2-边界条件"><a href="#2-边界条件" class="headerlink" title="2. 边界条件"></a>2. 边界条件</h4><p><strong>典型错误</strong></p>
-<pre><code>void mymemcpy(void* dst, const void* src, size_t num){
-    assert((dst != NULL)&amp;&amp;(src != NULL));
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。</p>
+<p>MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 Reduce 过程的高度可并行化；过程间耦合度低，单个过程的失败后可以重新计算，而不会导致整体失败；最重要的是数据处理中的计算逻辑可以很好的转换为 Map 和 Reduce 操作。对于一个数据集来说，Map 对每条数据做相同的转换操作，Reduce 可以按条件对数据分组，然后在分组上做操作。除了 Map 和 Reduce 操作之外，Spark 还延伸出了如 filter，flatMap，count，distinct 等更丰富的操作。</p>
+<p>RDD 是 Spark 中最基本也是最重要的数据结构，可以直观的认为 RDD 就是要处理的数据集。RDD 是分布式的数据集，每个 RDD 都支持 MapReduce 类操作，经过 MapReduce 操作后会产生新的 RDD，而不会修改原有 RDD。RDD 的数据集是分区的，因此可以把每个数据分区放到不同的分区上进行计算，而实际上大多数 MapReduce 操作都是在分区上进行计算的。Spark 不会把每一个 MapReduce 操作都发起计算，而是尽量的把操作累计起来一起计算。Spark 把操作划分为转换和动作，对 RDD 进行的转换操作会叠加起来，直到对 RDD 进行动作操作时才会发起计算。这种特性使得 Spark 可以减少中间结果的吞吐，可以快速的进行多次迭代计算。</p>
 
-    const char * psrc = (const char *)src;
-    char * pdst = (char *)dst;
-    while(num-- &gt; 0)
-    {
-        *pdst++ = *psrc++;
-    }
-}
-</code></pre><p><strong>情况1</strong>：不重合， 没问题</p>
-<p><strong>情况2</strong>：重合，且dst &lt; src，也没问题</p>
-<p><strong>情况3</strong>：重合，且dst &gt;= src，oops！</p>
-<p>解决方法：从后向前拷贝</p>
-<p><strong>正确解法</strong></p>
-<pre><code>void mymemcpy(void *dst, const void *src, size_t num)
-{
-    assert((dst != NULL)&amp;&amp;(src != NULL));
-
-    const char* psrc = (const char*)src;
-    char* pdst = (char*)dst;
-
-    if (pdst &gt; psrc &amp;&amp; pdst &lt; psrc + num)
-    {
-        for (size_t i = num - 1; i != -1; --i)
-        {
-            pdest[i] = psrc[i];
-        }
-    else
-    {
-        for (size_t i = 0; i &lt; num; ++i)
-        {
-            pdst[i] = psrc[i];
-        }
-    }
-}
-</code></pre><h4 id="3-如何对memcpy函数进行优化"><a href="#3-如何对memcpy函数进行优化" class="headerlink" title="3. 如何对memcpy函数进行优化"></a>3. 如何对memcpy函数进行优化</h4><p><strong>关键点</strong>：没有必要一个字节一个字节拷贝</p>
-<p><strong>优化</strong>:</p>
-<pre><code>void mymemcpy(void *dst, const void *src, size_t num)
-{
-    assert((dst != NULL)&amp;&amp;(src != NULL));
-
-    int wordnum = num / 4;
-    int slice = num % 4;
-    const int* psrc = (const int*)src;
-    int* pintdst = (int*)dst;
-
-    // 一次拷贝 4 bytes
-    while(wordnum--)
-    {
-        *pintdst++ = *pintsrc++;    
-    }
-
-    // 拷贝剩下的bytes
-    const char* pcharsrc = (const char*)pintsrc;
-    char* pchardst = (char*)pintdst;
-    while (slice--)
-    {
-        *pchardst++ = *pcharsrc++;
-    }
-}
-</code></pre>
       
     </div>
 
@@ -422,28 +350,18 @@ void mymemcpy(void* dst, const void* src, size_t num){
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/C/" rel="tag">#C++</a>
-          
-        </div>
-      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/27/面试排序算法总结/" rel="next" title="面试排序算法总结">
-                <i class="fa fa-chevron-left"></i> 面试排序算法总结
+              <a href="/2017/08/20/AUC、ROC-以及-KS-介绍/" rel="next" title="AUC、ROC 以及 KS 介绍">
+                <i class="fa fa-chevron-left"></i> AUC、ROC 以及 KS 介绍
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/08/GraphX学习/" rel="prev" title="GraphX学习:基础知识">
-                GraphX学习:基础知识 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -599,7 +517,7 @@ void mymemcpy(void* dst, const void* src, size_t num){
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-接口设计"><span class="nav-number">1.</span> <span class="nav-text">1. 接口设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-边界条件"><span class="nav-number">2.</span> <span class="nav-text">2. 边界条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-如何对memcpy函数进行优化"><span class="nav-number">3.</span> <span class="nav-text">3. 如何对memcpy函数进行优化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li></ol></div>
             
           </div>
         </section>

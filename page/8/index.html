@@ -258,6 +258,284 @@
             
               
                 
+                <a class="post-title-link" href="/2015/10/27/K-means算法java实现/" itemprop="url">
+                  K-means算法java实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-10-27T14:09:30+08:00" content="2015-10-27">
+              2015-10-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数据挖掘/" itemprop="url" rel="index">
+                    <span itemprop="name">数据挖掘</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2015/10/27/K-means算法java实现/" class="leancloud_visitors" data-flag-title="K-means算法java实现">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>今天用Java实现了一下K-means算法，把它应用在一个小例子中，效果还不错。下面附上代码和注释。</p>
+<p>测试用例：</p>
+<p><img src="/img/kmeans/1.png" alt=""></p>
+<p>第一列是属性名称，其他列代表相应属性值。</p>
+<p>代码如下：</p>
+<pre><code>package org.tseg.kmeans;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+public class MyKmeans {
+
+static Vector&lt;Point&gt; exprValues = new Vector&lt;Point&gt;();
+static List&lt;Vector&lt;Point&gt;&gt; list = new ArrayList&lt;Vector&lt;Point&gt;&gt;(); // 每次迭代保存结果，一个vector代表一个簇
+private final static Integer K = 2; // 选K=2，也就是估算有两个簇。
+private final static Double converge = 0.001; // 当距离小于某个值的时候，就认为聚类已经聚类了，不需要再迭代，这里的值选0.001
+
+// 读取数据
+public static final void readF1() throws IOException {
+    // 读取我们的测试文件
+    String filePath = &quot;src/simple_k-means.txt&quot;;
+    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+    // 按行来读取文件，每行之间按空格隔开
+    for (String line = br.readLine(); line != null; line = br.readLine()) {
+        if (line.length() == 0 || &quot;&quot;.equals(line))
+            continue;
+        String[] str = line.split(&quot; &quot;);
+        Point p0 = new Point();
+        // 存放相应的X，Y坐标
+        p0.setname(String.valueOf(str[0]));
+        p0.setX(Double.valueOf(str[1]));
+        p0.setY(Double.valueOf(str[2]));
+        //
+        exprValues.add(p0);
+    }
+    br.close();
+}
+
+// 采用欧氏距离
+public static Double DistanceMeasure(Point p1, Point p2) {
+
+    Double tmp = StrictMath.pow(p2.getX() - p1.getX(), 2) + StrictMath.pow(p2.getY() - p1.getY(), 2);
+    return Math.sqrt(tmp);
+}
+
+// 计算新的簇心
+public static Double CalCentroid() {
+    System.out.println(&quot;------------------------------------------------&quot;);
+    Double movedist = Double.MAX_VALUE;
+    for (int i = 0; i &lt; list.size(); i++) {
+        Vector&lt;Point&gt; subli = list.get(i);
+        Point po = new Point();
+        Double sumX = 0.0;
+        Double sumY = 0.0;
+        Double Clusterlen = Double.valueOf(subli.size());
+        for (int j = 0; j &lt; Clusterlen; j++) {
+            Point nextp = subli.get(j);
+            sumX = sumX + nextp.getX();
+            sumY = sumY + nextp.getY();
+        }
+        po.setX(sumX / Clusterlen);
+        po.setY(sumY / Clusterlen);
+        // 新的点与旧点之间的距离
+        Double dist = DistanceMeasure(subli.get(0), po);
+        // 在多个簇心移动的过程中，返回移动距离最小的值
+        if (dist &lt; movedist)
+            movedist = dist;
+        list.get(i).clear();
+        list.get(i).add(po);
+        System.out.println(&quot;C&quot; + i + &quot;的簇心为：&quot; + po.getX() + &quot;,&quot; + po.getY());
+    }
+    return movedist;
+}
+// 本次的簇心
+// 下一次移动的簇心
+
+private static Double move = Double.MAX_VALUE;// 移动距离
+// 不断地迭代，直到收敛
+
+public static void RecursionKluster() {
+    for (int times = 2; move &gt; converge; times++) {
+        System.out.println(&quot;第&quot; + times + &quot;次迭代&quot;);
+        // 默认每一个list里的Vector第0个元素是质心
+        for (int i = 1; i &lt; exprValues.size(); i++) {
+            Point p = new Point();
+            p = exprValues.get(i);
+            int index = -1;
+
+            double neardist = Double.MAX_VALUE;
+            for (int k = 0; k &lt; K; k++) {
+                Point centre = list.get(k).get(0);
+                double currentdist = DistanceMeasure(p, centre);
+                if (currentdist &lt; neardist) {
+                    neardist = currentdist;
+                    index = k;
+                }
+            }
+            System.out.println(&quot;C&quot; + index + &quot;:的点为：&quot; + p.getname() + &quot;:&quot; + p.getX() + &quot;,&quot; + p.getY());
+            list.get(index).add(p);
+        }
+        // 重新计算簇心,并返回移动的距离，最小的那个距离
+
+        move = CalCentroid();
+        System.out.println(&quot;各个簇心移动中最小的距离为，move=&quot; + move);
+    }
+}
+
+public static void Kluster() {
+
+    // K为簇的个数
+    for (int k = 0; k &lt; K; k++) {
+        Vector&lt;Point&gt; vect = new Vector&lt;Point&gt;();
+        Point p = new Point();
+        // p依次取得每个簇
+        p = exprValues.get(k);
+        vect.add(p);
+        list.add(vect);
+    }
+    System.out.println(&quot;第1次迭代&quot;);
+    // 默认每一个list里的Vector第0个元素是质心
+    for (int i = K; i &lt; exprValues.size(); i++) {
+        Point p = new Point();
+        p = exprValues.get(i);
+        int index = -1;
+
+        double neardist = Double.MAX_VALUE;
+        for (int k = 0; k &lt; K; k++) {
+            Point centre = list.get(k).get(0);
+            double currentdist = DistanceMeasure(p, centre);
+            if (currentdist &lt; neardist) {
+                neardist = currentdist;
+                index = k;
+            }
+        }
+        System.out.println(&quot;C&quot; + index + &quot;:的点为：&quot; + p.getname() + &quot;:&quot; + p.getX() + &quot;,&quot; + p.getY());
+        list.get(index).add(p);
+    }
+}
+
+public static void main(String[] args) throws IOException {
+
+    // 读取数据
+    readF1();
+    // 第一次迭代
+    Kluster();
+    // 第一次迭代后计算簇心
+    CalCentroid();
+    // 不断迭代，直到收敛
+    RecursionKluster();
+    }
+}
+</code></pre><p>根据我上一篇文章《K-means算法之我见》再结合这个代码应该很好理解。</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/10/25/PageRank-的三种实现方式-3/" itemprop="url">
                   PageRank-的三种实现方式(3)
                 </a>
@@ -1310,7 +1588,7 @@ public static void copyURLToFile(URL source, File dest) throws IOException {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">75</span>
+              <span class="site-state-item-count">76</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
