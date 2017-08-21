@@ -333,6 +333,19 @@
             <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Spark 是一个分布式的内存计算框架，其特点是能处理大规模数据，计算速度快，Spark 延续了 Hadoop 的 MapReduce 计算模型，相比之下 Spark 的计算过程保持在内存中，减少了硬盘读写，能够将多个操作进行合并计算，因此提升了计算速度，同时 Spark 也提供了更丰富的计算 API。</p>
 <p>MapReduce 是 Hadoop 和 Spark 的计算模型，其特点是 Map 和 Reduce 过程的高度可并行化；过程间耦合度低，单个过程的失败后可以重新计算，而不会导致整体失败；最重要的是数据处理中的计算逻辑可以很好的转换为 Map 和 Reduce 操作。对于一个数据集来说，Map 对每条数据做相同的转换操作，Reduce 可以按条件对数据分组，然后在分组上做操作。除了 Map 和 Reduce 操作之外，Spark 还延伸出了如 filter，flatMap，count，distinct 等更丰富的操作。</p>
 <p>RDD 是 Spark 中最基本也是最重要的数据结构，可以直观的认为 RDD 就是要处理的数据集。RDD 是分布式的数据集，每个 RDD 都支持 MapReduce 类操作，经过 MapReduce 操作后会产生新的 RDD，而不会修改原有 RDD。RDD 的数据集是分区的，因此可以把每个数据分区放到不同的分区上进行计算，而实际上大多数 MapReduce 操作都是在分区上进行计算的。Spark 不会把每一个 MapReduce 操作都发起计算，而是尽量的把操作累计起来一起计算。Spark 把操作划分为转换和动作，对 RDD 进行的转换操作会叠加起来，直到对 RDD 进行动作操作时才会发起计算。这种特性使得 Spark 可以减少中间结果的吞吐，可以快速的进行多次迭代计算。</p>
+<h3 id="和-MapReduce-相比"><a href="#和-MapReduce-相比" class="headerlink" title="和 MapReduce 相比"></a>和 MapReduce 相比</h3><p>MapReduce 比较坑的地方:</p>
+<ol>
+<li>仅支持 Map 和 Reduce 操作。</li>
+<li>处理效率低，Map 中间结果要写磁盘，Reduce 写 HDFS，多个 MR 之间通过 HDFS 交互数据，任务调度和启动的开销大，无法充分利用内存，Map 端和 Reduce 端均需要排序。</li>
+<li>不适合迭代计算（如机器学习，图计算等），交互式处理（数据挖掘）和流式处理（点击日志分析)。</li>
+</ol>
+<p>Spark 的特点：</p>
+<ol>
+<li>高效（比 MapReduce 快 10 ~ 100 倍）。</li>
+<li>内存计算引擎，提供 Cache 机制来支持需要反复迭代计算或者多次数据共享，减少数据读取的 IO 开销。</li>
+<li>DAG 引擎，减少多次计算之间中间结果写到 HDFS 上的开销。</li>
+<li>使用多线程池模型来减少 task 启动开销，shuffle 过程中避免不必要的 sort 操作已经减少磁盘 IO 操作。</li>
+</ol>
 <h3 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h3><p>Spark 自身只对计算负责，其计算资源的管理和调度由第三方框架来实现。常用的有 Yarn 和 Mesos。Spark on Yarn 的系统结构图如下:</p>
 <p><img src="/img/yarn.png" alt=""></p>
 <p>图中共分为三大部分：Spark Driver，Worker，Cluster manager。其中 Driver program 负责将 RDD 转换为任务，并进行任务调度。Worker 负责任务的执行。Yarn 负责计算资源的维护和分配。Driver 可以运行在用户程序中，或者运行在其中一个 Worker 上。Spark 中的每一个应用对应着一个 Driver。这个 Driver 可以接收 RDD 上的计算请求，每个动作（action）类型的操作被作为一个 Job 进行计算。Spark 会根据 RDD 的依赖关系构建计算阶段（Stage）的有向无环图，每个阶段有与分区数相同的任务（Task）。这些任务将在每个分区（Partition）上进行计算，任务划分完成后 Driver 将任务提交到运行于 Worker 上的 Executor 中进行计算，并对任务的成功、失败进行记录和重启等处理。</p>
@@ -345,6 +358,19 @@
 <li>Shuffle 过程：两个阶段之间有宽依赖时，需要进行 Shuffle 操作。</li>
 <li>计算结果收集：从每个任务收集并汇总结果。</li>
 </ol>
+<h4 id="RDD-构建和转换"><a href="#RDD-构建和转换" class="headerlink" title="RDD 构建和转换"></a>RDD 构建和转换</h4><p>RDD 按照其作用可以分为两种类型，一种是对数据源的封装，可以把数据源转换为 RDD，这种类型的 RDD 包括 NewHadoopRDD，ParallelCollectionRDD，JdbcRDD 等。另一种是对 RDD 的转换，从而实现一种计算方法，这种类型的 RDD 包括 MapperRDD，ShuffledRDD，FilteredRDD等。数据源类型的 RDD 不依赖于其他 RDD，计算类的 RDD 拥有自己 RDD 依赖。</p>
+<p>RDD 有三个要素：分区，依赖关系，计算逻辑。分区是保证 RDD 分布式的特性，分区可以对 RDD 的数据进行划分，划分后的分区可以分布到不同的 Executor 中，大部分对 RDD 的计算都是在分区上进行的。依赖关系维护着 RDD 的计算过程，每个计算类型的 RDD 在计算时，会将所依赖的 RDD 作为数据源进行计算。根据一个分区的输出是否被多分区使用，Spark 将依赖分为窄依赖和宽依赖。RDD 的计算逻辑是其功能的体现，其计算过程是所依赖的 RDD 为数据源进行的。</p>
+<h4 id="RDD-的依赖关系"><a href="#RDD-的依赖关系" class="headerlink" title="RDD 的依赖关系"></a>RDD 的依赖关系</h4><p>Spark 在遇到动作类操作时，就会发起计算 Job，把 RDD 转换为任务，并发送任务到 Executor 上执行。从 RDD 到任务的转换过程是在 DAGScheduler 中进行的。其总体思路是根据 RDD 的依赖关系，把窄依赖合并到一个阶段中，遇到宽依赖则划分出新的阶段，最终形成一个阶段的有向无环图，并根据图的依赖关系先后提交阶段。每个阶段按照分区数量划分为多个任务，最终任务被序列化并提交到 Executor 上执行。</p>
+<h4 id="RDD-到-Task-的构建过程"><a href="#RDD-到-Task-的构建过程" class="headerlink" title="RDD 到 Task 的构建过程"></a>RDD 到 Task 的构建过程</h4><p>当 RDD 的动作类操作被调用时，RDD 将调用 SparkContext 开始提交 Job，SparkContext 将调用 DAGScheduler 将 RDD 转换为阶段的有向无环图，然后首先将有向无环图中没有未完成的依赖的阶段进行提交。在阶段被提交时，每个阶段将产生与分区数量相同的任务，这些任务称之为 TaskSet。任务的类型分为 ShuffleMapTask 和 ResultTask，如果阶段的输出将用于下个阶段的输入，也就是需要进行 Shuffle 操作，则任务类型为 ShuffleMapTask。如果阶段的输入即为 Job 结果，则任务类型为 ResultTask。任务创建完成后会交给 TaskSchedulerImpl 进行 TaskSet 级别的调度执行。</p>
+<h4 id="Spark的任务调度"><a href="#Spark的任务调度" class="headerlink" title="Spark的任务调度"></a>Spark的任务调度</h4><p>Spark 中的任务调度实际上分了三个层次。第一层次是基于阶段的有向无环图进行 Stage 的调度，第二层次是根据调度策略（FIFO，FAIR）进行 TaskSet 调度，第三层次是根据数据本地性（Process，Node，Rack）在 TaskSet<br>内进行调度。</p>
+<h3 id="任务计算"><a href="#任务计算" class="headerlink" title="任务计算"></a>任务计算</h3><p>任务的计算过程是在 Executor 上完成的，Executor 监听来自SchedulerBackend 的指令，接收到任务时会启动 TaskRunner 线程进行任务执行。在 TaskRunner 中首先将任务和相关信息反序列化，然后根据相关信息获取任务所依赖的 Jar 包和所需文件，完成准备工作后执行任务的 run 方法，实际上就是执行 ShuffleMapTask 或 ResultTask 的 run 方法。任务执行完毕后将结果发送给 Driver 进行处理。</p>
+<p>在 Task.run 方法中可以看到 ShuffleMapTask 和 ResultTask 有着不同的计算逻辑。ShuffleMapTask 是将所依赖 RDD 的输出写入到 ShuffleWriter 中，为后面的 Shuffle 过程做准备。ResultTask 是在所依赖 RDD 上应用一个函数，并返回函数的计算结果。在这两个 Task 中只能看到数据的输出方式，而看不到应有的计算逻辑。实际上计算过程是包含在 RDD 中的，调用 RDD.Iterator 方法获取 RDD 的数据将触发这个 RDD 的计算动作（RDD.Iterator），由于此 RDD 的计算过程中也会使用所依赖 RDD 的数据。从而 RDD 的计算过程将递归向上直到一个数据源类型的 RDD，再递归向下计算每个 RDD 的值。需要注意的是，以上的计算过程都是在分区上进行的，而不是整个数据集，计算完成得到的是此分区上的结果，而不是最终结果。</p>
+<p>从 RDD 的计算过程可以看出，RDD 的计算过程是包含在 RDD 的依赖关系中的，只要 RDD 之间是连续窄依赖，那么多个计算过程就可以在同一个 Task 中进行计算，中间结果可以立即被下个操作使用，而无需在进程间、节点间、磁盘上进行交换。</p>
+<h3 id="Shuffle-过程"><a href="#Shuffle-过程" class="headerlink" title="Shuffle 过程"></a>Shuffle 过程</h3><p>Shuffle 是一个对数据进行分组聚合的操作过程，原数据将按照规则进行分组，然后使用一个聚合函数应用于分组上，从而产生新数据。Shuffle 操作的目的是把同组数据分配到相同分区上，从而能够在分区上进行聚合计算。为了提高 Shuffle 性能，还可以先在原分区对数据进行聚合（mapSideCombine），然后再分配部分聚合的数据到新分区，第三步在新分区上再次进行聚合。</p>
+<p>在划分阶段时，只有遇到宽依赖才会产生新阶段，才需要 Shuffle 操作。宽依赖与窄依赖取决于原分区被新分区的使用关系，只要一个原分区会被多个新分区使用，则为宽依赖，需要 Shuffle。否则为窄依赖，不需要 Shuffle。</p>
+<p>以上也就是说只有阶段与阶段之间需要 Shuffle，最后一个阶段会输出结果，因此不需要 Shuffle。Shuffle 是通过 Map 阶段的 ShuffleMapTask 与 Reduce 阶段的 ShuffledRDD 配合完成的。其中 ShuffleMapTask 会把任务的计算结果写入 ShuffleWriter，ShuffledRDD 从 ShuffleReader 中读取数据，Shuffle 过程会在写入和读取过程中完成。以 HashShuffle 为例，HashShuffleWriter 在写入数据时，会决定是否在原分区做聚合，然后根据数据的Hash 值写入相应新分区。HashShuffleReader 再根据分区号取出相应数据，然后对数据进行聚合。</p>
+<h3 id="计算结果收集"><a href="#计算结果收集" class="headerlink" title="计算结果收集"></a>计算结果收集</h3><p>ResultTask 任务计算完成后可以得到每个分区的计算结果，此时需要在 Driver上对结果进行汇总从而得到最终结果。</p>
+<p>RDD 在执行 collect，count 等动作时，会给出两个函数，一个函数在分区上执行，一个函数在分区结果集上执行。例如 collect 动作在分区上（Executor中）执行将 Iterator 转换为 Array 的函数，并将此函数结果返回到 Driver。Driver 从多个分区上得到 Array 类型的分区结果集，然后在结果集上（Driver中）执行合并 Array 的操作，从而得到最终结果。</p>
 
           
         
