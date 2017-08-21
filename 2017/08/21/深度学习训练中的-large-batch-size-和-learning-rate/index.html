@@ -84,23 +84,20 @@
 
 
 
-<meta name="description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
-产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallo">
+<meta name="description" content="今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。
+理解SGD、minibatch-SGD 和 GD在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Resnet 学习笔记">
-<meta property="og:url" content="http://pengshuang.space/2017/08/05/Resnet-学习笔记/index.html">
+<meta property="og:title" content="深度学习训练中的 large batch size 和 learning rate">
+<meta property="og:url" content="http://pengshuang.space/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
-产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallo">
-<meta property="og:image" content="http://pengshuang.space/img/resnet1.jpeg">
-<meta property="og:image" content="http://pengshuang.space/img/resnet2.jpeg">
-<meta property="og:image" content="http://pengshuang.space/img/resnet3.jpeg">
-<meta property="og:image" content="http://pengshuang.space/img/resnet4.png">
-<meta property="og:updated_time" content="2017-08-05T12:18:29.000Z">
+<meta property="og:description" content="今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。
+理解SGD、minibatch-SGD 和 GD在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准">
+<meta property="og:image" content="http://pengshuang.space/img/sgd.png">
+<meta property="og:updated_time" content="2017-08-21T09:08:34.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Resnet 学习笔记">
-<meta name="twitter:description" content="目标深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。
-产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallo">
+<meta name="twitter:title" content="深度学习训练中的 large batch size 和 learning rate">
+<meta name="twitter:description" content="今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。
+理解SGD、minibatch-SGD 和 GD在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准">
 
 
 
@@ -121,9 +118,9 @@
 
 
 
-  <link rel="canonical" href="http://pengshuang.space/2017/08/05/Resnet-学习笔记/"/>
+  <link rel="canonical" href="http://pengshuang.space/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/"/>
 
-  <title> Resnet 学习笔记 | 小沙文的博客 </title>
+  <title> 深度学习训练中的 large batch size 和 learning rate | 小沙文的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -263,7 +260,7 @@
             
             
               
-                Resnet 学习笔记
+                深度学习训练中的 large batch size 和 learning rate
               
             
           </h1>
@@ -275,8 +272,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-05T15:50:59+08:00" content="2017-08-05">
-              2017-08-05
+            <time itemprop="dateCreated" datetime="2017-08-21T16:20:59+08:00" content="2017-08-21">
+              2017-08-21
             </time>
           </span>
 
@@ -309,7 +306,7 @@
 
           
           
-             <span id="/2017/08/05/Resnet-学习笔记/" class="leancloud_visitors" data-flag-title="Resnet 学习笔记">
+             <span id="/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/" class="leancloud_visitors" data-flag-title="深度学习训练中的 large batch size 和 learning rate">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -331,39 +328,33 @@
       
 
       
-        <h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>深度学习网络的深度对最后的分类和识别的效果有着很大的影响，所以一般把网络设计的越深效果越好，但是事实上却不是这样，常规的网络的堆叠（plain network）在网络很深的时候，效果却越来越差了。<strong>这里的效果差不是单指在测试集上的效果差，而是在训练集和测试集上的效果都变差。</strong></p>
-<p>产生这种问题的原因之一即是网络越深，梯度消失的现象就越来越明显，网络的训练效果也不会很好。但是现在浅层的网络（shallower network）又无法明显提升网络的识别效果了，所以 Resnet（残差网络）的目标是在网络深度加深的情况下解决梯度消失的问题。</p>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><img src="/img/resnet1.jpeg" alt=""></p>
-<p>常规的神经网络结构如上图所示。</p>
-<p><img src="/img/resnet2.jpeg" alt=""></p>
-<p>ResNet 引入了残差网络结构（residual network），通过残差网络，可以把网络层弄的很深，据说可以达到了1000多层，最终的网络分类的效果也是非常好，残差网络的基本结构如上图所示。</p>
-<p>通过增加一个恒等映射（identity mapping），同时在输出个输入之间引入一个 shortcut connection，而不是简单的堆叠网络。将原始所需要学习的函数 <strong>H(x)</strong> 转换成 <strong>F(x) + x</strong>。这样可以解决网络由于很深出现梯度消失的问题，从而可以把网络做的很深，ResNet 其中一个网络结构如下图所示：</p>
-<p><img src="/img/resnet3.jpeg" alt=""></p>
-<p>Resnet 网络结构的基本设计方案 — VGG-style：</p>
-<ol>
-<li>所有的3x3卷积层（几乎所有）</li>
-<li>空间规模/2 =&gt; #过滤器x2 (~每一层的复杂度相同)</li>
-<li>简约的设计风格</li>
-</ol>
-<p>训练方法：</p>
-<ol>
-<li><p>所有的平原/残差网络都是从头开始训练的。</p>
-</li>
-<li><p>所有的平原/残差网络都运用组归一化（Batch Normalization）。</p>
-</li>
-<li><p>标准化的超参数&amp;增强。</p>
-</li>
-</ol>
-<p>论文中介绍了一个深层次的残差学习框架来解决精准度下降问题。并且明确地让这些层适合残差映射，而不是寄希望于每一个堆叠层直接适合一个所需的底层映射。形式上，把 H(x) 作为所需的基本映射，让堆叠的非线性层适合另一个映射 F(x) := H(x) - x。</p>
-<p>公式 F(x) + x 可以通过 shortcut 前馈神经网络实现。shortcut 是那些跳过中的一层或更多层。在我们的情景中，shortcut 简单的执行身份映射，并将它们的输出添加到叠加层的输出。身份快捷连接添加既不产生额外的参数，也会增加不计算的复杂度。通过反向传播的SGD，整个网络仍然可以被训练成终端到端的形式。</p>
-<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><p>残差网络的精美之处在于那个 shortcut 的设计。</p>
-<p>增加一个恒等映射这一步，将原始所需要学的函数 H(x) 转换成 F(x) + x。论文认为这两种表达的效果是相同的，但是优化的难度却并不相同。</p>
-<p>首先作者假设 F(x) 的优化会比H(x)简单的多。这一想法也是源于图像处理中的残差向量编码，通过一个 reformulation，将一个问题分解成多个尺度直接的残差问题，能够很好的起到优化训练的效果。</p>
-<p>这个 Residual block 通过 shortcut connection 实现，通过 shortcut 将这个 block 的输入和输出进行一个 element-wise 的加叠，这个简单的加法并不会给网络增加额外的参数和计算量，同时却可以大大增加模型的训练速度、提高训练效果，并且当模型的层数加深时，这个简单的结构能够很好的解决退化问题。</p>
-<p><img src="/img/resnet4.png" alt=""></p>
-<p>残差网络也可以从另一个角度来理解，如上图所示。</p>
-<p>残差网络单元其中可以分解成右边的形式，从图中可以看出，残差网络其实是由多种路径组合的一个网络，即，残差网络其实是很多并行子网络的组合，整个残差网络其实相当于一个多人投票系统（Ensembling）。</p>
-<h3 id="为了证明，如果删除残差网络的一部分"><a href="#为了证明，如果删除残差网络的一部分" class="headerlink" title="为了证明，如果删除残差网络的一部分"></a>为了证明，如果删除残差网络的一部分</h3><p>如果把残差网络理解成一个Ensambling系统，那么网络的一部分就相当于少一些投票的人，如果只是删除一个基本的残差单元，对最后的分类结果应该影响很小；而最后的分类错误率应该是和删除的残差单元的个数成正比的，这个结论也被学者实验证明。</p>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。</p>
+<h3 id="理解SGD、minibatch-SGD-和-GD"><a href="#理解SGD、minibatch-SGD-和-GD" class="headerlink" title="理解SGD、minibatch-SGD 和 GD"></a>理解SGD、minibatch-SGD 和 GD</h3><p>在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准确。但也有几个缺点，一个是当训练集较大时，GD 的梯度计算较为耗时，二是现代深度学习网络的 loss function 往往是非凸的，基于凸优化理论，这种情况下优化算法只能收敛到局部最小值，因此使用 GD 训练深度神经网络，最终收收敛点很容易落在初始点附近的一个局部最小值区域，不太容易达到较好的收敛性能。</p>
+<p>另一个极端是随机梯度下降（stochastic gradient descent），每次计算梯度只用一个样本，这样做的好处是计算快，而且很适合 online-learning 数据流式到达的场景，但缺点是单个实例产生的梯度估计往往很不准，所以得采用很小的 learning rate，而且由于现代的计算框架 CPU/GPU 的多线程工作，单个实例往往很难占满 CPU/GPU 的使用率，导致计算资源浪费。</p>
+<p>折中的方案就是 mini-batch，一次采用 batch size 的实例来估计梯度，这样梯度估计相对于 SGD 更准，同时 batch size 能占满 CPU/GPU 的计算资源，又不像 GD 那样计算整个训练集。同时也由于 mini batch 能有适当的梯度噪声，一定程度上缓解 GD 直接掉进了初始点附近的局部最小导致收敛不好的缺点，所以 mini-batch 的方法也最为常用。</p>
+<p>关于增大 batch size 对于梯度估计准确度的影响，分析如下：假设 batch size 为 m，对于一个 mini-batch，loss 为：</p>
+<p>$$L = \frac{1}{m}\sum_{i=1}^{m} L(x_i, y_i)$$</p>
+<p>梯度：</p>
+<p>$$g = \frac{1}{m}\sum_{i=1}^{m} g(x_i, y_i)$$</p>
+<p>整个 mini-batch 的梯度方差为</p>
+<p>$$Var(g) = Var(\frac{1}{m}\sum_{i=1}^{m} g(x_i, y_i))<br>         = \frac{1}{m} Var(g(x_1, y_1))$$</p>
+<p>由于每个样本 (xi, yi) 是随机从训练样本集采样得到的，因此样本梯度的方差相等。可以看到 batch size 增大 m 倍，相当于将梯度的方差减少 m 倍，因此梯度更加准确。</p>
+<p>如果要保持方差和原来 SGD 一样，相当于给定了这么大的方差带宽容量，那么就可以增大 learning rate，充分利用这个方差容量，在上式中添加 learning rate，同时利用方差的变化公式，得到等式：</p>
+<p>$$\frac{1}{m} Var(\sqrt{m} \ast lr \ast g(x_1, y_1)) = Var(lr \ast g(x_1, y_1))$$</p>
+<p>因此可将 learning rate 增加 sqrt(m) 倍，以提高训练速度。</p>
+<h3 id="large-batch-与-learning-rate"><a href="#large-batch-与-learning-rate" class="headerlink" title="large batch 与 learning rate"></a>large batch 与 learning rate</h3><p>在分布式训练中，batch size 随着数据并行的 worker 增加而增大，假设 baseline 的batch size 为 B，learning rate 为 lr，训练 epoch 数为 N。如果保持 baseline 的 learning rate，一般不会有较好的收敛速度和精度。原因如下：对于收敛速度，假设 k 个 worker，每次过的 sample 数量为 kB，因此一个 epoch 下的更新次数为 baseline 的 1/k，而每次更新的 lr 不变，所以要达到 baseline 相同的更新次数，则需要增加 epoch 数量，最大需要增加 k*N 个epoch，因此收敛加速倍数会远远低于 k。对于收敛精度，由于增大了 batch size 使梯度估计相较于 badeline 的梯度更加准确，噪音减少，更容易收敛到附近的局部最小，类似于 GD 的效果。为了解决这个问题，一个方法就是增大 lr，因为 batch 变大梯度估计更准，理应比 baseline 的梯度更确信一些，所以增大 lr，利用更准确的梯度多走一点，提高收敛速度。同时增大lr，让每次走的幅度尽量大一些，如果遇到了尖锐的局部最小，还有可能逃出收敛到更好的地方。</p>
+<p>但是 lr 不能无限制的增大，原因分析如下。深度神经网络的 loss surface 往往是高维高度非线性的，可以理解为 loss surface 表面凹凸不平，坑坑洼洼，不像 y = x^2 曲线这样光滑，因此基于当前 weight 计算出来的梯度，往前更新的 learing rate 很大的时候，沿着 loss surface 的切线就走了很大一步，有可能大大偏于原有的 loss surface，示例如下图（a）所示，虚线是当前梯度的方向，也就是当前 loss surface 的切线方向，如果learning rate 过大，那这一步沿切线方向就走了很大一步，如果一直持续这样，那很可能就走向了一个错误的loss surface，如图(b)所示。如果是较小的learning rate，每次只沿切线方向走一小步，虽然有些偏差，依然能大致沿着 loss sourface steepest descent曲线想下降，最终收敛到一个不错的局部最小，如图(c)所示。</p>
+<p><img src="/img/sgd.png" alt=""></p>
+<p>因此，如何确定 large batch size 与 learing rate 的关系呢？分别比较 baseline 和 k 个 worker 的 large batch 的更新公式，如下：</p>
+<p>$$w_{t+k} = w_t - \eta \frac{1}{n}\sum_{j &lt; k}\sum_{x \epsilon \beta_j} \nabla l(x, w_{t + j})$$</p>
+<p>$$w_{t+k} = w_t - \eta \frac{1}{kn}\sum_{j &lt; k}\sum_{x \epsilon \beta_j} \nabla l(x, w_{t})$$</p>
+<p>以上是 baseline (batch size B) 和 large batch(batch size kB) 的更新公式，第二个中 large batch 过一步的数据量相当于第一个 baseline k 步过的数据量，loss 和梯度都按找过的数据量取平均，因此，为了保证相同的数据量利用率，第二个中的 learning  rate 应该为 baseline 的 k 倍，也就是 learning rate 的 linear scale rule。</p>
+<p>linear scale rule 有几个约束，其中一个约束是关于 weight 的约束，第一个公式中每一步更新基于的 weight 都是前一步更新过后的 weight，因此相当于小碎步的走，每走一步都是基于目前真实的 weight 计算梯度做更新的，而第二个公式的这一大步（相比 baseline 相当于 k 步）是基于 t 时刻的 weight 来做更新的。如果在这 k 步之内，W(t+j) ~ W(t) 的话，两者近似没有太大问题，也就是 linear scale rule 问题不大，但在 weight 变化较快的时候，会有问题，尤其是模型在刚开始训练的时候，loss 下特别快，weight 变化很快，W(t+j) ~ W(t) 就不满足。因此在初始训练阶段，一般不会直接将 lr 增大为 k 倍，而是从 baseline 的 lr 慢慢 warmup 到 k 倍，让 linear scale rule 不至于违背得那么明显。第二个约束是 lr 不能无限的放大，根据上面的分析，lr 太大直接沿 loss 切线跑得太远，导致收敛出现问题。同时，有文献指出，当 batch size 变大后，得到好的测试结果所能允许的 lr 范围在变小，也就是说，当 batch size 很小时，比较容易找打一个合适的 lr 达到不错的结果，当 batch size 变大后，可能需要精细地找一个合适的 lr 才能达到较好的结果，这也给实际的 large batch 分布式训练带来了困难。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.zhihu.com/question/64134994/answer/216895968" target="_blank" rel="external">如何理解深度学习分布式训练中的large batch size与learning rate的关系?</a></li>
+</ul>
 
       
     </div>
@@ -389,17 +380,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/01/数据库中视图的作用/" rel="next" title="数据库中视图的作用">
-                <i class="fa fa-chevron-left"></i> 数据库中视图的作用
+              <a href="/2017/08/21/Spark-计算过程解读/" rel="next" title="Spark 计算过程解读">
+                <i class="fa fa-chevron-left"></i> Spark 计算过程解读
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/06/CTR-中-LR、GBDT-LR、FM-DNN-比较/" rel="prev" title="CTR 中 LR、GBDT + LR、FM 和 DNN 比较">
-                CTR 中 LR、GBDT + LR、FM 和 DNN 比较 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -555,7 +542,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标"><span class="nav-number">1.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解"><span class="nav-number">3.</span> <span class="nav-text">理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为了证明，如果删除残差网络的一部分"><span class="nav-number">4.</span> <span class="nav-text">为了证明，如果删除残差网络的一部分</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#理解SGD、minibatch-SGD-和-GD"><span class="nav-number">1.</span> <span class="nav-text">理解SGD、minibatch-SGD 和 GD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#large-batch-与-learning-rate"><span class="nav-number">2.</span> <span class="nav-text">large batch 与 learning rate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
           </div>
         </section>

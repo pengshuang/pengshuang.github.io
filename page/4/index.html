@@ -258,6 +258,227 @@
             
               
                 
+                <a class="post-title-link" href="/2016/11/08/HBase学习-专用过滤器/" itemprop="url">
+                  HBase学习: 专用过滤器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-11-08T17:25:26+08:00" content="2016-11-08">
+              2016-11-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/HBase/" itemprop="url" rel="index">
+                    <span itemprop="name">HBase</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/11/08/HBase学习-专用过滤器/" class="leancloud_visitors" data-flag-title="HBase学习: 专用过滤器">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>HBase 提供的第二类过滤器直接继承自 FilterBase，同时用于更特定的场景。其中一些过滤器只能做行筛选，因此只适用于扫描操作。</p>
+<h3 id="单列值过滤器"><a href="#单列值过滤器" class="headerlink" title="单列值过滤器"></a>单列值过滤器</h3><p>当用户用一列的值来决定是否一行数据被过滤时，可以考虑使用单列值过滤器。首先设定待检查的列，然后设置待检查的列的对应值。具体构造函数如下：</p>
+<pre><code>SingleColumnValueFilter(byte[] family, byte[] qualifier,
+    CompareOp compareOp, byte[] value)
+SingleColumnValueFilter(byte[] family, byte[] qualifier,
+    CompareOp compareOp, ByteArrayComparable comparator)
+</code></pre><p>第一个构造函数比较简单，因为它只在内部创建了一个 BinaryComparator 实例。第二个构造函数中所需的参数与用户一直在使用的基于 CompareFilter 的类相同，尽管 SingleColumnValueFilter 并不是直接继承自 CompareFilter， 但还是使用了相同的参数类型。</p>
+<p>同时，过滤器还提供了一些辅助方法帮助用户微调过滤行为:</p>
+<pre><code>boolean getFilterIfMissing()
+void setFilterIfMissing(boolean filterIfMissing)
+boolean getLatestVersionOnly()
+void setLatestVersionOnly(boolean latestVersionOnly)
+</code></pre><p>前者决定了当参考列不存在时如何处理这一行。默认的这一行是被包含在结果中的。用户可以用 <strong>setFilterIfMissing(true)</strong> 来过滤这些行。即，这样设置之后所有不包含参考列的行都可以被过滤掉。</p>
+<p>下面一个例子展示了如何使用过滤器返回包含特定列中特定值的行。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+
+SingleColumnValueFilter filter = new SingleColumnValueFilter(
+        Bytes.toBytes(&quot;colfam1&quot;),
+        Bytes.toBytes(&quot;col-5&quot;),
+        CompareFilter.CompareOp.NOT_EQUAL,
+        new SubstringComparator(&quot;val-5&quot;));
+filter.setFilterIfMissing(true);
+
+Scan scan = new Scan();
+scan.setFilter(filter);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result: scanner){
+    System.out.println(result);
+}
+scanner.close();
+
+Get get = new Get(Bytes.toBytes(&quot;row-6&quot;));
+get.setFilter(filter);
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="单列排除过滤器"><a href="#单列排除过滤器" class="headerlink" title="单列排除过滤器"></a>单列排除过滤器</h3><p>单列排除过滤器继承自 SingleColumnValueFilter, 它的参考列不被包括在结果之中。</p>
+<h3 id="前缀过滤器"><a href="#前缀过滤器" class="headerlink" title="前缀过滤器"></a>前缀过滤器</h3><p>在构造当前过滤器的时候传入一个前缀，所有与前缀匹配的行都会被返回给客户端。构造函数如下：</p>
+<pre><code>Public PrefixFilter(byte[] prefix)
+</code></pre><p>下面的例子展示了如何使用前缀过滤器。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+
+Filter filter = new PrefixFilter(Bytes.toBytes(&quot;row-1&quot;));
+Scan scan = new Scan();
+scan.setFilter(filter);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result : scanner){
+    System.out.println(result);
+}
+scanner.close();
+
+Get get = new Get(Bytes.toBytes(&quot;row-5&quot;));
+get.setFilter(filter);
+Result result = hTable.get(get);
+System.out.println(result);
+</code></pre><h3 id="包含结束的过滤器"><a href="#包含结束的过滤器" class="headerlink" title="包含结束的过滤器"></a>包含结束的过滤器</h3><p>扫描操作中的开始行被包含到结果中，但终止行被排除在外。在使用这个过滤器的时候，用户也可以将结束行包含在结果中。例如下面这个例子：</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+Filter filter = new InclusiveStopFilter(Bytes.toBytes(&quot;row-5&quot;));
+
+Scan scan = new Scan();
+scan.setStartRow(Bytes.toBytes(&quot;row-3&quot;));
+scan.setFilter(filter);
+ResultScanner scanner = hTable.getScanner(scan);
+for(Result result:scanner){
+    System.out.println(result);
+}
+scanner.close();
+</code></pre><h3 id="时间戳过滤器"><a href="#时间戳过滤器" class="headerlink" title="时间戳过滤器"></a>时间戳过滤器</h3><p>当用户需要在扫描结果中对版本进行细粒度的控制时，这个过滤器可以满足需求。用户需要传入一个装载了时间戳的 List 实例。</p>
+<pre><code>TimestampFilter(List&lt;Long&gt; timestamps)
+</code></pre><p>下面这个例子展示了一个典型的时间戳过滤器，其中第一个扫描中使用了包括 3 个时间戳的过滤器，在第二个扫描中增加了一个时间范围限制。</p>
+<pre><code>Configuration conf = HBaseConfiguration.create();
+HTable hTable = new HTable(conf, &quot;temp2&quot;);
+
+List&lt;Long&gt; ts = new ArrayList&lt;Long&gt;();
+// 向列表中添加时间戳
+ts.add(new Long(5));
+ts.add(new Long(10));
+ts.add(new Long(15));
+Filter filter = new TimestampsFilter(ts);
+
+Scan scan1 = new Scan();
+// 向scan实例中添加过滤器
+scan1.setFilter(filter);
+ResultScanner scanner1 = hTable.getScanner(scan1);
+for(Result result:scanner1){
+    System.out.println(result);
+}
+scanner1.close();
+
+Scan scan2 = new Scan();
+scan2.setFilter(filter);
+// 添加时间范围限制
+scan2.setTimeRange(8,12);
+ResultScanner scanner2 = hTable.getScanner(scan2);
+for(Result result:scanner2){
+    System.out.println(result);
+}
+scanner2.close();
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/11/07/HBase学习-比较过滤器/" itemprop="url">
                   HBase学习: 比较过滤器
                 </a>
@@ -2045,375 +2266,6 @@ wq
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/10/24/Java集合学习：HashMap实现原理/" itemprop="url">
-                  Java集合学习：HashMap实现原理
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-24T14:33:21+08:00" content="2016-10-24">
-              2016-10-24
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数据结构/" itemprop="url" rel="index">
-                    <span itemprop="name">数据结构</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/10/24/Java集合学习：HashMap实现原理/" class="leancloud_visitors" data-flag-title="Java集合学习：HashMap实现原理">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="HashMap概述"><a href="#HashMap概述" class="headerlink" title="HashMap概述"></a>HashMap概述</h3><p>HashMap 是基于哈希表的Map接口的非同步实现。此实现提供所有可选的映射操作，并允许使用 null 值 和 null 键。此类不保证映射的顺序，特别是它不保证该顺序恒久不变。</p>
-<p>Hashmap 不是同步的，如果多个线程同时访问一个 HashMap，而其中至少一个线程从结构上（指添加或者删除一个或多个映射关系的任何操作）修改了，则必须保持外部同步，以防止对映射进行意外的非同步访问。</p>
-<h3 id="HashMap的数据结构"><a href="#HashMap的数据结构" class="headerlink" title="HashMap的数据结构"></a>HashMap的数据结构</h3><p>HashMap底层就是一个数组结构，数组中的每一项又是一个链表。当新键一个 HashMap 的时候，就会初始化一个数组。下面看下HashMap的构造函数：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal initial capacity: "</span> +</span><br><span class="line">                                               initialCapacity);</span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">            initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">        <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                               loadFactor);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Find a power of 2 &gt;= initialCapacity</span></span><br><span class="line">        <span class="keyword">int</span> capacity = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (capacity &lt; initialCapacity)</span><br><span class="line">            capacity &lt;&lt;= <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">        threshold = (<span class="keyword">int</span>)Math.min(capacity * loadFactor, MAXIMUM_CAPACITY + <span class="number">1</span>);</span><br><span class="line">        table = <span class="keyword">new</span> Entry[capacity];</span><br><span class="line">        useAltHashing = sun.misc.VM.isBooted() &amp;&amp;</span><br><span class="line">                (capacity &gt;= Holder.ALTERNATIVE_HASHING_THRESHOLD);</span><br><span class="line">        init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意，这里有一个新键 entry 的过程：</p>
-<pre><code class="java">table = <span class="keyword">new</span> Entry[capacity];
-</code></pre>
-<p>那什么是entry呢，我们看下 Entry 的源码实现：</p>
-<pre><code class="java"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>{
-    <span class="keyword">final</span> K key;
-    V value;
-    Entry&lt;K,V&gt; next;
-    <span class="keyword">final</span> <span class="keyword">int</span> hash;
-    ……
-}
-</code></pre>
-<p>我们目前还是只着重核心的部分，Entry 是一个 static class，其中包含了 key 和 value，也就是键值对，另外还包含了一个 next 的 Entry 指针。我们可以总结出：Entry 就是数组中的元素，每个 Entry 其实就是一个 key-value 对，它持有一个指向下一个元素的引用，这就构成了链表。</p>
-<h3 id="HashMap-的核心方法解读"><a href="#HashMap-的核心方法解读" class="headerlink" title="HashMap 的核心方法解读"></a>HashMap 的核心方法解读</h3><pre><code>/**
-     * Associates the specified value with the specified key in this map.
-     * If the map previously contained a mapping for the key, the old
-     * value is replaced.
-     *
-     * @param key key with which the specified value is to be associated
-     * @param value value to be associated with the specified key
-     * @return the previous value associated with &lt;tt&gt;key&lt;/tt&gt;, or
-     *         &lt;tt&gt;null&lt;/tt&gt; if there was no mapping for &lt;tt&gt;key&lt;/tt&gt;.
-     *         (A &lt;tt&gt;null&lt;/tt&gt; return can also indicate that the map
-     *         previously associated &lt;tt&gt;null&lt;/tt&gt; with &lt;tt&gt;key&lt;/tt&gt;.)
-     */
-public V put(K key, V value) {
-        //其允许存放null的key和null的value，当其key为null时，调用putForNullKey方法，放入到table[0]的这个位置
-        if (key == null)
-            return putForNullKey(value);
-        //通过调用hash方法对key进行哈希，得到哈希之后的数值。该方法实现可以通过看源码，其目的是为了尽可能的让键值对可以分不到不同的桶中
-        int hash = hash(key);
-        //根据上一步骤中求出的hash得到在数组中是索引i
-        int i = indexFor(hash, table.length);
-        //如果i处的Entry不为null，则通过其next指针不断遍历e元素的下一个元素。
-        for (Entry&lt;K,V&gt; e = table[i]; e != null; e = e.next) {
-            Object k;
-            if (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) {
-                V oldValue = e.value;
-                e.value = value;
-                e.recordAccess(this);
-                return oldValue;
-            }
-        }
-        modCount++;
-        addEntry(hash, key, value, i);
-        return null;
-}
-</code></pre><p>我们看一下方法的标准注释：在注释中首先提到了，当我们 put 的时候，如果 key 存在了，那么新的 value 会代替旧的 value，并且如果 key 存在的情况下，该方法返回的是旧的 value，如果 key 不存在，那么返回 null。</p>
-<p>从上面的源代码中可以看出：当我们往 HashMap 中 put 元素的时候，先根据 key 的 hashCode 重新计算 hash 值，根据 hash 值得到这个元素在数组中的位置（即下标），如果数组该位置上已经存放有其他元素了，那么在这个位置上的元素将以链表的形式存放，新加入的放在链头，最先加入的放在链尾。如果数组该位置上没有元素，就直接将该元素放到此数组中的该位置上。</p>
-<p>addEntry(hash, key, value, i)方法根据计算出的 hash 值，将 key-value 对放在数组 table 的 i 索引处。addEntry 是 HashMap 提供的一个包访问权限的方法，代码如下：</p>
-<pre><code>/**
-     * Adds a new entry with the specified key, value and hash code to
-     * the specified bucket.  It is the responsibility of this
-     * method to resize the table if appropriate.
-     *
-     * Subclass overrides this to alter the behavior of put method.
-     */
-void addEntry(int hash, K key, V value, int bucketIndex) {
-        if ((size &gt;= threshold) &amp;&amp; (null != table[bucketIndex])) {
-            resize(2 * table.length);
-            hash = (null != key) ? hash(key) : 0;
-            bucketIndex = indexFor(hash, table.length);
-        }
-
-        createEntry(hash, key, value, bucketIndex);
-}
-void createEntry(int hash, K key, V value, int bucketIndex) {
-        // 获取指定 bucketIndex 索引处的 Entry
-        Entry&lt;K,V&gt; e = table[bucketIndex];
-        // 将新创建的 Entry 放入 bucketIndex 索引处，并让新的 Entry 指向原来的 Entr
-        table[bucketIndex] = new Entry&lt;&gt;(hash, key, value, e);
-        size++;
-}
-</code></pre><p>当系统决定存储 HashMap 中的 key-value 对时，完全没有考虑 Entry 中的 value，仅仅只是根据 key 来计算并决定每个 Entry 的存储位置。我们完全可以把 Map 集合中的 value 当成 key 的附属，当系统决定了 key 的存储位置之后，value 随之保存在那里即可。</p>
-<p>hash(int h)方法根据 key 的 hashCode 重新计算一次散列。此算法加入了高位计算，防止低位不变，高位变化时，造成的 hash 冲突。</p>
-<pre><code>final int hash(Object k) {
-        int h = 0;
-        if (useAltHashing) {
-            if (k instanceof String) {
-                return sun.misc.Hashing.stringHash32((String) k);
-            }
-            h = hashSeed;
-        }
-        //得到k的hashcode值
-        h ^= k.hashCode();
-        //进行计算
-        h ^= (h &gt;&gt;&gt; 20) ^ (h &gt;&gt;&gt; 12);
-        return h ^ (h &gt;&gt;&gt; 7) ^ (h &gt;&gt;&gt; 4);
-}
-</code></pre><p>我们可以看到在 HashMap 中要找到某个元素，需要根据 key 的 hash 值来求得对应数组中的位置。如何计算这个位置就是 hash 算法。前面说过 HashMap 的数据结构是数组和链表的结合，所以我们当然希望这个 HashMap 里面的 元素位置尽量的分布均匀些，尽量使得每个位置上的元素数量只有一个，那么当我们用 hash 算法求得这个位置的时候，马上就可以知道对应位置的元素就是我们要的，而不用再去遍历链表，这样就大大优化了查询的效率。</p>
-<p>对于任意给定的对象，只要它的 hashCode() 返回值相同，那么程序调用 hash(int h) 方法所计算得到的 hash 码值总是相同的。我们首先想到的就是把 hash 值对数组长度取模运算，这样一来，元素的分布相对来说是比较均匀的。但是，“模”运算的消耗还是比较大的，在 HashMap 中是这样做的：调用 indexFor(int h, int length) 方法来计算该对象应该保存在 table 数组的哪个索引处。indexFor(int h, int length) 方法的代码如下：</p>
-<pre><code>/**
-     * Returns index for hash code h.
-     */
-static int indexFor(int h, int length) {  
-    return h &amp; (length-1);
-}
-</code></pre><p>这个方法非常巧妙，它通过 h &amp; (table.length -1) 来得到该对象的保存位，而 HashMap 底层数组的长度总是 2 的 n 次方，这是 HashMap 在速度上的优化。在 HashMap 构造器中有如下代码：</p>
-<pre><code>// Find a power of 2 &gt;= initialCapacity
-int capacity = 1;
-while (capacity &lt; initialCapacity)  
-    // capacity = capacity &lt;&lt; 1
-    capacity &lt;&lt;= 1; 
-</code></pre><p>这段代码保证初始化时 HashMap 的容量总是 2 的 n 次方，即底层数组的长度总是为 2 的 n 次方。</p>
-<p>当 length 总是 2 的 n 次方时，h&amp; (length-1)运算等价于对 length 取模，也就是 h%length，但是 &amp; 比 % 具有更高的效率。这看上去很简单，其实比较有玄机的，我们举个例子来说明：</p>
-<p>假设数组长度分别为 15 和 16，优化后的 hash 码分别为 8 和 9，那么 &amp; 运算后的结果如下：</p>
-<table>
-<thead>
-<tr>
-<th>h &amp; (table.length-1)</th>
-<th>hash</th>
-<th></th>
-<th>table.length-1</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>8 &amp; (15 - 1)</td>
-<td>0100</td>
-<td>&amp;</td>
-<td>1110</td>
-<td>= 0100</td>
-</tr>
-<tr>
-<td>9 &amp; (15 - 1)</td>
-<td>0101</td>
-<td>&amp;</td>
-<td>1110</td>
-<td>= 0100</td>
-</tr>
-<tr>
-<td>8 &amp; (16 - 1)</td>
-<td>0100</td>
-<td>&amp;</td>
-<td>1111</td>
-<td>= 0100</td>
-</tr>
-<tr>
-<td>8 &amp; (16 - 1)</td>
-<td>0101</td>
-<td>&amp;</td>
-<td>1111</td>
-<td>= 0101</td>
-</tr>
-</tbody>
-</table>
-<p>从上面的例子中可以看出：当它们和 15-1（1110）“与”的时候，产生了相同的结果，也就是说它们会定位到数组中的同一个位置上去，这就产生了碰撞，8 和 9 会被放到数组中的同一个位置上形成链表，那么查询的时候就需要遍历这个链 表，得到8或者9，这样就降低了查询的效率。同时，我们也可以发现，当数组长度为 15 的时候，hash 值会与 15-1（1110）进行“与”，那么最后一位永远是 0，而 0001，0011，0101，1001，1011，0111，1101 这几个位置永远都不能存放元素了，空间浪费相当大，更糟的是这种情况中，数组可以使用的位置比数组长度小了很多，这意味着进一步增加了碰撞的几率，减慢了查询的效率！而当数组长度为16时，即为2的n次方时，2n-1 得到的二进制数的每个位上的值都为 1，这使得在低位上&amp;时，得到的和原 hash 的低位相同，加之 hash(int h)方法对 key 的 hashCode 的进一步优化，加入了高位计算，就使得只有相同的 hash 值的两个值才会被放到数组中的同一个位置上形成链表。</p>
-<p>所以说，当数组长度为 2 的 n 次幂的时候，不同的 key 算得得 index 相同的几率较小，那么数据在数组上分布就比较均匀，也就是说碰撞的几率小，相对的，查询的时候就不用遍历某个位置上的链表，这样查询效率也就较高了。</p>
-<p>根据上面 put 方法的源代码可以看出，当程序试图将一个key-value对放入HashMap中时，程序首先根据该 key 的 hashCode() 返回值决定该 Entry 的存储位置：如果两个 Entry 的 key 的 hashCode() 返回值相同，那它们的存储位置相同。如果这两个 Entry 的 key 通过 equals 比较返回 true，新添加 Entry 的 value 将覆盖集合中原有 Entry 的 value，但key不会覆盖。如果这两个 Entry 的 key 通过 equals 比较返回 false，新添加的 Entry 将与集合中原有 Entry 形成 Entry 链，而且新添加的 Entry 位于 Entry 链的头部——具体说明继续看 addEntry() 方法的说明。</p>
-<h3 id="读取"><a href="#读取" class="headerlink" title="读取"></a>读取</h3><pre><code>/**
-     * Returns the value to which the specified key is mapped,
-     * or {@code null} if this map contains no mapping for the key.
-     *
-     * &lt;p&gt;More formally, if this map contains a mapping from a key
-     * {@code k} to a value {@code v} such that {@code (key==null ? k==null :
-     * key.equals(k))}, then this method returns {@code v}; otherwise
-     * it returns {@code null}.  (There can be at most one such mapping.)
-     *
-     * &lt;p&gt;A return value of {@code null} does not &lt;i&gt;necessarily&lt;/i&gt;
-     * indicate that the map contains no mapping for the key; it&apos;s also
-     * possible that the map explicitly maps the key to {@code null}.
-     * The {@link #containsKey containsKey} operation may be used to
-     * distinguish these two cases.
-     *
-     * @see #put(Object, Object)
-     */
-    public V get(Object key) {
-        if (key == null)
-            return getForNullKey();
-        Entry&lt;K,V&gt; entry = getEntry(key);
-
-        return null == entry ? null : entry.getValue();
-    }
-    final Entry&lt;K,V&gt; getEntry(Object key) {
-        int hash = (key == null) ? 0 : hash(key);
-        for (Entry&lt;K,V&gt; e = table[indexFor(hash, table.length)];
-             e != null;
-             e = e.next) {
-            Object k;
-            if (e.hash == hash &amp;&amp;
-                ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
-                return e;
-        }
-        return null;
-    }
-</code></pre><p>有了上面存储时的 hash 算法作为基础，理解起来这段代码就很容易了。从上面的源代码中可以看出：从 HashMap 中 get 元素时，首先计算 key 的 hashCode，找到数组中对应位置的某一元素，然后通过 key 的 equals 方法在对应位置的链表中找到需要的元素。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>简单地说，HashMap 在底层将 key-value 当成一个整体进行处理，这个整体就是一个 Entry 对象。HashMap 底层采用一个 Entry[] 数组来保存所有的 key-value 对，当需要存储一个 Entry 对象时，会根据 hash 算法来决定其在数组中的存储位置，在根据 equals 方法决定其在该数组位置上的链表中的存储位置；当需要取出一个Entry 时，也会根据 hash 算法找到其在数组中的存储位置，再根据 equals 方法从该位置上的链表中取出该Entry。</p>
-<p>HashMap 的 resize（rehash）<br>当 HashMap 中的元素越来越多的时候，hash 冲突的几率也就越来越高，因为数组的长度是固定的。所以为了提高查询的效率，就要对 HashMap 的数组进行扩容，数组扩容这个操作也会出现在 ArrayList 中，这是一个常用的操作，而在 HashMap 数组扩容之后，最消耗性能的点就出现了：原数组中的数据必须重新计算其在新数组中的位置，并放进去，这就是 resize。</p>
-<p>那么 HashMap 什么时候进行扩容呢？当 HashMap 中的元素个数超过数组大小 *loadFactor时，就会进行数组扩容，loadFactor的默认值为 0.75，这是一个折中的取值。也就是说，默认情况下，数组大小为 16，那么当 HashMap 中元素个数超过 16*0.75=12 的时候，就把数组的大小扩展为 2*16=32，即扩大一倍，然后重新计算每个元素在数组中的位置，而这是一个非常消耗性能的操作，所以如果我们已经预知 HashMap 中元素的个数，那么预设元素的个数能够有效的提高 HashMap 的性能。</p>
-<h3 id="HashMap-的性能参数"><a href="#HashMap-的性能参数" class="headerlink" title="HashMap 的性能参数"></a>HashMap 的性能参数</h3><p>HashMap 包含如下几个构造器：</p>
-<ul>
-<li>HashMap()：构建一个初始容量为 16，负载因子为 0.75 的 HashMap。</li>
-<li>HashMap(int initialCapacity)：构建一个初始容量为 initialCapacity，负载因子为 0.75 的 HashMap。</li>
-<li>HashMap(int initialCapacity, float loadFactor)：以指定初始容量、指定的负载因子创建一个 HashMap。</li>
-</ul>
-<p>HashMap 的基础构造器 HashMap(int initialCapacity, float loadFactor) 带有两个参数，它们是初始容量 initialCapacity 和负载因子 loadFactor。</p>
-<p>负载因子 loadFactor 衡量的是一个散列表的空间的使用程度，负载因子越大表示散列表的装填程度越高，反之愈小。对于使用链表法的散列表来说，查找一个元素的平均时间是 O(1+a)，因此如果负载因子越大，对空间的利用更充分，然而后果是查找效率的降低；如果负载因子太小，那么散列表的数据将过于稀疏，对空间造成严重浪费。</p>
-<p>HashMap 的实现中，通过 threshold 字段来判断 HashMap 的最大容量：</p>
-<pre><code>threshold = (int)(capacity * loadFactor);
-</code></pre><p>结合负载因子的定义公式可知，threshold 就是在此 loadFactor 和 capacity 对应下允许的最大元素数目，超过这个数目就重新 resize，以降低实际的负载因子。默认的的负载因子 0.75 是对空间和时间效率的一个平衡选择。当容量超出此最大容量时， resize 后的 HashMap 容量是容量的两倍：</p>
-<h3 id="Fail-Fast-机制"><a href="#Fail-Fast-机制" class="headerlink" title="Fail-Fast 机制"></a>Fail-Fast 机制</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>我们知道 java.util.HashMap 不是线程安全的，因此如果在使用迭代器的过程中有其他线程修改了 map，那么将抛出 ConcurrentModificationException，这就是所谓 fail-fast 策略。</p>
-<p>ail-fast 机制是 java 集合(Collection)中的一种错误机制。 当多个线程对同一个集合的内容进行操作时，就可能会产生 fail-fast 事件。</p>
-<p>例如：当某一个线程 A 通过 iterator去遍历某集合的过程中，若该集合的内容被其他线程所改变了；那么线程 A 访问集合时，就会抛出 ConcurrentModificationException 异常，产生 fail-fast 事件。</p>
-<p>这一策略在源码中的实现是通过 modCount 域，modCount 顾名思义就是修改次数，对 HashMap 内容（当然不仅仅是 HashMap 才会有，其他例如 ArrayList 也会）的修改都将增加这个值（大家可以再回头看一下其源码，在很多操作中都有 modCount++ 这句），那么在迭代器初始化过程中会将这个值赋给迭代器的 expectedModCount。</p>
-<pre><code>HashIterator() {
-    expectedModCount = modCount;
-    if (size &gt; 0) { // advance to first entry
-    Entry[] t = table;
-    while (index &lt; t.length &amp;&amp; (next = t[index++]) == null)  
-        ;
-    }
-}
-</code></pre><p>在迭代过程中，判断 modCount 跟 expectedModCount 是否相等，如果不相等就表示已经有其他线程修改了 Map：</p>
-<p>注意到 modCount 声明为 volatile，保证线程之间修改的可见性。</p>
-<pre><code>final Entry&lt;K,V&gt; nextEntry() {
-    if (modCount != expectedModCount)
-        throw new ConcurrentModificationException();
-</code></pre><p>在 HashMap 的 API 中指出：</p>
-<p>由所有 HashMap 类的“collection 视图方法”所返回的迭代器都是快速失败的：在迭代器创建之后，如果从结构上对映射进行修改，除非通过迭代器本身的 remove 方法，其他任何时间任何方式的修改，迭代器都将抛出 ConcurrentModificationException。因此，面对并发的修改，迭代器很快就会完全失败，而不冒在将来不确定的时间发生任意不确定行为的风险。</p>
-<p>注意，迭代器的快速失败行为不能得到保证，一般来说，存在非同步的并发修改时，不可能作出任何坚决的保证。快速失败迭代器尽最大努力抛出 ConcurrentModificationException。因此，编写依赖于此异常的程序的做法是错误的，正确做法是：迭代器的快速失败行为应该仅用于检测程序错误。</p>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>在上文中也提到，fail-fast 机制，是一种错误检测机制。它只能被用来检测错误，因为 JDK 并不保证 fail-fast 机制一定会发生。若在多线程环境下使用 fail-fast 机制的集合，建议使用“java.util.concurrent 包下的类”去取代“java.util 包下的类”。</p>
-<h4 id="HashMap-的两种遍历方式"><a href="#HashMap-的两种遍历方式" class="headerlink" title="HashMap 的两种遍历方式"></a>HashMap 的两种遍历方式</h4><p><strong>第一种</strong></p>
-<pre><code>　　Map map = new HashMap();
-　　Iterator iter = map.entrySet().iterator();
-　　while (iter.hasNext()) {
-　　Map.Entry entry = (Map.Entry) iter.next();
-　　Object key = entry.getKey();
-　　Object val = entry.getValue();
-　　}
-　　
-</code></pre><p>效率高</p>
-<p><strong>第二种</strong></p>
-<pre><code>　　Map map = new HashMap();
-　　Iterator iter = map.keySet().iterator();
-　　while (iter.hasNext()) {
-　　Object key = iter.next();
-　　Object val = map.get(key);
-　　}
-　　
-</code></pre><p>效率低</p>
-<h3 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h3><ol>
-<li><a href="http://wiki.jikexueyuan.com/project/java-collection/hashmap.html" target="_blank" rel="external">HashMap 的实现原理</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2459,7 +2311,7 @@ while (capacity &lt; initialCapacity)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">76</span>
+              <span class="site-state-item-count">77</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

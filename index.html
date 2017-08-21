@@ -258,6 +258,154 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/" itemprop="url">
+                  深度学习训练中的 large batch size 和 learning rate
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-21T16:20:59+08:00" content="2017-08-21">
+              2017-08-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/" class="leancloud_visitors" data-flag-title="深度学习训练中的 large batch size 和 learning rate">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<p>今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。</p>
+<h3 id="理解SGD、minibatch-SGD-和-GD"><a href="#理解SGD、minibatch-SGD-和-GD" class="headerlink" title="理解SGD、minibatch-SGD 和 GD"></a>理解SGD、minibatch-SGD 和 GD</h3><p>在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准确。但也有几个缺点，一个是当训练集较大时，GD 的梯度计算较为耗时，二是现代深度学习网络的 loss function 往往是非凸的，基于凸优化理论，这种情况下优化算法只能收敛到局部最小值，因此使用 GD 训练深度神经网络，最终收收敛点很容易落在初始点附近的一个局部最小值区域，不太容易达到较好的收敛性能。</p>
+<p>另一个极端是随机梯度下降（stochastic gradient descent），每次计算梯度只用一个样本，这样做的好处是计算快，而且很适合 online-learning 数据流式到达的场景，但缺点是单个实例产生的梯度估计往往很不准，所以得采用很小的 learning rate，而且由于现代的计算框架 CPU/GPU 的多线程工作，单个实例往往很难占满 CPU/GPU 的使用率，导致计算资源浪费。</p>
+<p>折中的方案就是 mini-batch，一次采用 batch size 的实例来估计梯度，这样梯度估计相对于 SGD 更准，同时 batch size 能占满 CPU/GPU 的计算资源，又不像 GD 那样计算整个训练集。同时也由于 mini batch 能有适当的梯度噪声，一定程度上缓解 GD 直接掉进了初始点附近的局部最小导致收敛不好的缺点，所以 mini-batch 的方法也最为常用。</p>
+<p>关于增大 batch size 对于梯度估计准确度的影响，分析如下：假设 batch size 为 m，对于一个 mini-batch，loss 为：</p>
+<p>$$L = \frac{1}{m}\sum_{i=1}^{m} L(x_i, y_i)$$</p>
+<p>梯度：</p>
+<p>$$g = \frac{1}{m}\sum_{i=1}^{m} g(x_i, y_i)$$</p>
+<p>整个 mini-batch 的梯度方差为</p>
+<p>$$Var(g) = Var(\frac{1}{m}\sum_{i=1}^{m} g(x_i, y_i))<br>         = \frac{1}{m} Var(g(x_1, y_1))$$</p>
+<p>由于每个样本 (xi, yi) 是随机从训练样本集采样得到的，因此样本梯度的方差相等。可以看到 batch size 增大 m 倍，相当于将梯度的方差减少 m 倍，因此梯度更加准确。</p>
+<p>如果要保持方差和原来 SGD 一样，相当于给定了这么大的方差带宽容量，那么就可以增大 learning rate，充分利用这个方差容量，在上式中添加 learning rate，同时利用方差的变化公式，得到等式：</p>
+<p>$$\frac{1}{m} Var(\sqrt{m} \ast lr \ast g(x_1, y_1)) = Var(lr \ast g(x_1, y_1))$$</p>
+<p>因此可将 learning rate 增加 sqrt(m) 倍，以提高训练速度。</p>
+<h3 id="large-batch-与-learning-rate"><a href="#large-batch-与-learning-rate" class="headerlink" title="large batch 与 learning rate"></a>large batch 与 learning rate</h3><p>在分布式训练中，batch size 随着数据并行的 worker 增加而增大，假设 baseline 的batch size 为 B，learning rate 为 lr，训练 epoch 数为 N。如果保持 baseline 的 learning rate，一般不会有较好的收敛速度和精度。原因如下：对于收敛速度，假设 k 个 worker，每次过的 sample 数量为 kB，因此一个 epoch 下的更新次数为 baseline 的 1/k，而每次更新的 lr 不变，所以要达到 baseline 相同的更新次数，则需要增加 epoch 数量，最大需要增加 k*N 个epoch，因此收敛加速倍数会远远低于 k。对于收敛精度，由于增大了 batch size 使梯度估计相较于 badeline 的梯度更加准确，噪音减少，更容易收敛到附近的局部最小，类似于 GD 的效果。为了解决这个问题，一个方法就是增大 lr，因为 batch 变大梯度估计更准，理应比 baseline 的梯度更确信一些，所以增大 lr，利用更准确的梯度多走一点，提高收敛速度。同时增大lr，让每次走的幅度尽量大一些，如果遇到了尖锐的局部最小，还有可能逃出收敛到更好的地方。</p>
+<p>但是 lr 不能无限制的增大，原因分析如下。深度神经网络的 loss surface 往往是高维高度非线性的，可以理解为 loss surface 表面凹凸不平，坑坑洼洼，不像 y = x^2 曲线这样光滑，因此基于当前 weight 计算出来的梯度，往前更新的 learing rate 很大的时候，沿着 loss surface 的切线就走了很大一步，有可能大大偏于原有的 loss surface，示例如下图（a）所示，虚线是当前梯度的方向，也就是当前 loss surface 的切线方向，如果learning rate 过大，那这一步沿切线方向就走了很大一步，如果一直持续这样，那很可能就走向了一个错误的loss surface，如图(b)所示。如果是较小的learning rate，每次只沿切线方向走一小步，虽然有些偏差，依然能大致沿着 loss sourface steepest descent曲线想下降，最终收敛到一个不错的局部最小，如图(c)所示。</p>
+<p><img src="/img/sgd.png" alt=""></p>
+<p>因此，如何确定 large batch size 与 learing rate 的关系呢？分别比较 baseline 和 k 个 worker 的 large batch 的更新公式，如下：</p>
+<p>$$w_{t+k} = w_t - \eta \frac{1}{n}\sum_{j &lt; k}\sum_{x \epsilon \beta_j} \nabla l(x, w_{t + j})$$</p>
+<p>$$w_{t+k} = w_t - \eta \frac{1}{kn}\sum_{j &lt; k}\sum_{x \epsilon \beta_j} \nabla l(x, w_{t})$$</p>
+<p>以上是 baseline (batch size B) 和 large batch(batch size kB) 的更新公式，第二个中 large batch 过一步的数据量相当于第一个 baseline k 步过的数据量，loss 和梯度都按找过的数据量取平均，因此，为了保证相同的数据量利用率，第二个中的 learning  rate 应该为 baseline 的 k 倍，也就是 learning rate 的 linear scale rule。</p>
+<p>linear scale rule 有几个约束，其中一个约束是关于 weight 的约束，第一个公式中每一步更新基于的 weight 都是前一步更新过后的 weight，因此相当于小碎步的走，每走一步都是基于目前真实的 weight 计算梯度做更新的，而第二个公式的这一大步（相比 baseline 相当于 k 步）是基于 t 时刻的 weight 来做更新的。如果在这 k 步之内，W(t+j) ~ W(t) 的话，两者近似没有太大问题，也就是 linear scale rule 问题不大，但在 weight 变化较快的时候，会有问题，尤其是模型在刚开始训练的时候，loss 下特别快，weight 变化很快，W(t+j) ~ W(t) 就不满足。因此在初始训练阶段，一般不会直接将 lr 增大为 k 倍，而是从 baseline 的 lr 慢慢 warmup 到 k 倍，让 linear scale rule 不至于违背得那么明显。第二个约束是 lr 不能无限的放大，根据上面的分析，lr 太大直接沿 loss 切线跑得太远，导致收敛出现问题。同时，有文献指出，当 batch size 变大后，得到好的测试结果所能允许的 lr 范围在变小，也就是说，当 batch size 很小时，比较容易找打一个合适的 lr 达到不错的结果，当 batch size 变大后，可能需要精细地找一个合适的 lr 才能达到较好的结果，这也给实际的 large batch 分布式训练带来了困难。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a href="https://www.zhihu.com/question/64134994/answer/216895968" target="_blank" rel="external">如何理解深度学习分布式训练中的large batch size与learning rate的关系?</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/21/Spark-计算过程解读/" itemprop="url">
                   Spark 计算过程解读
                 </a>
@@ -1663,192 +1811,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/07/Adaboost-算法总结/" itemprop="url">
-                  Adaboost 算法总结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-07T20:01:42+08:00" content="2017-03-07">
-              2017-03-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/07/Adaboost-算法总结/" class="leancloud_visitors" data-flag-title="Adaboost 算法总结">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>Adaboost 是 boosting 算法的其中之一。它既可以作为分类，也可以作为回归。一般我们都是提它怎么用于分类，对它应用在回归比较少提到，其实它也是可以用于回归的。今天我不想写太多 Adaboost 的原理，主要是写一下 Adaboost 如何用于分类和回归问题。</p>
-<h3 id="Adaboost-二元分类问题的算法流程"><a href="#Adaboost-二元分类问题的算法流程" class="headerlink" title="Adaboost 二元分类问题的算法流程"></a>Adaboost 二元分类问题的算法流程</h3><p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，输出为 {+1，-1}。</p>
-<p>弱分类器迭代次数为 K。输出为最终的强分类器 \(f(x)\)</p>
-<p>1) 初始化样本集权重为：</p>
-<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
-<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
-<p>2）对于 \(k = 1, 2, 3 … K\):</p>
-<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
-<p>b) 计算 \(G_{k}(x)\) 的分类误差率</p>
-<p>$$e_{k} = P(G_k(x_i) \neq y_i); i = 1,2,…,m$$</p>
-<p>c) 计算弱分类器的系数</p>
-<p>$$\alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k}$$</p>
-<p>d) 更新样本集的权重分布</p>
-<p>$$w_{k+1,i} = \frac{w_{ki}}{Z_k} exp(- \alpha_k y_i G(x_i))$$</p>
-<p>这里 \(Z_k\) 是规范因子：</p>
-<p>$$Z_k = \sum_{i=1}^m w_{ki} exp(-\alpha_k y_i G_k(x_i)) \,\,  i = 1,2,…,m$$</p>
-<p>3) 构建最终的分类器为：</p>
-<p>$$f(x) = sign \sum_{k=1}^K \alpha_k G_k(K)$$</p>
-<p>对于 Adaboost 多元分类算法，其实原理和二分类很类似，最主要的区别是在弱分类器的系数上，比如 Adaboost SAMME 算法，它的弱分类器的系数：</p>
-<p>$$ \alpha_k = \frac{1}{2} log \frac{1 - e_k}{e_k} + log(R - 1)$$</p>
-<p>其中 R 为类别数，从上式可以看出，如果是二元分类，R = 2，则上式和我们的二元分类算法中的弱分类器的系数一致。</p>
-<h3 id="Adaboost-回归问题的算法流程"><a href="#Adaboost-回归问题的算法流程" class="headerlink" title="Adaboost 回归问题的算法流程"></a>Adaboost 回归问题的算法流程</h3><p>AdaBoost回归算法变种很多，下面的算法为Adaboost R2 回归算法过程。</p>
-<p>输入为样本集 \( (x_1, y_1) ,…, (x_n, y_n) \)，</p>
-<p>最终输出为强学习器 \(f(x)\)</p>
-<p>1) 初始化样本集权重为：</p>
-<p>$$D(1) = (w_{11}, w_{12},…, w_{1m});$$</p>
-<p>$$w_{1i} = \frac{1}{m}; i = 1,2,…,m$$</p>
-<p>2）对于 \(k = 1, 2, 3 … K\):</p>
-<p>a) 使用具有权重 \(D_k\) 的样本集来训练数据，得到弱分类器 \(G_{k}(x)\)</p>
-<p>b) 计算训练集上的最大误差</p>
-<p>$$E_k = max|y_i - G_k(x_i)|; i = 1, 2, 3 … m$$</p>
-<p>c) 计算每个样本的相对误差：</p>
-<p>如果是线性误差，则 \(e_{ki} = \frac{|y_i - G_k(x_i)|}{E_k}\)</p>
-<p>如果是平方误差，则 \(e_{ki} = \frac{(y_i - G_k(x_i))^2}{E_k}\)</p>
-<p>如果是指数误差，则 \(e_{ki} = 1 -  exp(\frac{-y_i + G_k(x_i)}{E_k})\)</p>
-<p>d) 计算回归误差率</p>
-<p>$$e_k = \sum_{i=1}^m w_{ki}e_{ki}$$</p>
-<p>e) 计算弱学习器的系数</p>
-<p>$$\alpha_k = \frac{e_k}{1 - e_k}$$</p>
-<p>f) 更新样本集的权重分布为</p>
-<p>$$w_{k+1, j} = \frac{w_{ki}}{Z_k} \alpha_k^{1 - e_{ki}}$$</p>
-<p>这里 \(Z_k\) 是规范化因子：</p>
-<p>$$ Z_k = \sum_{i=1}^m w_{ki} \alpha_k ^{1 - e_{ki}}$$</p>
-<p>3) 构建最终的强学习器：</p>
-<p>$$f(x) = \sum_{k=1}^K = (ln \frac{1}{\alpha_k}) G_k(x)$$</p>
-<h3 id="Adaboost算法的正则化"><a href="#Adaboost算法的正则化" class="headerlink" title="Adaboost算法的正则化"></a>Adaboost算法的正则化</h3><p>为了防止 Adaboost 过拟合，我们通常也会加入正则化项，这个正则化项我们通常称为步长(learning rate)。定义为 ν，对于前面的弱学习器的迭代：</p>
-<p>$$f_k(x) = f_{k-1}(x) + \alpha_k G_k (x)$$</p>
-<p>如果我们加上了正则项，则有：</p>
-<p>$$f_k(x) = f_{k-1}(x) + \nu \alpha_k G_k(x)$$</p>
-<p>ν 的取值范围为 \(0&lt;ν≤10&lt;ν≤1\)。对于同样的训练集学习效果，较小的 ν 意味着我们需要更多的弱学习器的迭代次数。通常我们用步长和迭代最大次数一起来决定算法的拟合效果。</p>
-<h3 id="Adaboost-小结"><a href="#Adaboost-小结" class="headerlink" title="Adaboost 小结"></a>Adaboost 小结</h3><p>理论上任何学习器都可以用于 Adaboost。但一般来说，使用最广泛的 Adaboost 弱学习器是决策树和神经网络。对于决策树，Adaboost分类用了 CART 分类树，而 Adaboost 回归用了 CART 回归树。</p>
-<p>这里对Adaboost算法的优缺点做一个总结。</p>
-<p>Adaboost的主要优点有：</p>
-<ol>
-<li>Adaboost作为分类器时，分类精度很高</li>
-<li>在Adaboost的框架下，可以使用各种回归分类模型来构建弱学习器，非常灵活。</li>
-<li>作为简单的二元分类器时，构造简单，结果可理解。</li>
-<li>不容易发生过拟合</li>
-</ol>
-<p>Adaboost的主要缺点有：</p>
-<ol>
-<li>对异常样本敏感，异常样本在迭代中可能会获得较高的权重，影响最终的强学习器的预测准确性。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1894,7 +1856,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">76</span>
+              <span class="site-state-item-count">77</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
