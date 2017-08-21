@@ -93,7 +93,7 @@
 <meta property="og:description" content="今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。
 理解SGD、minibatch-SGD 和 GD在机器学习优化算法中，梯度下降（gradient descent，简称 GD）是最常用的方法之一，简单来说就是在整个训练集中计算当前的梯度，选定一个步长进行更新。GD 的优点是，基于整个数据集得到的梯度，梯度估计相对较准，更新过程更准">
 <meta property="og:image" content="http://pengshuang.space/img/sgd.png">
-<meta property="og:updated_time" content="2017-08-21T09:08:34.000Z">
+<meta property="og:updated_time" content="2017-08-21T09:13:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深度学习训练中的 large batch size 和 learning rate">
 <meta name="twitter:description" content="今天逛知乎的时候看到这个很经典的问题，相信很多人在训练 DNN 的时候都会遇到过，顺便记录总结下各位知乎大佬的回答。
@@ -352,6 +352,7 @@
 <p>$$w_{t+k} = w_t - \eta \frac{1}{kn}\sum_{j &lt; k}\sum_{x \epsilon \beta_j} \nabla l(x, w_{t})$$</p>
 <p>以上是 baseline (batch size B) 和 large batch(batch size kB) 的更新公式，第二个中 large batch 过一步的数据量相当于第一个 baseline k 步过的数据量，loss 和梯度都按找过的数据量取平均，因此，为了保证相同的数据量利用率，第二个中的 learning  rate 应该为 baseline 的 k 倍，也就是 learning rate 的 linear scale rule。</p>
 <p>linear scale rule 有几个约束，其中一个约束是关于 weight 的约束，第一个公式中每一步更新基于的 weight 都是前一步更新过后的 weight，因此相当于小碎步的走，每走一步都是基于目前真实的 weight 计算梯度做更新的，而第二个公式的这一大步（相比 baseline 相当于 k 步）是基于 t 时刻的 weight 来做更新的。如果在这 k 步之内，W(t+j) ~ W(t) 的话，两者近似没有太大问题，也就是 linear scale rule 问题不大，但在 weight 变化较快的时候，会有问题，尤其是模型在刚开始训练的时候，loss 下特别快，weight 变化很快，W(t+j) ~ W(t) 就不满足。因此在初始训练阶段，一般不会直接将 lr 增大为 k 倍，而是从 baseline 的 lr 慢慢 warmup 到 k 倍，让 linear scale rule 不至于违背得那么明显。第二个约束是 lr 不能无限的放大，根据上面的分析，lr 太大直接沿 loss 切线跑得太远，导致收敛出现问题。同时，有文献指出，当 batch size 变大后，得到好的测试结果所能允许的 lr 范围在变小，也就是说，当 batch size 很小时，比较容易找打一个合适的 lr 达到不错的结果，当 batch size 变大后，可能需要精细地找一个合适的 lr 才能达到较好的结果，这也给实际的 large batch 分布式训练带来了困难。</p>
+<p>从理论上来说，lr = batch_size * base lr，因为 batch_size 的增大会导致你 update 次数的减少，所以为了达到相同的效果，应该是同比例增大的。但是更大的 lr 可能会导致收敛的不够好，尤其是在刚开始的时候，如果你使用很大的 lr，可能会直接爆炸，所以可能会需要一些 warmup 来逐步的把 lr 提高到你想设定的 lr。实际应用中发现不一定要同比例增长，有时候可能增大到 batch_size/2 倍的效果已经很不错了。</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
 <li><a href="https://www.zhihu.com/question/64134994/answer/216895968" target="_blank" rel="external">如何理解深度学习分布式训练中的large batch size与learning rate的关系?</a></li>
 </ul>
