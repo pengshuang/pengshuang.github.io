@@ -258,6 +258,139 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/22/Spark为什么有时候不适合做大规模机器学习/" itemprop="url">
+                  Spark 为什么有时候不适合做大规模机器学习
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-22T08:47:12+08:00" content="2017-08-22">
+              2017-08-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Spark/" itemprop="url" rel="index">
+                    <span itemprop="name">Spark</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/22/Spark为什么有时候不适合做大规模机器学习/" class="leancloud_visitors" data-flag-title="Spark 为什么有时候不适合做大规模机器学习">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在 Spark 中，计算被建模为一种有向无环图（DAG），图中的每个顶点表示一个 RDD，每条边表示了 RDD 上的一个操作。RDD 由一系列被切分的对象（Partition）组成，这些被切分的对象在内存中存储并完成计算，也会在 Shuffle 过程中溢出（Overflow）到磁盘上<br>在 DAG 中，一条从顶点 A 到 B 的有向边 E，表示了 RDD B 是在 RDD A 上执行操作 E 的结果。操作分为转换（Transformation）和动作（Action）两类。转换操作（例如 map、filter 和 join）应用于某个 RDD 上，转换操作的输出是一个新的 RDD。</p>
+<p>Spark 用户将计算建模为 DAG，该 DAG 表示了在 RDD 上执行的转换和动作。DAG 进而被编译为多个 Stage。每个 Stage 执行为一系列并行运行的任务（Task），每个分区（Partition）对应于一个任务。这里，窄依赖将有利于计算的高效执行，而宽依赖则会引入瓶颈，因为这样的依赖关系引入了通信密集的 Shuffle 操作，这打断了操作流。</p>
+<p>Spark 的分布式执行是通过将 DAG Stage 划分到不同的计算节点实现的。驱动器（Driver）包含有两个调度器（Scheduler）组件，即 DAG 调度器和任务调度器。调度器对工作者分配任务，并协调工作者。</p>
+<p>Spark 是为通用数据处理而设计的，并非专用于机器学习任务。要在 Spark 上运行机器学习任务，可以使用 MLlib for Spark。如果采用基本设置的 Spark，那么模型参数存储在驱动器节点上，在每次迭代后通过工作者和驱动器间的通信更新参数。如果是大规模部署机器学习任务，那么驱动器可能无法存储所有的模型参数，这时就需要使用 RDD 去容纳所有的参数。这将引入大量的额外开销，因为为了容纳更新的模型参数，需要在每次迭代中创建新的 RDD。更新模型会涉及在机器和磁盘间的数据 Shuffle，进而限制了 Spark 的扩展性。这正是基本数据流模型（即 DAG）的短板所在。Spark 并不能很好地支持机器学习中的迭代运算。</p>
+<p>Spark 的核心概念是 RDD，而 RDD 的关键特性之一是其不可变性，来规避分布式环境下复杂的各种并行问题。这个抽象，在数据分析的领域是没有问题的，它能最大化的解决分布式问题，简化各种算子的复杂度，并提供高性能的分布式数据处理运算能力。</p>
+<p>然而在机器学习领域，RDD的弱点很快也暴露了。机器学习的核心是迭代和参数更新。RDD凭借着逻辑上不落地的内存计算特性，可以很好的解决迭代的问题，然而 RDD 的不可变性，却非常不适合参数反复多次更新的需求。这本质上的不匹配性，导致了 Spark 的 MLlib 库，发展一直非常缓慢，从 2015 年开始就没有实质性的创新，性能也不好。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><p><a href="https://mp.weixin.qq.com/s?__biz=MzA5NzkxMzg1Nw==&amp;mid=2653162826&amp;idx=1&amp;sn=c3faeb97640aff247a6ca8a5ff1bc4f2&amp;chksm=8b493024bc3eb932a773017f326891951ce0d91a7ee18a47def0190b4412245e44a8be71df03&amp;mpshare=1&amp;scene=1&amp;srcid=0821xpuPs81Z5r2tgGxZOKOI&amp;key=c95b8826c6a30de1fe4acefb9904c8a8837f3f2a4eb3153438d0434df5583e05d3e0f9e91d90af3c2178b9d7231f1234b449660e2c9e5551d4c0d580db00f48b48cce38d091dd3073e377ad9d30a7225&amp;ascene=0&amp;uin=MTk0NzAwMTc4MA%3D%3D&amp;devicetype=iMac+MacBookPro12%2C1+OSX+OSX+10.10.5+build(14F2109" target="_blank" rel="external">分布式机器学习平台大比拼：Spark、PMLS、TensorFlow、MXNet</a>&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=z4lREgrF4ApaeNLlKcLiOrvyRDiCkvP%2BqlXAr6TO6tqbH4gGO3xXBQRWkz4D5YF9)</p>
+</li>
+<li><p><a href="https://www.qcloud.com/community/article/709568" target="_blank" rel="external">Spark 机器学习的加速器：Spark on Angel</a></p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/21/深度学习训练中的-large-batch-size-和-learning-rate/" itemprop="url">
                   深度学习训练中的 large batch size 和 learning rate
                 </a>
@@ -1651,167 +1784,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/13/什么是单例模式/" itemprop="url">
-                  (转载) 什么是单例模式?
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-13T09:16:00+08:00" content="2017-03-13">
-              2017-03-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/13/什么是单例模式/" class="leancloud_visitors" data-flag-title="(转载) 什么是单例模式?">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近找实习的时候，经常被问到什么是单例模式，能不能手写一个单例模式。。。虽然我面试的都是机器学习岗。所以，痛定思痛，今天来整理总结一下什么是单例模式，这里主要是整理一下耗子叔曾经写过的一篇文章 —- <a href="http://coolshell.cn/articles/265.html" target="_blank" rel="external">深入浅出单实例SINGLETON设计模式
-</a>。</p>
-<p>单例模式的目的是想在整个系统中只能出现一个类的实例。</p>
-<h3 id="普通的-Singleton-版本"><a href="#普通的-Singleton-版本" class="headerlink" title="普通的 Singleton 版本"></a>普通的 Singleton 版本</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton = <span class="keyword">null</span>;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">			singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> singleton;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Singleton 的几个特点：</p>
-<ol>
-<li>私有（private）的构造函数，表明这个类是不可能形成实例了。这主要是怕这个类会有多个实例。</li>
-<li>即然这个类是不可能形成实例，那么，我们需要一个静态的方式让其形成实例：getInstance()。注意这个方法是在new自己，因为其可以访问私有的构造函数，所以他是可以保证实例被创建出来的。</li>
-<li>在 getInstance()中，先做判断是否已形成实例，如果已形成则直接返回，否则创建实例。</li>
-<li>所形成的实例保存在自己类中的私有成员中。</li>
-<li>我们取实例时，只需要使用 Singleton.getInstance() 就行了。</li>
-</ol>
-<h3 id="改进下的-Singleton"><a href="#改进下的-Singleton" class="headerlink" title="改进下的 Singleton"></a>改进下的 Singleton</h3><p>上面这个例子因为是全局性的实例，所以，在多线程情况下，所有的全局共享的东西都会变得非常危险，如果在多线程情况下同时调用 gerInstance() 的话，那么，可能会有多个进程同时通过 singleton == null 的条件检查，于是多个实例就创建出来，并且可能造成内存泄露问题。所以改进版本如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton = <span class="keyword">null</span>;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">				<span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">					singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> singleton;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol>
-<li>第一个条件是说，如果实例创建了，那就不需要同步了，直接返回就好了。</li>
-<li>不然，我们就开始同步线程。</li>
-<li>第二个条件是说，如果被同步的线程中，有一个线程创建了对象，那么别的线程就不用再创建了。</li>
-</ol>
-<p>但是， single = new Singleton() 这句，并非是一个原子操作。事实上，在 JVM 中，这句话大概做了下面 3 件事情。</p>
-<ol>
-<li>给 singleton 分配内存</li>
-<li>调用 Singleton 的构造函数来初始化成员变量，形成实例</li>
-<li>将 singleton 对象指向分配的内存空间</li>
-</ol>
-<p>但是在 JVM 的即时编译器中存在指令重排序的优化。也就是说上面的第二步和第三步的顺序是不能保证的，最终的执行顺序可能是 1-2-3 也可能是 1-3-2。如果是后者，则在 3 执行完毕、2 未执行之前，被线程二抢占了，这时 instance 已经是非 null 了（但却没有初始化），所以线程二会直接返回 instance，然后使用，然后便会报错。</p>
-<p>因此，修改的方法是把 singleton 声明成 volatile 就可以了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton singleton = <span class="keyword">null</span>;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">synchronized</span> (Singleton.class) &#123;</span><br><span class="line">				<span class="keyword">if</span> (singleton == <span class="keyword">null</span>) &#123;</span><br><span class="line">					singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> singleton;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用 volatile 有两个功用：</p>
-<ol>
-<li>这个变量不会在多个线程中存在复本，直接从内存读取。</li>
-<li>这个关键字会禁止指令重排序优化。也就是说，在 volatile 变量的赋值操作后面会有一个内存屏障（生成的汇编代码上），读操作不会被重排序到内存屏障之前。</li>
-</ol>
-<h3 id="Singleton-的简化版本"><a href="#Singleton-的简化版本" class="headerlink" title="Singleton 的简化版本"></a>Singleton 的简化版本</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Singleton singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span> </span>&#123; &#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> singleton;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p>这种方法非常简单，因为单例的实例被声明成 static 和 final 变量了，在第一次加载类到内存中时就会初始化，所以创建实例本身是线程安全的。</p>
-<p>但是，这种方法的最大问题是，当这个类被加载的时候，new Singleton() 这句话就会被执行，就算是 getInstance() 没有被调用，类也被初始化了。</p>
-<p>于是，这个可能会与我们想要的行为不一样，比如，我的类的构造函数中，有一些事可能需要依赖于别的类干的一些事（比如某个配置文件，或是某个被其它类创建的资源），我们希望他能在我第一次getInstance()时才被真正的创建。这样，我们可以控制真正的类创建的时刻，而不是把类的创建委托给了类装载器。</p>
-<p>于是，</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span> <span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>上面这种方式，仍然使用 JVM 本身机制保证了线程安全问题；由于 SingletonHolder 是私有的，除了 getInstance() 之外没有办法访问它，因此它只有在 getInstance() 被调用时才会真正创建；同时读取实例的时候不会进行同步，没有性能缺陷；也不依赖 JDK 版本。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1857,7 +1829,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">77</span>
+              <span class="site-state-item-count">78</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
