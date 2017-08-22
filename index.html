@@ -337,10 +337,7 @@
 <p>Spark 的核心概念是 RDD，而 RDD 的关键特性之一是其不可变性，来规避分布式环境下复杂的各种并行问题。这个抽象，在数据分析的领域是没有问题的，它能最大化的解决分布式问题，简化各种算子的复杂度，并提供高性能的分布式数据处理运算能力。</p>
 <p>然而在机器学习领域，RDD的弱点很快也暴露了。机器学习的核心是迭代和参数更新。RDD凭借着逻辑上不落地的内存计算特性，可以很好的解决迭代的问题，然而 RDD 的不可变性，却非常不适合参数反复多次更新的需求。这本质上的不匹配性，导致了 Spark 的 MLlib 库，发展一直非常缓慢，从 2015 年开始就没有实质性的创新，性能也不好。</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><p><a href="https://mp.weixin.qq.com/s?__biz=MzA5NzkxMzg1Nw==&amp;mid=2653162826&amp;idx=1&amp;sn=c3faeb97640aff247a6ca8a5ff1bc4f2&amp;chksm=8b493024bc3eb932a773017f326891951ce0d91a7ee18a47def0190b4412245e44a8be71df03&amp;mpshare=1&amp;scene=1&amp;srcid=0821xpuPs81Z5r2tgGxZOKOI&amp;key=c95b8826c6a30de1fe4acefb9904c8a8837f3f2a4eb3153438d0434df5583e05d3e0f9e91d90af3c2178b9d7231f1234b449660e2c9e5551d4c0d580db00f48b48cce38d091dd3073e377ad9d30a7225&amp;ascene=0&amp;uin=MTk0NzAwMTc4MA%3D%3D&amp;devicetype=iMac+MacBookPro12%2C1+OSX+OSX+10.10.5+build(14F2109" target="_blank" rel="external">分布式机器学习平台大比拼：Spark、PMLS、TensorFlow、MXNet</a>&amp;version=12020810&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=z4lREgrF4ApaeNLlKcLiOrvyRDiCkvP%2BqlXAr6TO6tqbH4gGO3xXBQRWkz4D5YF9)</p>
-</li>
-<li><p><a href="https://www.qcloud.com/community/article/709568" target="_blank" rel="external">Spark 机器学习的加速器：Spark on Angel</a></p>
-</li>
+<li><a href="https://www.qcloud.com/community/article/709568" target="_blank" rel="external">Spark 机器学习的加速器：Spark on Angel</a></li>
 </ul>
 
           
