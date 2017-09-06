@@ -258,6 +258,189 @@
             
               
                 
+                <a class="post-title-link" href="/2016/10/13/Python中的引用/" itemprop="url">
+                  Python中的引用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-13T09:53:50+08:00" content="2016-10-13">
+              2016-10-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/编程语言/" itemprop="url" rel="index">
+                    <span itemprop="name">编程语言</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/10/13/Python中的引用/" class="leancloud_visitors" data-flag-title="Python中的引用">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Python不允许程序员来选择采用值传递还是引用传递，而是采用一种“传对象引用”的方式。这种方式相当于传值和传引用的一种综合。如果函数收到的是一个可变对象（比如字典或列表）的引用，就能修改对象的原始值————相当于通过“传引用“来传递对象。如果函数收到的是一个不可变对象（比如数字、字符或者元组）的引用，就不能直接修改原始对象————相当于通过“传值”来传递对象。</p>
+<p>事实上，当人们复制列表或字典时，就复制了对象列表的引用同，如果改变引用的值，则修改了原始的参数。</p>
+<p>为了简化内存管理，Python通过引用计数机制实现自动垃圾回收功能，Python中的每个对象都有一个引用计数，用来计数该对象在不同场所分别被引用了多少次。每当引用一次Python对象，相应的引用计数就增1，每当消毁一次Python对象，则相应的引用就减1，只有当引用计数为零时，才真正从内存中删除Python对象。</p>
+<h3 id="列表引用"><a href="#列表引用" class="headerlink" title="列表引用"></a>列表引用</h3><p>示例一:</p>
+<pre><code>&gt;&gt;&gt; a = [1,2,3]
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; b.append(4)
+&gt;&gt;&gt; print b
+# output: [1,2,3,4]
+&gt;&gt;&gt; print a
+# output: [1,2,3,4]
+</code></pre><p>这里把a的值赋给了b，相当于把a的引用给了b，这样改变b的值也就改变了a的值。</p>
+<p>示例二:</p>
+<pre><code>&gt;&gt;&gt; a = [1,2,3]
+&gt;&gt;&gt; b = a + []
+&gt;&gt;&gt; b.append(4)
+&gt;&gt;&gt; print b
+# output: [1,2,3,4]
+&gt;&gt;&gt; print a
+# output: [1,2,3]
+</code></pre><p>这里把 <strong>a+[ ]</strong> 的值赋给了b， <strong>a+[ ]</strong> 相当于一个新的变量，而不是a的引用传递，所以改变b的值不会同时也改变a。</p>
+<p>示例三:</p>
+<pre><code>def add_list(p):
+     p = p + [1]
+p1 = [1,2,3]
+add_list(p1)
+print p1
+# output: [1, 2, 3]
+
+def add_list(p):
+    p += [1]
+p2 = [1,2,3]
+proc2(p2)
+print p2
+# output: [1, 2, 3, 1]
+</code></pre><p>这主要是由于“=”操作符会新建一个新的变量保存赋值结果，然后再把引用名指向“=”左边，即修改了原来的p引用，使p成为指向新赋值变量的引用。而+=不会，直接修改了原来p引用的内容，事实上+=和=在python内部使用了不同的实现函数。</p>
+<h3 id="字典引用"><a href="#字典引用" class="headerlink" title="字典引用"></a>字典引用</h3><p>示例一:</p>
+<pre><code>&gt;&gt;&gt; a = {&quot;a&quot;:1,&quot;b&quot;:2}
+&gt;&gt;&gt; b = a
+&gt;&gt;&gt; b[&quot;c&quot;] = 3
+&gt;&gt;&gt; b
+output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
+&gt;&gt;&gt; a
+output: {&apos;a&apos;: 1, &apos;c&apos;: 3, &apos;b&apos;: 2}
+</code></pre><p>同列表引用一样，传递字典的时候其实传递的也是引用。</p>
+<p>示例二:</p>
+<pre><code>a = []
+b = {&apos;num&apos;:0, &apos;sqrt&apos;:0}
+resurse = [1,2,3]
+for i in resurse:
+  b[&apos;num&apos;] = i
+  b[&apos;sqrt&apos;] = i * i
+  a.append(b)
+print a
+output: [{&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
+</code></pre><p>我们可能会觉得有点奇怪，因为我们想要的值可能是这个:</p>
+<pre><code>output: [{&apos;num&apos;: 1, &apos;sqrt&apos;: 1}, {&apos;num&apos;: 2, &apos;sqrt&apos;: 4}, {&apos;num&apos;: 3, &apos;sqrt&apos;: 9}]
+</code></pre><p>这是由于a中的元素就是b的引用，那怎么办呢？可以这样来修改:</p>
+<pre><code>a = []
+resurse = [1,2,3]
+for i in resurse:
+    a.append({&quot;num&quot;: i, &quot;sqrt&quot;: i * i})
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/10/11/数据库系统实现-索引结构/" itemprop="url">
                   数据库系统实现:索引结构
                 </a>
@@ -1908,216 +2091,6 @@ reduce(String key, Iterator values):
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/09/20/hive模式设计/" itemprop="url">
-                  《Hive编程指南》学习笔记：Hive模式设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-20T10:58:22+08:00" content="2016-09-20">
-              2016-09-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/20/hive模式设计/" class="leancloud_visitors" data-flag-title="《Hive编程指南》学习笔记：Hive模式设计">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-按天划分的表"><a href="#1-按天划分的表" class="headerlink" title="1. 按天划分的表"></a>1. 按天划分的表</h3><pre><code>hive&gt; CREATE TABLE supply (id int, part string, quantity int)
-    &gt; PARTITIONED BY (int day);
-
-hive&gt; ALTER TABLE supply add PARTITION (day=20110102)
-hive&gt; ALTER TABLE supply add PARTITION (day=20110103)
-...
-
-hive&gt; .... load data ....
-
-hive&gt; SELECT part, quantity FROM supply
-    &gt; WHERE day &gt;= 20110102 AND day &lt; 20110103 AND quantity &lt; 4;
-</code></pre><h3 id="2-关于分区"><a href="#2-关于分区" class="headerlink" title="2. 关于分区"></a>2. 关于分区</h3><p>在Hive中，通过创建分区可以优化一些查询，但如果创建的分区很多很多的话，反而会对其他一些重要的查询不利，因为HDFS用于设计存储数百万的大文件，而非数十亿的小文件。使用过多的分区可能导致的一个问题就是会创建大量的非必须的Hadoop文件和文件夹。</p>
-<p>MapReduce 会将一个任务（job）转换为多个任务（task）。默认情况下，每个task都是一个新的JVM实例，都需要开启和销毁的开销。对于小文件来说，每个文件都会对应一个task。在一些情况下，JVM开启和销毁的时间中销毁可能会比实际处理数据的时间消耗更长！</p>
-<p>因此，一个理想的分区方案不应该导致产生太多的分区和文件夹目录，并且每个目录下的文件应该足够得大，应该是文件系统中块大小的若干倍。</p>
-<p>按时间范围进行分区的一个好的策略就是按照不同的时间粒度来确定合适大小的数据积累量，而且安装这个时间粒度。随着时间的推移，分区数量的增长是“均匀的”，而且每个分区下包含的文件大小至少是文件系统中块的大小的若干倍。这个平衡可以保持使分区足够大，从而优化一般情况下查询的数据吞吐量。同时有必要考虑这中粒度级别在未来是否是适用的，特别是查询中WHERE子句选择较小粒度的范围的情况：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, state string, 
-city string )
-    &gt; PARTITIONED BY (day int);
-hive&gt; SELECT * FROM weblogs WHERE day=20110102;
-</code></pre><p>也可以使用2个级别的分区，并且适用不同的维度:</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, city string )
-    &gt; PARTITIONED BY (day int, state string);
-hive&gt; SELECT * FROM weblogs WHERE day=20110102;
-</code></pre><h3 id="3-唯一键和标准化"><a href="#3-唯一键和标准化" class="headerlink" title="3. 唯一键和标准化"></a>3. 唯一键和标准化</h3><p>关系型数据库通常使用唯一键、索引和标准化来存储数据集，通常是全部或者大部分存储到内存的。然而，Hive没有主键或基于序列密钥生成的自增键的概念。</p>
-<p>避免标准化的主要原因是为了最小化磁盘寻道，比如那些通常需要外键关系的情况。非标准化数据允许被扫描或写入到大的，连续的磁盘存储区域，从而优化磁盘驱动器的I/O性能。然而，非标准化数据可能导致数据重复，有导致数据不一致的风险。</p>
-<h3 id="4-同一份数据多种处理"><a href="#4-同一份数据多种处理" class="headerlink" title="4. 同一份数据多种处理"></a>4. 同一份数据多种处理</h3><p>Hive 本身提供一个独特的语法，它可以从一个数据源产生多个数据聚合，而无需每次聚合都要重新扫描一次。对于大的数据输入集来说，这个优化可以节约非常可观的时间。</p>
-<p>常用的方法：</p>
-<pre><code>hive&gt; FROM history
-    &gt; INSERT OVERWRITE sales SELECT * WHERE action=&quot;purchased&apos;
-    &gt; INSERT OVERWRITE credits SELECT * WHERE actions=&quot;returned&apos;;
-</code></pre><h3 id="5-对于每个表的分区"><a href="#5-对于每个表的分区" class="headerlink" title="5. 对于每个表的分区"></a>5. 对于每个表的分区</h3><p>很多的ETL处理过程会涉及到多个处理步骤，而每个处理步骤可能会产生一个或多个临时表，这些表仅供下一个job使用。下面的这个例子即在中间表内部使用分区，这样的话就不会再计算某一天的数据时会发生前一天的数据被 <strong>INSERT OVERWRITE</strong> 语句覆盖掉的情况。</p>
-<pre><code>$ hive -hiveconf dt=2011-01-01
-hive&gt; INSERT OVERWRITE table distinct_ip_logs
-    &gt; PARTITION (hit_date=${dt})
-    &gt; SELECT distinct(ip) as ip from weblogs
-    &gt; WHERE hit_date = &apos;${hiveconf:dt}&apos;;
-
-hive&gt; CREATE TABLE state_city_for_day (state string, city string)
-    &gt; PARTITIONED BY (hit_date string)
-
-hive&gt; INSERT OVERWRITE table state_city_for_day PARTITION(${hivecong:df})
-    &gt; SELECT distinct(state, city) FROM distinct_ip_in_logs
-    &gt; JOIN geodata ON (distinct_ip_in_logs.ip = geodata.ip)
-    &gt; WHERE (hit_date = &apos;${hiveconf:dt}&apos;);
-</code></pre><p>这种方法有个缺点，就是用户将需要管理中间表并删除旧分区。</p>
-<h3 id="6-分桶表数据存储"><a href="#6-分桶表数据存储" class="headerlink" title="6. 分桶表数据存储"></a>6. 分桶表数据存储</h3><p>分区提供一个隔离数据和优化查询的便利的方式。但是并非所有的数据集都可以形成合理的分区，特别是之前所提过的要确定合适的划分大小。</p>
-<p>分桶是将数据集分解成更容易管理的若干部分。我们假设有个表的一级分区是dt，代表日期，二级分区是<strong>user_id</strong>，那么这种划分方式可能导致太多的小分区。但是，如果我们对表进行分桶，并使用<strong>user_id</strong>字段作为分桶字段，则字段值会根据用户指定的值进行哈希分发到桶中。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内，假设用户数要比桶数多得多，那么每个桶内就将会包含多个用户的记录：</p>
-<pre><code>hive&gt; CREATE TABLE weblog (user_id INT, url STRING, source_ip STRING)
-    &gt; PARTITIONED BY (dt STRING)
-    &gt; CLUSTERED BY (user_id) INTO 96 BUCKETS;
-</code></pre><p>在使用 <strong>INSERT … TABLE</strong> 语句时，我们需要设置一个属性来强制Hive为目标表的分桶初始化过程设置一个正确的reducer个数。然后我们再执行一个查询来填充分区。例如：</p>
-<pre><code>hive&gt; SET hive.enforce.bucketing = true
-
-hive&gt; FROM raw_logs
-    &gt; INSERT OVERWRITE TABLE weblog
-    &gt; PARTITION (dt=&quot;2015-01-01&quot;)
-    &gt; SELECT user_id, url, source_ip WHERE dt=&quot;2015-01-01&quot;;
-</code></pre><p>如果我们没有使用 <strong>hive.enforce.bucketing</strong> 属性，那么我们就需要自己设置和分桶个数想匹配的 <strong>reducer</strong> 个数。例如，使用 <strong>set.mapred.reduce.tasks=96</strong>，然后在 <strong>INSERT</strong> 语句中，需要在 <strong>SELECT</strong> 语句后增加 <strong>CLUSTER BY</strong> 语句。</p>
-<p>分桶有几个优点，因为桶的数量是固定的，所以它没有数据波动，故对于抽样再合适不过。</p>
-<h3 id="7-为表增加列"><a href="#7-为表增加列" class="headerlink" title="7. 为表增加列"></a>7. 为表增加列</h3><p>Hive允许在原始数据文件之上定义一个模式，而不像很多的数据库那样，要求必须以特定的格式转换和插入数据。这样的分离方式的好处是，当为数据文件增加新的字段时，可以容易地适应表定义的模式。</p>
-<p>下面来举个例子：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (version LONG, url STRING)
-    &gt; PARTITIONED BY (hit_date int)
-    &gt; ROW FORMAT DELIMITED FIELDS TERMINATED BY &apos;\t&apos;;
-
-hive&gt; ! cat log1.txt
-1    /login
-1    /logout
-
-hive&gt; LOAD DATA LOCAL INPATH &apos;log1.txt&apos; int weblogs partition(20150101);
-
-hive&gt; SELECT * FROM weblogs;
-1    /mystuff    20150101
-1    /toys        20150101
-</code></pre><p>随着时间的推移，可能会为底层数据增加一个新字段。下面是为数据新增 <strong>user_id</strong>字段的过程。</p>
-<pre><code>hive&gt; ! cat log2.txt
-2    /cars    bob
-2    /stuff    terry
-
-hive&gt; ALTER TABLE weblogs ADD COLUMNS (user_id string);
-
-hive&gt; LOAD DATA LOCAL INPATH &apos;log2.txt&apos; int weblogs partition(20150102);
-
-hive&gt; SELECT * from weblogs
-1    /mystuff    20150101     NULL
-1    /toys        20150101    NULL
-2    /cars        20150102     bob
-2    /stuff        20150102    terry
-</code></pre><p>但是这种方式，无法在已有字段的开始或中间增加新字段。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -2163,7 +2136,7 @@ hive&gt; SELECT * from weblogs
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">78</span>
+              <span class="site-state-item-count">79</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

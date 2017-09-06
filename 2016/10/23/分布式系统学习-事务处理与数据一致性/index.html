@@ -84,18 +84,18 @@
 
 
 
-<meta name="description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+<meta name="description" content="ACID事务 (Transaction) 是由一系列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
 事务具有四">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式系统学习: 事务处理与数据一致性">
 <meta property="og:url" content="http://pengshuang.space/2016/10/23/分布式系统学习-事务处理与数据一致性/index.html">
 <meta property="og:site_name" content="小沙文的博客">
-<meta property="og:description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+<meta property="og:description" content="ACID事务 (Transaction) 是由一系列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
 事务具有四">
-<meta property="og:updated_time" content="2016-10-24T11:43:08.000Z">
+<meta property="og:updated_time" content="2017-09-06T15:05:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统学习: 事务处理与数据一致性">
-<meta name="twitter:description" content="ACID事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
+<meta name="twitter:description" content="ACID事务 (Transaction) 是由一系列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。
 事务具有四">
 
 
@@ -327,7 +327,7 @@
       
 
       
-        <h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>事务 (Transaction) 是由一些列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。</p>
+        <h3 id="ACID"><a href="#ACID" class="headerlink" title="ACID"></a>ACID</h3><p>事务 (Transaction) 是由一系列对系统中数据进行访问与更新的操作所组成的一个程序执行逻辑单元 (Unit)，狭义上的事务特指数据库事务。一方面，当多个应用程序并发访问数据库时，事务可以在这些应用之间提供一个隔离方法，以防止彼此的操作互相干扰。另一方面，事务为数据库操作序列提供一个从失败中恢复到正常状态的方法，同时提供了数据库即使在异常状态下仍然保持数据一致性的方法。</p>
 <p>事务具有四个特征，分别是原子性、一致性，隔离性和持久性。</p>
 <h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><p>事务的原子性是指事务必须是一个原子的操作序列单元。事务中包含的各项操作在一次执行过程中，只允许出现以下两种状态之一。</p>
 <ul>
@@ -523,7 +523,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">78</span>
+              <span class="site-state-item-count">79</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

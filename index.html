@@ -258,6 +258,112 @@
             
               
                 
+                <a class="post-title-link" href="/2017/08/26/Untitled/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-08-26T09:37:50+08:00" content="2017-08-26">
+              2017-08-26
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/08/26/Untitled/" class="leancloud_visitors" data-flag-title="">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>n个无序数组中 第 k 大</p>
+<p>O(log(max - min) <em> log(len)) + O(len</em>log(len))</p>
+<p>(log(n)*k) + n*log(n) + k</p>
+<p>union find</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/08/22/Spark为什么有时候不适合做大规模机器学习/" itemprop="url">
                   Spark 为什么有时候不适合做大规模机器学习
                 </a>
@@ -1632,156 +1738,6 @@ SC.Grade = VMGRADE.Mgrade;
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/13/线性回归家族一览/" itemprop="url">
-                  线性回归家族一览
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-13T20:59:23+08:00" content="2017-03-13">
-              2017-03-13
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/机器学习/" itemprop="url" rel="index">
-                    <span itemprop="name">机器学习</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2017/03/13/线性回归家族一览/" class="leancloud_visitors" data-flag-title="线性回归家族一览">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-
-<p>线性回归的目的是要得到输出向量 Y 和输入特征 X 之间的线性关系，求出线性回归系数 \(\theta\)，也就是 \(Y = X\theta\)。其中 Y 的维度是 m <em> 1，X 的维度是 m </em> n，而 \(\theta\) 的维度为 n * 1。m 代表样本个数，n 代表样本特征的维度。</p>
-<p>为了得到线性回归系数 \(\theta\)，我们需要定义一个损失函数，一个极小化损失函数的优化方法，以及一个验证算法的方法。损失函数的不同，损失函数的优化方法的不同，验证方法的不同，就形成了不同的线性回归算法。</p>
-<h3 id="LinearRegression"><a href="#LinearRegression" class="headerlink" title="LinearRegression"></a>LinearRegression</h3><p>损失函数：</p>
-<p>LinearRegression类就是我们平时说的最常见普通的线性回归，它的损失函数也是最简单的，如下：</p>
-<p>$$J(\theta) =  \frac{1}{2}(X\theta - Y)^{T}(X\theta - Y)$$</p>
-<p>损失函数的优化方法：</p>
-<p>对于这个函数，一般有梯度下降法和最小二乘法两种极小化损失函数的优化方法。通过最小二乘法，可以解出线性回归系数 \(\theta\) 为：</p>
-<p>$$\theta = (X^TX)^{-1}X^{T}Y$$</p>
-<h4 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h4><p>一般来说，只要我们觉得数据有线性关系，LinearRegression 是我们的首先应该采用的。如果发现拟合或者预测的不好，再考虑用其他的线性回归库。如果是学习线性回归，推荐先从这个类开始第一步的研究。</p>
-<h3 id="Ridge-Regression"><a href="#Ridge-Regression" class="headerlink" title="Ridge Regression"></a>Ridge Regression</h3><p>由于单纯的线性回归没有考虑过拟合的问题，有可能泛化能力较差，这时损失函数可以加入正则化项，如果加入的是 L2 范数的正则化项，就是 Ridge 回归。此时，损失函数如下：</p>
-<p>$$J(\theta) =  \frac{1}{2}(X\theta - Y)^{T}(X\theta - Y) + \frac{1}{2}\alpha ||\theta||^2_2$$</p>
-<p>其中 \(\alpha\) 为常数系数，需要进行调优。</p>
-<p>Ridge 回归在不抛弃任何一个特征的情况下，缩小了回归系数，使得模型相对而言比较的稳定，不至于过拟合。</p>
-<h4 id="损失函数的优化方法"><a href="#损失函数的优化方法" class="headerlink" title="损失函数的优化方法"></a>损失函数的优化方法</h4><p>一般也用最小二乘法或者梯度下降法来优化。通过最小二乘法，可以解得系数：</p>
-<p>$$\theta = (X^TX + \alpha E)^{-1}X^TY$$</p>
-<h4 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h4><p>一般来说，只要我们觉得数据有线性关系，用 LinearRegression 拟合的不是特别好，需要正则化，可以考虑用 Ridge Regression。但是这个类最大的缺点是每次我们要自己指定一个超参数 \(\alpha\)，然后自己评估 \(\alpha\) 的好坏，比较麻烦。</p>
-<h3 id="RidgeCV"><a href="#RidgeCV" class="headerlink" title="RidgeCV"></a>RidgeCV</h3><p>RidgeCV 的损失函数和损失函数的优化方法完全与 Ridge 类相同，区别在于验证方法。</p>
-<p>RidgeCV 对超参数 \(\alpha\) 使用了交叉验证，来帮忙我们选择一个合适的 \(\alpha\)。在初始化 RidgeCV 时候，我们可以传一组备选的 \(\alpha\) 值，10个，100个都可以。RidgeCV类会帮我们选择一个合适的αα。免去了我们自己去一轮轮筛选αα的苦恼。　　</p>
-<h4 id="使用场景-1"><a href="#使用场景-1" class="headerlink" title="使用场景"></a>使用场景</h4><p>一般来说，只要我们觉得数据有线性关系，用 LinearRegression 拟合的不是特别好，需要正则化，可以考虑用 RidgeCV。如果输入特征的维度很高，而且是稀疏线性关系的话，RidgeCV类就不合适了。这时应该主要考虑下面要讲到的 Lasso 回归类家族。</p>
-<h3 id="Lasso-Regression"><a href="#Lasso-Regression" class="headerlink" title="Lasso Regression"></a>Lasso Regression</h3><p>线性回归的 L1 正则化通常称为 Lasso 回归，它和 Ridge 回归的区别是在损失函数上增加了的是 L1 正则化的项，而不是 L2 正则化项。L1 正则化的项也有一个常数系数 \(\alpha\) 来调节损失函数的均方差项和正则化项的权重，具体 Lasso 回归的损失函数表达式如下：</p>
-<p>$$J(\theta) = \frac{1}{2m}(X\theta - Y)^{T}(X\theta - Y) + \alpha||\theta||_1$$</p>
-<p>Lasso 回归可以使得一些特征的系数变小，甚至还是一些绝对值比较小的系数直接变为 0。增强模型的泛化能力。</p>
-<h3 id="ElasticNet"><a href="#ElasticNet" class="headerlink" title="ElasticNet"></a>ElasticNet</h3><p>ElasticNet 可以看做 Lasso 和 Ridge 的结合。它也是对普通的线性回归做了正则化，但是它的损失函数记不全是 L1 的正则化，也不全是 L2 的正则化，而是一个权重 \(\rho\) 来平衡 L1 和 L2 正则化的比重，形成了一个全新的损失函数如下：</p>
-<p>$$J(\theta) = \frac{1}{2m}(X\theta - Y)^{T}(X\theta - Y) + \alpha \rho||\theta||_1 + \frac{\alpha(1 - \rho)}{2}||\theta||^2_2$$</p>
-<h4 id="使用场景-2"><a href="#使用场景-2" class="headerlink" title="使用场景"></a>使用场景</h4><p>ElasticNet 用在我们发现用 Lasso 回归太过（太多特征被稀疏为0），而用Ridge回归又正则化的不够（回归系数衰减的太慢）的时候。一般不推荐拿到数据就直接就 ElasticNet。</p>
-<h3 id="BayesianRidge"><a href="#BayesianRidge" class="headerlink" title="BayesianRidge"></a>BayesianRidge</h3><p>贝叶斯回归模型假设先验概率，似然函数和后验概率都是正态分布。先验概率是假设模型输出 Y 是符合均值为 \(X\theta\) 的正态分布，正则化参数 \(X\alpha\) 被看作是一个需要从数据中估计得到的随机变量。回归系数 \(\theta\) 的先验分布规律为球形正态分布，超参数为 λ。我们需要通过最大化边际似然函数来估计超参数 α 和 λ，以及回归系数 \(\theta\)。</p>
-<h4 id="使用场景：-1"><a href="#使用场景：-1" class="headerlink" title="使用场景："></a>使用场景：</h4><p>如果我们的数据有很多缺失或者矛盾的病态数据，可以考虑 BayesianRidge，它对病态数据鲁棒性很高，也不用交叉验证选择超参数。但是极大化似然函数的推断过程比较耗时，一般情况不推荐使用。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1827,7 +1783,7 @@ SC.Grade = VMGRADE.Mgrade;
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">78</span>
+              <span class="site-state-item-count">79</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
