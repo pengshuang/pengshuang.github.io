@@ -258,216 +258,6 @@
             
               
                 
-                <a class="post-title-link" href="/2016/09/20/hive模式设计/" itemprop="url">
-                  《Hive编程指南》学习笔记：Hive模式设计
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-20T10:58:22+08:00" content="2016-09-20">
-              2016-09-20
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/读书笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">读书笔记</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-             <span id="/2016/09/20/hive模式设计/" class="leancloud_visitors" data-flag-title="《Hive编程指南》学习笔记：Hive模式设计">
-               &nbsp; | &nbsp;
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               <span class="post-meta-item-text">阅读次数 </span>
-               <span class="leancloud-visitors-count"></span>
-              </span>
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="1-按天划分的表"><a href="#1-按天划分的表" class="headerlink" title="1. 按天划分的表"></a>1. 按天划分的表</h3><pre><code>hive&gt; CREATE TABLE supply (id int, part string, quantity int)
-    &gt; PARTITIONED BY (int day);
-
-hive&gt; ALTER TABLE supply add PARTITION (day=20110102)
-hive&gt; ALTER TABLE supply add PARTITION (day=20110103)
-...
-
-hive&gt; .... load data ....
-
-hive&gt; SELECT part, quantity FROM supply
-    &gt; WHERE day &gt;= 20110102 AND day &lt; 20110103 AND quantity &lt; 4;
-</code></pre><h3 id="2-关于分区"><a href="#2-关于分区" class="headerlink" title="2. 关于分区"></a>2. 关于分区</h3><p>在Hive中，通过创建分区可以优化一些查询，但如果创建的分区很多很多的话，反而会对其他一些重要的查询不利，因为HDFS用于设计存储数百万的大文件，而非数十亿的小文件。使用过多的分区可能导致的一个问题就是会创建大量的非必须的Hadoop文件和文件夹。</p>
-<p>MapReduce 会将一个任务（job）转换为多个任务（task）。默认情况下，每个task都是一个新的JVM实例，都需要开启和销毁的开销。对于小文件来说，每个文件都会对应一个task。在一些情况下，JVM开启和销毁的时间中销毁可能会比实际处理数据的时间消耗更长！</p>
-<p>因此，一个理想的分区方案不应该导致产生太多的分区和文件夹目录，并且每个目录下的文件应该足够得大，应该是文件系统中块大小的若干倍。</p>
-<p>按时间范围进行分区的一个好的策略就是按照不同的时间粒度来确定合适大小的数据积累量，而且安装这个时间粒度。随着时间的推移，分区数量的增长是“均匀的”，而且每个分区下包含的文件大小至少是文件系统中块的大小的若干倍。这个平衡可以保持使分区足够大，从而优化一般情况下查询的数据吞吐量。同时有必要考虑这中粒度级别在未来是否是适用的，特别是查询中WHERE子句选择较小粒度的范围的情况：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, state string, 
-city string )
-    &gt; PARTITIONED BY (day int);
-hive&gt; SELECT * FROM weblogs WHERE day=20110102;
-</code></pre><p>也可以使用2个级别的分区，并且适用不同的维度:</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (url string, time long, city string )
-    &gt; PARTITIONED BY (day int, state string);
-hive&gt; SELECT * FROM weblogs WHERE day=20110102;
-</code></pre><h3 id="3-唯一键和标准化"><a href="#3-唯一键和标准化" class="headerlink" title="3. 唯一键和标准化"></a>3. 唯一键和标准化</h3><p>关系型数据库通常使用唯一键、索引和标准化来存储数据集，通常是全部或者大部分存储到内存的。然而，Hive没有主键或基于序列密钥生成的自增键的概念。</p>
-<p>避免标准化的主要原因是为了最小化磁盘寻道，比如那些通常需要外键关系的情况。非标准化数据允许被扫描或写入到大的，连续的磁盘存储区域，从而优化磁盘驱动器的I/O性能。然而，非标准化数据可能导致数据重复，有导致数据不一致的风险。</p>
-<h3 id="4-同一份数据多种处理"><a href="#4-同一份数据多种处理" class="headerlink" title="4. 同一份数据多种处理"></a>4. 同一份数据多种处理</h3><p>Hive 本身提供一个独特的语法，它可以从一个数据源产生多个数据聚合，而无需每次聚合都要重新扫描一次。对于大的数据输入集来说，这个优化可以节约非常可观的时间。</p>
-<p>常用的方法：</p>
-<pre><code>hive&gt; FROM history
-    &gt; INSERT OVERWRITE sales SELECT * WHERE action=&quot;purchased&apos;
-    &gt; INSERT OVERWRITE credits SELECT * WHERE actions=&quot;returned&apos;;
-</code></pre><h3 id="5-对于每个表的分区"><a href="#5-对于每个表的分区" class="headerlink" title="5. 对于每个表的分区"></a>5. 对于每个表的分区</h3><p>很多的ETL处理过程会涉及到多个处理步骤，而每个处理步骤可能会产生一个或多个临时表，这些表仅供下一个job使用。下面的这个例子即在中间表内部使用分区，这样的话就不会再计算某一天的数据时会发生前一天的数据被 <strong>INSERT OVERWRITE</strong> 语句覆盖掉的情况。</p>
-<pre><code>$ hive -hiveconf dt=2011-01-01
-hive&gt; INSERT OVERWRITE table distinct_ip_logs
-    &gt; PARTITION (hit_date=${dt})
-    &gt; SELECT distinct(ip) as ip from weblogs
-    &gt; WHERE hit_date = &apos;${hiveconf:dt}&apos;;
-
-hive&gt; CREATE TABLE state_city_for_day (state string, city string)
-    &gt; PARTITIONED BY (hit_date string)
-
-hive&gt; INSERT OVERWRITE table state_city_for_day PARTITION(${hivecong:df})
-    &gt; SELECT distinct(state, city) FROM distinct_ip_in_logs
-    &gt; JOIN geodata ON (distinct_ip_in_logs.ip = geodata.ip)
-    &gt; WHERE (hit_date = &apos;${hiveconf:dt}&apos;);
-</code></pre><p>这种方法有个缺点，就是用户将需要管理中间表并删除旧分区。</p>
-<h3 id="6-分桶表数据存储"><a href="#6-分桶表数据存储" class="headerlink" title="6. 分桶表数据存储"></a>6. 分桶表数据存储</h3><p>分区提供一个隔离数据和优化查询的便利的方式。但是并非所有的数据集都可以形成合理的分区，特别是之前所提过的要确定合适的划分大小。</p>
-<p>分桶是将数据集分解成更容易管理的若干部分。我们假设有个表的一级分区是dt，代表日期，二级分区是<strong>user_id</strong>，那么这种划分方式可能导致太多的小分区。但是，如果我们对表进行分桶，并使用<strong>user_id</strong>字段作为分桶字段，则字段值会根据用户指定的值进行哈希分发到桶中。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内。同一个<strong>user_id</strong>下的记录通常会存储到同一个桶内，假设用户数要比桶数多得多，那么每个桶内就将会包含多个用户的记录：</p>
-<pre><code>hive&gt; CREATE TABLE weblog (user_id INT, url STRING, source_ip STRING)
-    &gt; PARTITIONED BY (dt STRING)
-    &gt; CLUSTERED BY (user_id) INTO 96 BUCKETS;
-</code></pre><p>在使用 <strong>INSERT … TABLE</strong> 语句时，我们需要设置一个属性来强制Hive为目标表的分桶初始化过程设置一个正确的reducer个数。然后我们再执行一个查询来填充分区。例如：</p>
-<pre><code>hive&gt; SET hive.enforce.bucketing = true
-
-hive&gt; FROM raw_logs
-    &gt; INSERT OVERWRITE TABLE weblog
-    &gt; PARTITION (dt=&quot;2015-01-01&quot;)
-    &gt; SELECT user_id, url, source_ip WHERE dt=&quot;2015-01-01&quot;;
-</code></pre><p>如果我们没有使用 <strong>hive.enforce.bucketing</strong> 属性，那么我们就需要自己设置和分桶个数想匹配的 <strong>reducer</strong> 个数。例如，使用 <strong>set.mapred.reduce.tasks=96</strong>，然后在 <strong>INSERT</strong> 语句中，需要在 <strong>SELECT</strong> 语句后增加 <strong>CLUSTER BY</strong> 语句。</p>
-<p>分桶有几个优点，因为桶的数量是固定的，所以它没有数据波动，故对于抽样再合适不过。</p>
-<h3 id="7-为表增加列"><a href="#7-为表增加列" class="headerlink" title="7. 为表增加列"></a>7. 为表增加列</h3><p>Hive允许在原始数据文件之上定义一个模式，而不像很多的数据库那样，要求必须以特定的格式转换和插入数据。这样的分离方式的好处是，当为数据文件增加新的字段时，可以容易地适应表定义的模式。</p>
-<p>下面来举个例子：</p>
-<pre><code>hive&gt; CREATE TABLE weblogs (version LONG, url STRING)
-    &gt; PARTITIONED BY (hit_date int)
-    &gt; ROW FORMAT DELIMITED FIELDS TERMINATED BY &apos;\t&apos;;
-
-hive&gt; ! cat log1.txt
-1    /login
-1    /logout
-
-hive&gt; LOAD DATA LOCAL INPATH &apos;log1.txt&apos; int weblogs partition(20150101);
-
-hive&gt; SELECT * FROM weblogs;
-1    /mystuff    20150101
-1    /toys        20150101
-</code></pre><p>随着时间的推移，可能会为底层数据增加一个新字段。下面是为数据新增 <strong>user_id</strong>字段的过程。</p>
-<pre><code>hive&gt; ! cat log2.txt
-2    /cars    bob
-2    /stuff    terry
-
-hive&gt; ALTER TABLE weblogs ADD COLUMNS (user_id string);
-
-hive&gt; LOAD DATA LOCAL INPATH &apos;log2.txt&apos; int weblogs partition(20150102);
-
-hive&gt; SELECT * from weblogs
-1    /mystuff    20150101     NULL
-1    /toys        20150101    NULL
-2    /cars        20150102     bob
-2    /stuff        20150102    terry
-</code></pre><p>但是这种方式，无法在已有字段的开始或中间增加新字段。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
                 <a class="post-title-link" href="/2016/09/16/HiveQL-视图/" itemprop="url">
                   《Hive编程指南》学习笔记：HiveQL:视图与索引
                 </a>
@@ -2075,6 +1865,374 @@ return jsonify(data)
 
 
     
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/08/14/Hadoop-Restful-Api总结/" itemprop="url">
+                  Hadoop Restful API总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-14T23:17:29+08:00" content="2016-08-14">
+              2016-08-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Hadoop/" itemprop="url" rel="index">
+                    <span itemprop="name">Hadoop</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/08/14/Hadoop-Restful-Api总结/" class="leancloud_visitors" data-flag-title="Hadoop Restful API总结">
+               &nbsp; | &nbsp;
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为工作的需要，需要设计一个Hadoop集群的监控系统，监控集群的资源利用情况，所以特意去学习了一下<a href="http://hadoop.apache.org/docs/r2.6.0/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html" target="_blank" rel="external">ResourceManager的Restful API</a>（网上现在大部分的中文资料都是关于hadoop2.4.0的Yarn Web Service API），看能获得哪些信息为我所用，这里记录一下：<br>（我总结了API的获取方法，每个都有实际的例子，然后返回的信息我也一一给以说明）</p>
+<p>注意:</p>
+<p>Restful API 返回的格式为JSON，然后这里tseg0是主机的名字，即namenode的名字</p>
+<h3 id="Cluster-Information-API"><a href="#Cluster-Information-API" class="headerlink" title="Cluster Information API"></a>Cluster Information API</h3><p>API使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X   GET &quot;http://tseg0:8088/ws/v1/cluster&quot;
+</code></pre><p>通过访问这个API,可以访问集群，知道整个hadoop集群的总体状态。<br>主要作用可以知道hadoop的版本号，感觉对工作并无什么太大作用。比较重要的信息摘要如下：</p>
+<pre><code>&quot;clusterInfo&quot;: {
+        &quot;id&quot;: 1465889061871,
+        &quot;startedOn&quot;: 1465889061871,
+        &quot;state&quot;: &quot;STARTED&quot;,
+        &quot;haState&quot;: &quot;ACTIVE&quot;,
+      }
+</code></pre><h3 id="Cluster-Metrics-API"><a href="#Cluster-Metrics-API" class="headerlink" title="Cluster Metrics API"></a>Cluster Metrics API</h3><p>API使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X   GET &quot;http://tseg0:8088/ws/v1/cluster/metrics&quot;
+</code></pre><p>通过访问这个API，可以监控集群的具体状态：</p>
+<ol>
+<li>集群上一共提交了多少应用。</li>
+<li>集群上一共完成了多少应用。</li>
+<li>集群上正在跑的应用有多少个。</li>
+<li>多少个应用被killed掉了。</li>
+<li>多少个应用失败了。</li>
+<li>集群可供使用的内存有多少。</li>
+<li>集群已经使用的内存有多少。</li>
+<li>集群总共的内存大小数。</li>
+<li>集群总共拥有的节点个数。</li>
+<li>集群挂掉的节点个数。</li>
+<li>集群健在的节点个数。</li>
+<li>集群可以使用的VirtualCores个数。</li>
+<li>集群总共的VirtualCores个数。</li>
+<li>集群已经分配了的VirtualCores个数。</li>
+<li>集群已经分配了的container个数。</li>
+<li>集群上还剩下的container个数</li>
+<li>集群上正在pending状态的container个数。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code>&quot;clusterMetrics&quot;: {
+       &quot;appsSubmitted&quot;: 476969,
+       &quot;appsCompleted&quot;: 476306,
+       &quot;appsPending&quot;: 0,
+       &quot;appsRunning&quot;: 18,
+       &quot;appsFailed&quot;: 41,
+       &quot;appsKilled&quot;: 604,
+       &quot;reservedMB&quot;: 0,
+       &quot;availableMB&quot;: 3682720,
+       &quot;allocatedMB&quot;: 842752,
+       &quot;reservedVirtualCores&quot;: 0,
+       &quot;availableVirtualCores&quot;: 1565,
+       &quot;allocatedVirtualCores&quot;: 177,
+       &quot;containersAllocated&quot;: 130,
+       &quot;containersReserved&quot;: 0,
+       &quot;containersPending&quot;: 759,
+       &quot;totalMB&quot;: 4525472,
+       &quot;totalVirtualCores&quot;: 1742,
+       &quot;totalNodes&quot;: 104,
+       &quot;lostNodes&quot;: 42,
+       &quot;unhealthyNodes&quot;: 0,
+       &quot;decommissionedNodes&quot;: 0,
+       &quot;rebootedNodes&quot;: 0,
+       &quot;activeNodes&quot;: 62
+     }
+</code></pre><h3 id="Cluster-Scheduler-API"><a href="#Cluster-Scheduler-API" class="headerlink" title="Cluster Scheduler API"></a>Cluster Scheduler API</h3><p>PI使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X GET &quot;http://tseg0:8088/ws/v1/cluster/scheduler&quot;
+</code></pre><p>通过访问这个api可以知道整个集群的调度过程具体信息。Hadoop的调度按队列（eg：webopa）来进行，不同部门的应用分成不同的队列。通过使用这个API可以知道每个部门队列的状态，比如：</p>
+<ol>
+<li>可以知道每个队列至多/至少可以拥有的资源数（包括内存和vCores数）</li>
+<li>可以知道每个队列最多可以运行的应用个数。</li>
+<li>可以知道每个队列使用的资源个数（memory和vcores）</li>
+<li>知道每个队列的调度策略。</li>
+</ol>
+<p>比较重要的信息摘要如下：</p>
+<pre><code>&quot;scheduler&quot;: {
+        &quot;schedulerInfo&quot;: {
+          &quot;type&quot;: &quot;fairScheduler&quot;,
+          &quot;rootQueue&quot;: {
+            &quot;maxApps&quot;: 2147483647,
+            &quot;minResources&quot;: {
+              &quot;memory&quot;: 0,
+              &quot;vCores&quot;: 0
+            },
+            &quot;maxResources&quot;: {
+              &quot;memory&quot;: 4525472,
+              &quot;vCores&quot;: 1742
+            },
+            &quot;usedResources&quot;: {
+              &quot;memory&quot;: 891904,
+              &quot;vCores&quot;: 210
+            },
+            &quot;steadyFairResources&quot;: {
+              &quot;memory&quot;: 4525472,
+              &quot;vCores&quot;: 1742
+            },
+            &quot;fairResources&quot;: {
+              &quot;memory&quot;: 4525472,
+              &quot;vCores&quot;: 1742
+            },
+            &quot;clusterResources&quot;: {
+              &quot;memory&quot;: 4525472,
+              &quot;vCores&quot;: 1742
+            },
+            &quot;queueName&quot;: &quot;root&quot;,
+            &quot;schedulingPolicy&quot;: &quot;fair&quot;,
+            &quot;childQueues&quot;: [
+              {
+                &quot;type&quot;: &quot;fairSchedulerLeafQueueInfo&quot;,
+                &quot;maxApps&quot;: 200,
+                &quot;minResources&quot;: {
+                  &quot;memory&quot;: 110592,
+                  &quot;vCores&quot;: 64
+                },
+                &quot;maxResources&quot;: {
+                  &quot;memory&quot;: 768552,
+                  &quot;vCores&quot;: 384
+                },
+                &quot;usedResources&quot;: {
+                  &quot;memory&quot;: 0,
+                  &quot;vCores&quot;: 0
+                },
+                &quot;steadyFairResources&quot;: {
+                  &quot;memory&quot;: 110592,
+                  &quot;vCores&quot;: 0
+                },
+                &quot;fairResources&quot;: {
+                  &quot;memory&quot;: 0,
+                  &quot;vCores&quot;: 0
+                },
+                &quot;queueName&quot;: &quot;root.default&quot;,
+                &quot;schedulingPolicy&quot;: &quot;fair&quot;,
+                &quot;numPendingApps&quot;: 0,
+                &quot;numActiveApps&quot;: 0
+              },....
+</code></pre><h3 id="Cluster-Apps-AppID-API"><a href="#Cluster-Apps-AppID-API" class="headerlink" title="Cluster Apps AppID API"></a>Cluster Apps AppID API</h3><p>API使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X   GET &quot;http://tseg0:8088/ws/v1/cluster/apps/application_1465889061871_478559&quot;
+</code></pre><p>可以指定去查看在集群上跑的某个应用的状态。<br>具体的有：</p>
+<ol>
+<li>启动应用的user。</li>
+<li>应用名称。</li>
+<li>应用类型。</li>
+<li>应用的状态。</li>
+<li>应用所属队列。</li>
+<li>应用最终运行状态。</li>
+<li>应用开始/停止时间</li>
+<li>应用的进度。</li>
+<li>应用耗时多久。 </li>
+<li>分配给这个应用所在container的资源（memory和Vcores）。</li>
+<li><p>负责运行这个应用的container的个数。<br>比较重要的信息摘要如下：</p>
+<p> “app”: {</p>
+<pre><code>&quot;id&quot;: &quot;application_1465889061871_478559&quot;,
+&quot;user&quot;: &quot;webopa&quot;,
+&quot;name&quot;: &quot;\&quot;rpt_web_nextpage_channel_hourly\&quot;&quot;,
+&quot;queue&quot;: &quot;root.webopa&quot;,
+&quot;state&quot;: &quot;FINISHED&quot;,
+&quot;finalStatus&quot;: &quot;SUCCEEDED&quot;,
+&quot;progress&quot;: 100.0,
+&quot;trackingUI&quot;: &quot;History&quot;,
+&quot;trackingUrl&quot;: &quot;http://tseg0:8089/proxy/application_1465889061871_478559/jobhistory/job/job_1465889061871_478559&quot;,
+&quot;diagnostics&quot;: &quot;&quot;,
+&quot;clusterId&quot;: 1465889061871,
+&quot;applicationType&quot;: &quot;MAPREDUCE&quot;,
+&quot;startedTime&quot;: 1469585351258,
+&quot;finishedTime&quot;: 1469585406607,
+&quot;elapsedTime&quot;: 55349,
+&quot;amContainerLogs&quot;: &quot;http://datanode048.tseg0:8042/node/containerlogs/container_1465889061871_478559_01_000001/webopa&quot;,
+&quot;amHostHttpAddress&quot;: &quot;datanode048. tseg0:8042&quot;,
+&quot;allocatedMB&quot;: -1,
+&quot;allocatedVCores&quot;: -1,
+&quot;runningContainers&quot;: -1,
+}
+</code></pre></li>
+</ol>
+<p>###Cluster Appstatistic<br>API使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X   GET &quot;http://tseg0:8088/ws/v1/cluster/appstatistics/&quot;
+</code></pre><p>通过这个api可以统计出不同类型（mapreduce或spark）、不同状态（running或finished）的应用个数。<br>比较重要的信息摘要如下：</p>
+<pre><code>&quot;appStatInfo&quot;: {
+       &quot;statItem&quot;: [
+         {
+           &quot;state&quot;: &quot;FAILED&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 0
+         },
+         {
+           &quot;state&quot;: &quot;ACCEPTED&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 2
+         },
+         {
+           &quot;state&quot;: &quot;FINISHED&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 9971
+         },
+         {
+           &quot;state&quot;: &quot;SUBMITTED&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 0
+         },
+         {
+           &quot;state&quot;: &quot;RUNNING&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 8
+         },
+         {
+           &quot;state&quot;: &quot;KILLED&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 29
+         },
+         {
+           &quot;state&quot;: &quot;NEW&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 0
+         },
+         {
+           &quot;state&quot;: &quot;NEW_SAVING&quot;,
+           &quot;type&quot;: &quot;*&quot;,
+           &quot;count&quot;: 0
+         }
+       ]
+     }
+</code></pre><h3 id="Cluster-Nodes-API"><a href="#Cluster-Nodes-API" class="headerlink" title="Cluster Nodes API"></a>Cluster Nodes API</h3><p>API使用方法：</p>
+<pre><code>curl --compressed -H &quot;Accept: application/json&quot; -X GET &quot;http://tseg0:8088/ws/v1/cluster/nodes&quot;
+</code></pre><p>通过这个API我们可以知道不同node的状态，比如：</p>
+<ol>
+<li>nodeHostname 和 nodeHttpAddress。</li>
+<li>该node的状态。（healthy或者其他)</li>
+<li>该node已经使用和还可以使用的memory/vCores数。</li>
+<li>该node上container的个数。</li>
+<li>上一次健康状态的更新时间（unix时间戳）。</li>
+</ol>
+<p>注：因为有时候node节点数特别多，想具体查询某个node可以通过指定nodeid来查询。</p>
+<p>比较重要的信息摘要如下：</p>
+<pre><code>&quot;nodes&quot;: {
+        &quot;node&quot;: [
+        {
+        &quot;rack&quot;: &quot;/default-rack&quot;,
+        &quot;state&quot;: &quot;RUNNING&quot;,
+        &quot;id&quot;: &quot;datanode018. tseg0:50523&quot;,
+        &quot;nodeHostName&quot;: &quot;datanode018. tseg0&quot;,
+        &quot;nodeHTTPAddress&quot;: &quot;datanode018. tseg0:8042&quot;,
+        &quot;lastHealthUpdate&quot;: 1469609570494,
+        &quot;version&quot;: &quot;2.5.0-cdh5.2.0&quot;,
+        &quot;healthReport&quot;: &quot;&quot;,
+        &quot;numContainers&quot;: 1,
+        &quot;usedMemoryMB&quot;: 15360,
+        &quot;availMemoryMB&quot;: 7168,
+        &quot;usedVirtualCores&quot;: 2,
+        &quot;availableVirtualCores&quot;: 22
+        },...
+        ]
+      }
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
   </section>
 
   
@@ -2120,7 +2278,7 @@ return jsonify(data)
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">79</span>
+              <span class="site-state-item-count">78</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
