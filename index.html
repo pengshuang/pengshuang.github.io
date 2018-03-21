@@ -624,7 +624,7 @@
 <li>高效（比 MapReduce 快 10 ~ 100 倍）。</li>
 <li>内存计算引擎，提供 Cache 机制来支持需要反复迭代计算或者多次数据共享，减少数据读取的 IO 开销。</li>
 <li>DAG 引擎，减少多次计算之间中间结果写到 HDFS 上的开销。</li>
-<li>使用多线程池模型来减少 task 启动开销，shuffle 过程中避免不必要的 sort 操作已经减少磁盘 IO 操作。</li>
+<li>使用多线程池模型来减少 task 启动开销，shuffle 过程中避免不必要的 sort 操作以及减少磁盘 IO 操作。</li>
 </ol>
 <h3 id="系统结构"><a href="#系统结构" class="headerlink" title="系统结构"></a>系统结构</h3><p>Spark 自身只对计算负责，其计算资源的管理和调度由第三方框架来实现。常用的有 Yarn 和 Mesos。Spark on Yarn 的系统结构图如下:</p>
 <p><img src="/img/yarn.png" alt=""></p>
@@ -1923,7 +1923,7 @@ SC.Grade = VMGRADE.Mgrade;
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2017</span>
+  <span itemprop="copyrightYear">2018</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
